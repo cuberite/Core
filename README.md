@@ -9,6 +9,10 @@ A fork of MCServer's Core plugin.
 * Fixed 'tp' command not working due to typography errors
 * Fixed 'arithmetic on nil value' on startup due to inactivation of world limiter
 * Massive overhaul / redesign of webadmin GUI interface.
+  * Added jQuery transition effect
+  * Completely redesigned CSS
+  * Added new logo
+  * Made HTML5 compliant
 * Beautified 'help' menu
 * Rewrite of death messages - fixed strange grammar and edited to more faithfully reflect Vanilla
 
