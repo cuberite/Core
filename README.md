@@ -15,6 +15,7 @@ A fork of MCServer's Core plugin.
   * Made HTML5 compliant
 * Beautified 'help' menu
 * Rewrite of death messages - fixed strange grammar and edited to more faithfully reflect Vanilla
+* Added 'unban' console command
 
 **How to Use**
 
