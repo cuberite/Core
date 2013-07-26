@@ -1,7 +1,7 @@
 function HandleHelpCommand(Split, Player)
 	local PluginManager = cRoot:Get():GetPluginManager()
 	
-	local LinesPerPage = 9;
+	local LinesPerPage = 8;
 	local CurrentPage = 1;
 	local CurrentLine = 0;
 	local PageRequested = 1;
