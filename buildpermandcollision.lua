@@ -9,7 +9,7 @@ function OnPlayerPlacingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX
 		return true
 	end
 	
-    if (BlockType ~= 50) or (BlockType ~= 76) then
+    if g_BlockIsSolid[BlockType] then
         local X = BlockX
         local Y = BlockY
 	    local Z = BlockZ
