@@ -8,8 +8,7 @@ function HandleBanCommand( Split, Player )
 	if( #Split > 2 ) then
 		Reason = table.concat(Split, " ", 3)
 	end
-	
-	
+		
 	if( BanPlayer(Split[2], Reason) == false ) then
 		Player:SendMessage( cChatColor.Green .. "Could not find player " .. Split[2] )
 		return true

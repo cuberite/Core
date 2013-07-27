@@ -1,7 +1,3 @@
----- Some settings -----
-SHOW_PLUGIN_NAMES = true	-- If true, plugin name will be shown before commands
-							-- This is overwritten in the Initialize() function
-
 -- Global variables
 PLUGIN = {}	-- Reference to own plugin object
 BannedPlayersIni = {}
@@ -9,7 +5,9 @@ WhiteListIni = {}
 BackCoords = {}
 Messages = {}
 LimitWorldsCuboid = {}
-
+SPAWNPROTECT = true
+PROTECTRADIUS = 20
+LOGTOFILE = false
 
 function Initialize(Plugin)
 	PLUGIN = Plugin
@@ -52,19 +50,21 @@ function Initialize(Plugin)
 	PluginManager:BindCommand("/top",             "core.top",             HandleTopCommand,             " - Teleport yourself to the top most block");
 	PluginManager:BindCommand("/gm",              "core.changegm",        HandleChangeGMCommand,        " ~ Change your gamemode");
 	PluginManager:BindCommand("/portal",          "core.portal",          HandlePortalCommand,          " ~ Move to a different world");  
-	PluginManager:BindCommand("/coords",          "core.coords",          HandleCoordsCommand,          " - Show your current server coordinates");
+	PluginManager:BindCommand("/locate",          "core.locate",          HandleLocateCommand,          " - Show your current server coordinates");
 	PluginManager:BindCommand("/regen",           "core.regen",           HandleRegenCommand,           " ~ Regenerates a chunk, current or specified");
 	PluginManager:BindCommand("/viewdistance",    "core.viewdistance",    HandleViewDistanceCommand,    " [".. cClientHandle.MIN_VIEW_DISTANCE .."-".. cClientHandle.MAX_VIEW_DISTANCE .."] - Change your view distance")
 	
 	InitConsoleCommands();
 		
 	-- Load the settings
-	IniFile = cIniFile("Settings.ini")
+	IniFile = cIniFile("settings.ini")
 	if ( IniFile:ReadFile() == true ) then
 		HardCore = IniFile:GetValueSet("GameMode", "Hardcore", "false")
 		LimitWorld = IniFile:GetValueSetB("Worlds", "LimitWorld", true)
 		LimitWorldWidth = IniFile:GetValueSetI("Worlds", "LimitWorldWidth", 10)
-		SHOW_PLUGIN_NAMES = IniFile:GetValueSetB("HelpPlugin", "ShowPluginNames", true )
+        SPAWNPROTECT = IniFile:GetValueSetB("SpawnProtect", "Enable", true)
+        PROTECTRADIUS = IniFile:GetValueSetI("SpawnProtect", "ProtectRadius", 20)
+        LOGTOFILE = IniFile:GetValueSetB("SpawnProtect", "LogToFile", false)
 		IniFile:WriteFile()
 	end
 	
@@ -123,5 +123,51 @@ function Initialize(Plugin)
 	
 	LoadMotd()
 	LOG( "Initialized " .. Plugin:GetName() .. " v." .. Plugin:GetVersion() )
-	return true
+
+    return true
+end
+
+function WriteLog(breakPlace, X, Y, Z, player, id, meta)
+    PLUGIN = Plugin
+
+	local logText = {}
+
+    table.insert(logText, player)
+	table.insert(logText, " tried to ")
+
+	if breakPlace == 0 then
+	    table.insert(logText, "break ")
+    else
+		table.insert(logText, "place ")
+	end
+
+
+	table.insert(logText, ItemToString(cItem(id, 1, meta)))
+
+	table.insert(logText, " at ")
+	table.insert(logText, tostring(X))
+	table.insert(logText, ", ")
+	table.insert(logText, tostring(Y))
+	table.insert(logText, ", ")
+	table.insert(logText, tostring(Z))
+	table.insert(logText, ".")
+
+    LOGINFO(table.concat(logText,''))
+
+	if LOGTOFILE then
+	    local logFile = io.open( Plugin:GetLocalDirectory() .. '/blocks.log', 'a')
+	    logFile:write(table.concat(logText,'').."\n")
+	    logFile:close()
+    end
+
+	return
+end
+    
+function WarnPlayer(Player)
+	Player:SendMessage("Go further from spawn to build")
+	return
+end
+
+function OnDisable()
+    LOG( "Disabled " .. Plugin:GetName() .. " v." .. Plugin:GetVersion() )
 end
