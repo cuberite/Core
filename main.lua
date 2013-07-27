@@ -43,7 +43,8 @@ function Initialize(Plugin)
 	PluginManager:BindCommand("/motd",            "core.motd",            HandleMOTDCommand,            " - Show message of the day");
 	PluginManager:BindCommand("/playerlist",      "core.playerlist",      HandlePlayerListCommand,      " - Shows list of connected players");
 	PluginManager:BindCommand("/plugins",         "core.plugins",         HandlePluginsCommand,         " - Show list of plugins");
-	PluginManager:BindCommand("/portal",          "core.portal",          HandlePortalCommand,          " ~ Move to a different world");  
+        PluginManager:BindCommand("/me",              "core.me",              HandleMeCommand,              " ~ Tell what you are doing");
+        PluginManager:BindCommand("/portal",          "core.portal",          HandlePortalCommand,          " ~ Move to a different world");  
 	PluginManager:BindCommand("/rank",            "core.rank",            HandleRankCommand,            " ~ Add someone to a group");
 	PluginManager:BindCommand("/regen",           "core.regen",           HandleRegenCommand,           " ~ Regenerates a chunk, current or specified");
 	PluginManager:BindCommand("/reload",          "core.reload",          HandleReloadCommand,          " - Reload all plugins");
