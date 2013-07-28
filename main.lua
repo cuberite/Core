@@ -67,7 +67,7 @@ function Initialize(Plugin)
 	IniFile = cIniFile("settings.ini")
 	if ( IniFile:ReadFile() == true ) then
 		HardCore = IniFile:GetValueSet("GameMode", "Hardcore", "false")
-		LimitWorld = IniFile:GetValueSetB("Worlds", "LimitWorld", true)
+		LimitWorld = IniFile:GetValueSetB("Worlds", "LimitWorld", false)
 		LimitWorldWidth = IniFile:GetValueSetI("Worlds", "LimitWorldWidth", 10)
         SPAWNPROTECT = IniFile:GetValueSetB("SpawnProtect", "Enable", true)
         PROTECTRADIUS = IniFile:GetValueSetI("SpawnProtect", "ProtectRadius", 20)
