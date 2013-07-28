@@ -4,6 +4,7 @@ BannedPlayersIni = {}
 WhiteListIni = {}
 BackCoords = {}
 Messages = {}
+Destination = {}
 LimitWorldsCuboid = {}
 SPAWNPROTECT = true
 PROTECTRADIUS = 20
