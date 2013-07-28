@@ -75,7 +75,7 @@ function Initialize(Plugin)
 		IniFile:WriteFile()
 	end
 	
-    if LimitWorldWidth ~= nil then
+    if LimitWorld == true then
 	    cRoot:Get():ForEachWorld(
 		    function( World )            
                 LimitWorldsCuboid[World:GetName()] = cCuboid()
@@ -138,8 +138,6 @@ end
 
 --BEGIN SPAWNPROTECT LOGFILE CODE (COURTSEY OF BEARBIN)
 function WriteLog(breakPlace, X, Y, Z, player, id, meta)
-    PLUGIN = Plugin
-
 	local logText = {}
 
     table.insert(logText, player)
@@ -178,6 +176,6 @@ function WarnPlayer(Player)
 end
 
 function OnDisable()
-    LOG( "Disabled " .. Plugin:GetName() .. " v." .. Plugin:GetVersion() )
+    LOG( "Disabled Core!")
 end
 --END AWESOMENESS :'(
