@@ -36,6 +36,7 @@ function Initialize(Plugin)
 	PluginManager:BindCommand("/give",            "core.give",            HandleGiveCommand,            " ~ Give yourself an item");
 	PluginManager:BindCommand("/gm",              "core.changegm",        HandleChangeGMCommand,        " ~ Change your gamemode");
 	PluginManager:BindCommand("/op",              "core.op",              HandleOpCommand,              " ~ Give someone admin permissions");
+	PluginManager:BindCommand("/kill",            "core.kill",            HandleKillCommand,            " - Kill some player");	
 	PluginManager:BindCommand("/help",            "core.help",            HandleHelpCommand,            " ~ Show available commands");
 	PluginManager:BindCommand("/kick",            "core.kick",            HandleKickCommand,            " ~ Kick a player");
 	PluginManager:BindCommand("/list",            "core.playerlist",      HandlePlayerListCommand,      " - Shows list of connected players");
