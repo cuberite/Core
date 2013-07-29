@@ -34,10 +34,6 @@ function OnPlayerPlacingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX
             break
         end
     end
-    LOGINFO(SPAWNPROTECT)
-    LOGINFO(PROTECTRADIUS)
-    LOGINFO(WorldsSpawnProtect[1])
-    LOGINFO(WorldsSpawnProtect[2])
 
 	if not (Player:HasPermission("core.build")) then
 		return true
