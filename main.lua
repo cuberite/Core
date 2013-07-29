@@ -74,10 +74,9 @@ function Initialize(Plugin)
     local KeyIdx = IniFile:FindKey("Worlds") --(FIND WHERE 'WORLDS' KEY IS LOCATED)
     local NumValues = (IniFile:GetNumValues( KeyIdx ) - 2) --(TAKE AWAY TWO OPTIONS FOR WORLD LIMITER)
 	for i = 0, NumValues - 1 do --(FOR EVERY WORLD KEY, TAKING ACCOUNT OF OFF BY ONE ERRORS)
-        local currentworld = IniFile:GetValue(KeyIdx, i)
-        WorldIni = cIniFile(currentworld .. "/world.ini")
+        WorldIni = cIniFile(IniFile:GetValue(KeyIdx, i) .. "/world.ini")
         if WorldIni:ReadFile() == true then
-	        table.insert(WorldsSpawnProtect, (IniFile:GetValue(KeyIdx, i) .. " " .. WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10) .. " " .. tostring(WorldIni:GetValueSetB("SpawnProtect", "Enable", true))))
+            WorldsSpawnProtect[IniFile:GetValue(KeyIdx, i)]  = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
             WorldIni:WriteFile()
         end
     end

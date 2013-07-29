@@ -4,41 +4,12 @@ function OnPlayerPlacingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX
 		return false
 	end
 
-    local Data = {} --(ARRAY TO HOLD SPAWNPROTECT DATA OF CHOSEN WORLD)
-    local PlayerWorld
-    local PROTECTRADIUS
-    local SPAWNPROTECT
-    local CountRadius = 1 --(WHERE THE STRING SPLITTER IS AT)
-    local CountProtect = 1 --(WHERE THE STRING SPLITTER IS AT)
-
-    for x = 1,#WorldsSpawnProtect do --(RUN THE LOOP HOWEVER MANY TIME THERE ARE WORLDS, UNLESS STOPPED)
-        for i in string.gmatch(WorldsSpawnProtect[x], "%S+") do --(SPLIT AWAY WORLDNAME IN STRING)
-            PlayerWorld = i
-            break    
-        end
-        if PlayerWorld == Player:GetWorld():GetName() then --(IF SPLIT WORLD IS PLAYER WORLD...)
-            for i in string.gmatch(WorldsSpawnProtect[x], "%S+") do --(...SPLIT AWAY PROTECTION RADIUS...)
-                Data[2] = i
-                PROTECTRADIUS = Data[2]
-                if CountRadius == 2 then break else --(IF STRING SPLITTER IS AT RIGHT PLACE THEN BREAK, ELSE CARRY ON)
-                    CountRadius = CountRadius + 1
-                end
-            end
-            for i in string.gmatch(WorldsSpawnProtect[x], "%S+") do --(...AND SPLIT AWAY TRUE/FALSE STRING (NOT BOOLEAN :( ))
-                Data[3] = i
-                SPAWNPROTECT = Data[3]
-                if CountProtect == 3 then break else --(IF STRING SPLITTER IS AT RIGHT PLACE THEN BREAK, ELSE CARRY ON)
-                    CountProtect = CountProtect + 1
-                end
-            end
-            break
-        end
-    end
+    local PROTECTRADIUS = WorldsSpawnProtect[Player:GetWorld():GetName()];
 
 	if not (Player:HasPermission("core.build")) then
 		return true
 	else
-        if not (Player:HasPermission("core.spawnprotect.bypass")) and SPAWNPROTECT == "true" then
+        if not (Player:HasPermission("core.spawnprotect.bypass")) then
     	    local World = Player:GetWorld()
             local xcoord = World:GetSpawnX()
             local ycoord = World:GetSpawnY()
@@ -117,7 +88,7 @@ function OnPlayerBreakingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, Status
 		if not (Player:HasPermission("core.build")) then
 			return true
 		else
-            if not (Player:HasPermission("core.spawnprotect.bypass")) and SPAWNPROTECT == "true" then
+            if not (Player:HasPermission("core.spawnprotect.bypass")) then
     	        local World = Player:GetWorld()
 	            local xcoord = World:GetSpawnX()
 	            local ycoord = World:GetSpawnY()
