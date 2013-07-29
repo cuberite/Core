@@ -85,6 +85,8 @@ function OnPlayerBreakingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, Status
     -- dont check if the direction is in the air
 	if (BlockFace ~= -1) then
 
+    local PROTECTRADIUS = WorldsSpawnProtect[Player:GetWorld():GetName()];
+
 		if not (Player:HasPermission("core.build")) then
 			return true
 		else
