@@ -29,7 +29,7 @@ function Initialize(Plugin)
 	--BIND COMMANDS    
 	PluginManager:BindCommand("/back",            "core.back",            HandleBackCommand,            " - Return to your last position");
 	PluginManager:BindCommand("/ban",             "core.ban",             HandleBanCommand,             " ~ Ban a player");
-	PluginManager:BindCommand("/give",            "core.give",            HandleGiveCommand,            " ~ Give yourself an item");
+	PluginManager:BindCommand("/give",            "core.give",            HandleGiveCommand,            " ~ Give someone an item");
 	PluginManager:BindCommand("/gm",              "core.changegm",        HandleChangeGMCommand,        " ~ Change your gamemode");
 	PluginManager:BindCommand("/help",            "core.help",            HandleHelpCommand,            " ~ Show available commands");
 	PluginManager:BindCommand("/kick",            "core.kick",            HandleKickCommand,            " ~ Kick a player");
@@ -54,6 +54,7 @@ function Initialize(Plugin)
 	PluginManager:BindCommand("/unban",           "core.unban",           HandleUnbanCommand,           " ~ Unban a player");
 	PluginManager:BindCommand("/viewdistance",    "core.viewdistance",    HandleViewDistanceCommand,    " [".. cClientHandle.MIN_VIEW_DISTANCE .."-".. cClientHandle.MAX_VIEW_DISTANCE .."] - Change your view distance")
 	PluginManager:BindCommand("/worlds",          "core.worlds",          HandleWorldsCommand,          " - Shows a list of all the worlds");
+	PluginManager:BindCommand("/i",               "core.give",            HandleItemCommand,            " - Give yourself an item.")
 
 	InitConsoleCommands();
 
