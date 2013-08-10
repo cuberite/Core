@@ -1,6 +1,6 @@
 -- Use prefixes or not.
 -- If set to true, messages are prefixed, e. g. "[FATAL]". If false, messages are colored.
-g_UsePrefixes = true;
+g_UsePrefixes = true
 
 function SendMessage(a_Player, a_Message)
 	if (g_UsePrefixes) then
