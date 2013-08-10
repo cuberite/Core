@@ -1,6 +1,6 @@
 function HandleKillCommand( Split, Player )
-if (Split[2] == nil) then
-   Player:SendMessage("Usage: /kill <player>")
+if (Split[2] == nil) then  
+   Player:TakeDamage(dtInVoid, nil, 1000, 1000, 0);
    return true
 end
 local HasKilled = false;
