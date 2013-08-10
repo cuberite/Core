@@ -1,4 +1,4 @@
-function HandleItemCommand(Split, Player)
+function HandleItemCommand( Split, Player )
 
 	if ((#Split ~= 2) and (#Split ~=3)) then
 		SendMessage( Player, "Usage: /i <item>[:meta] [amount]" )
