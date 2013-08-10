@@ -6,7 +6,7 @@ end
 local InventoryCleared = false;
 local ClearInventory = function(OtherPlayer)
    if (OtherPlayer:GetName() == Split[2]) then
-       OtherPlayer:GetInventory:Clear()
+       OtherPlayer:GetInventory():Clear()
        InventoryCleared = true
    end
 end
