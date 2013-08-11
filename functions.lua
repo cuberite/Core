@@ -46,3 +46,30 @@ function BanListByIPs()
 	-- TODO: No IP ban implemented yet
 	return "";
 end
+
+--- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
+function KickPlayer( PlayerName, Reason )
+
+	local RealName = ""
+	if (Reason == nil) then
+		Reason = "You have been kicked"
+	end
+
+	local FoundPlayerCallback = function( a_Player )
+		RealName = a_Player:GetName()
+
+		local Server = cRoot:Get():GetServer()
+		LOGINFO( "'" .. RealName .. "' is being kicked for ( "..Reason..") " )
+		Server:SendMessage("Kicking " .. RealName)
+
+		a_Player:GetClientHandle():Kick(Reason)
+	end
+
+	if not cRoot:Get():FindAndDoWithPlayer( PlayerName, FoundPlayerCallback ) then
+		-- Could not find player
+		return false
+	end
+
+	return true, RealName  -- Player has been kicked
+
+end
