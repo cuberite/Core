@@ -37,7 +37,7 @@ function HandleConsoleGive(Split)
 		local FoundItem = StringToItem(Split[3] .. ":" .. Split[5], Item)
 	else
 		local FoundItem = StringToItem(Split[3], Item)
-	end	
+	end
 	if not IsValidItem(Item.m_ItemType) then  -- StringToItem does not check if item is valid
 		FoundItem = false
 	end
@@ -63,10 +63,10 @@ function HandleConsoleGive(Split)
 	local function giveItems(newPlayer)
 		local ItemsGiven = newPlayer:GetInventory():AddItem(Item)
 		if ItemsGiven == ItemAmount then
-			newPlayer:SendMessage(cChatColor.Green .. "[INFO] " .. cChatColor.White .. "There you go!" )
+			SendMessageSuccess( newPlayer, "There you go!" )
 			LOG("Gave " .. newPlayer:GetName() .. " " .. Item.m_ItemCount .. " times " .. Item.m_ItemType .. ":" .. Item.m_ItemDamage)
 		else
-			Player:SendMessage( cChatColor.Rose .. "[INFO] " .. cChatColor.White .. "Not enough space in inventory, only gave " .. ItemsGiven)
+			SendMessageFailure( Player, "Not enough space in inventory, only gave " .. ItemsGiven)
 			return true, "Only " .. Item.m_ItemCount .. " out of " .. ItemsGiven .. "items could be delivered."
 		end
 	end
