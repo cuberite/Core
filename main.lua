@@ -32,7 +32,7 @@ function Initialize(Plugin)
 	PluginManager:BindCommand("/ban",             "core.ban",             HandleBanCommand,             " ~ Ban a player");
 	PluginManager:BindCommand("/clear",           "core.clear",           HandleClearCommand,           " - Clear the inventory of some player");	
 	PluginManager:BindCommand("/kill",            "core.kill",            HandleKillCommand,            " - Kill some player");	
-	PluginManager:BindCommand("/downfall",        "core.downfall",        HandleDownfallCommand,        " - Toggles the weather");
+	PluginManager:BindCommand("/toggledownfall",  "core.toggledownfall",  HandleDownfallCommand,        " - Toggles the weather");
 	PluginManager:BindCommand("/give",            "core.give",            HandleGiveCommand,            " ~ Give someone an item");
 	PluginManager:BindCommand("/gm",              "core.changegm",        HandleChangeGMCommand,        " ~ Change your gamemode");
 	PluginManager:BindCommand("/groups",          "core.groups",          HandleGroupsCommand,          " - Shows a list of all the groups");
