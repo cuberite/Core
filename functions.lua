@@ -125,3 +125,12 @@ function ReturnColorFromChar( Split, char )
 	end
 
 end
+
+function CheckHardcore(Victim)
+	if HardCore == "true" then
+		if Victim:IsPlayer() == true then
+			local KilledPlayer = tolua.cast(Victim, "cPlayer")
+			BanPlayer(KilledPlayer:GetName(), "You died, haha. Good game, bro.")
+		end
+	end
+end
