@@ -4,6 +4,7 @@ BannedPlayersIni = {}
 WhiteListIni = {}
 BackCoords = {}
 Messages = {}
+Destination = {}
 --END VARIABLES
 
 --COMMENCE AWESOMENESS!
