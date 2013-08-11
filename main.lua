@@ -7,6 +7,11 @@ Messages = {}
 Destination = {}
 --END VARIABLES
 
+-- Configuration
+--  Use prefixes or not.
+--  If set to true, messages are prefixed, e. g. "[FATAL]". If false, messages are colored.
+g_UsePrefixes = true
+
 --COMMENCE AWESOMENESS!
 function Initialize( Plugin )
 	PLUGIN = Plugin
