@@ -67,6 +67,8 @@ function Initialize( Plugin )
 	PluginManager:BindCommand("/viewdistance",    "core.viewdistance",    HandleViewDistanceCommand,    " [".. cClientHandle.MIN_VIEW_DISTANCE .."-".. cClientHandle.MAX_VIEW_DISTANCE .."] - Change your view distance")
 	PluginManager:BindCommand("/weather",         "core.weather",         HandleWeatherCommand,         " ~ Change world weather")
 	PluginManager:BindCommand("/worlds",          "core.worlds",          HandleWorldsCommand,          " - Shows a list of all the worlds")
+	PluginManager:BindCommand("/sudo",            "core.sudo",            HandleSudoCommand,            " - Runs a command as a player, ignoring permissions")
+	PluginManager:BindCommand("/do",              "core.do",              HandleDoCommand,              " - Runs a command as a player.")
 
 	InitConsoleCommands()
 
