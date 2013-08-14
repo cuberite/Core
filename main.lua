@@ -188,11 +188,11 @@ function WriteLog( breakPlace, X, Y, Z, player, id, meta )
 end
 
 function WarnPlayer( Player )
-	SendMessageFailure( Player, "Go further from spawn to build" )
+	SendMessageFailure( GetTranslation( Player, "go-further-from-spawn" ) )
 	return true
 end
 
 function OnDisable()
-	LOG( "Disabled Core!" )
+	LOGINFO( GetConsoleTranslation( "core-disabled" ) )
 end
 --END AWESOMENESS :'(
