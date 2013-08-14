@@ -9,6 +9,7 @@ Commands
  * /back
  * /ban
  * /clear
+ * /do
  * /downfall
  * /give
  * /gm
@@ -29,6 +30,8 @@ Commands
  * /save-all
  * /spawn
  * /stop
+ * /sudo
+ * /tell
  * /time
  * /top
  * /tp
@@ -36,7 +39,9 @@ Commands
  * /tpaccept
  * /unban
  * /viewdistance
+ * /weather
  * /worlds
+ 
 
 **Also, console commands:**
 
