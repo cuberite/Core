@@ -9,16 +9,25 @@ function OnPlayerJoined(Player)
 	--		KickPlayer(Player:GetName(), cChatColor.Red .. "You are not whitelisted!" )
 	--	end
 	--else
-		ShowMOTDTo( Player )
-		local Server = cRoot:Get():GetServer()
-		Server:SendMessage(cChatColor.Yellow .. "[JOIN] " .. cChatColor.White .. Player:GetName() .. " has joined the game" )
-		return false
+	
+	ShowMOTDTo( Player )
+	cRoot:Get():ForEachWorld(  
+		function (a_World)  
+			a_World:BroadcastChat(cChatColor.Yellow .. "[JOIN] " .. cChatColor.White .. Player:GetName() .. " has joined the game" );  
+		end  
+	)
+	LOGINFO("Player " .. Player:GetName() .. " has joined the game." )
+	return false
+	
 	--end
 end
 
 function OnDisconnect(Player, Reason)
-	local Server = cRoot:Get():GetServer()
-	Server:SendMessage(cChatColor.Yellow .. "[LEAVE] " .. cChatColor.White .. Player:GetName() .. " has left the game" )
-	LOG("Player " .. Player:GetName() .. " has left the game.")
+	cRoot:Get():ForEachWorld(  
+		function (a_World)  
+			a_World:BroadcastChat(cChatColor.Yellow .. "[LEAVE] " .. cChatColor.White .. Player:GetName() .. " has left the game" );  
+		end  
+	)
+	LOGINFO("Player " .. Player:GetName() .. " has left the game." )
 	return true
 end

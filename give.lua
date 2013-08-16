@@ -14,14 +14,14 @@ function HandleGiveCommand(Split, Player)
 		local FoundItem = StringToItem( Split[3], Item )
 	end
 
-	if not IsValidItem( Item.m_ItemType ) then  -- StringToItem does not check if item is valid
-		FoundItem = false
-	end
+	--if not IsValidItem( Item.m_ItemType ) then  -- StringToItem does not check if item is valid
+	--	FoundItem = false
+	--end
 
-	if not FoundItem  then
-		SendMessageFailure( Player, "Invalid item id or name!" )
-		return true
-	end
+	--if not FoundItem  then
+	--	SendMessageFailure( Player, "Invalid item id or name!" )
+	--	return true
+	--end
 
 	-- Work out how many items the user wants.
 	local ItemAmount = 1
