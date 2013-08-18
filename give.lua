@@ -7,21 +7,22 @@ function HandleGiveCommand(Split, Player)
 	end
 
 	-- Get the item from the arguments and check it's valid.
+	local FoundItem = nil
 	local Item = cItem()
 	if #Split == 5 then
-		local FoundItem = StringToItem( Split[3] .. ":" .. Split[5], Item )
+		FoundItem = StringToItem( Split[3] .. ":" .. Split[5], Item )
 	else
-		local FoundItem = StringToItem( Split[3], Item )
+		FoundItem = StringToItem( Split[3], Item )
 	end
 
-	--if not IsValidItem( Item.m_ItemType ) then  -- StringToItem does not check if item is valid
-	--	FoundItem = false
-	--end
+	if not IsValidItem( Item.m_ItemType ) then  -- StringToItem does not check if item is valid
+		FoundItem = false
+	end
 
-	--if not FoundItem  then
-	--	SendMessageFailure( Player, "Invalid item id or name!" )
-	--	return true
-	--end
+	if not FoundItem  then
+		SendMessageFailure( Player, "Invalid item id or name!" )
+		return true
+	end
 
 	-- Work out how many items the user wants.
 	local ItemAmount = 1
