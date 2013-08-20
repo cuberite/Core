@@ -58,9 +58,8 @@ function KickPlayer( PlayerName, Reason )
 	local FoundPlayerCallback = function( a_Player )
 		RealName = a_Player:GetName()
 
-		local Server = cRoot:Get():GetServer()
 		LOGINFO( "'" .. RealName .. "' is being kicked for ( "..Reason..") " )
-		Server:SendMessage("Kicking " .. RealName)
+		cRoot:Get():BroadcastChat("Kicking " .. RealName)
 
 		a_Player:GetClientHandle():Kick(Reason)
 	end
