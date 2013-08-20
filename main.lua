@@ -5,6 +5,9 @@ WhiteListIni = {}
 BackCoords = {}
 Messages = {}
 Destination = {}
+WorldsSpawnProtect = {}
+WorldsWorldLimit = {}
+IniFileExists = true
 --END VARIABLES
 
 -- Configuration
@@ -17,7 +20,7 @@ function Initialize( Plugin )
 	PLUGIN = Plugin
 
 	Plugin:SetName( "Core" )
-	Plugin:SetVersion( 13 )
+	Plugin:SetVersion( 14 )
 
 	--ADD HOOKS
 	PluginManager = cRoot:Get():GetPluginManager()
@@ -77,29 +80,45 @@ function Initialize( Plugin )
 	if IniFile:ReadFile() == true then
 		HardCore = IniFile:GetValueSet( "GameMode", "Hardcore", "false" )
 		IniFile:WriteFile()
-	end
-
-	WorldsSpawnProtect = {}
-	local KeyIdx = IniFile:FindKey( "Worlds" ) --(FIND WHERE 'WORLDS' KEY IS LOCATED)
-	local NumValues = IniFile:GetNumValues( KeyIdx ) --(HOW MANY VALUES ARE THERE?)
-	for i = 0, NumValues - 1 do --(FOR EVERY WORLD KEY, TAKING ACCOUNT OF OFF BY ONE ERRORS)
-		WorldIni = cIniFile( IniFile:GetValue(KeyIdx, i) .. "/world.ini" )
-		if WorldIni:ReadFile() == true then
-			WorldsSpawnProtect[IniFile:GetValue(KeyIdx, i)] = WorldIni:GetValueSetI( "SpawnProtect", "ProtectRadius", 10 )
-			WorldIni:WriteFile()
-		end
-	end
-	WorldsWorldLimit = {}
-	local KeyIdx = IniFile:FindKey( "Worlds" ) --(FIND WHERE 'WORLDS' KEY IS LOCATED)
-	local NumValues = IniFile:GetNumValues( KeyIdx ) --(HOW MANY VALUES ARE THERE?)
-	for i = 0, NumValues - 1 do --(FOR EVERY WORLD KEY, TAKING ACCOUNT OF OFF BY ONE ERRORS)
-	   WorldIni = cIniFile( IniFile:GetValue(KeyIdx, i) .. "/world.ini" )
-	   if WorldIni:ReadFile() == true then
-			WorldsWorldLimit[IniFile:GetValue(KeyIdx, i)] = WorldIni:GetValueSetI( "WorldLimit", "LimitRadius", 0 )
-			WorldIni:WriteFile()
+	else IniFile = cIniFile( "settings.example.ini" )
+		if IniFile:ReadFile() == true then
+			LOGINFO("Settings.ini not found, using defaults ini settings.example.ini")
+			HardCore = IniFile:GetValueSet( "GameMode", "Hardcore", "false" )
+			IniFile:WriteFile()
+		else
+			IniFileExists = false
+			LOGWARNING("No settings file was found, plugin WILL NOT perform correctly!")
 		end
 	end
 
+	if IniFileExists == true then
+		local KeyIdx = IniFile:FindKey( "Worlds" ) --(FIND WHERE 'WORLDS' KEY IS LOCATED)
+		local NumValues = IniFile:GetNumValues( KeyIdx ) --(HOW MANY VALUES ARE THERE?)
+		for i = 0, NumValues - 1 do --(FOR EVERY WORLD KEY, TAKING ACCOUNT OF OFF BY ONE ERRORS)
+			WorldIni = cIniFile( IniFile:GetValue(KeyIdx, i) .. "/world.ini" )
+			if WorldIni:ReadFile() == true then
+				WorldsSpawnProtect[IniFile:GetValue(KeyIdx, i)] = WorldIni:GetValueSetI( "SpawnProtect", "ProtectRadius", 10 )
+				WorldIni:WriteFile()
+			end
+		end
+	else
+		LOGWARNING("No settings file was found, spawn protection disabled."
+	end
+
+	if IniFileExists == true then
+		local KeyIdx = IniFile:FindKey( "Worlds" ) --(FIND WHERE 'WORLDS' KEY IS LOCATED)
+		local NumValues = IniFile:GetNumValues( KeyIdx ) --(HOW MANY VALUES ARE THERE?)
+		for i = 0, NumValues - 1 do --(FOR EVERY WORLD KEY, TAKING ACCOUNT OF OFF BY ONE ERRORS)
+			WorldIni = cIniFile( IniFile:GetValue(KeyIdx, i) .. "/world.ini" )
+			if WorldIni:ReadFile() == true then
+				WorldsWorldLimit[IniFile:GetValue(KeyIdx, i)] = WorldIni:GetValueSetI( "WorldLimit", "LimitRadius", 0 )
+				WorldIni:WriteFile()
+			end
+		end
+	else
+		LOGWARNING("No settings file was found, world limiter disabled.")
+	end
+	
 	--LOAD WHITELIST
 	WhiteListIni = cIniFile( Plugin:GetLocalDirectory() .. "/whitelist.ini" )
 	if WhiteListIni:ReadFile() == true then
@@ -107,7 +126,7 @@ function Initialize( Plugin )
 			if WhiteListIni:GetNumValues( "WhiteList" ) > 0 then
 				LOGINFO( "Core: loaded "  .. WhiteListIni:GetNumValues('WhiteList') .. " whitelisted players." )
 			else
-				LOGWARN( "WARNING: WhiteList is on, but there are no people in the whitelist!" )
+				LOGWARNING("WARNING: WhiteList is on, but there are no people in the whitelist!" )
 			end
 		end
 	else
@@ -115,9 +134,7 @@ function Initialize( Plugin )
 		WhiteListIni:SetValue( "WhiteList", "", "" )	-- So it adds an empty header
 		WhiteListIni:DeleteValue( "WhiteList", "" ) -- And remove the value
 		WhiteListIni:KeyComment( "WhiteList", "PlayerName=1" )
-		if WhiteListIni:WriteFile() == false then
-			LOGWARN( "WARNING: Could not write to whitelist.ini" )
-		end
+		WhiteListIni:WriteFile()
 	end
 
 	--LOAD BANNED (BAD LUCK, BRO)
@@ -130,9 +147,7 @@ function Initialize( Plugin )
 		BannedPlayersIni:SetValue( "Banned", "", "" ) -- So it adds an empty header
 		BannedPlayersIni:DeleteValue( "Banned", "" ) -- And remove the value
 		BannedPlayersIni:KeyComment( "Banned", "PlayerName=1" )
-		if BannedPlayersIni:WriteFile() == false then
-			LOGWARN( "WARNING: Could not write to banned.ini" )
-		end
+		BannedPlayersIni:WriteFile()
 	end
 
 	--ADD WEB INTERFACE TABULATES
@@ -145,7 +160,7 @@ function Initialize( Plugin )
 	Plugin:AddWebTab( "Manage Plugins",  HandleRequest_ManagePlugins )
 
 	LoadMotd()
-	LOG( "Initialized " .. Plugin:GetName() .. " v." .. Plugin:GetVersion() )
+	LOG( "Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion() )
 
 	return true
 
