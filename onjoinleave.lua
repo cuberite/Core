@@ -11,11 +11,7 @@ function OnPlayerJoined(Player)
 	--else
 	
 	ShowMOTDTo( Player )
-	cRoot:Get():ForEachWorld(  
-		function (a_World)  
-			a_World:BroadcastChat(cChatColor.Yellow .. "[JOIN] " .. cChatColor.White .. Player:GetName() .. " has joined the game" );  
-		end  
-	)
+	cRoot:BroadcastChat(cChatColor.Yellow .. "[JOIN] " .. cChatColor.White .. Player:GetName() .. " has joined the game" )
 	LOGINFO("Player " .. Player:GetName() .. " has joined the game." )
 	return false
 	
@@ -23,11 +19,9 @@ function OnPlayerJoined(Player)
 end
 
 function OnDisconnect(Player, Reason)
-	cRoot:Get():ForEachWorld(  
-		function (a_World)  
-			a_World:BroadcastChat(cChatColor.Yellow .. "[LEAVE] " .. cChatColor.White .. Player:GetName() .. " has left the game" );  
-		end  
-	)
+
+	cRoot:BroadcastChat(cChatColor.Yellow .. "[LEAVE] " .. cChatColor.White .. Player:GetName() .. " has left the game" )
 	LOGINFO("Player " .. Player:GetName() .. " has left the game." )
 	return true
+	
 end
