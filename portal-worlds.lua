@@ -17,24 +17,12 @@ end
 
 function HandleWorldsCommand( Split, Player )
 
-	local SettingsIni = cIniFile("settings.ini")
-	if SettingsIni:ReadFile() == false then
-		SendMessageFailure( Player, "No worlds found" )
-	end
+	local Worlds = {}
+	cRoot:Get():ForEachWorld(function(World)
+		Worlds[#Worlds + 1] = World:GetName()
+	end)
 
-	Number = SettingsIni:NumValues("Worlds") - 1
-	Worlds = {}
-	for i=0, SettingsIni:GetNumKeys() - 1 do
-		if SettingsIni:GetKeyName(i) == "Worlds" then
-			Key = i
-			break
-		end
-	end
-
-	for i=0, Number	do
-		table.insert( Worlds, SettingsIni:GetValue( Key, i ) )
-	end
-	SendMessage( Player, "Found " .. #Worlds .. " worlds" )
+	SendMessage( Player, "There are " .. #Worlds .. " worlds" )
 	SendMessage( Player, table.concat( Worlds, ", " ) )
 	return true
 
