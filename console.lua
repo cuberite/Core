@@ -303,7 +303,7 @@ end
 
 function HandleConsoleReload(Split)
 
-	cRoot:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Reloading all plugins!")
+	cRoot:Get():BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Reloading all plugins!")
 	LOGINFO("Reloading all plugins!")
 	cRoot:Get():GetPluginManager():ReloadPlugins()
 	return true
@@ -311,7 +311,7 @@ end
 
 function HandleConsoleSaveAll(Split)
 
-	cRoot:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all chunks!")
+	cRoot:Get():BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all chunks!")
 	cRoot:Get():SaveAllChunks()
 	return true
 end
@@ -324,7 +324,7 @@ function HandleConsoleSay(Split)
 	end
 	Message = Message:sub(2)  -- Cut off the first space
 	
-	cRoot:BroadcastChat(cChatColor.Gold .. "[SERVER] " .. cChatColor.Yellow .. Message)
+	cRoot:Get():BroadcastChat(cChatColor.Gold .. "[SERVER] " .. cChatColor.Yellow .. Message)
 	return true
 end
 

@@ -102,7 +102,7 @@ function Initialize( Plugin )
 			end
 		end
 	else
-		LOGWARNING("No settings file was found, spawn protection disabled."
+		LOGWARNING("No settings file was found, spawn protection disabled.")
 	end
 
 	if IniFileExists == true then
