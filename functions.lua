@@ -62,6 +62,7 @@ function KickPlayer( PlayerName, Reason )
 		cRoot:Get():BroadcastChat("Kicking " .. RealName)
 
 		a_Player:GetClientHandle():Kick(Reason)
+		return true
 	end
 
 	if not cRoot:Get():FindAndDoWithPlayer( PlayerName, FoundPlayerCallback ) then

@@ -4,23 +4,24 @@ function InitConsoleCommands()
 	local PluginMgr = cPluginManager:Get()
 
 	-- Please keep the list alpha-sorted
-	PluginMgr:BindConsoleCommand("ban",                  HandleConsoleBan,                  " ~ Bans a player by name")
-	PluginMgr:BindConsoleCommand("banlist ips",          HandleConsoleBanList,              " - Lists all players banned by IP")
-	PluginMgr:BindConsoleCommand("banlist",              HandleConsoleBanList,              " - Lists all players banned by name")
-	PluginMgr:BindConsoleCommand("getversion",           HandleConsoleVersion,              " - Gets server version reported to 1.4+ clients")
-	PluginMgr:BindConsoleCommand("help",                 HandleConsoleHelp,                 " - Lists all commands")
-	PluginMgr:BindConsoleCommand("give",                 HandleConsoleGive,                 " - Gives items to the specified player.")
-	PluginMgr:BindConsoleCommand("list",                 HandleConsoleList,                 " - Lists all players in a machine-readable format")
-	PluginMgr:BindConsoleCommand("listgroups",           HandleConsoleListGroups,           " - Shows a list of all the groups")
-	PluginMgr:BindConsoleCommand("numchunks",            HandleConsoleNumChunks,            " - Shows number of chunks currently loaded")
-	PluginMgr:BindConsoleCommand("players",              HandleConsolePlayers,              " - Lists all connected players")
-	PluginMgr:BindConsoleCommand("rank",                 HandleConsoleRank,                 " ~ Add a player to a group")
-	PluginMgr:BindConsoleCommand("reload",               HandleConsoleReload,               " - Reloads all plugins")
-	PluginMgr:BindConsoleCommand("save-all",             HandleConsoleSaveAll,              " - Saves all chunks")
-	PluginMgr:BindConsoleCommand("say",                  HandleConsoleSay,                  " - Sends a chat message to all players")
-	PluginMgr:BindConsoleCommand("setversion",           HandleConsoleVersion,              " ~ Sets server version reported to 1.4+ clients")
-	PluginMgr:BindConsoleCommand("unban",                HandleConsoleUnban,                " ~ Unbans a player by name")
-	PluginMgr:BindConsoleCommand("unload",               HandleConsoleUnload,               " - Unloads all unused chunks")
+	PluginMgr:BindConsoleCommand("ban",         HandleConsoleBan,        " ~ Bans a player by name")
+	PluginMgr:BindConsoleCommand("banlist ips", HandleConsoleBanList,    " - Lists all players banned by IP")
+	PluginMgr:BindConsoleCommand("banlist",     HandleConsoleBanList,    " - Lists all players banned by name")
+	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
+	PluginMgr:BindConsoleCommand("help",        HandleConsoleHelp,       " - Lists all commands")
+	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " - Gives items to the specified player.")
+	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
+	PluginMgr:BindConsoleCommand("list",        HandleConsoleList,       " - Lists all players in a machine-readable format")
+	PluginMgr:BindConsoleCommand("listgroups",  HandleConsoleListGroups, " - Shows a list of all the groups")
+	PluginMgr:BindConsoleCommand("numchunks",   HandleConsoleNumChunks,  " - Shows number of chunks currently loaded")
+	PluginMgr:BindConsoleCommand("players",     HandleConsolePlayers,    " - Lists all connected players")
+	PluginMgr:BindConsoleCommand("rank",        HandleConsoleRank,       " ~ Add a player to a group")
+	PluginMgr:BindConsoleCommand("reload",      HandleConsoleReload,     " - Reloads all plugins")
+	PluginMgr:BindConsoleCommand("save-all",    HandleConsoleSaveAll,    " - Saves all chunks")
+	PluginMgr:BindConsoleCommand("say",         HandleConsoleSay,        " - Sends a chat message to all players")
+	PluginMgr:BindConsoleCommand("setversion",  HandleConsoleVersion,    " ~ Sets server version reported to 1.4+ clients")
+	PluginMgr:BindConsoleCommand("unban",       HandleConsoleUnban,      " ~ Unbans a player by name")
+	PluginMgr:BindConsoleCommand("unload",      HandleConsoleUnload,     " - Unloads all unused chunks")
 
 end
 
@@ -107,6 +108,32 @@ function HandleConsoleBan(Split)
 
 	return true
 end
+
+
+
+
+
+function HandleConsoleKick(Split)
+	if (#Split < 2) then
+		return true, "Usage: kick [Player] <Reason>"
+	end
+
+	local Reason = cChatColor.Red .. "You have been kicked." .. cChatColor.White
+	if (#Split > 2) then
+		Reason = table.concat(Split, " ", 3)
+	end
+
+	local HasKicked, PlayerName = KickPlayer(Split[2], Reason)
+	if (HasKicked) then
+		return true, "Successfully kicked \"" .. PlayerName .. "\""
+	end
+
+	return true, "Cannot find \"" .. Split[2] .. "\""
+end
+
+
+
+
 
 function HandleConsoleUnban(Split)
 
