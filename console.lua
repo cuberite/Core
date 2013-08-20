@@ -302,24 +302,16 @@ function HandleConsoleRank(Split)
 end
 
 function HandleConsoleReload(Split)
-	cRoot:Get():ForEachWorld(  
-		function (a_World)  
-			a_World:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Reloading all plugins!")  
-		end  
-	)
 
+	cRoot:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Reloading all plugins!")
 	LOGINFO("Reloading all plugins!")
 	cRoot:Get():GetPluginManager():ReloadPlugins()
 	return true
 end
 
 function HandleConsoleSaveAll(Split)
-	cRoot:Get():ForEachWorld(  
-		function (a_World)  
-			a_World:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all chunks!")  
-		end  
-	)
 
+	cRoot:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all chunks!")
 	cRoot:Get():SaveAllChunks()
 	return true
 end
@@ -332,11 +324,7 @@ function HandleConsoleSay(Split)
 	end
 	Message = Message:sub(2)  -- Cut off the first space
 	
-	cRoot:Get():ForEachWorld(  
-		function (a_World)  
-			a_World:BroadcastChat(cChatColor.Gold .. "[SERVER] " .. cChatColor.Yellow .. Message)  
-		end  
-	)
+	cRoot:BroadcastChat(cChatColor.Gold .. "[SERVER] " .. cChatColor.Yellow .. Message)
 	return true
 end
 

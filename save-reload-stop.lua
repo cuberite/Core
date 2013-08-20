@@ -1,32 +1,20 @@
 function HandleSaveAllCommand( Split, Player )
-	cRoot:Get():ForEachWorld(  
-		function (a_World)  
-			a_World:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all worlds!" );  
-		end  
-	)
-	
+
+	cRoot:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all worlds!" )
 	cRoot:Get():SaveAllChunks()
 	return true
 end
 
 function HandleStopCommand( Split, Player )
-	cRoot:Get():ForEachWorld(  
-		function (a_World)  
-			a_World:BroadcastChat(cChatColor.Red .. "[WARNING] " .. cChatColor.White .. "Server is terminating!" );  
-		end  
-	)
-	
+
+	cRoot:BroadcastChat(cChatColor.Red .. "[WARNING] " .. cChatColor.White .. "Server is terminating!" )
 	cRoot:Get():QueueExecuteConsoleCommand("stop")
 	return true
 end
 
 function HandleReloadCommand( Split, Player )
-	cRoot:Get():ForEachWorld(  
-		function (a_World)  
-			a_World:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Reloading all plugins!" );  
-		end  
-	)
-	
+
+	cRoot:BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Reloading all plugins!" )
 	cRoot:Get():GetPluginManager():ReloadPlugins()
 	return true
 end
