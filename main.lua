@@ -36,16 +36,15 @@ function Initialize(Plugin)
 	Plugin:SetVersion( 14 )
 
 	-- Register for all hooks needed
-	PluginManager = cRoot:Get():GetPluginManager()
-	PluginManager.AddHook( cPluginManager.HOOK_CHAT, OnChat )
-	PluginManager.AddHook( cPluginManager.HOOK_CRAFTING_NO_RECIPE, OnCraftingNoRecipe )
-	PluginManager.AddHook( cPluginManager.HOOK_DISCONNECT, OnDisconnect )
-	PluginManager.AddHook( cPluginManager.HOOK_KILLING, OnKilling )
-	PluginManager.AddHook( cPluginManager.HOOK_LOGIN, OnLogin )
-	PluginManager.AddHook( cPluginManager.HOOK_PLAYER_BREAKING_BLOCK, OnPlayerBreakingBlock )
-	PluginManager.AddHook( cPluginManager.HOOK_PLAYER_JOINED, OnPlayerJoined )
-	PluginManager.AddHook( cPluginManager.HOOK_PLAYER_MOVING, OnPlayerMoving )
-	PluginManager.AddHook( cPluginManager.HOOK_PLAYER_PLACING_BLOCK, OnPlayerPlacingBlock )
+	cPluginManager.AddHook( cPluginManager.HOOK_CHAT, OnChat )
+	cPluginManager.AddHook( cPluginManager.HOOK_CRAFTING_NO_RECIPE, OnCraftingNoRecipe )
+	cPluginManager.AddHook( cPluginManager.HOOK_DISCONNECT, OnDisconnect )
+	cPluginManager.AddHook( cPluginManager.HOOK_KILLING, OnKilling )
+	cPluginManager.AddHook( cPluginManager.HOOK_LOGIN, OnLogin )
+	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_BREAKING_BLOCK, OnPlayerBreakingBlock )
+	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_JOINED, OnPlayerJoined )
+	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_MOVING, OnPlayerMoving )
+	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_PLACING_BLOCK, OnPlayerPlacingBlock )
 
 	-- Bind ingame commands:
 	-- Please keep this list alpha-sorted.
