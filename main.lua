@@ -1,5 +1,22 @@
---COMMENCE VARIABLES
-PLUGIN = {}
+
+-- main.lua
+
+-- implements the main plugin entrypoint
+
+
+
+
+
+-- Configuration
+--  Use prefixes or not.
+--  If set to true, messages are prefixed, e. g. "[FATAL]". If false, messages are colored.
+g_UsePrefixes = true
+
+
+
+
+
+-- Global variables
 BannedPlayersIni = {}
 WhiteListIni = {}
 BackCoords = {}
@@ -8,34 +25,30 @@ Destination = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 IniFileExists = true
---END VARIABLES
 
--- Configuration
---  Use prefixes or not.
---  If set to true, messages are prefixed, e. g. "[FATAL]". If false, messages are colored.
-g_UsePrefixes = true
 
---COMMENCE AWESOMENESS!
-function Initialize( Plugin )
-	PLUGIN = Plugin
 
+
+
+-- Called by MCServer on plugin start to initialize the plugin
+function Initialize(Plugin)
 	Plugin:SetName( "Core" )
 	Plugin:SetVersion( 14 )
 
-	--ADD HOOKS
+	-- Register for all hooks needed
 	PluginManager = cRoot:Get():GetPluginManager()
-	PluginManager:AddHook( Plugin, cPluginManager.HOOK_PLAYER_JOINED )
-	PluginManager:AddHook( Plugin, cPluginManager.HOOK_DISCONNECT )
-	PluginManager:AddHook( Plugin, cPluginManager.HOOK_PLAYER_BREAKING_BLOCK )
-	PluginManager:AddHook( Plugin, cPluginManager.HOOK_PLAYER_PLACING_BLOCK )
-	PluginManager:AddHook( Plugin, cPluginManager.HOOK_LOGIN )
-	PluginManager:AddHook( Plugin, cPluginManager.HOOK_KILLING )
+	PluginManager:AddHook( Plugin, cPluginManager.HOOK_CHAT )
 	PluginManager:AddHook( Plugin, cPluginManager.HOOK_CRAFTING_NO_RECIPE )
-	PluginManager:AddHook( Plugin, cPluginManager.HOOK_CHAT ) -- used in web_chat.lua
+	PluginManager:AddHook( Plugin, cPluginManager.HOOK_DISCONNECT )
+	PluginManager:AddHook( Plugin, cPluginManager.HOOK_KILLING )
+	PluginManager:AddHook( Plugin, cPluginManager.HOOK_LOGIN )
+	PluginManager:AddHook( Plugin, cPluginManager.HOOK_PLAYER_BREAKING_BLOCK )
+	PluginManager:AddHook( Plugin, cPluginManager.HOOK_PLAYER_JOINED )
 	PluginManager:AddHook( Plugin, cPluginManager.HOOK_PLAYER_MOVING )
+	PluginManager:AddHook( Plugin, cPluginManager.HOOK_PLAYER_PLACING_BLOCK )
 
-	--PLEASE ALPHA SORT http://elmosaukko.com/sort-alphabetically/ THIS LIST
-	--BIND COMMANDS
+	-- Bind ingame commands:
+	-- Please keep this list alpha-sorted.
 	PluginManager:BindCommand("/back",            "core.back",            HandleBackCommand,            " - Return to your last position")
 	PluginManager:BindCommand("/ban",             "core.ban",             HandleBanCommand,             " ~ Ban a player")
 	PluginManager:BindCommand("/clear",           "core.clear",           HandleClearCommand,           " - Clear the inventory of some player")
@@ -75,55 +88,33 @@ function Initialize( Plugin )
 
 	InitConsoleCommands()
 
-	--LOAD SETTINGS
+	-- Load settings:
 	IniFile = cIniFile( "settings.ini" )
-	if IniFile:ReadFile() == true then
+	if IniFile:ReadFile() then
 		HardCore = IniFile:GetValueSet( "GameMode", "Hardcore", "false" )
 		IniFile:WriteFile()
-	else IniFile = cIniFile( "settings.example.ini" )
-		if IniFile:ReadFile() == true then
-			LOGINFO("Settings.ini not found, using defaults ini settings.example.ini")
-			HardCore = IniFile:GetValueSet( "GameMode", "Hardcore", "false" )
-			IniFile:WriteFile()
-		else
-			IniFileExists = false
-			LOGWARNING("No settings file was found, plugin WILL NOT perform correctly!")
-		end
+	else
+		IniFileExists = false
+		LOGWARNING("No settings file was found, the Core plugin WILL NOT function correctly!")
 	end
 
-	if IniFileExists == true then
-		local KeyIdx = IniFile:FindKey( "Worlds" ) --(FIND WHERE 'WORLDS' KEY IS LOCATED)
-		local NumValues = IniFile:GetNumValues( KeyIdx ) --(HOW MANY VALUES ARE THERE?)
-		for i = 0, NumValues - 1 do --(FOR EVERY WORLD KEY, TAKING ACCOUNT OF OFF BY ONE ERRORS)
-			WorldIni = cIniFile( IniFile:GetValue(KeyIdx, i) .. "/world.ini" )
-			if WorldIni:ReadFile() == true then
-				WorldsSpawnProtect[IniFile:GetValue(KeyIdx, i)] = WorldIni:GetValueSetI( "SpawnProtect", "ProtectRadius", 10 )
+	-- Load SpawnProtection and WorldLimit settings for individual worlds:
+	cRoot:Get():ForEachWorld(
+		function (a_World)
+			WorldIni = cIniFile(a_World:GetIniFileName())
+			if WorldIni:ReadFile() then
+				WorldsSpawnProtect[a_World:GetName()] = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10);
+				WorldsWorldLimit[a_World:GetName()]   = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0);
 				WorldIni:WriteFile()
 			end
 		end
-	else
-		LOGWARNING("No settings file was found, spawn protection disabled.")
-	end
+	);
 
-	if IniFileExists == true then
-		local KeyIdx = IniFile:FindKey( "Worlds" ) --(FIND WHERE 'WORLDS' KEY IS LOCATED)
-		local NumValues = IniFile:GetNumValues( KeyIdx ) --(HOW MANY VALUES ARE THERE?)
-		for i = 0, NumValues - 1 do --(FOR EVERY WORLD KEY, TAKING ACCOUNT OF OFF BY ONE ERRORS)
-			WorldIni = cIniFile( IniFile:GetValue(KeyIdx, i) .. "/world.ini" )
-			if WorldIni:ReadFile() == true then
-				WorldsWorldLimit[IniFile:GetValue(KeyIdx, i)] = WorldIni:GetValueSetI( "WorldLimit", "LimitRadius", 0 )
-				WorldIni:WriteFile()
-			end
-		end
-	else
-		LOGWARNING("No settings file was found, world limiter disabled.")
-	end
-	
-	--LOAD WHITELIST
-	WhiteListIni = cIniFile( Plugin:GetLocalDirectory() .. "/whitelist.ini" )
-	if WhiteListIni:ReadFile() == true then
-		if WhiteListIni:GetValueB( "WhiteListSettings", "WhiteListOn", false ) == true  then
-			if WhiteListIni:GetNumValues( "WhiteList" ) > 0 then
+	-- Load whitelist:
+	WhiteListIni = cIniFile(Plugin:GetLocalDirectory() .. "/whitelist.ini")
+	if WhiteListIni:ReadFile() then
+		if WhiteListIni:GetValueB("WhiteListSettings", "WhiteListOn", false) then
+			if (WhiteListIni:GetNumValues( "WhiteList" ) > 0) then
 				LOGINFO( "Core: loaded "  .. WhiteListIni:GetNumValues('WhiteList') .. " whitelisted players." )
 			else
 				LOGWARNING("WARNING: WhiteList is on, but there are no people in the whitelist!" )
@@ -150,24 +141,27 @@ function Initialize( Plugin )
 		BannedPlayersIni:WriteFile()
 	end
 
-	--ADD WEB INTERFACE TABULATES
-	Plugin:AddWebTab( "Manage Server",   HandleRequest_ManageServer )
-	Plugin:AddWebTab( "Server Settings", HandleRequest_ServerSettings )
-	Plugin:AddWebTab( "Chat",            HandleRequest_Chat )
-	Plugin:AddWebTab( "Playerlist",      HandleRequest_PlayerList )
-	Plugin:AddWebTab( "Whitelist",       HandleRequest_WhiteList )
-	Plugin:AddWebTab( "Permissions",     HandleRequest_Permissions )
-	Plugin:AddWebTab( "Manage Plugins",  HandleRequest_ManagePlugins )
+	-- Add webadmin tabs:
+	Plugin:AddWebTab("Manage Server",   HandleRequest_ManageServer)
+	Plugin:AddWebTab("Server Settings", HandleRequest_ServerSettings)
+	Plugin:AddWebTab("Chat",            HandleRequest_Chat)
+	Plugin:AddWebTab("Playerlist",      HandleRequest_PlayerList)
+	Plugin:AddWebTab("Whitelist",       HandleRequest_WhiteList)
+	Plugin:AddWebTab("Permissions",     HandleRequest_Permissions)
+	Plugin:AddWebTab("Manage Plugins",  HandleRequest_ManagePlugins)
 
 	LoadMotd()
-	LOG( "Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion() )
+
+	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
 
 	return true
-
 end
---AWESOMENESS STILL GOING!
 
---BEGIN SPAWNPROTECT LOGFILE CODE (COURTSEY OF BEARBIN)
+
+
+
+
+-- BEGIN SPAWNPROTECT LOGFILE CODE (COURTSEY OF BEARBIN)
 function WriteLog( breakPlace, X, Y, Z, player, id, meta )
 
 	local logText = {}
