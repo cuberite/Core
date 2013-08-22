@@ -48,7 +48,7 @@ function Initialize(Plugin)
 
 	-- Bind ingame commands:
 	-- Please keep this list alpha-sorted.
-	local PluginManager = cPluginManager:Get();
+	local PluginManager = cPluginManager:Get()
 	PluginManager:BindCommand("/back",            "core.back",            HandleBackCommand,            " - Return to your last position")
 	PluginManager:BindCommand("/ban",             "core.ban",             HandleBanCommand,             " ~ Ban a player")
 	PluginManager:BindCommand("/clear",           "core.clear",           HandleClearCommand,           " - Clear the inventory of some player")
@@ -103,12 +103,12 @@ function Initialize(Plugin)
 		function (a_World)
 			WorldIni = cIniFile(a_World:GetIniFileName())
 			if WorldIni:ReadFile() then
-				WorldsSpawnProtect[a_World:GetName()] = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10);
-				WorldsWorldLimit[a_World:GetName()]   = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0);
+				WorldsSpawnProtect[a_World:GetName()] = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
+				WorldsWorldLimit[a_World:GetName()]   = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
 				WorldIni:WriteFile()
 			end
 		end
-	);
+	)
 
 	-- Load whitelist:
 	WhiteListIni = cIniFile(Plugin:GetLocalDirectory() .. "/whitelist.ini")
