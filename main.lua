@@ -1,4 +1,3 @@
-
 -- main.lua
 
 -- implements the main plugin entrypoint
@@ -24,6 +23,7 @@ Messages = {}
 Destination = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
+WorldsWorldDifficulty = {}
 IniFileExists = true
 
 
@@ -45,6 +45,8 @@ function Initialize(Plugin)
 	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_JOINED, OnPlayerJoined )
 	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_MOVING, OnPlayerMoving )
 	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_PLACING_BLOCK, OnPlayerPlacingBlock )
+	cPluginManager.AddHook( cPluginManager.HOOK_SPAWNING_ENTITY, OnSpawningEntity)
+        cPluginManager.AddHook( cPluginManager.HOOK_TAKE_DAMAGE, OnTakeDamage)
 
 	-- Bind ingame commands:
 	-- Please keep this list alpha-sorted.
@@ -103,8 +105,9 @@ function Initialize(Plugin)
 		function (a_World)
 			WorldIni = cIniFile(a_World:GetIniFileName())
 			if WorldIni:ReadFile() then
-				WorldsSpawnProtect[a_World:GetName()] = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
-				WorldsWorldLimit[a_World:GetName()]   = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
+				WorldsSpawnProtect[a_World:GetName()]   = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
+				WorldsWorldLimit[a_World:GetName()]     = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
+				WorldsWorldDifficulty[a_World:GetName()]= WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 2)
 				WorldIni:WriteFile()
 			end
 		end
