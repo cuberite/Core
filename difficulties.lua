@@ -36,8 +36,9 @@ function HandleDifficultyCommand ( Split, Player )
 end
 
 function OnTakeDamage(Receiver, TDI)
-    WorldDifficulty = WorldsWorldDifficulty[TDI.Attacker:GetWorld():GetName()]
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cSpider")) then
+Attacker = TDI.Attacker
+    WorldDifficulty = WorldsWorldDifficulty[Attacker:GetWorld():GetName()]
+    if ((Attacker ~= nil) and Attacker:IsA("cSpider")) then
         if (WorldDifficulty == 1) or (WorldDifficulty == 2) then
             TDI.FinalDamage = 2	
         end
@@ -46,7 +47,7 @@ function OnTakeDamage(Receiver, TDI)
         end
     end
 
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cEnderman")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cEnderman")) then
         if (WorldDifficulty == 1) then
             TDI.FinalDamage = 4	
         end
@@ -58,55 +59,55 @@ function OnTakeDamage(Receiver, TDI)
         end
     end
 
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cZombie")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cZombie")) then
         if (WorldDifficulty == 1) then
-            if (TDI.Attacker:GetHealth() >= 16) then
+            if (Attacker:GetHealth() >= 16) then
                 TDI.FinalDamage = 2
             end
-            if (TDI.Attacker:GetHealth() < 16) and (TDI.Attacker:GetHealth() >= 11) then
+            if (Attacker:GetHealth() < 16) and (Attacker:GetHealth() >= 11) then
                 TDI.FinalDamage = 3	
             end      
-            if (TDI.Attacker:GetHealth() < 11) and (TDI.Attacker:GetHealth() >= 6) then
+            if (Attacker:GetHealth() < 11) and (Attacker:GetHealth() >= 6) then
                 TDI.FinalDamage = 3	
             end   
-            if (TDI.Attacker:GetHealth() < 6) then
+            if (Attacker:GetHealth() < 6) then
                 TDI.FinalDamage = 4
             end   
         end
         if (WorldDifficulty == 2) then
-            if (TDI.Attacker:GetHealth() >= 16) then
+            if (Attacker:GetHealth() >= 16) then
                 TDI.FinalDamage = 3
             end
-            if (TDI.Attacker:GetHealth() < 16) and (TDI.Attacker:GetHealth() >= 11) then
+            if (Attacker:GetHealth() < 16) and (Attacker:GetHealth() >= 11) then
                 TDI.FinalDamage = 4
             end      
-            if (TDI.Attacker:GetHealth() < 11) and (TDI.Attacker:GetHealth() >= 6) then
+            if (Attacker:GetHealth() < 11) and (Attacker:GetHealth() >= 6) then
                 TDI.FinalDamage = 5
             end   
-            if (TDI.Attacker:GetHealth() < 6) then
+            if (Attacker:GetHealth() < 6) then
                 TDI.FinalDamage = 6
             end   
         end
         if (WorldDifficulty == 3) then
-            if (TDI.Attacker:GetHealth() >= 16) then
+            if (Attacker:GetHealth() >= 16) then
                 TDI.FinalDamage = 4
             end
-            if (TDI.Attacker:GetHealth() < 16) and (TDI.Attacker:GetHealth() >= 11) then
+            if (Attacker:GetHealth() < 16) and (Attacker:GetHealth() >= 11) then
                 TDI.FinalDamage = 6
             end      
-            if (TDI.Attacker:GetHealth() < 11) and (TDI.Attacker:GetHealth() >= 6) then
+            if (Attacker:GetHealth() < 11) and (Attacker:GetHealth() >= 6) then
                 TDI.FinalDamage = 7	
             end   
-            if (TDI.Attacker:GetHealth() < 6) then
+            if (Attacker:GetHealth() < 6) then
                 TDI.FinalDamage = 9
             end          
         end
     end
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cSlime")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cSlime")) then
         TDI.FinalDamage = 4
     end
 
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cCavespider")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cCavespider")) then
         if (WorldDifficulty == 1) or (WorldDifficulty == 2) then
             TDI.FinalDamage = 2	
         end
@@ -114,11 +115,11 @@ function OnTakeDamage(Receiver, TDI)
             TDI.FinalDamage = 3
         end
     end
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cWolf")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cWolf")) then
         TDI.FinalDamage = 4
     end
 
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cZombiepigman")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cZombiepigman")) then
         if (WorldDifficulty == 1) then
             TDI.FinalDamage = 5
         end
@@ -130,7 +131,7 @@ function OnTakeDamage(Receiver, TDI)
         end
     end
 
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cSkeleton")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cSkeleton")) then
         if (WorldDifficulty == 1) then
             TDI.FinalDamage = 2	
         end
@@ -141,7 +142,7 @@ function OnTakeDamage(Receiver, TDI)
             TDI.FinalDamage = 3
         end
     end
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cBlaze")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cBlaze")) then
         if (WorldDifficulty == 1) then
             TDI.FinalDamage = 4
         end
@@ -152,7 +153,7 @@ function OnTakeDamage(Receiver, TDI)
             TDI.FinalDamage = 9
         end
     end
-    if ((TDI.Attacker ~= nil) and TDI.Attacker:IsA("cWitch")) then
+    if ((Attacker ~= nil) and Attacker:IsA("cWitch")) then
         TDI.FinalDamage = 4
     end
 end
