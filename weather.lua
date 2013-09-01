@@ -29,5 +29,6 @@ function HandleDownfallCommand( Split, Player )
 	end
 
 	SendMessageSuccess( Player, "Downfall Toggled")
-
+	
+	return true
 end
