@@ -7,7 +7,7 @@ function HandleRankCommand( Split, Player )
 
 	local GroupsIni = cIniFile( "groups.ini" )
 	if GroupsIni:ReadFile() == false then
-		LOG( "Could not read groups.ini!" )
+		GroupsIni:WriteFile()
 	end
 
 	if GroupsIni:FindKey(Split[3]) == -1 then
@@ -17,7 +17,7 @@ function HandleRankCommand( Split, Player )
 
 	local UsersIni = cIniFile("users.ini")
 	if UsersIni:ReadFile() == false then
-		LOG( "Could not read users.ini!" )
+		UsersIni:WriteFile()
 	end
 
 	UsersIni:DeleteKey( Split[2] )
@@ -46,7 +46,7 @@ function HandleGroupsCommand( Split, Player )
 
 	local GroupsIni = cIniFile( "groups.ini" )
 	if GroupsIni:ReadFile() == false then
-		SendMessageFailure( Player, "No groups found" )
+		GroupsIni:WriteFile()
 	end
 
 	Number = GroupsIni:NumKeys() - 1

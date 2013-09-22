@@ -5,7 +5,7 @@ function HandleBanCommand( Split, Player )
 		return true
 	end
 
-	local Reason = cChatColor.Red .. "You have been banned." .. cChatColor.White .. " Did you do something illegal?"
+	local Reason = cChatColor.Red .. "You have been banned."
 	if( #Split > 2 ) then
 		Reason = table.concat( Split, " ", 3 )
 	end

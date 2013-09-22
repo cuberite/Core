@@ -9,7 +9,7 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("banlist",     HandleConsoleBanList,    " - Lists all players banned by name")
 	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
 	PluginMgr:BindConsoleCommand("help",        HandleConsoleHelp,       " - Lists all commands")
-	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " - Gives items to the specified player.")
+	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " ~ Gives items to the specified player.")
 	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
 	PluginMgr:BindConsoleCommand("list",        HandleConsoleList,       " - Lists all players in a machine-readable format")
 	PluginMgr:BindConsoleCommand("listgroups",  HandleConsoleListGroups, " - Shows a list of all the groups")
@@ -18,7 +18,7 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("rank",        HandleConsoleRank,       " ~ Add a player to a group")
 	PluginMgr:BindConsoleCommand("reload",      HandleConsoleReload,     " - Reloads all plugins")
 	PluginMgr:BindConsoleCommand("save-all",    HandleConsoleSaveAll,    " - Saves all chunks")
-	PluginMgr:BindConsoleCommand("say",         HandleConsoleSay,        " - Sends a chat message to all players")
+	PluginMgr:BindConsoleCommand("say",         HandleConsoleSay,        " ~ Sends a chat message to all players")
 	PluginMgr:BindConsoleCommand("setversion",  HandleConsoleVersion,    " ~ Sets server version reported to 1.4+ clients")
 	PluginMgr:BindConsoleCommand("unban",       HandleConsoleUnban,      " ~ Unbans a player by name")
 	PluginMgr:BindConsoleCommand("unload",      HandleConsoleUnload,     " - Unloads all unused chunks")
@@ -89,7 +89,7 @@ function HandleConsoleBan(Split)
 		return true, "Usage: ban [Player] <Reason>"
 	end
 
-	local Reason = cChatColor.Red .. "You have been banned." .. cChatColor.White .. " Did you do something illegal?"
+	local Reason = cChatColor.Red .. "You have been banned."
 	if( #Split > 2 ) then
 		Reason = table.concat(Split, " ", 3)
 	end
@@ -118,7 +118,7 @@ function HandleConsoleKick(Split)
 		return true, "Usage: kick [Player] <Reason>"
 	end
 
-	local Reason = cChatColor.Red .. "You have been kicked." .. cChatColor.White
+	local Reason = cChatColor.Red .. "You have been kicked."
 	if (#Split > 2) then
 		Reason = table.concat(Split, " ", 3)
 	end
@@ -292,7 +292,7 @@ function HandleConsoleRank(Split)
 	-- Read the groups.ini file:
 	local GroupsIni = cIniFile("groups.ini")
 	if (not(GroupsIni:ReadFile())) then
-		Out = "Could not read groups.ini, creating anew!\n"
+		GroupsIni:WriteFile()
 	end
 
 	-- Find the group:
@@ -303,7 +303,7 @@ function HandleConsoleRank(Split)
 	-- Read the users.ini file:
 	local UsersIni = cIniFile("users.ini")
 	if (not(UsersIni:ReadFile())) then
-		Out = Out .. "Could not read users.ini, creating anew!\n"
+		UsersIni:WriteFile()
 	end
 
 	-- Write the new group value to users.ini:

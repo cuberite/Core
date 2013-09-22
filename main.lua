@@ -1,6 +1,6 @@
 -- main.lua
 
--- implements the main plugin entrypoint
+-- Implements the main plugin entrypoint
 
 
 
@@ -24,7 +24,6 @@ Destination = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 WorldsWorldDifficulty = {}
-IniFileExists = true
 
 
 
@@ -46,26 +45,26 @@ function Initialize(Plugin)
 	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_MOVING, OnPlayerMoving )
 	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_PLACING_BLOCK, OnPlayerPlacingBlock )
 	cPluginManager.AddHook( cPluginManager.HOOK_SPAWNING_ENTITY, OnSpawningEntity)
-        cPluginManager.AddHook( cPluginManager.HOOK_TAKE_DAMAGE, OnTakeDamage)
+    cPluginManager.AddHook( cPluginManager.HOOK_TAKE_DAMAGE, OnTakeDamage)
 
 	-- Bind ingame commands:
 	-- Please keep this list alpha-sorted.
 	local PluginManager = cPluginManager:Get()
 	PluginManager:BindCommand("/back",            "core.back",            HandleBackCommand,            " - Return to your last position")
 	PluginManager:BindCommand("/ban",             "core.ban",             HandleBanCommand,             " ~ Ban a player")
-	PluginManager:BindCommand("/clear",           "core.clear",           HandleClearCommand,           " - Clear the inventory of some player")
-	PluginManager:BindCommand("/do",              "core.do",              HandleDoCommand,              " - Runs a command as a player.")
-	PluginManager:BindCommand("/difficulty",      "core.difficulty",      HandleDifficultyCommand,      " - Change world's difficulty.")
+	PluginManager:BindCommand("/clear",           "core.clear",           HandleClearCommand,           " ~ Clear the inventory of a player")
+	PluginManager:BindCommand("/do",              "core.do",              HandleDoCommand,              " ~ Runs a command as a player.")
+	PluginManager:BindCommand("/difficulty",      "core.difficulty",      HandleDifficultyCommand,      " ~ Change world's difficulty.")
 	PluginManager:BindCommand("/give",            "core.give",            HandleGiveCommand,            " ~ Give someone an item")
 	PluginManager:BindCommand("/gm",              "core.changegm",        HandleChangeGMCommand,        " ~ Change your gamemode")
 	PluginManager:BindCommand("/groups",          "core.groups",          HandleGroupsCommand,          " - Shows a list of all the groups")
 	PluginManager:BindCommand("/help",            "core.help",            HandleHelpCommand,            " ~ Show available commands")
 	PluginManager:BindCommand("/i",               "core.give",            HandleItemCommand,            "")
-	PluginManager:BindCommand("/item",            "core.give",            HandleItemCommand,            " - Give yourself an item.")
+	PluginManager:BindCommand("/item",            "core.give",            HandleItemCommand,            " ~ Give yourself an item.")
 	PluginManager:BindCommand("/kick",            "core.kick",            HandleKickCommand,            " ~ Kick a player")
-	PluginManager:BindCommand("/kill",            "core.kill",            HandleKillCommand,            " - Kill some player")
+	PluginManager:BindCommand("/kill",            "core.kill",            HandleKillCommand,            " ~ Kill a player")
 	PluginManager:BindCommand("/locate",          "core.locate",          HandleLocateCommand,          " - Show your current server coordinates")
-	PluginManager:BindCommand("/me",              "core.me",              HandleMeCommand,              " ~ Tell what you are doing")
+	PluginManager:BindCommand("/me",              "core.me",              HandleMeCommand,              " ~ Broadcast what you are doing")
 	PluginManager:BindCommand("/motd",            "core.motd",            HandleMOTDCommand,            " - Show message of the day")
 	PluginManager:BindCommand("/msg",             "core.tell",            HandleTellCommand,            "")
 	PluginManager:BindCommand("/plugins",         "core.plugins",         HandlePluginsCommand,         " - Show list of plugins")
@@ -73,15 +72,15 @@ function Initialize(Plugin)
 	PluginManager:BindCommand("/rank",            "core.rank",            HandleRankCommand,            " ~ Add someone to a group")
 	PluginManager:BindCommand("/regen",           "core.regen",           HandleRegenCommand,           " ~ Regenerates a chunk, current or specified")
 	PluginManager:BindCommand("/reload",          "core.reload",          HandleReloadCommand,          " - Reload all plugins")
-	PluginManager:BindCommand("/save-all",        "core.save-all",        HandleSaveAllCommand,         " - Saves all your worlds")
-	PluginManager:BindCommand("/setspawn",        "core.setspawn",        HandleSetSpawnCommand,        " - Change world spawn")
+	PluginManager:BindCommand("/save-all",        "core.save-all",        HandleSaveAllCommand,         " - Save all worlds")
+	PluginManager:BindCommand("/setspawn",        "core.setspawn",        HandleSetSpawnCommand,        " ~ Change world spawn")
 	PluginManager:BindCommand("/spawn",           "core.spawn",           HandleSpawnCommand,           " - Return to the spawn")
 	PluginManager:BindCommand("/stop",            "core.stop",            HandleStopCommand,            " - Stops the server")
-	PluginManager:BindCommand("/sudo",            "core.sudo",            HandleSudoCommand,            " - Runs a command as a player, ignoring permissions")
+	PluginManager:BindCommand("/sudo",            "core.sudo",            HandleSudoCommand,            " ~ Runs a command as a player, ignoring permissions")
 	PluginManager:BindCommand("/tell",            "core.tell",            HandleTellCommand,            " ~ Send a private message")
 	PluginManager:BindCommand("/time",            "core.time",            HandleTimeCommand,            " ~ Sets the time of day")
-	PluginManager:BindCommand("/toggledownfall",  "core.toggledownfall",  HandleDownfallCommand,        " - Toggles the weather")
-	PluginManager:BindCommand("/top",             "core.top",             HandleTopCommand,             " - Teleport yourself to the top most block")
+	PluginManager:BindCommand("/toggledownfall",  "core.toggledownfall",  HandleDownfallCommand,        " - Toggles downfall")
+	PluginManager:BindCommand("/top",             "core.top",             HandleTopCommand,             " - Teleport yourself to the topmost block")
 	PluginManager:BindCommand("/tp",              "core.teleport",        HandleTPCommand,              " ~ Teleport yourself to a player")
 	PluginManager:BindCommand("/tpa",             "core.teleport",        HandleTPACommand,             " ~ Ask to teleport yourself to a player")
 	PluginManager:BindCommand("/tpaccept",        "core.teleport",        HandleTPAcceptCommand,        " ~ Accept a teleportation request")
@@ -94,29 +93,24 @@ function Initialize(Plugin)
 
 	-- Load settings:
 	IniFile = cIniFile( "settings.ini" )
-	if IniFile:ReadFile() then
-		HardCore = IniFile:GetValueSet( "GameMode", "Hardcore", "false" )
-		IniFile:WriteFile()
-	else
-		IniFileExists = false
-		LOGWARNING("No settings file was found, the Core plugin WILL NOT function correctly!")
-	end
+	IniFile:ReadFile()
+	HardCore = IniFile:GetValueSet( "GameMode", "Hardcore", "false" )
+	IniFile:WriteFile()
 
 	-- Load SpawnProtection and WorldLimit settings for individual worlds:
 	cRoot:Get():ForEachWorld(
 		function (a_World)
 			WorldIni = cIniFile(a_World:GetIniFileName())
-			if WorldIni:ReadFile() then
-				WorldsSpawnProtect[a_World:GetName()]   = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
-				WorldsWorldLimit[a_World:GetName()]     = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
-				WorldsWorldDifficulty[a_World:GetName()]= WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 2)
-				WorldIni:WriteFile()
-			end
+			WorldIni:ReadFile()
+			WorldsSpawnProtect[a_World:GetName()]   = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
+			WorldsWorldLimit[a_World:GetName()]     = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
+			WorldsWorldDifficulty[a_World:GetName()]= WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 2)
+			WorldIni:WriteFile()
 		end
 	)
 
 	-- Load whitelist:
-	WhiteListIni = cIniFile(Plugin:GetLocalDirectory() .. "/whitelist.ini")
+	WhiteListIni = cIniFile( "whitelist.ini")
 	if WhiteListIni:ReadFile() then
 		if WhiteListIni:GetValueB("WhiteListSettings", "WhiteListOn", false) then
 			if (WhiteListIni:GetNumValues( "WhiteList" ) > 0) then
@@ -133,8 +127,8 @@ function Initialize(Plugin)
 		WhiteListIni:WriteFile()
 	end
 
-	--LOAD BANNED (BAD LUCK, BRO)
-	BannedPlayersIni = cIniFile( Plugin:GetLocalDirectory() .. "/banned.ini" )
+	-- Load banned:
+	BannedPlayersIni = cIniFile( "banned.ini" )
 	if BannedPlayersIni:ReadFile() == true then
 		if BannedPlayersIni:GetNumValues( "Banned" ) > 0 then
 			LOGINFO( "Core: loaded "  .. BannedPlayersIni:GetNumValues("Banned") .. " banned players." )
@@ -166,7 +160,6 @@ end
 
 
 
--- BEGIN SPAWNPROTECT LOGFILE CODE (COURTSEY OF BEARBIN)
 function WriteLog( breakPlace, X, Y, Z, player, id, meta )
 
 	local logText = {}
@@ -209,4 +202,3 @@ end
 function OnDisable()
 	LOG( "Disabled Core!" )
 end
---END AWESOMENESS :'(

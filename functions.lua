@@ -148,7 +148,7 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 			a_SrcPlayer:TeleportToEntity( a_DstPlayerName )
 			SendMessageSuccess( a_SrcPlayer, "You teleported to " .. OtherPlayer:GetName() .. "!" )
 			if (a_TellDst) then
-				SendMessage( a_DstPlayerName, a_DstPlayerName:GetName().." teleported to you!" )
+				SendMessage( a_DstPlayerName, a_SrcPlayer:GetName().." teleported to you!" )
 			end
 		end
 
