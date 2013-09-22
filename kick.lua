@@ -5,7 +5,7 @@ function HandleKickCommand( Split, Player )
 		return true
 	end
 
-	local Reason = "You have been kicked"
+	local Reason = cChatColor.Red .. "You have been kicked."
 	if ( #Split > 2 ) then
 		Reason = table.concat( Split, " ", 3 )
 	end
