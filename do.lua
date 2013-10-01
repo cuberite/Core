@@ -1,7 +1,7 @@
 function HandleDoCommand( Split, Player )
 
 	if #Split < 3 then
-		SendMessage( Player, "Usage: /do <player> <command *without slash*> [arguments]" )
+		SendMessage( Player, "Usage: /do <player> <command> [arguments]" )
 		return true
 	end
 
@@ -10,8 +10,11 @@ function HandleDoCommand( Split, Player )
 
 	local FoundPlayerCallback = function( a_Player )
 		local pluginManager = cRoot:Get():GetPluginManager()
-		pluginManager:ExecuteCommand( a_Player, newSplit )
-		SendMessageSuccess( Player, "Command executed!" )
+		if (pluginManager:ExecuteCommand( a_Player, newSplit )) then
+			SendMessageSuccess( Player, "Command executed!" )
+		else
+			SendMessageFailure( Player, "Bad command - execution failed!" )
+		end
 		return true
 	end
 
@@ -26,7 +29,7 @@ end
 function HandleSudoCommand ( Split, Player )
 
 if #Split < 3 then
-		SendMessage( Player, "Usage: /sudo <player> <command *without slash*> [arguments]" )
+		SendMessage( Player, "Usage: /sudo <player> <command> [arguments]" )
 		return true
 	end
 
@@ -35,8 +38,11 @@ if #Split < 3 then
 
 	local FoundPlayerCallback = function( a_Player )
 		local pluginManager = cRoot:Get():GetPluginManager()
-		pluginManager:ForceExecuteCommand( a_Player, newSplit )
-		SendMessageSuccess( Player, "Command executed!" )
+		if (pluginManager:ForceExecuteCommand( a_Player, newSplit )) then
+			SendMessageSuccess( Player, "Command executed!" )
+		else
+			SendMessageFailure( Player, "Bad command - execution failed" )
+		end
 		return true
 	end
 
