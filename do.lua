@@ -13,7 +13,7 @@ function HandleDoCommand( Split, Player )
 		if (pluginManager:ExecuteCommand( a_Player, newSplit )) then
 			SendMessageSuccess( Player, "Command executed!" )
 		else
-			SendMessageFailure( Player, "Bad command - execution failed!" )
+			SendMessageFailure( Player, "Bad command - execution failed" )
 		end
 		return true
 	end
