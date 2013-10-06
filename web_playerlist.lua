@@ -27,7 +27,7 @@ function HandleRequest_PlayerList ( Request )
 	end
 	cRoot:Get():ForEachPlayer( playerCountCallback )
 	
-	Content = Content + "<p>Total Players: " .. playerCount .. "</p>"
+	Content = Content .. "<p>Total Players: " .. playerCount .. "</p>"
 	
 	-- Count the numbers of players per-world.
 	local perWorldPlayersCallback = function ( World )
