@@ -1,12 +1,12 @@
-function HandleRequest_PlayerList ( Request )
+function HandleRequest_Players ( Request )
 
 	-- Define the content variable.
 	local Content = ""
 
 	-- If a player needed to be kicked, kick them.
-	if Request.Params["playerlist-kick"] ~= nil then
+	if Request.Params["players-kick"] ~= nil then
 		
-		local KickPlayerName = Request.Params["playerlist-kick"]
+		local KickPlayerName = Request.Params["players-kick"]
 		local FoundPlayerCallback = function( Player )
 			if( Player:GetName() == KickPlayerName ) then
 				Player:GetClientHandle():Kick("You were kicked from the game!")
@@ -45,7 +45,7 @@ function HandleRequest_PlayerList ( Request )
 			Content = Content .. "<tr>"
 			Content = Content .. "<td style='width: 10px;'>" .. PlayerNum .. ".</td>"
 			Content = Content .. "<td>" .. Player:GetName() .. "</td>"
-			Content = Content .. "<td><a href='?playerlist-kick=" .. Player:GetName() .. "'>Kick</a></td>"
+			Content = Content .. "<td><a href='?players-kick=" .. Player:GetName() .. "'>Kick</a></td>"
 			Content = Content .. "</tr>"
 		end
 		World:ForEachPlayer( AddPlayerToTable )
