@@ -23,7 +23,7 @@ function HandleRequest_PlayerList ( Request )
 	-- Count all the players in the root.
 	local playerCount = 0
 	local playerCountCallback = function ( Player )
-		playerCount++
+		playerCount = playerCount + 1
 	end
 	cRoot:Get():ForEachPlayer( playerCountCallback )
 	
