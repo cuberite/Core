@@ -4,20 +4,21 @@ function HandleRequest_Players ( Request )
 	local Content = ""
 
 	-- If a player needed to be kicked, kick them.
-	if Request.Params["players-kick"] ~= nil then
-		
+	if (Request.Params["players-kick"] ~= nil) then
 		local KickPlayerName = Request.Params["players-kick"]
-		local FoundPlayerCallback = function( Player )
-			if( Player:GetName() == KickPlayerName ) then
-				Player:GetClientHandle():Kick("You were kicked from the game!")
-				Content = Content .. "<p>" .. KickPlayerName .. " has been kicked from the game!</p>"
+		cRoot:Get():ForEachWorld(    -- For each world...
+			function(World)
+				World:QueueTask(         -- ... queue a task...
+					function(a_World)
+						World:DoWithPlayer(KickPlayerName,  -- ... to walk the playerlist...
+							function (a_Player)
+								a_Player:GetClientHandle():Kick("You were kicked from the game!")  -- ... and kick the player
+							end
+						)
+					end
+				)
 			end
-		end
-	
-		if cRoot:Get():FindAndDoWithPlayer( KickPlayerName, FoundPlayerCallback ) == false then
-			Content = Content .. "<p>Could not find player " .. KickPlayerName .. " !</p>"
-		end
-		
+		)
 	end
 	
 	-- Count all the players in the root.
