@@ -34,7 +34,7 @@ function HandleRequest_Players ( Request )
 	local perWorldPlayersCallback = function ( World )
 	
 		-- Name the world:
-		Content = Content .. "<h4>" .. World:GetName() .. "</h4>"
+		Content = Content .. "<h4>" .. cWebAdmin:GetHTMLEscapedString( World:GetName() ) .. "</h4>"
 	
 		-- Create a table for players to sit in.
 		Content = Content .. "<table>"
@@ -45,8 +45,8 @@ function HandleRequest_Players ( Request )
 			PlayerNum = PlayerNum + 1
 			Content = Content .. "<tr>"
 			Content = Content .. "<td style='width: 10px;'>" .. PlayerNum .. ".</td>"
-			Content = Content .. "<td>" .. Player:GetName() .. "</td>"
-			Content = Content .. "<td><a href='?players-kick=" .. Player:GetName() .. "'>Kick</a></td>"
+			Content = Content .. "<td>" .. cWebAdmin:GetHTMLEscapedString( Player:GetName() ) .. "</td>"
+			Content = Content .. "<td><a href='?players-kick=" .. cWebAdmin:GetHTMLEscapedString( Player:GetName() ) .. "'>Kick</a></td>"
 			Content = Content .. "</tr>"
 		end
 		World:ForEachPlayer( AddPlayerToTable )
