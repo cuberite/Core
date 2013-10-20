@@ -8,16 +8,16 @@ function HandleRequest_WhiteList( Request )
 		local PlayerName = Request.PostParams["whitelist-add"]
 		
 		if( WhiteListIni:GetValueB("WhiteList", PlayerName, false) == true ) then
-			UpdateMessage = "<b>".. cWebAdmin:Get():GetHTMLEscapedString( PlayerName ) .."</b> is already on the whitelist"
+			UpdateMessage = "<b>".. cWebAdmin:GetHTMLEscapedString( PlayerName ) .."</b> is already on the whitelist"
 		else
 			WhiteListIni:SetValueB("WhiteList", PlayerName, true )
-			UpdateMessage = "Added <b>" .. cWebAdmin:Get():GetHTMLEscapedString( PlayerName ) .. "</b> to whitelist."
+			UpdateMessage = "Added <b>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</b> to whitelist."
 			WhiteListIni:WriteFile()
 		end
 	elseif( Request.PostParams["whitelist-delete"] ~= nil ) then
 		local PlayerName = Request.PostParams["whitelist-delete"]
 		WhiteListIni:DeleteValue( "WhiteList", PlayerName )
-		UpdateMessage = "Removed <b>" .. cWebAdmin:Get():GetHTMLEscapedString( PlayerName ) .. "</b> from whitelist."
+		UpdateMessage = "Removed <b>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</b> from whitelist."
 		WhiteListIni:WriteFile()
 	elseif( Request.PostParams["whitelist-reload"] ~= nil ) then
 		WhiteListIni:Erase() -- Empty entire loaded ini first, otherwise weird shit goes down
@@ -55,7 +55,7 @@ function HandleRequest_WhiteList( Request )
 		for Num = 0, NumValues-1 do
 			if( WhiteListIni:GetValue(KeyNum, Num, "0") == "1" ) then
 				local PlayerName = WhiteListIni:GetValueName(KeyNum, Num )
-				Content = Content .. "<tr><td>" .. cWebAdmin:Get():GetHTMLEscapedString( PlayerName ) .. "</td><td>" .. HTMLDeleteButton( cWebAdmin:Get():GetHTMLEscapedString( PlayerName ) ) .. "</td></tr>"
+				Content = Content .. "<tr><td>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</td><td>" .. HTMLDeleteButton( cWebAdmin:GetHTMLEscapedString( PlayerName ) ) .. "</td></tr>"
 			end
 		end
 	else
