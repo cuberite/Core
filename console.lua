@@ -94,17 +94,14 @@ function HandleConsoleBan(Split)
 		Reason = table.concat(Split, " ", 3)
 	end
 
-	if KickPlayer(Split[2], Reason) == false then
-		BannedPlayersIni:DeleteValue("Banned", Split[2])
-		BannedPlayersIni:SetValueB("Banned", Split[2], true)
-		BannedPlayersIni:WriteFile()
+	if not(KickPlayer(Split[2], Reason)) then
 		LOGINFO("Could not find player, but banned anyway" )
 	else
-		BannedPlayersIni:DeleteValue("Banned", Split[2])
-		BannedPlayersIni:SetValueB("Banned", Split[2], true)
-		BannedPlayersIni:WriteFile()
 		LOGINFO("Successfully kicked and banned player" )
 	end
+	BannedPlayersIni:DeleteValue("Banned", Split[2])
+	BannedPlayersIni:SetValueB("Banned", Split[2], true)
+	BannedPlayersIni:WriteFile("banned.ini")
 
 	return true
 end
@@ -146,7 +143,7 @@ function HandleConsoleUnban(Split)
 	end
 
 	BannedPlayersIni:SetValueB("Banned", Split[2], false, false)
-	BannedPlayersIni:WriteFile()
+	BannedPlayersIni:WriteFile("banned.ini")
 
 	local Server = cRoot:Get():GetServer()
 	return true, "Unbanned " .. Split[2]
@@ -210,8 +207,8 @@ end
 
 function HandleConsoleListGroups(Split)
 	-- Read the groups.ini file:
-	local GroupsIni = cIniFile("groups.ini")
-	if (not(GroupsIni:ReadFile())) then
+	local GroupsIni = cIniFile()
+	if (not(GroupsIni:ReadFile("groups.ini"))) then
 		return true, "No groups found"
 	end
 
@@ -290,9 +287,9 @@ function HandleConsoleRank(Split)
 	local Out = ""
 
 	-- Read the groups.ini file:
-	local GroupsIni = cIniFile("groups.ini")
-	if (not(GroupsIni:ReadFile())) then
-		GroupsIni:WriteFile()
+	local GroupsIni = cIniFile()
+	if (not(GroupsIni:ReadFile("groups.ini"))) then
+		GroupsIni:WriteFile("groups.ini")
 	end
 
 	-- Find the group:
@@ -301,15 +298,13 @@ function HandleConsoleRank(Split)
 	end
 
 	-- Read the users.ini file:
-	local UsersIni = cIniFile("users.ini")
-	if (not(UsersIni:ReadFile())) then
-		UsersIni:WriteFile()
-	end
+	local UsersIni = cIniFile()
+	UsersIni:ReadFile("users.ini")
 
 	-- Write the new group value to users.ini:
 	UsersIni:DeleteKey(Split[2])
 	UsersIni:GetValueSet(Split[2], "Groups", Split[3])
-	UsersIni:WriteFile()
+	UsersIni:WriteFile("users.ini")
 
 	-- Reload the player's permissions:
 	cRoot:Get():ForEachWorld(

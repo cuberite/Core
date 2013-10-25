@@ -92,26 +92,26 @@ function Initialize(Plugin)
 	InitConsoleCommands()
 
 	-- Load settings:
-	IniFile = cIniFile( "settings.ini" )
-	IniFile:ReadFile()
-	HardCore = IniFile:GetValueSet( "GameMode", "Hardcore", "false" )
-	IniFile:WriteFile()
+	IniFile = cIniFile()
+	IniFile:ReadFile("settings.ini")
+	HardCore = IniFile:GetValueSet("GameMode", "Hardcore", "false")
+	IniFile:WriteFile("settings.ini")
 
 	-- Load SpawnProtection and WorldLimit settings for individual worlds:
 	cRoot:Get():ForEachWorld(
 		function (a_World)
-			WorldIni = cIniFile(a_World:GetIniFileName())
-			WorldIni:ReadFile()
+			WorldIni = cIniFile()
+			WorldIni:ReadFile(a_World:GetIniFileName())
 			WorldsSpawnProtect[a_World:GetName()]   = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
 			WorldsWorldLimit[a_World:GetName()]     = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
 			WorldsWorldDifficulty[a_World:GetName()]= WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 2)
-			WorldIni:WriteFile()
+			WorldIni:WriteFile(a_World:GetIniFileName())
 		end
 	)
 
 	-- Load whitelist:
-	WhiteListIni = cIniFile( "whitelist.ini")
-	if WhiteListIni:ReadFile() then
+	WhiteListIni = cIniFile()
+	if WhiteListIni:ReadFile("whitelist.ini") then
 		if WhiteListIni:GetValueB("WhiteListSettings", "WhiteListOn", false) then
 			if (WhiteListIni:GetNumValues( "WhiteList" ) > 0) then
 				LOGINFO( "Core: loaded "  .. WhiteListIni:GetNumValues('WhiteList') .. " whitelisted players." )
@@ -124,20 +124,20 @@ function Initialize(Plugin)
 		WhiteListIni:SetValue( "WhiteList", "", "" )	-- So it adds an empty header
 		WhiteListIni:DeleteValue( "WhiteList", "" ) -- And remove the value
 		WhiteListIni:KeyComment( "WhiteList", "PlayerName=1" )
-		WhiteListIni:WriteFile()
+		WhiteListIni:WriteFile("whitelist.ini")
 	end
 
 	-- Load banned:
-	BannedPlayersIni = cIniFile( "banned.ini" )
-	if BannedPlayersIni:ReadFile() == true then
-		if BannedPlayersIni:GetNumValues( "Banned" ) > 0 then
+	BannedPlayersIni = cIniFile()
+	if (BannedPlayersIni:ReadFile("banned.ini")) then
+		if (BannedPlayersIni:GetNumValues( "Banned" ) > 0) then
 			LOGINFO( "Core: loaded "  .. BannedPlayersIni:GetNumValues("Banned") .. " banned players." )
 		end
 	else
 		BannedPlayersIni:SetValue( "Banned", "", "" ) -- So it adds an empty header
 		BannedPlayersIni:DeleteValue( "Banned", "" ) -- And remove the value
 		BannedPlayersIni:KeyComment( "Banned", "PlayerName=1" )
-		BannedPlayersIni:WriteFile()
+		BannedPlayersIni:WriteFile("banned.ini")
 	end
 
 	-- Add webadmin tabs:

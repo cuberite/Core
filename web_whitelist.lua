@@ -12,16 +12,16 @@ function HandleRequest_WhiteList( Request )
 		else
 			WhiteListIni:SetValueB("WhiteList", PlayerName, true )
 			UpdateMessage = "Added <b>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</b> to whitelist."
-			WhiteListIni:WriteFile()
+			WhiteListIni:WriteFile("whitelist.ini")
 		end
 	elseif( Request.PostParams["whitelist-delete"] ~= nil ) then
 		local PlayerName = Request.PostParams["whitelist-delete"]
 		WhiteListIni:DeleteValue( "WhiteList", PlayerName )
 		UpdateMessage = "Removed <b>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</b> from whitelist."
-		WhiteListIni:WriteFile()
+		WhiteListIni:WriteFile("whitelist.ini")
 	elseif( Request.PostParams["whitelist-reload"] ~= nil ) then
 		WhiteListIni:Erase() -- Empty entire loaded ini first, otherwise weird shit goes down
-		WhiteListIni:ReadFile()
+		WhiteListIni:ReadFile("whitelist.ini")
 		UpdateMessage = "Loaded from disk"
 	elseif( Request.Params["whitelist-setenable"] ~= nil ) then
 		local Enabled = Request.Params["whitelist-setenable"]
@@ -35,7 +35,7 @@ function HandleRequest_WhiteList( Request )
 		else
 			WhiteListIni:SetValueB("WhiteListSettings", "WhiteListOn", false, CreateNewValue )
 		end
-		WhiteListIni:WriteFile()
+		WhiteListIni:WriteFile("whitelist.ini")
 	end
 	
 	
