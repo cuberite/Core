@@ -9,11 +9,21 @@ function HandleKickCommand( Split, Player )
 	if ( #Split > 2 ) then
 		Reason = table.concat( Split, " ", 3 )
 	end
-
-	if( KickPlayer( Split[2], Reason ) == false ) then
-		SendMessageFailure( Player, "Could not find player " .. Split[2] )
+      local IsPlayerKicked = false
+	local Kick = function(OtherPlayer)
+		if (OtherPlayer:GetName() == Split[2]) then
+			IsPlayerKicked = true
+			KickPlayer(Split[2], Reason)
+		end
 	end
 
-	return true
-
+	cRoot:Get():FindAndDoWithPlayer(Split[2], Kick)
+	if (IsPlayerKicked) then
+		SendMessage( Player, "Kicked " ..Split[2] )
+		return true
+	end
+	if (IsPlayerKicked == false) then
+		SendMessageFailure( Player, "Player not found" )        
+		return true
+	end
 end
