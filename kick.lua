@@ -9,7 +9,7 @@ function HandleKickCommand( Split, Player )
 	if ( #Split > 2 ) then
 		Reason = table.concat( Split, " ", 3 )
 	end
-      local IsPlayerKicked = false
+	local IsPlayerKicked = false
 	local Kick = function(OtherPlayer)
 		if (OtherPlayer:GetName() == Split[2]) then
 			IsPlayerKicked = true
