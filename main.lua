@@ -45,7 +45,7 @@ function Initialize(Plugin)
 	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_MOVING, OnPlayerMoving )
 	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_PLACING_BLOCK, OnPlayerPlacingBlock )
 	cPluginManager.AddHook( cPluginManager.HOOK_SPAWNING_ENTITY, OnSpawningEntity)
-    cPluginManager.AddHook( cPluginManager.HOOK_TAKE_DAMAGE, OnTakeDamage)
+    	cPluginManager.AddHook( cPluginManager.HOOK_TAKE_DAMAGE, OnTakeDamage)
 
 	-- Bind ingame commands:
 	-- Please keep this list alpha-sorted.
@@ -57,6 +57,7 @@ function Initialize(Plugin)
 	PluginManager:BindCommand("/difficulty",      "core.difficulty",      HandleDifficultyCommand,      " ~ Change world's difficulty.")
 	PluginManager:BindCommand("/give",            "core.give",            HandleGiveCommand,            " ~ Give someone an item")
 	PluginManager:BindCommand("/gm",              "core.changegm",        HandleChangeGMCommand,        " ~ Change your gamemode")
+	PluginManager:BindCommand("/gamemode",        "core.changegm",        HandleChangeGMCommand,        " ~ Change your gamemode")
 	PluginManager:BindCommand("/groups",          "core.groups",          HandleGroupsCommand,          " - Shows a list of all the groups")
 	PluginManager:BindCommand("/help",            "core.help",            HandleHelpCommand,            " ~ Show available commands")
 	PluginManager:BindCommand("/i",               "core.give",            HandleItemCommand,            "")
