@@ -1,4 +1,5 @@
 function HandleDifficultyCommand ( Split, Player )
+	World = Player:GetWorld()
 
 	if( #Split ~= 2 ) then
 		Player:SendMessage( "Usage: /difficulty [peaceful|easy|normal|hard]" )
@@ -6,32 +7,32 @@ function HandleDifficultyCommand ( Split, Player )
 	end
 
 	if (Split[2] == "peaceful") or (Split[2] == "0") or (Split[2] == "p") then
-            WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
-            WorldIni:SetValue("Difficulty",   "WorldDifficulty",   0)
-            WorldIni:WriteFile()
+		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
+		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   0)
+		WorldIni:WriteFile(World:GetIniFileName())
 		Player:SendMessage( "World difficulty set to peaceful" )
-            return true
+		return true
 	elseif (Split[2] == "easy") or (Split[2] == "1") or (Split[2] == "e") then
-            WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
+		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
 		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   1)
-            WorldIni:WriteFile()
+		WorldIni:WriteFile(World:GetIniFileName())
 		Player:SendMessage( "World difficulty set to easy" )
-            return true
+		return true
 	elseif (Split[2] == "normal") or (Split[2] == "2") or (Split[2] == "n") then
-            WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
+		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
 		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   2)
-            WorldIni:WriteFile()
+		WorldIni:WriteFile(World:GetIniFileName())
 		Player:SendMessage( "World difficulty set to normal" )
-            return true
+		return true
 	elseif (Split[2] == "hard") or (Split[2] == "3") or (Split[2] == "h") then
-            WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
+		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
 		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   3)
-            WorldIni:WriteFile()
+		WorldIni:WriteFile(World:GetIniFileName())
 		Player:SendMessage( "World difficulty set to hard" )
-            return true
-      else
+		return true
+	else
 		Player:SendMessage( "Usage: /difficulty [peaceful|easy|normal|hard]" )
-            return true
+		return true
 	end
 end
 
@@ -192,4 +193,3 @@ function OnSpawningEntity(World, Entity)
         end
     end
 end
-        
