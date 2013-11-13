@@ -8,7 +8,6 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("banlist ips", HandleConsoleBanList,    " - Lists all players banned by IP")
 	PluginMgr:BindConsoleCommand("banlist",     HandleConsoleBanList,    " - Lists all players banned by name")
 	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
-	PluginMgr:BindConsoleCommand("help",        HandleConsoleHelp,       " - Lists all commands")
 	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " ~ Gives items to the specified player.")
 	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
 	PluginMgr:BindConsoleCommand("list",        HandleConsoleList,       " - Lists all players in a machine-readable format")
@@ -16,7 +15,6 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("numchunks",   HandleConsoleNumChunks,  " - Shows number of chunks currently loaded")
 	PluginMgr:BindConsoleCommand("players",     HandleConsolePlayers,    " - Lists all connected players")
 	PluginMgr:BindConsoleCommand("rank",        HandleConsoleRank,       " ~ Add a player to a group")
-	PluginMgr:BindConsoleCommand("reload",      HandleConsoleReload,     " - Reloads all plugins")
 	PluginMgr:BindConsoleCommand("save-all",    HandleConsoleSaveAll,    " - Saves all chunks")
 	PluginMgr:BindConsoleCommand("say",         HandleConsoleSay,        " ~ Sends a chat message to all players")
 	PluginMgr:BindConsoleCommand("setversion",  HandleConsoleVersion,    " ~ Sets server version reported to 1.4+ clients")
@@ -162,34 +160,6 @@ function HandleConsoleBanList(Split)
 	return true, "Unknown banlist subcommand"
 end
 
-function HandleConsoleHelp(Split)
-	local Commands = {}   -- {index => {"Command", "HelpString"} }
-	local MaxLength = 0
-	local AddToTable = function(Command, HelpString)
-		table.insert(Commands, { Command, HelpString })
-		local CmdLen = Command:len()
-		if (CmdLen > MaxLength) then
-			MaxLength = CmdLen
-		end
-	end
-
-	cPluginManager:Get():ForEachConsoleCommand(AddToTable)
-
-	-- Sort the table:
-	local CompareCommands = function(a, b)
-		return a[1] < b[1]  -- compare command strings
-	end
-	table.sort(Commands, CompareCommands)
-
-	local Out = ""
-	Out = "'-' denotes no prefix, '~' denotes that a value is required.\n"
-	for i, Command in ipairs(Commands) do
-		Out = Out .. Command[1] .. string.rep(" ", MaxLength - Command[1]:len())  -- Align to a table
-		Out = Out .. Command[2] .. "\n"
-	end
-	return true, Out
-end
-
 function HandleConsoleList(Split)
 	-- Get a list of all players, one playername per line
 	local Out = ""
@@ -321,14 +291,6 @@ function HandleConsoleRank(Split)
 	)
 
 	return true, Out .. "Player " .. Split[2] .. " was moved to " .. Split[3]
-end
-
-function HandleConsoleReload(Split)
-
-	cRoot:Get():BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Reloading all plugins!")
-	LOGINFO("Reloading all plugins!")
-	cRoot:Get():GetPluginManager():ReloadPlugins()
-	return true
 end
 
 function HandleConsoleSaveAll(Split)
