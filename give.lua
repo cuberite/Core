@@ -2,7 +2,7 @@ function HandleGiveCommand(Split, Player)
 
 	-- Make sure there are a correct number of arguments.
 	if #Split ~= 3 and #Split ~= 4 and #Split ~= 5 then
-		SendMessage( Player, "Usage: /give <player> <item> [amount] [meta]" )
+		SendMessage( Player, GetTranslation( Player, "give-usage" ) )
 		return true
 	end
 
@@ -19,7 +19,7 @@ function HandleGiveCommand(Split, Player)
 	end
 
 	if not FoundItem  then
-		SendMessageFailure( Player, "Invalid item id or name!" )
+		SendMessageFailure( Player, GetTranslation( Player, "invalid-id" ) )
 		return true
 	end
 
@@ -28,7 +28,7 @@ function HandleGiveCommand(Split, Player)
 	if #Split > 3 then
 		ItemAmount = tonumber( Split[4] )
 		if ItemAmount == nil or ItemAmount < 1 or ItemAmount > 512 then
-			SendMessageFailure( Player, "Invalid amount!" )
+			SendMessageFailure( Player, GetTranslation( Player, "invalid-amount" ) )
 			return true
 		end
 	end
@@ -41,14 +41,14 @@ function HandleGiveCommand(Split, Player)
 	local function giveItems( newPlayer )
 		local ItemsGiven = newPlayer:GetInventory():AddItem( Item )
 		if ItemsGiven == ItemAmount then
-			SendMessageSuccess( newPlayer, "You were given " .. Item.m_ItemCount .. " of " .. Item.m_ItemType .. "." )
+			SendMessageSuccess( newPlayer, GetTranslation( Player, "you-were-given" ) .. " " .. Item.m_ItemCount .. " " .. GetTranslation( Player, "of-item" ) .. " " .. Item.m_ItemType .. "." )
 			if not newPlayer == Player then
-				SendMessageSuccess( Player, "Items given!" )
+				SendMessageSuccess( Player, GetTranslation( Player, "items-given" ) )
 			end
-			LOG("Gave " .. newPlayer:GetName() .. " " .. Item.m_ItemCount .. " times " .. Item.m_ItemType .. ":" .. Item.m_ItemDamage )
+			LOG( GetConsoleTranslation("gave") .. " " .. newPlayer:GetName() .. " " .. Item.m_ItemCount .. " " .. GetConsoleTranslation("of") .. " " .. Item.m_ItemType .. ":" .. Item.m_ItemDamage )
 		else
-			SendMessageFailure( Player, "Not enough space in inventory, only gave " .. ItemsGiven )
-			LOG( "Player " .. Player:GetName() .. " asked for " .. Item.m_ItemCount .. " times " .. Item.m_ItemType .. ":" .. Item.m_ItemDamage ..", but only could fit " .. ItemsGiven )
+			SendMessageFailure( Player, GetTranslation( Player, "not-enough-space" .. " " .. ItemsGiven )
+			LOG( Player:GetName() .. " " .. GetConsoleTranslation("asked-for") .. " " .. Item.m_ItemCount .. GetConsoleTranslation("of") .. Item.m_ItemType .. ":" .. Item.m_ItemDamage .. ", " .. GetConsoleTranslation("could-only-fit") .. ItemsGiven )
 		end
 		return true
 	end
@@ -58,7 +58,7 @@ function HandleGiveCommand(Split, Player)
 
 	-- Check to make sure that giving items was successful.
 	if not itemStatus then
-		SendMessageFailure( Player, "There was no player that matched your query." )
+		SendMessageFailure( Player, GetTranslation( Player, "no-player-matched-query" ) )
 	end
 
 	return true
