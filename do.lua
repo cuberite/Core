@@ -8,8 +8,7 @@ function HandleDoCommand( Split, Player )
 	-- Get the command and arguments.
 	local newSplit = table.concat( Split, " ", 3 )
 
-	local pluginManager = cRoot:Get():GetPluginManager()
-	pluginManager:ExecuteCommand( Split[2], newSplit )
+	cRoot:Get():GetPluginManager():ExecuteCommand( Split[2], newSplit )
 
 end
 
