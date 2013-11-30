@@ -1,25 +1,26 @@
 function HandleDoCommand( Split, Player )
 
 	if #Split < 3 then
-		SendMessage( Player, "Usage: /do <player> <command> [arguments]" )
+		SendMessage( GetTranslation( Player, "do-usage" ) )
 		return true
 	end
 
 	-- Get the command and arguments.
 	local newSplit = table.concat( Split, " ", 3 )
 
+
 	local FoundPlayerCallback = function( a_Player )
 		local pluginManager = cRoot:Get():GetPluginManager()
 		if (pluginManager:ExecuteCommand( a_Player, newSplit )) then
-			SendMessageSuccess( Player, "Command executed!" )
+			SendMessageSuccess( Player, GetTranslation( Player, "command-executed" ) )
 		else
-			SendMessageFailure( Player, "Bad command - execution failed" )
+			SendMessageFailure( Player, GetTranslation( Player, "command-execution-fail" ) )
 		end
 		return true
 	end
 
 	if not cRoot:Get():FindAndDoWithPlayer( Split[2], FoundPlayerCallback ) then
-		SendMessageFailure( Player, "Could not find player" )
+		SendMessageFailure( Player, GetTranslation( Player, "no-player-matched-query" ) )
 		return true
 	end
 	
@@ -28,8 +29,8 @@ end
 
 function HandleSudoCommand ( Split, Player )
 
-if #Split < 3 then
-		SendMessage( Player, "Usage: /sudo <player> <command> [arguments]" )
+	if #Split < 3 then
+		SendMessage( GetTranslation( Player, "sudo-usage" ) )
 		return true
 	end
 

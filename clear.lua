@@ -1,7 +1,7 @@
 function HandleClearCommand( Split, Player )
 
   if (Split[2] == nil) then
-     SendMessage( Player, "Usage: /clear <player>" )
+     SendMessage( Player, GetTranslation( Player, "clear-usage" ) )
      return true
   end
 
@@ -15,10 +15,10 @@ function HandleClearCommand( Split, Player )
 
   cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory);
   if (InventoryCleared) then
-    SendMessageSuccess( Player, "You cleared the inventory of " .. Split[2] )
+    SendMessageSuccess( Player, GetTranslation( Player, "inv-cleared" ) .. Split[2] )
     return true
   else
-    SendMessageFailure( Player, "Player not found" )
+    SendMessageFailure( Player, GetTranslation( Player, "player-not-found" ) )
     return true
   end
 

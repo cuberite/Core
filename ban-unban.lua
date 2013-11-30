@@ -1,7 +1,7 @@
 function HandleBanCommand( Split, Player )
 
 	if( #Split < 2 ) then
-		SendMessage( Player, "Usage: /ban [Player] <Reason>" )
+		SendMessage( Player, GetTranslation( Player, "ban-usage" ) )
 		return true
 	end
 
@@ -14,12 +14,12 @@ function HandleBanCommand( Split, Player )
 		BannedPlayersIni:DeleteValue( "Banned", Split[2] )
 		BannedPlayersIni:SetValueB( "Banned", Split[2], true )
 		BannedPlayersIni:WriteFile()
-		SendMessageFailure( Player, "Could not find player, but banned anyway" )
+		SendMessageFailure( Player, GetTranslation( Player, "banplayer-not-found" ) )
 	else
 		BannedPlayersIni:DeleteValue( "Banned", Split[2] )
 		BannedPlayersIni:SetValueB( "Banned", Split[2], true )
 		BannedPlayersIni:WriteFile()
-		SendMessageSuccess( Player, "Successfully kicked and banned player" )
+		SendMessageSuccess( Player, GetTranslation( Player, "banplayer-success" ) )
 	end
 	return true
 
@@ -28,12 +28,12 @@ end
 function HandleUnbanCommand( Split, Player )
 
 	if( #Split < 2 ) then
-		SendMessage( Player, "Usage: /unban [Player]" )
+		SendMessage( Player, GetTranslation( Player, "unban-usage" ) )
 		return true
 	end
 
 	if( BannedPlayersIni:GetValueB("Banned", Split[2], false) == false ) then
-		SendMessageFailure( Player, "Player is not banned!" )
+		SendMessageFailure( Player, GetTranslation( Player, "unban-player-not-banned" ) )
 		return true
 	end
 
@@ -41,8 +41,8 @@ function HandleUnbanCommand( Split, Player )
 	BannedPlayersIni:SetValueB("Banned", Split[2], false)
 	BannedPlayersIni:WriteFile()
 
-	LOGINFO( Player:GetName() .. " is unbanning " .. Split[2] )
-	SendMessageSuccess( Player, "Unbanning " .. Split[2] )
+	LOGINFO( Player:GetName() .. GetConsoleTranslation( "isunbanning" ) .. Split[2] )
+	SendMessageSuccess( Player, GetTranslation( Player, "unbanning" ) .. Split[2] )
 
 	return true
 

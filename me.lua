@@ -8,7 +8,7 @@ function HandleMeCommand( Split, Player )
 	end
 
 	if Split[1] == nil then
-		SendMessage( Player, "Usage: /me <action>" )
+		SendMessage( Player, GetTranslation( Player, "me-usage" ) )
 		return true
 	end
 
