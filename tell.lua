@@ -1,6 +1,6 @@
 function HandleTellCommand(Split, Player, OtherPlayer)
 	if (Split[2] == nil) or (Split[3] == nil) then
-		Player:SendMessage(cChatColor.Yellow .. "[INFO] " .. "Usage: /tell [playername] [message]")
+		SendMessage( Player, "Usage: /tell <player> <message>")
 		return true
 	end
 	
@@ -10,23 +10,14 @@ function HandleTellCommand(Split, Player, OtherPlayer)
 		Reciever = Split[2]
 	
 		if (OtherPlayer:GetName() == Split[2]) then
-			Server = cRoot:Get():GetServer()
-			FullMsg = ""
-		
-			for i,v in ipairs(Split) do
-				if(i>2) then
-					if(FullMsg == "") then
-						FullMsg = v
-					else
-						FullMsg = FullMsg .. " " .. v
-					end	
-				end
-			end
+			local newSplit = table.concat( Split, " ", 3 )
     
-			Player:SendMessage(cChatColor.Green .. "[INFO] " .. "Message to player " .. Reciever .. " sent!" )
-			OtherPlayer:SendMessage(cChatColor.Orange .. "[MSG: " .. Sender .. " ] " .. FullMsg )
+			SendMessageSuccess( Player, "Message to player " .. Reciever .. " sent!" )
+			
+			-- Conforms to http://forum.mc-server.org/showthread.php?tid=1212
+			OtherPlayer:SendMessage(cChatColor.LightBlue .. "[MSG: " .. Sender .. "] " .. cChatColor.White .. newSplit )
 		else
-			Player:SendMessage(cChatColor.Red .. 'Player "' ..Split[2].. '" not found')
+			SendMessageFailure( Player, 'Player "' ..Split[2].. '" not found')
 		end
 	end
 

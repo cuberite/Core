@@ -8,8 +8,23 @@ function HandleDoCommand( Split, Player )
 	-- Get the command and arguments.
 	local newSplit = table.concat( Split, " ", 3 )
 
-	cRoot:Get():GetPluginManager():ExecuteCommand( Split[2], newSplit )
 
+	local FoundPlayerCallback = function( a_Player )
+		local pluginManager = cRoot:Get():GetPluginManager()
+		if (pluginManager:ExecuteCommand( a_Player, newSplit )) then
+			SendMessageSuccess( Player, GetTranslation( Player, "command-executed" ) )
+		else
+			SendMessageFailure( Player, GetTranslation( Player, "command-execution-fail" ) )
+		end
+		return true
+	end
+
+	if not cRoot:Get():FindAndDoWithPlayer( Split[2], FoundPlayerCallback ) then
+		SendMessageFailure( Player, GetTranslation( Player, "no-player-matched-query" ) )
+		return true
+	end
+	
+	return true
 end
 
 function HandleSudoCommand ( Split, Player )
@@ -22,7 +37,20 @@ function HandleSudoCommand ( Split, Player )
 	-- Get the command and arguments.
 	local newSplit = table.concat( Split, " ", 3 )
 
-	local pluginManager = cRoot:Get():GetPluginManager()
-	pluginManager:ForceExecuteCommand( Split[2], newSplit )
+	local FoundPlayerCallback = function( a_Player )
+		local pluginManager = cRoot:Get():GetPluginManager()
+		if (pluginManager:ForceExecuteCommand( a_Player, newSplit )) then
+			SendMessageSuccess( Player, "Command executed!" )
+		else
+			SendMessageFailure( Player, "Bad command - execution failed" )
+		end
+		return true
+	end
 
+	if not cRoot:Get():FindAndDoWithPlayer( Split[2], FoundPlayerCallback ) then
+		SendMessageFailure( Player, "Could not find player" )
+		return true
+	end
+	
+	return true
 end

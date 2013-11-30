@@ -28,6 +28,7 @@ function HandleDownfallCommand( Split, Player )
 		World:SetWeather(0)
 	end
 
-	SendMessageSuccess( Player, "Downfall Toggled")
-
+	SendMessageSuccess( Player, "Downfall toggled")
+	
+	return true
 end

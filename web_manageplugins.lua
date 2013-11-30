@@ -38,7 +38,7 @@ local function RemovePluginFromIni( SettingsIni, PluginName )
 		LOGINFO("not the same name T_T '" .. Name .. "' '" .. PluginName .. "'")
 	end
 	if( (Name == PluginName) and (SettingsIni:DeleteValueByID( KeyIdx, PluginIdx ) == true) ) then
-		return SettingsIni:WriteFile()
+		return SettingsIni:WriteFile("settings.ini")
 	end
 	
 	return false
@@ -48,7 +48,7 @@ local function AddPluginToIni( SettingsIni, PluginName )
 	RemovePluginFromIni( SettingsIni, PluginName ) -- Make sure there are no duplicates
 	
 	if( SettingsIni:SetValue("Plugins", "Plugin", PluginName, true ) == true ) then
-		return SettingsIni:WriteFile()
+		return SettingsIni:WriteFile("settings.ini")
 	end
 	
 	return false
@@ -109,11 +109,11 @@ function HandleRequest_ManagePlugins( Request )
 		return Content
 	end
 	
-	local SettingsIni = cIniFile("settings.ini")
-	if( SettingsIni:ReadFile() == true ) then
-		Content = Content .. HandlePluginListChanges( Request, SettingsIni )
+	local SettingsIni = cIniFile()
+	if (SettingsIni:ReadFile("settings.ini")) then
+		Content = Content .. HandlePluginListChanges(Request, SettingsIni)
 	else
-		Content = Content .. "Cannot find/modify settings.ini"
+		Content = Content .. "Cannot find / modify settings.ini"
 	end
 	
 	local PluginManager = cRoot:Get():GetPluginManager()

@@ -87,7 +87,7 @@ local function AddPlayers( Request )
 				end
 				UsersIni:DeleteKey(Request.PostParams["AddPlayer"])
 				UsersIni:GetValueSet(Request.PostParams["AddPlayer"], "Groups", Request.PostParams["AddGroup"])
-				UsersIni:WriteFile()
+				UsersIni:WriteFile("users.ini")
 				local loopPlayers = function( Player )
 					if Player:GetName() == Request.PostParams["AddPlayer"] then
 						SendMessageSuccess( Player, "You were moved to group " .. Request.PostParams["AddGroup"] )
@@ -115,12 +115,12 @@ local function AddPlayers( Request )
 end
 
 function HandleRequest_Permissions( Request )
-	GroupsIni = cIniFile("groups.ini")
-	if( GroupsIni:ReadFile() == false ) then
+	GroupsIni = cIniFile()
+	if not(GroupsIni:ReadFile("groups.ini")) then
 		return "Could not read groups.ini!"
 	end
-	UsersIni = cIniFile("users.ini")
-	if( UsersIni:ReadFile() == false ) then
+	UsersIni = cIniFile()
+	if not(UsersIni:ReadFile("users.ini")) then
 		return "Could not read users.ini!"
 	end
 

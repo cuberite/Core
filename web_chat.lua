@@ -143,7 +143,7 @@ function HandleRequest_Chat( Request )
 			end
 		end
 		local Message = "[WebAdmin]: " .. Request.PostParams["ChatMessage"]
-		cRoot:Get():GetServer():SendMessage( Message )
+		cRoot:Get():BroadcastChat( Message )
 		AddMessage("WebAdmin", Request.PostParams["ChatMessage"] )
 		return ""
 	end

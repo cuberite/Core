@@ -31,12 +31,12 @@ local function ShowGeneralSettings( Request )
 	local Content = ""
 	local InfoMsg = nil
 	
-	local SettingsIni = cIniFile("settings.ini")
-	if( SettingsIni:ReadFile() == false ) then
+	local SettingsIni = cIniFile()
+	if not(SettingsIni:ReadFile("settings.ini")) then
 		InfoMsg = "<b style=\"color: red;\">ERROR: Could not read settings.ini!</b>"
 	end
 	
-	if( Request.PostParams["general_submit"] ~= nil ) then
+	if (Request.PostParams["general_submit"] ~= nil) then
 		
 		SettingsIni:SetValue("Server", "Description",Request.PostParams["Server_Description"],false )
 		if( tonumber( Request.PostParams["Server_MaxPlayers"] ) ~= nil ) then
@@ -57,7 +57,7 @@ local function ShowGeneralSettings( Request )
 			SettingsIni:SetValue("Authentication", "Authenticate", Request.PostParams["Authentication_Authenticate"], false )
 		end
 
-		if( SettingsIni:WriteFile() == false ) then
+		if not(SettingsIni:WriteFile("settings.ini")) then
 			InfoMsg =  [[<b style="color: red;">ERROR: Could not write to settings.ini!</b>]]
 		else
 			InfoMsg = [[<b style="color: green;">INFO: Successfully saved changes to settings.ini</b>]]
@@ -104,8 +104,8 @@ local function ShowMonstersSettings( Request )
 	local Content = ""
 	local InfoMsg = nil
 	
-	local SettingsIni = cIniFile("settings.ini")
-	if( SettingsIni:ReadFile() == false ) then
+	local SettingsIni = cIniFile()
+	if not(SettingsIni:ReadFile("settings.ini")) then
 		InfoMsg = "<b style=\"color: red;\">ERROR: Could not read settings.ini!</b>"
 	end
 	
@@ -118,13 +118,12 @@ local function ShowMonstersSettings( Request )
 			SettingsIni:SetValue("Monsters", "AnimalSpawnInterval", Request.PostParams["Monsters_AnimalSpawnInterval"], false )
 		end
 		SettingsIni:SetValue("Monsters", "Types", Request.PostParams["Monsters_Types"], false )
-		if( SettingsIni:WriteFile() == false ) then
+		if not(SettingsIni:WriteFile("settings.ini")) then
 			InfoMsg =  "<b style=\"color: red;\">ERROR: Could not write to settings.ini!</b>"
 		else
 			InfoMsg = "<b style=\"color: green;\">INFO: Successfully saved changes to settings.ini</b>"
 		end
 	end
-	
 	
 	Content = Content .. "<form method=\"POST\">"
 	
@@ -154,8 +153,8 @@ local function ShowWorldsSettings( Request )
 	local InfoMsg = nil
 	local bSaveIni = false
 	
-	local SettingsIni = cIniFile("settings.ini")
-	if( SettingsIni:ReadFile() == false ) then
+	local SettingsIni = cIniFile()
+	if not(SettingsIni:ReadFile("settings.ini")) then
 		InfoMsg = [[<b style="color: red;">ERROR: Could not read settings.ini!</b>]]
 	end
 	
@@ -188,7 +187,7 @@ local function ShowWorldsSettings( Request )
 	
 	if( bSaveIni == true ) then
 		if( InfoMsg == nil ) then InfoMsg = "" end
-		if( SettingsIni:WriteFile() == false ) then
+		if not(SettingsIni:WriteFile("settings.ini")) then
 			InfoMsg = InfoMsg .. "<b style=\"color: red;\">ERROR: Could not write to settings.ini!</b>"
 		else
 			InfoMsg = InfoMsg .. "<b style=\"color: green;\">INFO: Successfully saved changes to settings.ini</b>"
@@ -329,8 +328,8 @@ end
 function ShowWorldSettings( Request )
 	local Content = ""
 	local InfoMsg = nil
-	local SettingsIni = cIniFile("settings.ini")
-	if( SettingsIni:ReadFile() == false ) then
+	local SettingsIni = cIniFile()
+	if not(SettingsIni:ReadFile("settings.ini")) then
 		InfoMsg = [[<b style="color: red;">ERROR: Could not read settings.ini!</b>]]
 	end
 	if (Request.PostParams["SelectWorld"] ~= nil and Request.PostParams["WorldName"] ~= nil) then		-- World is selected!
@@ -340,295 +339,224 @@ function ShowWorldSettings( Request )
 		WORLD = SettingsIni:GetValue("Worlds", "DefaultWorld")
 		SelectedWorld = cRoot:Get():GetWorld( WORLD )
 	end
-	local WorldIni = cIniFile(SelectedWorld:GetName() .. "/world.ini")
-	WorldIni:ReadFile()
+	local WorldIni = cIniFile()
+	WorldIni:ReadFile(SelectedWorld:GetIniFileName())
 	if (Request.PostParams["world_submit"]) ~= nil then
 		if( tonumber( Request.PostParams["World_Dimension"] ) ~= nil ) then
-			WorldIni:DeleteValue( "General", "Dimension" )
 			WorldIni:SetValue( "General", "Dimension", Request.PostParams["World_Dimension"] )
 		end
 		if( tonumber( Request.PostParams["World_Schema"] ) ~= nil ) then
-			WorldIni:DeleteValue( "General", "Schema" )
 			WorldIni:SetValue( "General", "Schema", Request.PostParams["World_Schema"] )
 		end
 		if( tonumber( Request.PostParams["World_SpawnX"] ) ~= nil ) then
-			WorldIni:DeleteValue( "SpawnPosition", "X" )
 			WorldIni:SetValue( "SpawnPosition", "X", Request.PostParams["World_SpawnX"] )
 		end
 		if( tonumber( Request.PostParams["World_SpawnY"] ) ~= nil ) then
-			WorldIni:DeleteValue( "SpawnPosition", "Y" )
 			WorldIni:SetValue( "SpawnPosition", "Y", Request.PostParams["World_SpawnY"] )
 		end
 		if( tonumber( Request.PostParams["World_SpawnZ"] ) ~= nil ) then
-			WorldIni:DeleteValue( "SpawnPosition", "Z" )
 			WorldIni:SetValue( "SpawnPosition", "Z", Request.PostParams["World_SpawnZ"] )
 		end
 		if( tonumber( Request.PostParams["LimitWorldWidth"] ) ~= nil ) then
-			WorldIni:DeleteValue( "WorldLimit", "LimitRadius" )
 			WorldIni:SetValue( "WorldLimit", "LimitRadius", Request.PostParams["LimitWorldWidth"] )
 		end
 		if( tonumber( Request.PostParams["World_Seed"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Seed", "Seed" )
 			WorldIni:SetValue( "Seed", "Seed", Request.PostParams["World_Seed"] )
 		end
 		if( tonumber( Request.PostParams["World_PVP"] ) ~= nil ) then
-			WorldIni:DeleteValue( "PVP", "Enabled" )
 			WorldIni:SetValue( "PVP", "Enabled", Request.PostParams["World_PVP"] )
 		end
 		if( tonumber( Request.PostParams["World_GameMode"] ) ~= nil ) then
-			WorldIni:DeleteValue( "GameMode", "GameMode" )
 			WorldIni:SetValue( "GameMode", "GameMode", Request.PostParams["World_GameMode"] )
 		end
 		if( tonumber( Request.PostParams["World_DeepSnow"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Physics", "DeepSnow" )
 			WorldIni:SetValue( "Physics", "DeepSnow", Request.PostParams["World_DeepSnow"] )
 		end
 		if( tonumber( Request.PostParams["World_SandInstantFall"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Physics", "SandInstantFall" )
 			WorldIni:SetValue( "Physics", "SandInstantFall", Request.PostParams["World_SandInstantFall"] )
 		end
 		if( tonumber( Request.PostParams["World_WaterSimulator"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Physics", "WaterSimulator" )
 			WorldIni:SetValue( "Physics", "WaterSimulator", Request.PostParams["World_WaterSimulator"] )
 		end
 		if( tonumber( Request.PostParams["World_LavaSimulator"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Physics", "LavaSimulator" )
 			WorldIni:SetValue( "Physics", "LavaSimulator", Request.PostParams["World_LavaSimulator"] )
 		end
 		if( tonumber( Request.PostParams["World_MaxSugarcaneHeight"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "MaxSugarcaneHeight" )
 			WorldIni:SetValue( "Plants", "MaxSugarcaneHeight", Request.PostParams["World_MaxSugarcaneHeight"] )
 		end
 		if( tonumber( Request.PostParams["World_MaxCactusHeight"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "MaxCactusHeight" )
 			WorldIni:SetValue( "Plants", "MaxCactusHeight", Request.PostParams["World_MaxCactusHeight"] )
 		end
 		if( tonumber( Request.PostParams["World_CarrotsBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsCarrotsBonemealable" )
 			WorldIni:SetValue( "Plants", "IsCarrotsBonemealable", Request.PostParams["World_CarrotsBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_CropsBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsCropsBonemealable" )
 			WorldIni:SetValue( "Plants", "IsCropsBonemealable", Request.PostParams["World_CropsBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_GrassBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsGrassBonemealable" )
 			WorldIni:SetValue( "Plants", "IsGrassBonemealable", Request.PostParams["World_GrassBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_SaplingBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsSaplingBonemealable" )
 			WorldIni:SetValue( "Plants", "IsSaplingBonemealable", Request.PostParams["World_SaplingBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_MelonStemBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsMelonStemBonemealable" )
 			WorldIni:SetValue( "Plants", "IsMelonStemBonemealable", Request.PostParams["World_MelonStemBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_MelonBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsMelonBonemealable" )
 			WorldIni:SetValue( "Plants", "IsMelonBonemealable", Request.PostParams["World_MelonBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_PotatoesBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsPotatoesBonemealable" )
 			WorldIni:SetValue( "Plants", "IsPotatoesBonemealable", Request.PostParams["World_PotatoesBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_PumpkinStemBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsPumpkinStemBonemealable" )
 			WorldIni:SetValue( "Plants", "IsPumpkinStemBonemealable", Request.PostParams["World_PumpkinStemBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_PumpkinBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsPumpkinBonemealable" )
 			WorldIni:SetValue( "Plants", "IsPumpkinBonemealable", Request.PostParams["World_PumpkinBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_SugarCaneBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsSugarCaneBonemealable" )
 			WorldIni:SetValue( "Plants", "IsSugarCaneBonemealable", Request.PostParams["World_SugarCaneBonemealable"] )
 		end
 		if( tonumber( Request.PostParams["World_CactusBonemealable"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Plants", "IsCactusBonemealable" )
 			WorldIni:SetValue( "Plants", "IsCactusBonemealable", Request.PostParams["World_CactusBonemealable"] )
 		end
 		if( ( Request.PostParams["World_BiomeGen"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "BiomeGen" )
 			WorldIni:SetValue( "Generator", "BiomeGen", Request.PostParams["World_BiomeGen"] )
 		end
 			if( ( Request.PostParams["World_Biome"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ConstantBiome" )
 				WorldIni:SetValue( "Generator", "ConstantBiome", Request.PostParams["World_Biome"] )
 			end
 			if( ( Request.PostParams["World_MultiStepMapOceanCellSize"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "MultiStepMapOceanCellSize" )
 				WorldIni:SetValue( "Generator", "MultiStepMapOceanCellSize", Request.PostParams["World_MultiStepMapOceanCellSize"] )
 			end
 			if( ( Request.PostParams["World_MultiStepMapMushroomIslandSize"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "MultiStepMapMushroomIslandSize" )
 				WorldIni:SetValue( "Generator", "MultiStepMapMushroomIslandSize", Request.PostParams["World_MultiStepMapMushroomIslandSize"] )
 			end
 			if( ( Request.PostParams["World_MultiStepMapRiverCellSize"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "MultiStepMapRiverCellSize" )
 				WorldIni:SetValue( "Generator", "MultiStepMapRiverCellSize", Request.PostParams["World_MultiStepMapRiverCellSize"] )
 			end
 			if( ( Request.PostParams["World_MultiStepMapRiverWidth"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "MultiStepMapRiverWidth" )
 				WorldIni:SetValue( "Generator", "MultiStepMapRiverWidth", Request.PostParams["World_MultiStepMapRiverWidth"] )
 			end
 			if( ( Request.PostParams["World_MultiStepMapLandBiomeSize"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "MultiStepMapLandBiomeSize" )
 				WorldIni:SetValue( "Generator", "MultiStepMapLandBiomeSize", Request.PostParams["World_MultiStepMapLandBiomeSize"] )
 			end
 			if( ( Request.PostParams["World_DistortedVoronoiCellSize"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "DistortedVoronoiCellSize" )
 				WorldIni:SetValue( "Generator", "DistortedVoronoiCellSize", Request.PostParams["World_DistortedVoronoiCellSize"] )
 			end
 			if( ( Request.PostParams["World_DistortedVoronoiBiomes"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "DistortedVoronoiBiomes" )
 				WorldIni:SetValue( "Generator", "DistortedVoronoiBiomes", Request.PostParams["World_DistortedVoronoiBiomes"] )
 			end
 			if( ( Request.PostParams["World_VoronoiCellSize"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "VoronoiCellSize" )
 				WorldIni:SetValue( "Generator", "VoronoiCellSize", Request.PostParams["World_VoronoiCellSize"] )
 			end
 			if( ( Request.PostParams["World_VoronoiBiomesdVoronoiBiomes"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "VoronoiBiomes" )
 				WorldIni:SetValue( "Generator", "VoronoiBiomes", Request.PostParams["World_VoronoiBiomes"] )
 			end
 			if( ( Request.PostParams["World_CheckerBoardBiomes"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "CheckerBoardBiomes" )
 				WorldIni:SetValue( "Generator", "CheckerBoardBiomes", Request.PostParams["World_CheckerBoardBiomes"] )
 			end
 			if( ( Request.PostParams["World_CheckerBoardBiomeSize"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "CheckerBoardBiomeSize" )
 				WorldIni:SetValue( "Generator", "CheckerBoardBiomeSize", Request.PostParams["World_CheckerBoardBiomeSize"] )
 			end
 		if( ( Request.PostParams["World_HeightGen"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "HeightGen" )
 			WorldIni:SetValue( "Generator", "HeightGen", Request.PostParams["World_HeightGen"] )
 		end
 			if( ( Request.PostParams["World_FlatHeight"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "FlatHeight" )
 				WorldIni:SetValue( "Generator", "FlatHeight", Request.PostParams["World_FlatHeight"] )
 			end
 		if( ( Request.PostParams["World_CompositionGen"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "CompositionGen" )
 			WorldIni:SetValue( "Generator", "CompositionGen", Request.PostParams["World_CompositionGen"] )
 		end
 			if( ( Request.PostParams["World_Noise3DSeaLevel"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "Noise3DSeaLevel" )
 				WorldIni:SetValue( "Generator", "Noise3DSeaLevel", Request.PostParams["World_Noise3DSeaLevel"] )
 			end
 			if( ( Request.PostParams["World_Noise3DHeightAmplification"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "Noise3DHeightAmplification" )
 				WorldIni:SetValue( "Generator", "Noise3DHeightAmplification", Request.PostParams["World_Noise3DHeightAmplification"] )
 			end
 			if( ( Request.PostParams["World_Noise3DMidPoint"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "Noise3DMidPoint" )
 				WorldIni:SetValue( "Generator", "Noise3DMidPoint", Request.PostParams["World_Noise3DMidPoint"] )
 			end
 			if( ( Request.PostParams["World_Noise3DFrequencyX"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "Noise3DFrequencyX" )
 				WorldIni:SetValue( "Generator", "Noise3DFrequencyX", Request.PostParams["World_Noise3DFrequencyX"] )
 			end
 			if( ( Request.PostParams["World_Noise3DFrequencyY"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "Noise3DFrequencyY" )
 				WorldIni:SetValue( "Generator", "Noise3DFrequencyY", Request.PostParams["World_Noise3DFrequencyY"] )
 			end
 			if( ( Request.PostParams["World_Noise3DFrequencyZ"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "Noise3DFrequencyZ" )
 				WorldIni:SetValue( "Generator", "Noise3DFrequencyZ", Request.PostParams["World_Noise3DFrequencyZ"] )
 			end
 			if( ( Request.PostParams["World_Noise3DAirThreshold"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "Noise3DAirThreshold" )
 				WorldIni:SetValue( "Generator", "Noise3DAirThreshold", Request.PostParams["World_Noise3DAirThreshold"] )
 			end
 			if( ( Request.PostParams["World_ClassicSeaLevel"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicSeaLevel" )
 				WorldIni:SetValue( "Generator", "ClassicSeaLevel", Request.PostParams["World_ClassicSeaLevel"] )
 			end
 			if( ( Request.PostParams["World_ClassicBeachHeight"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicBeachHeight" )
 				WorldIni:SetValue( "Generator", "ClassicBeachHeight", Request.PostParams["World_ClassicBeachHeight"] )
 			end
 			if( ( Request.PostParams["World_ClassicBeachDepth"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicBeachDepth" )
 				WorldIni:SetValue( "Generator", "ClassicBeachDepth", Request.PostParams["World_ClassicBeachDepth"] )
 			end
 			if( ( Request.PostParams["World_ClassicBlockTop"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicBlockTop" )
 				WorldIni:SetValue( "Generator", "ClassicBlockTop", Request.PostParams["World_ClassicBlockTop"] )
 			end
 			if( ( Request.PostParams["World_ClassicBlockMiddle"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicBlockMiddle" )
 				WorldIni:SetValue( "Generator", "ClassicBlockMiddle", Request.PostParams["World_ClassicBlockMiddle"] )
 			end
 			if( ( Request.PostParams["World_ClassicBlockBottom"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicBlockBottom" )
 				WorldIni:SetValue( "Generator", "ClassicBlockBottom", Request.PostParams["World_ClassicBlockBottom"] )
 			end
 			if( ( Request.PostParams["World_ClassicBlockBeach"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicBlockBeach" )
 				WorldIni:SetValue( "Generator", "ClassicBlockBeach", Request.PostParams["World_ClassicBlockBeach"] )
 			end
 			if( ( Request.PostParams["World_ClassicBlockBeachBottom"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicBlockBeachBottom" )
 				WorldIni:SetValue( "Generator", "ClassicBlockBeachBottom", Request.PostParams["World_ClassicBlockBeachBottom"] )
 			end
 			if( ( Request.PostParams["World_ClassicBlockSea"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "ClassicBlockSea" )
 				WorldIni:SetValue( "Generator", "ClassicBlockSea", Request.PostParams["World_ClassicBlockSea"] )
 			end
 			if( ( Request.PostParams["World_SameBlockType"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "SameBlockType" )
 				WorldIni:SetValue( "Generator", "SameBlockType", Request.PostParams["World_SameBlockType"] )
 			end
 			if( ( Request.PostParams["World_SameBlockBedrocked"] ) ~= nil ) then
-				WorldIni:DeleteValue( "Generator", "SameBlockBedrocked" )
 				WorldIni:SetValue( "Generator", "SameBlockBedrocked", Request.PostParams["World_SameBlockBedrocked"] )
 			end
 		if( ( Request.PostParams["World_Structures"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "Structures" )
 			WorldIni:SetValue( "Generator", "Structures", Request.PostParams["World_Structures"] )
 		end
 		if( ( Request.PostParams["World_Finishers"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "Finishers" )
 			WorldIni:SetValue( "Generator", "Finishers", Request.PostParams["World_Finishers"] )
 		end
 		if( ( Request.PostParams["World_Generator"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "Generator" )
 			WorldIni:SetValue( "Generator", "Generator", Request.PostParams["World_Generator"] )
 		end
 		if( ( Request.PostParams["World_MineShaftsGridSize"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "MineShaftsGridSize" )
 			WorldIni:SetValue( "Generator", "MineShaftsGridSize", Request.PostParams["World_MineShaftsGridSize"] )
 		end
 		if( ( Request.PostParams["World_MineShaftsMaxSystemSize"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "MineShaftsMaxSystemSize" )
 			WorldIni:SetValue( "Generator", "MineShaftsMaxSystemSize", Request.PostParams["World_MineShaftsMaxSystemSize"] )
 		end
 		if( ( Request.PostParams["World_MineShaftsChanceCorridor"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "MineShaftsChanceCorridor" )
 			WorldIni:SetValue( "Generator", "MineShaftsChanceCorridor", Request.PostParams["World_MineShaftsChanceCorridor"] )
 		end
 		if( ( Request.PostParams["World_MineShaftsChanceCrossing"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "MineShaftsChanceCrossing" )
 			WorldIni:SetValue( "Generator", "MineShaftsChanceCrossing", Request.PostParams["World_MineShaftsChanceCrossing"] )
 		end
 		if( ( Request.PostParams["World_MineShaftsChanceStaircase"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "MineShaftsChanceStaircase" )
 			WorldIni:SetValue( "Generator", "MineShaftsChanceStaircase", Request.PostParams["World_MineShaftsChanceStaircase"] )
 		end
 		if( ( Request.PostParams["World_LavaLakesProbability"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "LavaLakesProbability" )
 			WorldIni:SetValue( "Generator", "LavaLakesProbability", Request.PostParams["World_LavaLakesProbability"] )
 		end
 		if( ( Request.PostParams["World_WaterLakesProbability"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "WaterLakesProbability" )
 			WorldIni:SetValue( "Generator", "WaterLakesProbability", Request.PostParams["World_WaterLakesProbability"] )
 		end
 		if( ( Request.PostParams["World_BottomLavaLevel"] ) ~= nil ) then
-			WorldIni:DeleteValue( "Generator", "BottomLavaLevel" )
 			WorldIni:SetValue( "Generator", "BottomLavaLevel", Request.PostParams["World_BottomLavaLevel"] )
 		end
 		
-		WorldIni:WriteFile()
+		WorldIni:WriteFile(SelectedWorld:GetIniFileName())
 	end
 	Content = Content .. "<h4>World for operations: " .. WORLD .. "</h4>"
 	Content = Content .. "<table>"
