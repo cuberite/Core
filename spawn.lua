@@ -1,5 +1,8 @@
 function HandleSpawnCommand(Split, Player)
 	
+	local WorldIni = cIniFile()
+	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
+	
 	SpawnX = WorldIni:GetValue("SpawnPosition", "X")
 	SpawnY = WorldIni:GetValue("SpawnPosition", "Y")
 	SpawnZ = WorldIni:GetValue("SpawnPosition", "Z")
@@ -14,6 +17,9 @@ end
 
 function HandleSetSpawnCommand(Split, Player)
 	
+	local WorldIni = cIniFile()
+	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
+	
 	PlayerX = Player:GetPosX()
 	PlayerY = Player:GetPosY()
 	PlayerZ = Player:GetPosZ()
@@ -25,7 +31,7 @@ function HandleSetSpawnCommand(Split, Player)
 	WorldIni:SetValue("SpawnPosition", "X", PlayerX)
 	WorldIni:SetValue("SpawnPosition", "Y", PlayerY)
 	WorldIni:SetValue("SpawnPosition", "Z", PlayerZ)
-	WorldIni:WriteFile()
+	WorldIni:WriteFile(Player:GetWorld():GetIniFileName())
 	
 	SendMessageSuccess( Player, string.format("Changed spawn position to [X:%i Y:%i Z:%i]", PlayerX, PlayerY, PlayerZ) )
 	return true

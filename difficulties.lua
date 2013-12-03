@@ -1,8 +1,10 @@
 function HandleDifficultyCommand ( Split, Player )
+	local WorldIni = cIniFile()
+	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
 	World = Player:GetWorld()
 
 	if( #Split ~= 2 ) then
-		Player:SendMessage( "Usage: /difficulty [peaceful|easy|normal|hard]" )
+		Player:SendMessage( "Usage: /difficulty [peaceful/easy/normal/hard]" )
 		return true
 	end
 
@@ -31,7 +33,7 @@ function HandleDifficultyCommand ( Split, Player )
 		Player:SendMessage( "World difficulty set to hard" )
 		return true
 	else
-		Player:SendMessage( "Usage: /difficulty [peaceful|easy|normal|hard]" )
+		Player:SendMessage( "Usage: /difficulty [peaceful/easy/normal/hard]" )
 		return true
 	end
 end
