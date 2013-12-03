@@ -4,7 +4,7 @@ function HandleDifficultyCommand ( Split, Player )
 	World = Player:GetWorld()
 
 	if( #Split ~= 2 ) then
-		Player:SendMessage( "Usage: /difficulty [peaceful/easy/normal/hard]" )
+		SendMessage( Player, "Usage: /difficulty [peaceful/easy/normal/hard]" )
 		return true
 	end
 
@@ -12,28 +12,28 @@ function HandleDifficultyCommand ( Split, Player )
 		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
 		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   0)
 		WorldIni:WriteFile(World:GetIniFileName())
-		Player:SendMessage( "World difficulty set to peaceful" )
+		SendMessage( Player, "World difficulty set to peaceful" )
 		return true
 	elseif (Split[2] == "easy") or (Split[2] == "1") or (Split[2] == "e") then
 		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
 		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   1)
 		WorldIni:WriteFile(World:GetIniFileName())
-		Player:SendMessage( "World difficulty set to easy" )
+		SendMessage( Player, "World difficulty set to easy" )
 		return true
 	elseif (Split[2] == "normal") or (Split[2] == "2") or (Split[2] == "n") then
 		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
 		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   2)
 		WorldIni:WriteFile(World:GetIniFileName())
-		Player:SendMessage( "World difficulty set to normal" )
+		SendMessage( Player, "World difficulty set to normal" )
 		return true
 	elseif (Split[2] == "hard") or (Split[2] == "3") or (Split[2] == "h") then
 		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
 		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   3)
 		WorldIni:WriteFile(World:GetIniFileName())
-		Player:SendMessage( "World difficulty set to hard" )
+		SendMessage( Player, "World difficulty set to hard" )
 		return true
 	else
-		Player:SendMessage( "Usage: /difficulty [peaceful/easy/normal/hard]" )
+		SendMessage( Player, "Usage: /difficulty [peaceful/easy/normal/hard]" )
 		return true
 	end
 end
