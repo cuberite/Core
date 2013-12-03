@@ -35,7 +35,7 @@ function HandleHelpCommand( Split, Player )
 	SendMessage( Player, "Page " .. PageRequested .. " out of " .. CurrentPage .. "." )
 	SendMessage( Player, "'-' means no prefix, '~' means a value is required." )
 	for idx, msg in ipairs( Output ) do
-		SendMessage( Player, msg )
+		Player:SendMessage(msg) -- Send plain message without an [INFO]
 	end
 
 	return true
