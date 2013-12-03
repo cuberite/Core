@@ -1,7 +1,7 @@
 function HandleTimeCommand( Split, Player )
 
 	if Split[2] == nil then
-		SendMessage( Player, "Usage: /time [Day/Night/Set/Add]" )
+		SendMessage( Player, "Usage: /time [day/night] or [set/add] [amount]" )
 		return true
 	end
 
@@ -23,7 +23,7 @@ function HandleTimeCommand( Split, Player )
 		cRoot:Get():BroadcastChat( cChatColor.Green .. "[INFO] " .. cChatColor.White .. Split[3] .. "Was added to the time" )
 		return true
 	else
-		SendMessage( Player, "Usage: /time [Day/Night/Set/Add]" )
+		SendMessage( Player, "Usage: /time [day/night] or [set/add] [amount]" )
 		return true
 	end
 	return true
