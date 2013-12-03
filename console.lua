@@ -118,12 +118,11 @@ function HandleConsoleKick(Split)
 		Reason = table.concat(Split, " ", 3)
 	end
 
-	local HasKicked, PlayerName = KickPlayer(Split[2], Reason)
-	if (HasKicked) then
-		return true, "Successfully kicked \"" .. PlayerName .. "\""
+	if (KickPlayer(Split[2], Reason)) then
+		return true
 	end
 
-	return true, "Cannot find \"" .. Split[2] .. "\""
+	return true, "Cannot find player " .. Split[2]
 end
 
 
@@ -143,8 +142,8 @@ function HandleConsoleUnban(Split)
 	BannedPlayersIni:SetValueB("Banned", Split[2], false, false)
 	BannedPlayersIni:WriteFile("banned.ini")
 
-	local Server = cRoot:Get():GetServer()
-	return true, "Unbanned " .. Split[2]
+	LOGINFO("Unbanned " .. Split[2])
+	return true
 
 end
 

@@ -56,11 +56,6 @@ function KickPlayer( PlayerName, Reason )
 	end
 
 	local FoundPlayerCallback = function( a_Player )
-		RealName = a_Player:GetName()
-
-		LOGINFO( "'" .. RealName .. "' is being kicked for ( "..Reason..") " )
-		cRoot:Get():BroadcastChat("Kicking " .. RealName)
-
 		a_Player:GetClientHandle():Kick(Reason)
 		return true
 	end
@@ -70,7 +65,7 @@ function KickPlayer( PlayerName, Reason )
 		return false
 	end
 
-	return true, RealName  -- Player has been kicked
+	return true -- Player has been kicked
 
 end
 

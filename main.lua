@@ -16,8 +16,6 @@ g_UsePrefixes = true
 
 
 -- Global variables
-BannedPlayersIni = {}
-WhiteListIni = {}
 BackCoords = {}
 Messages = {}
 Destination = {}
