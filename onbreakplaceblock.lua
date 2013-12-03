@@ -24,8 +24,6 @@ function OnPlayerPlacingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX
 			if not ((BlockZ <= (zcoord + PROTECTRADIUS)) and (BlockZ >= (zcoord - PROTECTRADIUS))) then 
 				return false -- Not in spawn area.
 			end
-		
-			--WriteLog(1, BlockX, BlockY, BlockZ, Player:GetName(), id, meta)
 
 			WarnPlayer(Player)
 

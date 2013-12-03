@@ -157,44 +157,6 @@ function Initialize(Plugin)
 	return true
 end
 
-
-
-
-
-function WriteLog( breakPlace, X, Y, Z, player, id, meta )
-
-	local logText = {}
-
-	table.insert( logText, player )
-	table.insert( logText, " tried to " )
-
-	if breakPlace == 0 then
-		table.insert( logText, "break " )
-	else
-		table.insert( logText, "place " )
-	end
-
-
-	table.insert( logText, ItemToString(cItem(id, 1, meta)) )
-	table.insert( logText, " at ")
-	table.insert( logText, tostring(X) )
-	table.insert( logText, ", ")
-	table.insert( logText, tostring(Y) )
-	table.insert( logText, ", ")
-	table.insert( logText, tostring(Z) )
-	table.insert( logText, "." )
-
-	LOGINFO( table.concat( logText, '') )
-
-	if LOGTOFILE then
-		local logFile = io.open( Plugin:GetLocalDirectory() .. '/blocks.log', 'a' )
-		logFile:write( table.concat( logText, '' ) .. "\n" )
-		logFile:close()
-	end
-
-	return
-end
-
 function WarnPlayer( Player )
 	SendMessageFailure( Player, "Go further from spawn to build" )
 	return true
