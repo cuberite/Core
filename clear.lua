@@ -1,8 +1,7 @@
 function HandleClearCommand( Split, Player )
 
   if (Split[2] == nil) then
-     SendMessage( Player, "Usage: /clear <player>" )
-     return true
+     Split[2] = Player:GetName()
   end
 
   local InventoryCleared = false;
