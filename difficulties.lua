@@ -1,7 +1,8 @@
 function HandleDifficultyCommand ( Split, Player )
+
 	local WorldIni = cIniFile()
-	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
 	World = Player:GetWorld()
+	WorldIni:ReadFile(World:GetIniFileName())
 
 	if( #Split ~= 2 ) then
 		SendMessage( Player, "Usage: /difficulty [peaceful/easy/normal/hard]" )
@@ -9,33 +10,28 @@ function HandleDifficultyCommand ( Split, Player )
 	end
 
 	if (Split[2] == "peaceful") or (Split[2] == "0") or (Split[2] == "p") then
-		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
-		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   0)
-		WorldIni:WriteFile(World:GetIniFileName())
+		WorldIni:DeleteValue("Difficulty", "WorldDifficulty")
+		WorldIni:SetValue("Difficulty", "WorldDifficulty", 0)
 		SendMessage( Player, "World difficulty set to peaceful" )
-		return true
 	elseif (Split[2] == "easy") or (Split[2] == "1") or (Split[2] == "e") then
-		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
-		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   1)
-		WorldIni:WriteFile(World:GetIniFileName())
+		WorldIni:DeleteValue("Difficulty", "WorldDifficulty")
+		WorldIni:SetValue("Difficulty", "WorldDifficulty", 1)
 		SendMessage( Player, "World difficulty set to easy" )
-		return true
 	elseif (Split[2] == "normal") or (Split[2] == "2") or (Split[2] == "n") then
-		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
-		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   2)
-		WorldIni:WriteFile(World:GetIniFileName())
+		WorldIni:DeleteValue("Difficulty", "WorldDifficulty")
+		WorldIni:SetValue("Difficulty", "WorldDifficulty", 2)
 		SendMessage( Player, "World difficulty set to normal" )
-		return true
 	elseif (Split[2] == "hard") or (Split[2] == "3") or (Split[2] == "h") then
-		WorldIni:DeleteValue("Difficulty",   "WorldDifficulty")
-		WorldIni:SetValue("Difficulty",   "WorldDifficulty",   3)
-		WorldIni:WriteFile(World:GetIniFileName())
+		WorldIni:DeleteValue("Difficulty", "WorldDifficulty")
+		WorldIni:SetValue("Difficulty", "WorldDifficulty", 3)
 		SendMessage( Player, "World difficulty set to hard" )
-		return true
 	else
 		SendMessage( Player, "Usage: /difficulty [peaceful/easy/normal/hard]" )
-		return true
 	end
+	
+	WorldIni:WriteFile(World:GetIniFileName())
+	return true
+	
 end
 
 function OnTakeDamage(Receiver, TDI)
