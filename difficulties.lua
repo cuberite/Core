@@ -1,7 +1,7 @@
 function HandleDifficultyCommand ( Split, Player )
 
 	local WorldIni = cIniFile()
-	World = Player:GetWorld()
+	local World = Player:GetWorld()
 	WorldIni:ReadFile(World:GetIniFileName())
 
 	if( #Split ~= 2 ) then
