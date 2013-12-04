@@ -27,7 +27,7 @@ local defaultLang = "en" -- Language provided with the plugin. Users must not ch
 
 -- Start the code.
 
-function GetTranslation( Slug, Player )
+function GetTranslation( Player, Slug )
 
 	-- Get a reference to the helper plugin.
 	local helper = cPluginManager():Get():GetPlugin( "TransAPI" )
