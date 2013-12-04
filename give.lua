@@ -55,10 +55,8 @@ function HandleGiveCommand(Split, Player)
 	end
 
 	-- Finally give the items to the player.
-	itemStatus = cRoot:Get():FindAndDoWithPlayer( playerName, giveItems )
-
 	-- Check to make sure that giving items was successful.
-	if not itemStatus then
+	if not cRoot:Get():FindAndDoWithPlayer( playerName, giveItems ) then
 		SendMessageFailure( Player, "There was no player that matched your query." )
 	end
 
