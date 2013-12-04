@@ -1,7 +1,7 @@
 function HandleKillCommand( Split, Player )
 
 	if (Split[2] == nil) then
-		Player:TakeDamage(dtInVoid, nil, 1000, 1000, 0)
+		Player:TakeDamage(dtPlugin, nil, 1000, 1000, 0)
 		return true
 	end
 
@@ -12,7 +12,7 @@ function HandleKillCommand( Split, Player )
 					HasKilled = creative
 				end
 				if (OtherPlayer:GetGameMode() == 0) then
-					OtherPlayer:TakeDamage(dtInVoid, nil, 1000, 1000, 0)
+					OtherPlayer:TakeDamage(dtPlugin, nil, 1000, 1000, 0)
 					HasKilled = true
 				end
 		 end
