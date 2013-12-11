@@ -109,33 +109,35 @@ function Initialize(Plugin)
 	)
 
 	-- Load whitelist:
-	WhiteListIni = cIniFile()
+	WhiteListIni = cIniFile() -- Global
 	if WhiteListIni:ReadFile("whitelist.ini") then
 		if WhiteListIni:GetValueB("WhiteListSettings", "WhiteListOn", false) then
 			if (WhiteListIni:GetNumValues( "WhiteList" ) > 0) then
-				LOGINFO( "Core: loaded "  .. WhiteListIni:GetNumValues('WhiteList') .. " whitelisted players." )
+				LOGINFO( "Loaded "  .. WhiteListIni:GetNumValues('WhiteList') .. " whitelisted players." )
 			else
-				LOGWARNING("WARNING: WhiteList is on, but there are no people in the whitelist!" )
+				LOGWARNING("Whitelist is on, but there are no players in the whitelist!" )
 			end
 		end
 	else
+		WhiteListIni:AddHeaderComment( "This is the whitelist file for MCServer, used for whitelisting players" )
+		WhiteListIni:AddHeaderComment( "The format is: PlayerName=1 for whitelisted or PlayerName=0 for not (or just delete the value)" )
 		WhiteListIni:SetValueB( "WhiteListSettings", "WhiteListOn", false )
 		WhiteListIni:SetValue( "WhiteList", "", "" )	-- So it adds an empty header
 		WhiteListIni:DeleteValue( "WhiteList", "" ) -- And remove the value
-		WhiteListIni:KeyComment( "WhiteList", "PlayerName=1" )
 		WhiteListIni:WriteFile("whitelist.ini")
 	end
 
 	-- Load banned:
-	BannedPlayersIni = cIniFile()
+	BannedPlayersIni = cIniFile() -- Global
 	if (BannedPlayersIni:ReadFile("banned.ini")) then
 		if (BannedPlayersIni:GetNumValues( "Banned" ) > 0) then
-			LOGINFO( "Core: loaded "  .. BannedPlayersIni:GetNumValues("Banned") .. " banned players." )
+			LOGINFO( "Loaded "  .. BannedPlayersIni:GetNumValues("Banned") .. " banned players." )
 		end
 	else
+		WhiteListIni:AddHeaderComment( "This is the banned players file for MCServer, used for storing banned playernames" )
+		WhiteListIni:AddHeaderComment( "The format is: PlayerName=1 for banned or PlayerName=0 for not (or just delete the value)" )
 		BannedPlayersIni:SetValue( "Banned", "", "" ) -- So it adds an empty header
 		BannedPlayersIni:DeleteValue( "Banned", "" ) -- And remove the value
-		BannedPlayersIni:KeyComment( "Banned", "PlayerName=1" )
 		BannedPlayersIni:WriteFile("banned.ini")
 	end
 
