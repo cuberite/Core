@@ -182,10 +182,10 @@ function HandleConsoleListGroups(Split)
 	end
 
 	-- Read the groups:
-	Number = GroupsIni:NumKeys()
+	Number = GroupsIni:GetNumKeys()
 	Groups = {}
 	for i = 0, Number do
-		table.insert(Groups, GroupsIni:KeyName(i))
+		table.insert(Groups, GroupsIni:GetKeyName(i))
 	end
 
 	-- Output the groups, concatenated to a string:
