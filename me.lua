@@ -13,7 +13,7 @@ function HandleMeCommand( Split, Player )
 	end
 
 	if Split[1] ~= nil then
-		cRoot:Get():GetServer():BroadcastChat( Player:GetName() .. "" .. Message )
+		cRoot:Get():BroadcastChat( Player:GetName() .. "" .. Message )
 		return true
 	end
 
