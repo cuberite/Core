@@ -6,11 +6,3 @@ function OnPlayerJoined(Player)
 	return false
 	
 end
-
-function OnDisconnect(Player, Reason)
-
-	cRoot:Get():BroadcastChat(cChatColor.Yellow .. "[LEAVE] " .. cChatColor.White .. Player:GetName() .. " has left the game" )
-	LOGINFO("Player " .. Player:GetName() .. " has left the game." )
-	return true
-	
-end

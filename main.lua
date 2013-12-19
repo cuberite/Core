@@ -35,7 +35,6 @@ function Initialize(Plugin)
 	-- Register for all hooks needed
 	cPluginManager.AddHook( cPluginManager.HOOK_CHAT, OnChat )
 	cPluginManager.AddHook( cPluginManager.HOOK_CRAFTING_NO_RECIPE, OnCraftingNoRecipe )
-	cPluginManager.AddHook( cPluginManager.HOOK_DISCONNECT, OnDisconnect )
 	cPluginManager.AddHook( cPluginManager.HOOK_KILLING, OnKilling )
 	cPluginManager.AddHook( cPluginManager.HOOK_LOGIN, OnLogin )
 	cPluginManager.AddHook( cPluginManager.HOOK_PLAYER_BREAKING_BLOCK, OnPlayerBreakingBlock )
