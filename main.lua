@@ -156,11 +156,6 @@ function Initialize(Plugin)
 	return true
 end
 
-function WarnPlayer( Player )
-	SendMessageFailure( Player, "Go further from spawn to build" )
-	return true
-end
-
 function OnDisable()
 	LOG( "Disabled Core!" )
 end

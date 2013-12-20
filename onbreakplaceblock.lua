@@ -7,6 +7,7 @@ function OnPlayerPlacingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX
 	local PROTECTRADIUS = WorldsSpawnProtect[Player:GetWorld():GetName()];
 
 	if not (Player:HasPermission("core.build")) then
+		SendMessageFailure( Player, "You do not have the 'core.build' permission, thou cannot build" )
 		return true
 	else
 		if not (Player:HasPermission("core.spawnprotect.bypass")) and (PROTECTRADIUS ~= 0) then
@@ -25,7 +26,7 @@ function OnPlayerPlacingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX
 				return false -- Not in spawn area.
 			end
 
-			WarnPlayer(Player)
+			SendMessageFailure( Player, "Go further from spawn to build" )
 
 			return true
 		end
@@ -58,9 +59,7 @@ function OnPlayerBreakingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, Status
 					return false -- Not in spawn area.
 				end
 			
-				--WriteLog(0, BlockX, BlockY, BlockZ, Player:GetName(), id, meta)
-				
-				WarnPlayer(Player)
+				SendMessageFailure( Player, "Go further from spawn to build" )
 
 				return true
 			end
