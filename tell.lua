@@ -4,8 +4,7 @@ function HandleTellCommand(Split, Player, OtherPlayer)
 		return true
 	end
 	
-	local SendMessage = function(OtherPlayer)
-		
+	local SendMessage = function(OtherPlayer)		
 		Sender = Player:GetName()
 		Reciever = Split[2]
 	
@@ -16,12 +15,13 @@ function HandleTellCommand(Split, Player, OtherPlayer)
 			
 			-- Conforms to http://forum.mc-server.org/showthread.php?tid=1212
 			OtherPlayer:SendMessage(cChatColor.LightBlue .. "[MSG: " .. Sender .. "] " .. cChatColor.White .. newSplit )
-		else
-			SendMessageFailure( Player, 'Player "' ..Split[2].. '" not found')
+			return true
 		end
 	end
 
-	cRoot:Get():ForEachPlayer(SendMessage)
+	cRoot:Get():ForEachPlayer(SendMessage)	
+	SendMessageFailure( Player, 'Player "' ..Split[2].. '" not found') -- Codepath comes here if no matching player was found
+	
 	return true;
 end
 
