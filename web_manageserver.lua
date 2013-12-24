@@ -7,7 +7,7 @@ function HandleRequest_ManageServer( Request )
 	elseif (Request.PostParams["StopServer"] ~= nil) then
 		cRoot:Get():QueueExecuteConsoleCommand("stop");
 	elseif (Request.PostParams["WorldSaveAllChunks"] ~= nil) then
-		cRoot:Get():GetWorld(Request.PostParams["WorldSaveAllChunks"]):SaveAllChunks();
+		cRoot:Get():GetWorld(Request.PostParams["WorldSaveAllChunks"]):QueueSaveAllChunks();
 	end
 	Content = Content .. [[
 	<form method="POST">

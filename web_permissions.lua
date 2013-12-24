@@ -107,7 +107,7 @@ local function AddPlayers( Request )
 	<tr><td style="width: 20%;">Player:</td>
 	<td><input type="text" name="AddPlayer" value=""></td></tr><br>
 	<tr><td style="width: 20%;">Group:</td>
-	<td>]] .. HTML_Select_Group("AddGroup", GroupsIni:KeyName(0) ) .. [[</td></tr>
+	<td>]] .. HTML_Select_Group("AddGroup", GroupsIni:GetKeyName(0) ) .. [[</td></tr>
 	</table>
 	<input type="submit" value="Add Player" name="AddPlayerToGroup">]]
 
