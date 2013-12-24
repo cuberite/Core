@@ -20,7 +20,7 @@ function HandleRequest_WhiteList( Request )
 		UpdateMessage = "Removed <b>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</b> from whitelist."
 		WhiteListIni:WriteFile("whitelist.ini")
 	elseif( Request.PostParams["whitelist-reload"] ~= nil ) then
-		WhiteListIni:Erase() -- Empty entire loaded ini first, otherwise weird shit goes down
+		WhiteListIni:Clear() -- Empty entire loaded ini first, otherwise weird shit goes down
 		WhiteListIni:ReadFile("whitelist.ini")
 		UpdateMessage = "Loaded from disk"
 	elseif( Request.Params["whitelist-setenable"] ~= nil ) then
