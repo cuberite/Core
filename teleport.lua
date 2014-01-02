@@ -10,8 +10,27 @@ function HandleTPCommand(a_Split, a_Player)
 
 		-- Teleport to XYZ coords specified in a_Split[2, 3, 4]:
 		SetBackCoordinates(a_Player)
-		a_Player:TeleportToCoords( a_Split[2], a_Split[3], a_Split[4] )
-		SendMessageSuccess( a_Player, "You teleported to [X:" .. a_Split[2] .. " Y:" .. a_Split[3] .. " Z:" .. a_Split[4] .. "]" )
+		
+		-- For relative coordinates
+		local Function;
+		local X = a_Split[2];
+		Function = loadstring(a_Split[2]:gsub("~", "return " .. a_Player:GetPosX() .. "+0"));
+		if Function then
+			X = Function();
+		end
+		local Y = a_Split[3];
+		Function = loadstring(a_Split[3]:gsub("~", "return " .. a_Player:GetPosY() .. "+0"));
+		if Function then
+			Y = Function();
+		end
+		local Z = a_Split[4];
+		Function = loadstring(a_Split[4]:gsub("~", "return " .. a_Player:GetPosZ() .. "+0"));
+		if Function then
+			Z = Function();
+		end
+		
+		a_Player:TeleportToCoords( X, Y, Z )
+		SendMessageSuccess( a_Player, "You teleported to [X:" .. X .. " Y:" .. Y .. " Z:" .. Z .. "]" )
 		return true
 
 	else
