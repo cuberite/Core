@@ -41,7 +41,7 @@ function HandleGroupsCommand( Split, Player )
 	local GroupsIni = cIniFile()
 	GroupsIni:ReadFile("groups.ini")
 
-	Number = GroupsIni:NumKeys() - 1
+	Number = GroupsIni:GetNumKeys() - 1
 	Groups = {}
 	for i = 0, Number do
 		table.insert(Groups, GroupsIni:KeyName(i))
