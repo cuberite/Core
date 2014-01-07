@@ -32,7 +32,6 @@ function HandleRankCommand( Split, Player )
 	end
 
 	cRoot:Get():ForEachWorld( loopWorlds )
-	SendMessageSuccess(Player, "Player " .. Split[2] .. " Was moved to " .. Split[3])
 
 	return true
 end

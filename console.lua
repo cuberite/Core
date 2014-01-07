@@ -281,7 +281,7 @@ function HandleConsoleRank(Split)
 			World:ForEachPlayer(
 				function (Player)
 					if (Player:GetName() == Split[2]) then
-						SendMessage( Player, "You were moved to group " .. Split[3] )
+						SendMessageSuccess( Player, "You were moved to group " .. Split[3] )
 						Player:LoadPermissionsFromDisk()
 					end
 				end
