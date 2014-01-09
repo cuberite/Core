@@ -71,7 +71,7 @@ tonibm19
 
 (If you want your name here, please submit a PR after you've done your contributions.)
 
-How to Use
-----------
+How to Install
+--------------
 
-Core should be installed in MCServer by default.
+Core should be installed in MCServer by default, so it needs no explicit instalation.
