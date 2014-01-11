@@ -97,7 +97,6 @@ function HandleConsoleBan(Split)
 	else
 		LOGINFO("Successfully kicked and banned player" )
 	end
-	BannedPlayersIni:DeleteValue("Banned", Split[2])
 	BannedPlayersIni:SetValueB("Banned", Split[2], true)
 	BannedPlayersIni:WriteFile("banned.ini")
 

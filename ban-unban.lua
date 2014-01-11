@@ -11,12 +11,10 @@ function HandleBanCommand( Split, Player )
 	end
 
 	if KickPlayer(Split[2], Reason) == false then
-		BannedPlayersIni:DeleteValue( "Banned", Split[2] )
 		BannedPlayersIni:SetValueB( "Banned", Split[2], true )
 		BannedPlayersIni:WriteFile( "banned.ini" )
 		SendMessageFailure( Player, "Could not find player, but banned anyway" )
 	else
-		BannedPlayersIni:DeleteValue( "Banned", Split[2] )
 		BannedPlayersIni:SetValueB( "Banned", Split[2], true )
 		BannedPlayersIni:WriteFile( "banned.ini" )
 		SendMessageSuccess( Player, "Successfully kicked and banned player" )
@@ -37,7 +35,6 @@ function HandleUnbanCommand( Split, Player )
 		return true
 	end
 
-	BannedPlayersIni:DeleteValue("Banned", Split[2])
 	BannedPlayersIni:SetValueB("Banned", Split[2], false)
 	BannedPlayersIni:WriteFile( "banned.ini" )
 
