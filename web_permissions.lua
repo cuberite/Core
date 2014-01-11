@@ -70,8 +70,9 @@ end
 local function HTML_Select_Group( name, defaultValue )
 	Groups = ""
 	for I=0, GroupsIni:GetNumKeys() - 1 do
+		local KeyName = GroupsIni:GetKeyName(I);
 		Groups = Groups ..
-		HTML_Option(GroupsIni:KeyName(I), GroupsIni:KeyName(I),  defaultValue == GroupsIni:KeyName(I) )
+		HTML_Option(KeyName, KeyName, (defaultValue == KeyName))
 	end
 	return [[<select name="]] .. name .. [[">]] .. Groups .. [[</select>]]
 end
