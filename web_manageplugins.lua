@@ -47,11 +47,8 @@ end
 local function AddPluginToIni( SettingsIni, PluginName )
 	RemovePluginFromIni( SettingsIni, PluginName ) -- Make sure there are no duplicates
 	
-	if( SettingsIni:SetValue("Plugins", "Plugin", PluginName, true ) == true ) then
-		return SettingsIni:WriteFile("settings.ini")
-	end
-	
-	return false
+	SettingsIni:AddValue("Plugins", "Plugin", PluginName)
+	return SettingsIni:WriteFile("settings.ini")
 end
 
 local function HandlePluginListChanges( Request, SettingsIni )

@@ -10,19 +10,15 @@ function HandleDifficultyCommand ( Split, Player )
 	end
 
 	if (Split[2] == "peaceful") or (Split[2] == "0") or (Split[2] == "p") then
-		WorldIni:DeleteValue("Difficulty", "WorldDifficulty")
 		WorldIni:SetValue("Difficulty", "WorldDifficulty", 0)
 		SendMessage( Player, "World difficulty set to peaceful" )
 	elseif (Split[2] == "easy") or (Split[2] == "1") or (Split[2] == "e") then
-		WorldIni:DeleteValue("Difficulty", "WorldDifficulty")
 		WorldIni:SetValue("Difficulty", "WorldDifficulty", 1)
 		SendMessage( Player, "World difficulty set to easy" )
 	elseif (Split[2] == "normal") or (Split[2] == "2") or (Split[2] == "n") then
-		WorldIni:DeleteValue("Difficulty", "WorldDifficulty")
 		WorldIni:SetValue("Difficulty", "WorldDifficulty", 2)
 		SendMessage( Player, "World difficulty set to normal" )
 	elseif (Split[2] == "hard") or (Split[2] == "3") or (Split[2] == "h") then
-		WorldIni:DeleteValue("Difficulty", "WorldDifficulty")
 		WorldIni:SetValue("Difficulty", "WorldDifficulty", 3)
 		SendMessage( Player, "World difficulty set to hard" )
 	else
