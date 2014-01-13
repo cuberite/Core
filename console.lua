@@ -10,6 +10,7 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
 	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " ~ Gives items to the specified player.")
 	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
+	PluginMgr:BindConsoleCommand("kill",        HandleConsoleKill,       " - Kill some player")
 	PluginMgr:BindConsoleCommand("list",        HandleConsoleList,       " - Lists all players in a machine-readable format")
 	PluginMgr:BindConsoleCommand("listgroups",  HandleConsoleListGroups, " - Shows a list of all the groups")
 	PluginMgr:BindConsoleCommand("numchunks",   HandleConsoleNumChunks,  " - Shows number of chunks currently loaded")
@@ -319,4 +320,25 @@ function HandleConsoleUnload(Split)
 	cRoot:Get():ForEachWorld(UnloadChunks)
 	Out = Out .. "Num loaded chunks after: " .. cRoot:Get():GetTotalChunkCount()
 	return true, Out
+end
+
+function HandleConsoleKill(Split)
+	if (#Split == 1) then
+		return true, "Usage: /kill [Player]"
+	end
+    
+	local HasKilled = false;
+	local KillPlayer = function(Player)
+		if (Player:GetName() == Split[2]) then
+			Player:TakeDamage(dtInVoid, nil, 1000, 1000, 0)
+			HasKilled = true         
+		end
+	end
+
+	cRoot:Get():FindAndDoWithPlayer(Split[2], KillPlayer);
+	if (HasKilled) then
+		return true, "Player " .. Split[2] .. " is killed" 
+	else
+		return true, "Player not found" 
+	end
 end
