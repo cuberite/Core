@@ -7,6 +7,7 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("ban",         HandleConsoleBan,        " ~ Bans a player by name")
 	PluginMgr:BindConsoleCommand("banlist ips", HandleConsoleBanList,    " - Lists all players banned by IP")
 	PluginMgr:BindConsoleCommand("banlist",     HandleConsoleBanList,    " - Lists all players banned by name")
+	PluginMgr:BindConsoleCommand("clear",       HandleConsoleClear  ,    " - Clear some player's inventory")
 	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
 	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " ~ Gives items to the specified player.")
 	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
@@ -21,6 +22,7 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("setversion",  HandleConsoleVersion,    " ~ Sets server version reported to 1.4+ clients")
 	PluginMgr:BindConsoleCommand("unban",       HandleConsoleUnban,      " ~ Unbans a player by name")
 	PluginMgr:BindConsoleCommand("unload",      HandleConsoleUnload,     " - Unloads all unused chunks")
+	PluginMgr:BindConsoleCommand("weather",     HandleConsoleWeather,    " - Change wheater on the specified world")
 
 end
 
@@ -341,4 +343,45 @@ function HandleConsoleKill(Split)
 	else
 		return true, "Player not found" 
 	end
+end
+
+function HandleConsoleClear(Split)
+	if (#Split == 1) then
+		return true, "Usage: /clear [Player]"
+    end
+    
+    local InventoryCleared = false;
+    local ClearInventory = function(Player)
+        if (Player:GetName() == Split[2]) then
+            Player:GetInventory():Clear()
+            InventoryCleared = true
+        end
+    end
+
+    cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory);
+    if (InventoryCleared) then
+        return true, "You cleared the inventory of " .. Split[2]
+    else
+        return true, "Player not found" 
+    end
+end
+
+function HandleConsoleWeather(Split)
+        if #Split ~= 3 then
+                return true, "Usage: /weather [clear/rain/thunder]" 
+        end
+
+        Root = cRoot:Get()
+        if Root:GetWorld(Split[2]) == nil then
+            return true, "No world named "..Split[2]
+        elseif (Split[3] == "clear") then
+            Root:GetWorld(Split[2]):SetWeather(0)
+            return true, "Downfall stopped" 
+        elseif (Split[3] == "rain") then
+            Root:GetWorld(Split[2]):SetWeather(1)
+            return true, "Let it rain!" 
+        elseif (Split[3] == "thunder") then
+            Root:GetWorld(Split[2]):SetWeather(2)
+            return true, "Thundery showers activate!"
+        end
 end
