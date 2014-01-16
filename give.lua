@@ -1,8 +1,9 @@
-function HandleGiveCommand(Split, Player)
+function HandleGiveCommand(Split, Player )
 
 	-- Make sure there are a correct number of arguments.
-	if #Split ~= 3 and #Split ~= 4 and #Split ~= 5 then
-		SendMessage( Player, "Usage: /give <player> <item> [amount] [meta]" )
+	if #Split ~= 3 and #Split ~= 4 and #Split ~= 5 and #Split ~= 6 and #Split ~= 7 then
+		SendMessage( Player, "Usage: /give <player> <item> [amount] [meta] [custom name] [lore]" )
+		SendMessage( Player, "The newline character for lore is \"`\"")
 		return true
 	end
 
@@ -35,6 +36,12 @@ function HandleGiveCommand(Split, Player)
 	end
 
 	Item.m_ItemCount = ItemAmount
+	if (Split[6] ~= nil) then
+		Item.m_CustomName = tostring(Split[6])
+	end
+	if (Split[7] ~= nil) then
+		Item.m_Lore = tostring(Split[7])
+	end
 
 	-- Get the playername from the split.
 	local playerName = Split[2]

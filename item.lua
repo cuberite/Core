@@ -1,7 +1,8 @@
 function HandleItemCommand( Split, Player )
 
-	if ((#Split ~= 2) and (#Split ~=3)) then
-		SendMessage( Player, "Usage: /i <item>[:meta] [amount]" )
+	if ((#Split ~= 2) and (#Split ~=3) and (#Split ~=4) and (#Split ~=5)) then
+		SendMessage( Player, "Usage: /i <item>[:meta] [amount] [custom name] [lore]" )
+		SendMessage( Player, "The newline character for lore is \"`\"")
 		return true
 	end
 
@@ -18,6 +19,12 @@ function HandleItemCommand( Split, Player )
 	end
 	if itemSplit[2] ~= nil then
 		newSplit[5] = itemSplit[2]
+	end
+	if Split[4] ~= nil then
+		newSplit[6] = Split[4]
+	end
+	if Split[5] ~= nil then
+		newSplit[7] = Split[5]
 	end
 
 	HandleGiveCommand( newSplit, Player )
