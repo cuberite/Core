@@ -9,6 +9,8 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("banlist",     HandleConsoleBanList,    " - Lists all players banned by name")
 	PluginMgr:BindConsoleCommand("clear",       HandleConsoleClear  ,    " - Clear some player's inventory")
 	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
+	PluginMgr:BindConsoleCommand("gamemode",    HandleConsoleGamemode,   " - Change some player's gamemode")
+	PluginMgr:BindConsoleCommand("gm",          HandleConsoleGamemode,   " - Change some player's gamemode")
 	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " ~ Gives items to the specified player.")
 	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
 	PluginMgr:BindConsoleCommand("kill",        HandleConsoleKill,       " - Kill some player")
@@ -384,4 +386,37 @@ function HandleConsoleWeather(Split)
             Root:GetWorld(Split[2]):SetWeather(2)
             return true, "Thundery showers activate!"
         end
+end
+
+function HandleConsoleGamemode(Split)
+	if #Split ~= 3 then
+		return true, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " 
+	end
+
+	local IsPlayerOnline = false;
+	local ChangeGM = function(Player)
+		if (Player:GetName() == Split[3]) then
+			IsPlayerOnline = true
+			if (Split[2] == "survival") or (Split[2] == "0") then
+				Player:SetGameMode(0)
+			elseif (Split[2] == "creative") or (Split[2] == "1") then
+				Player:SetGameMode(1)
+			elseif (Split[2] == "adventure") or (Split[2] == "2") then
+				Player:SetGameMode(2)
+			else
+				IsPlayerOnline = invalidgm
+			end
+		end
+	end
+
+	cRoot:Get():FindAndDoWithPlayer(Split[3], ChangeGM);
+	if (IsPlayerOnline) then
+		return true, "Changed gamemode for player " .. Split[3] 
+	end
+	if (IsPlayerOnline == invalidgm) then
+		return true, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " 
+	end
+	if (IsPlayerOnline == false) then
+		return true, "Player not found" 
+	end
 end
