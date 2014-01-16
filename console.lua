@@ -368,7 +368,7 @@ end
 
 function HandleConsoleWeather(Split)
         if #Split ~= 3 then
-                return true, "Usage: /weather [clear/rain/thunder]" 
+                return true, "Usage: /weather [world] [clear/rain/thunder]" 
         end
 
         Root = cRoot:Get()
