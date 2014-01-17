@@ -7,9 +7,13 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("ban",         HandleConsoleBan,        " ~ Bans a player by name")
 	PluginMgr:BindConsoleCommand("banlist ips", HandleConsoleBanList,    " - Lists all players banned by IP")
 	PluginMgr:BindConsoleCommand("banlist",     HandleConsoleBanList,    " - Lists all players banned by name")
+	PluginMgr:BindConsoleCommand("clear",       HandleConsoleClear  ,    " - Clear some player's inventory")
+	PluginMgr:BindConsoleCommand("gamemode",    HandleConsoleGamemode,   " - Change some player's gamemode")
 	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
+	PluginMgr:BindConsoleCommand("gm",          HandleConsoleGamemode,   " - Change some player's gamemode")
 	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " ~ Gives items to the specified player.")
 	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
+	PluginMgr:BindConsoleCommand("kill",        HandleConsoleKill,       " - Kill some player")
 	PluginMgr:BindConsoleCommand("list",        HandleConsoleList,       " - Lists all players in a machine-readable format")
 	PluginMgr:BindConsoleCommand("listgroups",  HandleConsoleListGroups, " - Shows a list of all the groups")
 	PluginMgr:BindConsoleCommand("numchunks",   HandleConsoleNumChunks,  " - Shows number of chunks currently loaded")
@@ -18,8 +22,10 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("save-all",    HandleConsoleSaveAll,    " - Saves all chunks")
 	PluginMgr:BindConsoleCommand("say",         HandleConsoleSay,        " ~ Sends a chat message to all players")
 	PluginMgr:BindConsoleCommand("setversion",  HandleConsoleVersion,    " ~ Sets server version reported to 1.4+ clients")
+	PluginMgr:BindConsoleCommand("tp",          HandleConsoleTeleport,   " ~ Teleports a player")
 	PluginMgr:BindConsoleCommand("unban",       HandleConsoleUnban,      " ~ Unbans a player by name")
 	PluginMgr:BindConsoleCommand("unload",      HandleConsoleUnload,     " - Unloads all unused chunks")
+	PluginMgr:BindConsoleCommand("weather",     HandleConsoleWeather,    " - Change wheater on the specified world")
 
 end
 
@@ -319,4 +325,122 @@ function HandleConsoleUnload(Split)
 	cRoot:Get():ForEachWorld(UnloadChunks)
 	Out = Out .. "Num loaded chunks after: " .. cRoot:Get():GetTotalChunkCount()
 	return true, Out
+end
+
+function HandleConsoleKill(Split)
+	if (#Split == 1) then
+		return true, "Usage: /kill [Player]"
+	end
+    
+	local HasKilled = false;
+	local KillPlayer = function(Player)
+		if (Player:GetName() == Split[2]) then
+			Player:TakeDamage(dtInVoid, nil, 1000, 1000, 0)
+			HasKilled = true         
+		end
+	end
+
+	cRoot:Get():FindAndDoWithPlayer(Split[2], KillPlayer);
+	if (HasKilled) then
+		return true, "Player " .. Split[2] .. " is killed" 
+	else
+		return true, "Player not found" 
+	end
+end
+
+function HandleConsoleClear(Split)
+	if (#Split == 1) then
+		return true, "Usage: /clear [Player]"
+    end
+    
+    local InventoryCleared = false;
+    local ClearInventory = function(Player)
+        if (Player:GetName() == Split[2]) then
+            Player:GetInventory():Clear()
+            InventoryCleared = true
+        end
+    end
+
+    cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory);
+    if (InventoryCleared) then
+        return true, "You cleared the inventory of " .. Split[2]
+    else
+        return true, "Player not found" 
+    end
+end
+
+function HandleConsoleWeather(Split)
+        if #Split ~= 3 then
+                return true, "Usage: /weather [world] [clear/rain/thunder]" 
+        end
+
+        Root = cRoot:Get()
+        if Root:GetWorld(Split[2]) == nil then
+            return true, "No world named "..Split[2]
+        elseif (Split[3] == "clear") then
+            Root:GetWorld(Split[2]):SetWeather(0)
+            return true, "Downfall stopped" 
+        elseif (Split[3] == "rain") then
+            Root:GetWorld(Split[2]):SetWeather(1)
+            return true, "Let it rain!" 
+        elseif (Split[3] == "thunder") then
+            Root:GetWorld(Split[2]):SetWeather(2)
+            return true, "Thundery showers activate!"
+        end
+end
+
+function HandleConsoleGamemode(Split)
+	if #Split ~= 3 then
+		return true, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " 
+	end
+
+	local IsPlayerOnline = false;
+	local ChangeGM = function(Player)
+		if (Player:GetName() == Split[3]) then
+			IsPlayerOnline = true
+			if (Split[2] == "survival") or (Split[2] == "0") then
+				Player:SetGameMode(0)
+			elseif (Split[2] == "creative") or (Split[2] == "1") then
+				Player:SetGameMode(1)
+			elseif (Split[2] == "adventure") or (Split[2] == "2") then
+				Player:SetGameMode(2)
+			else
+				IsPlayerOnline = invalidgm
+			end
+		end
+	end
+
+	cRoot:Get():FindAndDoWithPlayer(Split[3], ChangeGM);
+	if (IsPlayerOnline) then
+		return true, "Changed gamemode for player " .. Split[3] 
+	end
+	if (IsPlayerOnline == invalidgm) then
+		return true, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " 
+	end
+	if (IsPlayerOnline == false) then
+		return true, "Player not found" 
+	end
+end
+
+function HandleConsoleTeleport(Split)
+	local TeleportToCoords = function(Player)
+		if (Player:GetName() == Split[2]) then
+			IsPlayerOnline = true
+            Player:TeleportToCoords(Split[3], Split[4], Split[5])
+		end
+	end
+
+	if #Split == 3 then
+		return true
+
+	elseif #Split == 5 then
+	    cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToCoords);
+	    if (IsPlayerOnline) then
+		    return true, "You teleported " .. Split[2] .. " to [X:" .. Split[3] .. " Y:" .. Split[4] .. " Z:" .. Split[5] .. "]" 
+		else
+		    return true, "Player not found" 
+		end
+	else
+		return true, "Usage: /tp [player] [toplayer] or /tp [player] [X Y Z]" 
+	end
 end
