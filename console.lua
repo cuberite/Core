@@ -8,8 +8,8 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("banlist ips", HandleConsoleBanList,    " - Lists all players banned by IP")
 	PluginMgr:BindConsoleCommand("banlist",     HandleConsoleBanList,    " - Lists all players banned by name")
 	PluginMgr:BindConsoleCommand("clear",       HandleConsoleClear  ,    " - Clear some player's inventory")
-	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
 	PluginMgr:BindConsoleCommand("gamemode",    HandleConsoleGamemode,   " - Change some player's gamemode")
+	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
 	PluginMgr:BindConsoleCommand("gm",          HandleConsoleGamemode,   " - Change some player's gamemode")
 	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " ~ Gives items to the specified player.")
 	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
@@ -22,6 +22,7 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("save-all",    HandleConsoleSaveAll,    " - Saves all chunks")
 	PluginMgr:BindConsoleCommand("say",         HandleConsoleSay,        " ~ Sends a chat message to all players")
 	PluginMgr:BindConsoleCommand("setversion",  HandleConsoleVersion,    " ~ Sets server version reported to 1.4+ clients")
+	PluginMgr:BindConsoleCommand("tp",          HandleConsoleTeleport,   " ~ Teleports a player")
 	PluginMgr:BindConsoleCommand("unban",       HandleConsoleUnban,      " ~ Unbans a player by name")
 	PluginMgr:BindConsoleCommand("unload",      HandleConsoleUnload,     " - Unloads all unused chunks")
 	PluginMgr:BindConsoleCommand("weather",     HandleConsoleWeather,    " - Change wheater on the specified world")
@@ -418,5 +419,28 @@ function HandleConsoleGamemode(Split)
 	end
 	if (IsPlayerOnline == false) then
 		return true, "Player not found" 
+	end
+end
+
+function HandleConsoleTeleport(Split)
+	local TeleportToCoords = function(Player)
+		if (Player:GetName() == Split[2]) then
+			IsPlayerOnline = true
+            Player:TeleportToCoords(Split[3], Split[4], Split[5])
+		end
+	end
+
+	if #Split == 3 then
+		return true
+
+	elseif #Split == 5 then
+	    cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToCoords);
+	    if (IsPlayerOnline) then
+		    return true, "You teleported " .. Split[2] .. " to [X:" .. Split[3] .. " Y:" .. Split[4] .. " Z:" .. Split[5] .. "]" 
+		else
+		    return true, "Player not found" 
+		end
+	else
+		return true, "Usage: /tp [player] [toplayer] or /tp [player] [X Y Z]" 
 	end
 end
