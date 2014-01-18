@@ -147,7 +147,7 @@ function Initialize(Plugin)
 	Plugin:AddWebTab("Players",         HandleRequest_Players)
 	Plugin:AddWebTab("Whitelist",       HandleRequest_WhiteList)
 	Plugin:AddWebTab("Permissions",     HandleRequest_Permissions)
-	Plugin:AddWebTab("Manage Plugins",  HandleRequest_ManagePlugins)
+	Plugin:AddWebTab("Plugins",         HandleRequest_ManagePlugins)
 	Plugin:AddWebTab("Time & Weather",  HandleRequest_Weather)
 
 	LoadMotd()
