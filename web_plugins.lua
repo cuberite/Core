@@ -3,6 +3,14 @@
 
 -- Implements the Plugins web tab used to manage plugins on the server
 
+--[[
+General info: The web handler loads the settings.ini file in its start, and reads the list of enabled
+plugins out of it. Then it processes any changes requested by the user through the buttons; it carries out
+those changes on the list of enabled plugins itself. Then it saves that list back to the settings.ini. The
+changes aren't applied until the user expliticly clicks on "reload", since some changes require more than
+single reloads of the page (such as enabling a plugin and moving it into place using the up / down buttons).
+--]]
+
 
 
 
