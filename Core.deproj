@@ -61,7 +61,7 @@
     <filename>ondeath.lua</filename>
   </file>
   <file>
-    <filename>onjoinleave.lua</filename>
+    <filename>onjoin.lua</filename>
   </file>
   <file>
     <filename>onlogin.lua</filename>
@@ -119,6 +119,9 @@
   </file>
   <file>
     <filename>web_serversettings.lua</filename>
+  </file>
+  <file>
+    <filename>web_weather.lua</filename>
   </file>
   <file>
     <filename>web_whitelist.lua</filename>
