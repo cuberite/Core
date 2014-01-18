@@ -253,11 +253,11 @@ local function ProcessRequestActions(SettingsIni, Request, EnabledPlugins)
 	
 	if (Request.PostParams["DisablePlugin"] ~= nil) then
 		if (DisablePlugin(SettingsIni, PluginName, EnabledPlugins)) then
-			return '<td><b style="color: green;">You disabled plugin: "' .. PluginName .. '"</b>'
+			return '<td><p style="color: green;"><b>You disabled plugin: "' .. PluginName .. '"</b></p>'
 		end
 	elseif (Request.PostParams["EnablePlugin"] ~= nil) then
 		if (EnablePlugin(SettingsIni, PluginName, EnabledPlugins)) then
-			return '<td><b style="color: green;">You enabled plugin: "' .. PluginName .. '"</b>'
+			return '<td><p style="color: green;"><b>You enabled plugin: "' .. PluginName .. '"</b></p>'
 		end
 	elseif (Request.PostParams["MoveUp"] ~= nil) then
 		MovePlugin(SettingsIni, PluginName, -1, EnabledPlugins)
@@ -289,7 +289,13 @@ function HandleRequest_ManagePlugins(Request)
 	Content = Content .. (NotificationText or "")
 	
 	if (g_NeedsReload) then
-		Content = Content .. [[<form method='POST'>Apply the changes: <input type='submit' name='reload' value='Apply!'></form>]]
+		Content = Content .. [[
+			<form method='POST'>
+			<p style="background-color:#ffffaf"><b>
+			You need to reload the plugins in order for the changes to take effect.
+			&nbsp;<input type='submit' name='reload' value='Reload now!'>
+			</b></p></form>
+		]]
 	end
 	
 	Content = Content .. ListCurrentPlugins(EnabledPlugins)
@@ -297,7 +303,7 @@ function HandleRequest_ManagePlugins(Request)
 	Content = Content .. [[<hr />
 	<h4>Reload</h4>
 	<form method='POST'>
-	<p>Click the reload button to reload all plugins according to <strong>settings.ini</strong>!
+	<p>Click the reload button to reload all plugins.
 	<input type='submit' name='reload' value='Reload!'></p>
 	</form>]]
 	return Content

@@ -106,9 +106,6 @@
     <filename>web_chat.lua</filename>
   </file>
   <file>
-    <filename>web_manageplugins.lua</filename>
-  </file>
-  <file>
     <filename>web_manageserver.lua</filename>
   </file>
   <file>
@@ -116,6 +113,9 @@
   </file>
   <file>
     <filename>web_players.lua</filename>
+  </file>
+  <file>
+    <filename>web_plugins.lua</filename>
   </file>
   <file>
     <filename>web_serversettings.lua</filename>
