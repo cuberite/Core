@@ -61,7 +61,7 @@
     <filename>ondeath.lua</filename>
   </file>
   <file>
-    <filename>onjoinleave.lua</filename>
+    <filename>onjoin.lua</filename>
   </file>
   <file>
     <filename>onlogin.lua</filename>
@@ -106,9 +106,6 @@
     <filename>web_chat.lua</filename>
   </file>
   <file>
-    <filename>web_manageplugins.lua</filename>
-  </file>
-  <file>
     <filename>web_manageserver.lua</filename>
   </file>
   <file>
@@ -118,7 +115,13 @@
     <filename>web_players.lua</filename>
   </file>
   <file>
+    <filename>web_plugins.lua</filename>
+  </file>
+  <file>
     <filename>web_serversettings.lua</filename>
+  </file>
+  <file>
+    <filename>web_weather.lua</filename>
   </file>
   <file>
     <filename>web_whitelist.lua</filename>
