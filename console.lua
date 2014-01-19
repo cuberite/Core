@@ -429,10 +429,35 @@ function HandleConsoleTeleport(Split)
             Player:TeleportToCoords(Split[3], Split[4], Split[5])
 		end
 	end
+	
+	local IsPlayerOnline = false;
+	local FirstPlayerOnline = false;
+	local GetPlayerCoords = function(Player)
+		if (Player:GetName() == Split[3]) then
+			PosX = Player:GetPosX()
+			PosY = Player:GetPosY()
+			PosZ = Player:GetPosZ()
+			FirstPlayerOnline = true
+		end
+	end
+	
+	local TeleportToPlayer = function(Player)
+		if (Player:GetName() == Split[2]) then
+		    Player:TeleportToCoords(PosX, PosY, PosZ)
+			IsPlayerOnline = true
+		end
+	end
 
 	if #Split == 3 then
-		return true
-
+	    cRoot:Get():FindAndDoWithPlayer(Split[3], GetPlayerCoords);
+	    if (FirstPlayerOnline) then
+	        cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToPlayer);
+	        if (IsPlayerOnline) then
+	            return true, "Teleported " .. Split[2] .." to " .. Split[3]
+	        end
+	    else
+	        return true, "Player " .. Split[3] .." not found"
+	    end
 	elseif #Split == 5 then
 	    cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToCoords);
 	    if (IsPlayerOnline) then
