@@ -155,3 +155,7 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 	end
 
 end
+
+function getSpawnProtectRadius(WorldName)
+	return WorldsSpawnProtect[WorldName]
+end
