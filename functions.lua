@@ -141,7 +141,7 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 		else
 			SetBackCoordinates( a_SrcPlayer )
 			a_SrcPlayer:TeleportToEntity( a_DstPlayerName )
-			SendMessageSuccess( a_SrcPlayer, "You teleported to " .. OtherPlayer:GetName() .. "!" )
+			SendMessageSuccess( a_SrcPlayer, "You teleported to " .. a_DstPlayerName:GetName() .. "!" )
 			if (a_TellDst) then
 				SendMessage( a_DstPlayerName, a_SrcPlayer:GetName().." teleported to you!" )
 			end
