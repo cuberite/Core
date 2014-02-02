@@ -44,7 +44,7 @@ function HandleGroupsCommand( Split, Player )
 	Number = GroupsIni:GetNumKeys() - 1
 	Groups = {}
 	for i = 0, Number do
-		table.insert(Groups, GroupsIni:KeyName(i))
+		table.insert(Groups, GroupsIni:GetKeyName(i))
 	end
 
 	SendMessage(Player, "Found " .. #Groups .. " groups")
