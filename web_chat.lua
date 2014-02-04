@@ -111,13 +111,32 @@ function OnChat( Player, Message )
 end
 		
 function HandleRequest_Chat( Request )
+	local function CheckForLinks(Message)
+		local StartIdx = Message:find("http://") or Message:find("https://")
+		if StartIdx == nil then
+			return Message
+		end
+		
+		local Url = ""
+		for I=StartIdx, Message:len() do
+			local Char = Message:sub(I, I)
+			if Char ~= " " then
+				Url = Url .. Char
+			else
+				break
+			end
+		end
+		
+		return Message:gsub(Url, '<a href="' .. Url .. '" target="_blank">' .. Url .. '</a>')
+	end
+			
 	if( Request.PostParams["JustChat"] ~= nil ) then
 		local LastIdx = 0
 		if( Request.PostParams["LastMessageID"] ~= nil ) then LastIdx = tonumber( Request.PostParams["LastMessageID"] ) end
 		local Content = ""
 		for key, value in pairs(ChatLogMessages) do 
 			if( value.id > LastIdx ) then
-				Content = Content .. "[" .. value.name .. "]: " .. value.message .. "<br>"
+				Content = Content .. "[" .. value.name .. "]: " .. CheckForLinks(value.message) .. "<br>"
 			end
 		end
 		Content = Content .. "<<divider>>" .. LastMessageID .. "<<divider>>" .. LastIdx
