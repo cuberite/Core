@@ -136,7 +136,11 @@ function HandleRequest_Chat( Request )
 		local Content = ""
 		for key, value in pairs(ChatLogMessages) do 
 			if( value.id > LastIdx ) then
-				Content = Content .. value.timestamp .. " [" .. value.name .. "]: " .. CheckForLinks(value.message) .. "<br>"
+				if value.name == nil then
+					Content = Content .. value.timestamp .. CheckForLinks(value.message) .. "<br>"
+				else
+					Content = Content .. value.timestamp .. " [" .. value.name .. "]: " .. CheckForLinks(value.message) .. "<br>"
+				end
 			end
 		end
 		Content = Content .. "<<divider>>" .. LastMessageID .. "<<divider>>" .. LastIdx
@@ -149,9 +153,8 @@ function HandleRequest_Chat( Request )
 			AddMessage(Commands, "<br>" .. "/help, /reload" )
 			return Commands
 		elseif( Request.PostParams["ChatMessage"] == "/reload" ) then
-			Server = cRoot:Get():GetServer()
-			Server:SendMessage( cChatColor.Green .. "Reloading all plugins." )
-			AddMessage("Reloading all plugins", "")
+			cRoot:Get():BroadcastChat( cChatColor.Green .. "Reloading all plugins." )
+			AddMessage(nil, "Reloading all plugins")
 			cRoot:Get():GetPluginManager():ReloadPlugins()
 			return ""
 		else
