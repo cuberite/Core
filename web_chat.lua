@@ -100,7 +100,7 @@ local ChatLogMessages = {}
 
 function AddMessage( PlayerName, Message )
 	LastMessageID = LastMessageID + 1
-	table.insert( ChatLogMessages, { name = PlayerName, message = Message, id = LastMessageID } )
+	table.insert( ChatLogMessages, { timestamp = os.date("[%H:%M:%S]", os.time()), name = PlayerName, message = Message, id = LastMessageID } )
 	while( #ChatLogMessages > CHAT_HISTORY ) do
 		table.remove( ChatLogMessages, 1 )
 	end
@@ -136,7 +136,7 @@ function HandleRequest_Chat( Request )
 		local Content = ""
 		for key, value in pairs(ChatLogMessages) do 
 			if( value.id > LastIdx ) then
-				Content = Content .. "[" .. value.name .. "]: " .. CheckForLinks(value.message) .. "<br>"
+				Content = Content .. value.timestamp .. " [" .. value.name .. "]: " .. CheckForLinks(value.message) .. "<br>"
 			end
 		end
 		Content = Content .. "<<divider>>" .. LastMessageID .. "<<divider>>" .. LastIdx
