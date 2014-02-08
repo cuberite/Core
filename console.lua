@@ -25,7 +25,7 @@ function InitConsoleCommands()
 	PluginMgr:BindConsoleCommand("tp",          HandleConsoleTeleport,   " ~ Teleports a player")
 	PluginMgr:BindConsoleCommand("unban",       HandleConsoleUnban,      " ~ Unbans a player by name")
 	PluginMgr:BindConsoleCommand("unload",      HandleConsoleUnload,     " - Unloads all unused chunks")
-	PluginMgr:BindConsoleCommand("weather",     HandleConsoleWeather,    " - Change weather on the specified world")
+	PluginMgr:BindConsoleCommand("weather",     HandleConsoleWeather,    " - Change weather in the specified world")
 
 end
 
