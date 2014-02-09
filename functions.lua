@@ -3,27 +3,15 @@ function SetBackCoordinates( Player )
 end
 
 function SendMessage(a_Player, a_Message)
-	if (g_UsePrefixes) then
-		a_Player:SendMessage(cChatColor.Yellow .. "[INFO] " .. cChatColor.White .. a_Message)
-	else
-		a_Player:SendMessage(cChatColor.Yellow .. a_Message)
-	end
+	a_Player:SendMessageInfo(a_Message)
 end
 
 function SendMessageSuccess(a_Player, a_Message)
-	if (g_UsePrefixes) then
-		a_Player:SendMessage(cChatColor.Green .. "[INFO] " .. cChatColor.White .. a_Message)
-	else
-		a_Player:SendMessage(cChatColor.Green .. a_Message)
-	end
+	a_Player:SendMessageSuccess(a_Message)
 end
 
 function SendMessageFailure(a_Player, a_Message)
-	if (g_UsePrefixes) then
-		a_Player:SendMessage(cChatColor.Red .. "[INFO] " .. cChatColor.White .. a_Message)
-	else
-		a_Player:SendMessage(cChatColor.Red .. a_Message)
-	end
+	a_Player:SendMessageFailure(a_Message)
 end
 
 --- Returns the list of players banned by name, separated by ", "
@@ -122,7 +110,7 @@ function ReturnColorFromChar( Split, char )
 end
 
 function CheckHardcore(Victim)
-	if HardCore == "true" then
+	if cRoot:Get():GetServer():IsHardcore() then
 		if Victim:IsPlayer() == true then
 			local KilledPlayer = tolua.cast(Victim, "cPlayer")
 			BanPlayer(KilledPlayer:GetName(), "You died, haha. Good game, bro.")

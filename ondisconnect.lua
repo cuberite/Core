@@ -1,3 +1,3 @@
 function OnDisconnect(Player)
-	AddMessage(nil, " " .. Player:GetName() .. " disconnected from the server.")
+	AddMessage(nil, " " .. Player:GetName() .. " has left the game.")
 end

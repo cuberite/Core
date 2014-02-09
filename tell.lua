@@ -1,26 +1,28 @@
-function HandleTellCommand(Split, Player, OtherPlayer)
+function HandleTellCommand(Split, Player)
 	if (Split[2] == nil) or (Split[3] == nil) then
 		SendMessage( Player, "Usage: /tell <player> <message>")
 		return true
 	end
 	
-	local SendMessage = function(OtherPlayer)		
-		Sender = Player:GetName()
-		Reciever = Split[2]
+	local FoundPlayer = false
+	
+	local SendMessage = function(OtherPlayer)
 	
 		if (OtherPlayer:GetName() == Split[2]) then
 			local newSplit = table.concat( Split, " ", 3 )
     
-			SendMessageSuccess( Player, "Message to player " .. Reciever .. " sent!" )
+			SendMessageSuccess( Player, "Message to player " .. Split[2] .. " sent!" )
+			OtherPlayer:SendMessagePrivateMsg(newSplit, Player:GetName())
 			
-			-- Conforms to http://forum.mc-server.org/showthread.php?tid=1212
-			OtherPlayer:SendMessage(cChatColor.LightBlue .. "[MSG: " .. Sender .. "] " .. cChatColor.White .. newSplit )
-			return true
+			FoundPlayer = true
 		end
 	end
 
-	cRoot:Get():ForEachPlayer(SendMessage)	
-	SendMessageFailure( Player, 'Player "' ..Split[2].. '" not found') -- Codepath comes here if no matching player was found
+	cRoot:Get():ForEachPlayer(SendMessage)
+	
+	if not FoundPlayer then
+		SendMessageFailure( Player, 'Player "' ..Split[2].. '" not found')
+	end
 	
 	return true;
 end
