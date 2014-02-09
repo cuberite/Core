@@ -112,8 +112,8 @@ end
 function CheckHardcore(Victim)
 	if cRoot:Get():GetServer():IsHardcore() then
 		if Victim:IsPlayer() == true then
-			local KilledPlayer = tolua.cast(Victim, "cPlayer")
-			BanPlayer(KilledPlayer:GetName(), "You died, haha. Good game, bro.")
+			BannedPlayersIni:SetValueB( "Banned", tolua.cast(Victim, "cPlayer"):GetName(), true )
+			BannedPlayersIni:WriteFile( "banned.ini" )
 		end
 	end
 end
