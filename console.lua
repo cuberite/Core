@@ -318,7 +318,7 @@ end
 
 function HandleConsoleUnload(Split)
 	local UnloadChunks = function(World)
-		World:UnloadUnusedChunks()
+		World:QueueUnloadUnusedChunks()
 	end
 
 	local Out = "Num loaded chunks before: " .. cRoot:Get():GetTotalChunkCount() .. "\n"
