@@ -90,7 +90,7 @@ local function ListCurrentPlugins(EnabledPlugins)
 	local ErrorPlugins = {}
 	local LoadedPlugins = {}
 	for idx, name in ipairs(EnabledPlugins) do
-		if (PluginMap[name] == nil) then
+		if not(PluginMap[name]) then
 			table.insert(ErrorPlugins, name)
 		else
 			table.insert(LoadedPlugins, name)
