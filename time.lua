@@ -5,8 +5,9 @@ function HandleTimeCommand( Split, Player )
 		return true
 	end
 	
+	local World = Player:GetWorld()
 	local TimeToSet = 0
-	local CurrentTime = Player:GetWorld():GetTimeOfDay()
+	local CurrentTime = World:GetTimeOfDay()
 
 	local Server = cRoot:Get():GetServer()
 	if string.upper( Split[2] ) == "DAY" then
@@ -25,16 +26,34 @@ function HandleTimeCommand( Split, Player )
 		return true
 	end
 	
+	local AnimationForward = true
+	local AnimationSpeed = 50
+	
 	if CurrentTime > TimeToSet then
-		for t = CurrentTime, TimeToSet, -2 do
-			Player:GetWorld():SetTimeOfDay(t)
-		end
-	else
-		for t = CurrentTime, TimeToSet, 2 do			
-			Player:GetWorld():SetTimeOfDay(t)
+		AnimationForward = false
+		AnimationSpeed = -50
+	end
+	
+	local function DoAnimation()
+		local TimeOfDay = World:GetTimeOfDay()
+		if AnimationForward then
+			if TimeOfDay < TimeToSet then
+				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
+				World:QueueTask(DoAnimation)
+			else
+				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
+			end
+		else
+			if TimeOfDay > TimeToSet then
+				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
+				World:QueueTask(DoAnimation)
+			else
+				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
+			end
 		end
 	end
 	
+	World:QueueTask(DoAnimation)
 	return true
 
 end
