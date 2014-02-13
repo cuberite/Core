@@ -26,12 +26,18 @@ function HandleTimeCommand( Split, Player )
 		return true
 	end
 	
+	if TimeToSet > 24000 then
+		TimeToSet = 24000
+	elseif TimeToSet < 0 then
+		TimeToSet = 0
+	end
+	
 	local AnimationForward = true
-	local AnimationSpeed = 50
+	local AnimationSpeed = 60
 	
 	if CurrentTime > TimeToSet then
 		AnimationForward = false
-		AnimationSpeed = -50
+		AnimationSpeed = -60
 	end
 	
 	local function DoAnimation()
@@ -39,21 +45,21 @@ function HandleTimeCommand( Split, Player )
 		if AnimationForward then
 			if TimeOfDay < TimeToSet then
 				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
-				World:QueueTask(DoAnimation)
+				World:ScheduleTask(1, DoAnimation)
 			else
 				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
 			end
 		else
 			if TimeOfDay > TimeToSet then
 				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
-				World:QueueTask(DoAnimation)
+				World:ScheduleTask(1, DoAnimation)
 			else
 				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
 			end
 		end
 	end
 	
-	World:QueueTask(DoAnimation)
+	World:ScheduleTask(1, DoAnimation)
 	return true
 
 end
