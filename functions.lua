@@ -147,3 +147,12 @@ end
 function getSpawnProtectRadius(WorldName)
 	return WorldsSpawnProtect[WorldName]
 end
+
+function LoadWorldSettings(a_World)
+	local WorldIni = cIniFile()
+	WorldIni:ReadFile(a_World:GetIniFileName())
+	WorldsSpawnProtect[a_World:GetName()]   = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
+	WorldsWorldLimit[a_World:GetName()]     = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
+	WorldsWorldDifficulty[a_World:GetName()]= WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 2)
+	WorldIni:WriteFile(a_World:GetIniFileName())
+end

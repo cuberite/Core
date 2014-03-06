@@ -1,5 +1,11 @@
 function OnPlayerMoving( Player )
-	LimitWorldWidth = WorldsWorldLimit[Player:GetWorld():GetName()]
+	local LimitWorldWidth = WorldsWorldLimit[Player:GetWorld():GetName()]
+	
+	-- The world probably was created by an external plugin. Lets load the settings.
+	if not LimitWorldWidth then
+		LoadWorldSettings(Player:GetWorld())
+	end
+	
 	if LimitWorldWidth > 0 then
 		local World = Player:GetWorld()
 		local SpawnX = math.floor(World:GetSpawnX() / 16)
