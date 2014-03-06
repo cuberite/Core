@@ -4,6 +4,7 @@ function OnPlayerMoving( Player )
 	-- The world probably was created by an external plugin. Lets load the settings.
 	if not LimitWorldWidth then
 		LoadWorldSettings(Player:GetWorld())
+		LimitWorldWidth = WorldsWorldLimit[Player:GetWorld():GetName()]
 	end
 	
 	if LimitWorldWidth > 0 then
