@@ -33,11 +33,11 @@ function HandleTimeCommand( Split, Player )
 	end
 	
 	local AnimationForward = true
-	local AnimationSpeed = 60
+	local AnimationSpeed = 480
 	
 	if CurrentTime > TimeToSet then
 		AnimationForward = false
-		AnimationSpeed = -60
+		AnimationSpeed = -480
 	end
 	
 	local function DoAnimation()
