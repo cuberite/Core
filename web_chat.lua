@@ -100,7 +100,7 @@ local ChatLogMessages = {}
 
 function AddMessage( PlayerName, Message )
 	LastMessageID = LastMessageID + 1
-	table.insert( ChatLogMessages, { timestamp = os.date("[%H:%M:%S]", os.time()), name = PlayerName, message = Message, id = LastMessageID } )
+	table.insert( ChatLogMessages, { timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), name = PlayerName, message = Message, id = LastMessageID } )
 	while( #ChatLogMessages > CHAT_HISTORY ) do
 		table.remove( ChatLogMessages, 1 )
 	end
