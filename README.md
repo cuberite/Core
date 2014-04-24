@@ -41,6 +41,7 @@ Commands
  * /viewdistance
  * /weather
  * /worlds
+ * /enchant
  
 
 **Also, console commands:**

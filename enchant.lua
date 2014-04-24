@@ -11,13 +11,9 @@ function HandleEnchantCommand( Split, Player )
 		return true
 	end
 	
-	local Enchantment = tonumber(Split[2])
+	local Enchantment = cEnchantments:StringToEnchantmentID(Split[2])
 	local Level = tonumber(Split[3])
 	
-	if Enchantment == nil then
-		-- No number, get number from enchantment name
-		Enchantment = cEnchantments:StringToEnchantmentID(Split[2])	
-	end
 	if Enchantment == -1 then
 		SendMessageFailure(Player, "Enchantment can't be found!")
 		return true
