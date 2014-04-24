@@ -105,7 +105,7 @@ function OnTakeDamage(Receiver, TDI)
         TDI.FinalDamage = 4
     end
 
-    if Attacker:IsA("cCavespider") then
+    if Attacker:IsA("cCaveSpider") then
         if (WorldDifficulty == 1) or (WorldDifficulty == 2) then
             TDI.FinalDamage = 2	
         end
@@ -117,7 +117,7 @@ function OnTakeDamage(Receiver, TDI)
         TDI.FinalDamage = 4
     end
 
-    if Attacker:IsA("cZombiepigman") then
+    if Attacker:IsA("cZombiePigman") then
         if (WorldDifficulty == 1) then
             TDI.FinalDamage = 5
         end
@@ -162,7 +162,7 @@ function OnSpawningEntity(World, Entity)
             return true
         elseif (Entity:GetClass() == "cSpider") then
             return true
-        elseif (Entity:GetClass() == "cCavespider") then
+        elseif (Entity:GetClass() == "cCaveSpider") then
             return true
         elseif (Entity:GetClass() == "cEnderman") then
             return true
