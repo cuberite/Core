@@ -11,6 +11,7 @@ Commands
  * /clear
  * /do
  * /downfall
+ * /enchant
  * /give
  * /gm
  * /groups
@@ -41,7 +42,6 @@ Commands
  * /viewdistance
  * /weather
  * /worlds
- * /enchant
  
 
 **Also, console commands:**
