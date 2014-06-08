@@ -32,7 +32,7 @@ end
 function HandleConsoleGive(Split)
 
 	-- Make sure there are a correct number of arguments.
-	if #Split ~= 3 and #Split ~= 4 and #Split ~= 5 then
+	if ((#Split < 3) or (#Split > 5)) then
 		return true, "Usage: give <player> <item> [amount] [meta]"
 	end
 
