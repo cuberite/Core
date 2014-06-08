@@ -25,8 +25,7 @@ function HandleWorldsCommand(Split, Player)
 	local NumWorlds = 0
 	local Worlds = {}
 	cRoot:Get():ForEachWorld(function(World)
-		NumWorlds = NumWorlds + 1
-		Worlds[NumWorlds] = World:GetName()
+		table.insert(Worlds, World:GetName())
 	end)
 
 	SendMessage(Player, "There are " .. NumWorlds .. " worlds:")
