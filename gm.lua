@@ -1,9 +1,14 @@
-function HandleChangeGMCommand( Split, Player )
+function HandleChangeGMCommand(Split, Player)
 	if( Split[2] == nil ) then
-		SendMessage( Player, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " )
+		SendMessage( Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] " )
 		return true
 	end
-
+	
+	-- Lowercase the split.
+	for k, v in pairs(Split)
+		Split[k] = string.lower(v)
+	end
+	
 	if( Split[3] == nil ) then
 		if (Split[2] == "survival") or (Split[2] == "0") then
 			Player:SetGameMode(0)
@@ -11,8 +16,10 @@ function HandleChangeGMCommand( Split, Player )
 			Player:SetGameMode(1)
 		elseif (Split[2] == "adventure") or (Split[2] == "2") then
 			Player:SetGameMode(2)
+		elseif (Split[2] == "spectator") or (Split[2] == "3") then
+			Player:SetGameMode(3)
 		else
-			SendMessage( Player, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " )		
+			SendMessage( Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] " )		
 		end
 		return true
 	end
@@ -27,6 +34,8 @@ function HandleChangeGMCommand( Split, Player )
 				OtherPlayer:SetGameMode(1)
 			elseif (Split[2] == "adventure") or (Split[2] == "2") then
 				OtherPlayer:SetGameMode(2)
+			elseif (Split[2] == "spectator") or (Split[2] == "3") then
+				OtherPlayer:SetGameMode(3)
 			else
 				IsPlayerOnline = invalidgm
 			end
@@ -39,7 +48,7 @@ function HandleChangeGMCommand( Split, Player )
 		return true
 	end
 	if (IsPlayerOnline == invalidgm) then
-		SendMessage( Player, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " )	
+		SendMessage( Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] " )	
 		return true
 	end
 	if (IsPlayerOnline == false) then
