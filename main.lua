@@ -87,6 +87,7 @@ function Initialize(Plugin)
 	PM:BindCommand("/viewdistance",    "core.viewdistance",    HandleViewDistanceCommand,    " [".. cClientHandle.MIN_VIEW_DISTANCE .."-".. cClientHandle.MAX_VIEW_DISTANCE .."] - Change your view distance")
 	PM:BindCommand("/weather",         "core.weather",         HandleWeatherCommand,         " ~ Change world weather")
 	PM:BindCommand("/worlds",          "core.worlds",          HandleWorldsCommand,          " - Shows a list of all the worlds")
+	PM:BindCommand("/enchant",         "core.enchant",         HandleEnchantCommand,         " ~ Enchant the equipped item")
 
 	InitConsoleCommands()
 

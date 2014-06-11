@@ -11,6 +11,7 @@ Commands
  * /clear
  * /do
  * /downfall
+ * /enchant
  * /give
  * /gm
  * /groups
