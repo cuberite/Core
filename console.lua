@@ -1,34 +1,5 @@
 -- Implements things related to console commands
 
-function InitConsoleCommands()
-	local PluginMgr = cPluginManager:Get()
-
-	-- Please keep the list alpha-sorted
-	PluginMgr:BindConsoleCommand("ban",         HandleConsoleBan,        " ~ Bans a player by name")
-	PluginMgr:BindConsoleCommand("banlist ips", HandleConsoleBanList,    " - Lists all players banned by IP")
-	PluginMgr:BindConsoleCommand("banlist",     HandleConsoleBanList,    " - Lists all players banned by name")
-	PluginMgr:BindConsoleCommand("clear",       HandleConsoleClear  ,    " ~ Clear a player's inventory")
-	PluginMgr:BindConsoleCommand("gamemode",    HandleConsoleGamemode,   " ~ Change a player's gamemode")
-	PluginMgr:BindConsoleCommand("getversion",  HandleConsoleVersion,    " - Gets server version reported to 1.4+ clients")
-	PluginMgr:BindConsoleCommand("gm",          HandleConsoleGamemode,   " ~ Change a player's gamemode")
-	PluginMgr:BindConsoleCommand("give",        HandleConsoleGive,       " ~ Gives items to the specified player.")
-	PluginMgr:BindConsoleCommand("kick",        HandleConsoleKick,       " ~ Kicks a player by name")
-	PluginMgr:BindConsoleCommand("kill",        HandleConsoleKill,       " ~ Kill a player")
-	PluginMgr:BindConsoleCommand("list",        HandleConsoleList,       " - Lists all players in a machine-readable format")
-	PluginMgr:BindConsoleCommand("listgroups",  HandleConsoleListGroups, " - Shows a list of all the groups")
-	PluginMgr:BindConsoleCommand("numchunks",   HandleConsoleNumChunks,  " - Shows number of chunks currently loaded")
-	PluginMgr:BindConsoleCommand("players",     HandleConsolePlayers,    " - Lists all connected players")
-	PluginMgr:BindConsoleCommand("rank",        HandleConsoleRank,       " ~ Add a player to a group")
-	PluginMgr:BindConsoleCommand("save-all",    HandleConsoleSaveAll,    " - Saves all chunks")
-	PluginMgr:BindConsoleCommand("say",         HandleConsoleSay,        " ~ Sends a chat message to all players")
-	PluginMgr:BindConsoleCommand("setversion",  HandleConsoleVersion,    " ~ Sets server version reported to 1.4+ clients")
-	PluginMgr:BindConsoleCommand("tp",          HandleConsoleTeleport,   " ~ Teleports a player")
-	PluginMgr:BindConsoleCommand("unban",       HandleConsoleUnban,      " ~ Unbans a player by name")
-	PluginMgr:BindConsoleCommand("unload",      HandleConsoleUnload,     " - Unloads all unused chunks")
-	PluginMgr:BindConsoleCommand("weather",     HandleConsoleWeather,    " - Change weather in the specified world")
-
-end
-
 function HandleConsoleGive(Split)
 
 	-- Make sure there are a correct number of arguments.
@@ -87,6 +58,10 @@ function HandleConsoleGive(Split)
 	return true
 
 end
+
+
+
+
 
 function HandleConsoleBan(Split)
 	if (#Split < 2) then
@@ -152,6 +127,10 @@ function HandleConsoleUnban(Split)
 
 end
 
+
+
+
+
 function HandleConsoleBanList(Split)
 	if (#Split == 1) then
 		return true, BanListByName()
@@ -163,6 +142,10 @@ function HandleConsoleBanList(Split)
 
 	return true, "Unknown banlist subcommand"
 end
+
+
+
+
 
 function HandleConsoleList(Split)
 	-- Get a list of all players, one playername per line
@@ -178,6 +161,10 @@ function HandleConsoleList(Split)
 	)
 	return true, Out
 end
+
+
+
+
 
 function HandleConsoleListGroups(Split)
 	-- Read the groups.ini file:
@@ -199,6 +186,10 @@ function HandleConsoleListGroups(Split)
 	return true, Out
 end
 
+
+
+
+
 function HandleConsoleNumChunks(Split)
 	local Output = {}
 	local AddNumChunks = function(World)
@@ -217,6 +208,10 @@ function HandleConsoleNumChunks(Split)
 
 	return true, Out
 end
+
+
+
+
 
 function HandleConsolePlayers(Split)
 	local PlayersInWorlds = {}    -- "WorldName" => [players array]
@@ -241,6 +236,10 @@ function HandleConsolePlayers(Split)
 	return true, Out
 end
 
+
+
+
+
 function HandleConsoleVersion(Split)
 	if (#Split == 1) then
 		-- Display current version:
@@ -253,6 +252,10 @@ function HandleConsoleVersion(Split)
 	local Version = cRoot:Get():GetPrimaryServerVersion()
 	return true, "Primary server version is now #" .. Version .. ", " .. cRoot:GetProtocolVersionTextFromInt(Version)
 end
+
+
+
+
 
 function HandleConsoleRank(Split)
 	if (Split[2] == nil) or (Split[3] == nil) then
@@ -297,12 +300,20 @@ function HandleConsoleRank(Split)
 	return true, Out .. "Player " .. Split[2] .. " was moved to " .. Split[3]
 end
 
+
+
+
+
 function HandleConsoleSaveAll(Split)
 
 	cRoot:Get():BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all chunks!")
 	cRoot:Get():SaveAllChunks()
 	return true
 end
+
+
+
+
 
 function HandleConsoleSay(Split)
 	table.remove(Split, 1)
@@ -316,6 +327,11 @@ function HandleConsoleSay(Split)
 	return true
 end
 
+
+
+
+
+
 function HandleConsoleUnload(Split)
 	local UnloadChunks = function(World)
 		World:QueueUnloadUnusedChunks()
@@ -326,6 +342,11 @@ function HandleConsoleUnload(Split)
 	Out = Out .. "Num loaded chunks after: " .. cRoot:Get():GetTotalChunkCount()
 	return true, Out
 end
+
+
+
+
+
 
 function HandleConsoleKill(Split)
 	if (#Split == 1) then
@@ -348,6 +369,11 @@ function HandleConsoleKill(Split)
 	end
 end
 
+
+
+
+
+
 function HandleConsoleClear(Split)
 	if (#Split == 1) then
 		return true, "Usage: /clear [Player]"
@@ -369,6 +395,11 @@ function HandleConsoleClear(Split)
     end
 end
 
+
+
+
+
+
 function HandleConsoleWeather(Split)
         if #Split ~= 3 then
                 return true, "Usage: /weather [world] [clear/rain/thunder]" 
@@ -388,6 +419,11 @@ function HandleConsoleWeather(Split)
             return true, "Thundery showers activate!"
         end
 end
+
+
+
+
+
 
 function HandleConsoleGamemode(Split)
 	if #Split ~= 3 then
@@ -421,6 +457,11 @@ function HandleConsoleGamemode(Split)
 		return true, "Player not found" 
 	end
 end
+
+
+
+
+
 
 function HandleConsoleTeleport(Split)
 	local TeleportToCoords = function(Player)
@@ -469,3 +510,7 @@ function HandleConsoleTeleport(Split)
 		return true, "Usage: /tp [player] [toplayer] or /tp [player] [X Y Z]" 
 	end
 end
+
+
+
+
