@@ -403,7 +403,7 @@ g_PluginInfo =
 			HelpString =  " ~ Unbans a player by name",
 		},
 
-		["unload"] = 
+		["unloadchunks"] =
 		{
 			Handler =  HandleConsoleUnload,
 			HelpString =  " - Unloads all unused chunks",
