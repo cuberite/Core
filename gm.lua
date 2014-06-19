@@ -5,7 +5,7 @@ function HandleChangeGMCommand(Split, Player)
 	end
 	
 	-- Lowercase the split.
-	for k, v in pairs(Split)
+	for k, v in pairs(Split) do
 		Split[k] = string.lower(v)
 	end
 	
