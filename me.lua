@@ -4,8 +4,7 @@ function HandleMeCommand( Split, Player )
 		SendMessage( Player, "Usage: /me <action>" )
 		return true
 	else
-		table.remove( Split, 1 )
-		cRoot:Get():BroadcastChat( "* " .. Player:GetName() .. " " .. table.concat( Split , " " ) )
+		cRoot:Get():BroadcastChat( "* " .. Player:GetName() .. " " .. table.concat( Split , " " , 2 ) )
 		return true
 	end
 
