@@ -3,8 +3,11 @@ function HandleBackCommand( Split, Player )
 		SendMessageFailure(Player, "No known last position")
 		return true
 	else
-		Player:TeleportToCoords(BackCoords[Player:GetName()].x, BackCoords[Player:GetName()].y, BackCoords[Player:GetName()].z)
-		SendMessageSuccess(Player, "Teleported back to your last known position")
+		local OnAllChunksAvaliable = function()
+	    		Player:TeleportToCoords(BackCoords[Player:GetName()].x, BackCoords[Player:GetName()].y, BackCoords[Player:GetName()].z)
+	    		SendMessageSuccess(Player, "Teleported back to your last known position")
+		end
+		Player:GetWorld():ChunkStay({{BackCoords[Player:GetName()].x/16, BackCoords[Player:GetName()].z/16}}, OnChunkAvailable, OnAllChunksAvaliable)	
 	end
 	return true
 end
