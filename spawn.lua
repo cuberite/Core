@@ -9,8 +9,11 @@ function HandleSpawnCommand(Split, Player)
 
 	World = Player:GetWorld()
 	SetBackCoordinates(Player)
-	Player:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
-	SendMessageSuccess( Player, "Returned to world spawn" )
+	local OnAllChunksAvaliable = function()
+	    Player:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
+	    SendMessageSuccess( Player, "Returned to world spawn" )
+	end
+	World:ChunkStay({{SpawnX/16, SpawnZ/16}}, OnChunkAvailable, OnAllChunksAvaliable)
 	return true
 
 end
