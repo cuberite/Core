@@ -252,6 +252,13 @@ g_PluginInfo =
 			HelpString = " ~ Accept a teleportation request",
 		},
 
+		["/tps"] = 
+		{
+			Permission = "core.tps",
+			Handler = HandleTpsCommand,
+			HelpString = " - Returns the tps (ticks per second) from the server.",
+		},
+
 		["/unban"] = 
 		{
 			Permission = "core.unban",
