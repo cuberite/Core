@@ -374,6 +374,12 @@ g_PluginInfo =
 			HelpString =  " - Lists all connected players",
 		},
 
+		["plugins"] = 
+		{
+			Handler = HandleConsolePlugins,
+			HelpString = " - Show list of plugins",
+		},
+
 		["rank"] = 
 		{
 			Handler =  HandleConsoleRank,

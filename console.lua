@@ -240,6 +240,25 @@ end
 
 
 
+function HandleConsolePlugins(Split)
+	local PluginManager = cRoot:Get():GetPluginManager()
+	local PluginList = PluginManager:GetAllPlugins()
+
+	local PluginTable = {}
+	for k, Plugin in pairs( PluginList ) do
+		if Plugin then
+			table.insert( PluginTable, Plugin:GetName() )
+		end
+	end
+
+	local Out = "There are " .. #PluginTable .. " loaded plugins: " .. table.concat(PluginTable, ", ")
+	return true, Out
+end
+
+
+
+
+
 function HandleConsoleVersion(Split)
 	if (#Split == 1) then
 		-- Display current version:
