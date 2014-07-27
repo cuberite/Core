@@ -105,6 +105,13 @@ g_PluginInfo =
 			HelpString = " ~ Kill a player",
 		},
 
+		["/list"] = 
+		{
+			Permission = "core.list",
+			Handler = HandleListCommand,
+			HelpString = " - Lists all connected players",
+		},
+
 		["/locate"] = 
 		{
 			Permission = "core.locate",
