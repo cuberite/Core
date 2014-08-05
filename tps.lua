@@ -1,16 +1,37 @@
 TpsCache = {}
 
 function HandleTpsCommand(Split, Player)
-	local ForEachWorld = function(World)
-		if (TpsCache[World:GetName()] ~= nil) then
-			Player:SendMessageInfo("World '" .. World:GetName() .. "': " .. TpsCache[World:GetName()] .. " TPS");
-		end
+	for WorldName, WorldTps in pairs(TpsCache) do
+		Player:SendMessageInfo("World '" .. WorldName .. "': " .. GetWorldTPS(WorldName) .. " TPS");
 	end
-	cRoot:Get():ForEachWorld(ForEachWorld)
-	
+
 	return true
 end
 
+function GetWorldTPS(WorldName)
+	local WorldTps = TpsCache[WorldName]
+	local Sum = 0
+
+	if (WorldTps == nil) then
+		return nil
+	end
+	for i,Tps in ipairs(WorldTps) do
+		Sum = Sum + Tps
+	end
+
+	return (Sum / #WorldTps)
+end
+
 function OnWorldTick(World, TimeDelta)
-    TpsCache[World:GetName()] = 1000 / TimeDelta
+	local WorldTps = TpsCache[World:GetName()]
+	if (WorldTps == nil) then
+		WorldTps = {}
+	end
+
+	if (#WorldTps >= 10) then
+		table.remove(WorldTps, 1)
+	end
+
+	table.insert(WorldTps, 1000 / TimeDelta)
+    TpsCache[World:GetName()] = WorldTps
 end
