@@ -113,7 +113,6 @@ function Initialize(Plugin)
 	Plugin:AddWebTab("Time & Weather",  HandleRequest_Weather)
 
 	LoadMotd()
-	InitializeMobDamagesList()
 
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
 

@@ -1,4 +1,14 @@
-MobDamages = {}
+local MobDamages =
+{
+	["cSpider"]       = { 2, 2, 3  },
+	["cEnderman"]     = { 4, 7, 10 },
+	["cZombie"]       = {          },  -- Handled in OnTakeDamage()
+	["cSlime"]        = { 4, 4, 4  },
+	["cCaveSpider"]   = { 2, 2, 3  },
+	["cZombiePigman"] = { 5, 9, 13 },
+	["cSkeleton"]     = { 2, 2, 3  },
+	["cBlaze"]        = { 4, 6, 9  }
+}
 
 function HandleDifficultyCommand ( Split, Player )
 	if (Split[2] == nil) then
@@ -30,18 +40,6 @@ function HandleDifficultyCommand ( Split, Player )
 	return true
 end
 
-function InitializeMobDamagesList()
-	MobDamages["cSpider"]       = { 2, 2, 3  }
-	MobDamages["cEnderman"]     = { 4, 7, 10 }
-	MobDamages["cZombie"]       = {          }  -- Handled in OnTakeDamage()
-	MobDamages["cSlime"]        = { 4, 4, 4  }
-	MobDamages["cCaveSpider"]   = { 2, 2, 3  }
-	MobDamages["cZombiePigman"] = { 5, 9, 13 }
-	MobDamages["cSkeleton"]     = { 2, 2, 3  }
-	MobDamages["cBlaze"]        = { 4, 6, 9  }
-	
-end
-
 function OnTakeDamage(Receiver, TDI)
 	if (TDI.Attacker == nil) then
 		return false
@@ -51,6 +49,7 @@ function OnTakeDamage(Receiver, TDI)
 	local WorldDifficulty = GetWorldDifficulty(Attacker:GetWorld())
 
 	if Attacker:IsA("cZombie") then
+		-- The damage value from the zombie is computed from the zombie health. See http://minecraft.gamepedia.com/Zombie
 		if (WorldDifficulty == 1) then
 			if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 2;
 			elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 3;
@@ -70,19 +69,20 @@ function OnTakeDamage(Receiver, TDI)
 		return false
 	end
 
-	if (MobDamages[Attacker:GetClass()] ~= nil) then
-		TDI.FinalDamage = MobDamages[Attacker:GetClass()][WorldDifficulty]
+	local Damages = MobDamages[Attacker:GetClass()]
+	if (Damages ~= nil) then
+		TDI.FinalDamage = Damages[WorldDifficulty]
 	end
 end
 
+local NonSpawningEntities = { "cZombie", "cZombiePigman", "cSpider", "cCaveSpider", "cEnderman", "cEnderDragon", "cSkeleton", "cGhast", "cCrepper", "cSilverfish", "cBlaze", "cSlime", "cWitch", "cWither", "cSilverfish" }
 function OnSpawningEntity(World, Entity)
-	NonSpawningEntities = { "cZombie", "cZombiePigman", "cSpider", "cCaveSpider", "cEnderman", "cEnderDragon", "cSkeleton", "cGhast", "cCrepper", "cSilverfish", "cBlaze", "cSlime", "cWitch", "cWither", "cSilverfish" }
-
-	for i,line in ipairs(NonSpawningEntities) do
-		if (Entity:GetClass() == line) then
-			return true
+	if (GetWorldDifficulty(World) == 0) then
+		for i,line in ipairs(NonSpawningEntities) do
+			if (Entity:GetClass() == line) then
+				return true
+			end
 		end
 	end
-
 	return false
 end
