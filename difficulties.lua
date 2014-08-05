@@ -75,14 +75,27 @@ function OnTakeDamage(Receiver, TDI)
 	end
 end
 
-local NonSpawningEntities = { "cZombie", "cZombiePigman", "cSpider", "cCaveSpider", "cEnderman", "cEnderDragon", "cSkeleton", "cGhast", "cCrepper", "cSilverfish", "cBlaze", "cSlime", "cWitch", "cWither", "cSilverfish" }
+local IsEntityBlockedInPeaceful =
+{
+	["cZombie"]       = true,
+	["cZombiePigman"] = true,
+	["cSpider"]       = true,
+	["cEnderman"]     = true,
+	["cEnderDragon"]  = true,
+	["cSkeleton"]     = true,
+	["cGhast"]        = true,
+	["cCreeper"]      = true,
+	["cSilverfish"]   = true,
+	["cBlaze"]        = true,
+	["cSlime"]        = true,
+	["cWitch"]        = true,
+	["cWither"]       = true,
+	["cSilverfish"]   = true,
+}
+
 function OnSpawningEntity(World, Entity)
 	if (GetWorldDifficulty(World) == 0) then
-		for i,line in ipairs(NonSpawningEntities) do
-			if (Entity:GetClass() == line) then
-				return true
-			end
-		end
+		return IsEntityBlockedInPeaceful[Entity:GetClass()]
 	end
 	return false
 end
