@@ -148,17 +148,15 @@ end
 
 
 function HandleConsoleList(Split)
-	-- Get a list of all players, one playername per line
-	local Out = ""
-	cRoot:Get():ForEachWorld(
-		function (a_World)
-			a_World:ForEachPlayer(
-				function (a_Player)
-					Out = Out .. a_Player:GetName() .. "\n"
-				end
-			)
-		end
-	)
+	local PlayerTable = {}
+
+	local ForEachPlayer = function(a_Player)
+		table.insert(PlayerTable, a_Player:GetName())
+	end
+	cRoot:Get():ForEachPlayer(ForEachPlayer)
+	table.sort(PlayerTable)
+
+	local Out = "Players (" .. #PlayerTable .. "): " .. table.concat(PlayerTable, ", ")
 	return true, Out
 end
 
