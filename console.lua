@@ -250,6 +250,7 @@ function HandleConsolePlugins(Split)
 			table.insert( PluginTable, Plugin:GetName() )
 		end
 	end
+	table.sort(PluginTable)
 
 	local Out = "There are " .. #PluginTable .. " loaded plugins: " .. table.concat(PluginTable, ", ")
 	return true, Out
