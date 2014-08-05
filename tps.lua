@@ -1,25 +1,20 @@
 TpsCache = {}
+GlobalTps = {}
 
 function HandleTpsCommand(Split, Player)
+	Player:SendMessageInfo("Global TPS: " .. GetAverageNum(GlobalTps))
 	for WorldName, WorldTps in pairs(TpsCache) do
-		Player:SendMessageInfo("World '" .. WorldName .. "': " .. GetWorldTPS(WorldName) .. " TPS");
+		Player:SendMessageInfo("World '" .. WorldName .. "': " .. GetAverageNum(WorldTps) .. " TPS");
 	end
-
 	return true
 end
 
-function GetWorldTPS(WorldName)
-	local WorldTps = TpsCache[WorldName]
+function GetAverageNum(Table)
 	local Sum = 0
-
-	if (WorldTps == nil) then
-		return nil
+	for i,Num in ipairs(Table) do
+		Sum = Sum + Num
 	end
-	for i,Tps in ipairs(WorldTps) do
-		Sum = Sum + Tps
-	end
-
-	return (Sum / #WorldTps)
+	return (Sum / #Table)
 end
 
 function OnWorldTick(World, TimeDelta)
@@ -33,5 +28,13 @@ function OnWorldTick(World, TimeDelta)
 	end
 
 	table.insert(WorldTps, 1000 / TimeDelta)
-    TpsCache[World:GetName()] = WorldTps
+	TpsCache[World:GetName()] = WorldTps
+end
+
+function OnTick(TimeDelta)
+	if (#GlobalTps >= 10) then
+		table.remove(GlobalTps, 1)
+	end
+
+	table.insert(GlobalTps, 1000 / TimeDelta)
 end

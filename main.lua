@@ -45,6 +45,7 @@ function Initialize(Plugin)
 	cPluginManager:AddHook(cPluginManager.HOOK_SPAWNING_ENTITY,       OnSpawningEntity)
 	cPluginManager:AddHook(cPluginManager.HOOK_TAKE_DAMAGE,           OnTakeDamage)
 	cPluginManager:AddHook(cPluginManager.HOOK_WORLD_TICK,            OnWorldTick)
+	cPluginManager:AddHook(cPluginManager.HOOK_TICK,                  OnTick)
 
 	-- Bind ingame commands:
 	
