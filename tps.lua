@@ -21,6 +21,7 @@ function OnWorldTick(World, TimeDelta)
 	local WorldTps = TpsCache[World:GetName()]
 	if (WorldTps == nil) then
 		WorldTps = {}
+		TpsCache[World:GetName()] = WorldTps
 	end
 
 	if (#WorldTps >= 10) then
@@ -28,7 +29,6 @@ function OnWorldTick(World, TimeDelta)
 	end
 
 	table.insert(WorldTps, 1000 / TimeDelta)
-	TpsCache[World:GetName()] = WorldTps
 end
 
 function OnTick(TimeDelta)
