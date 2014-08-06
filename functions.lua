@@ -148,11 +148,31 @@ function getSpawnProtectRadius(WorldName)
 	return WorldsSpawnProtect[WorldName]
 end
 
+function GetWorldDifficulty(a_World)
+	local Difficulty = WorldsWorldDifficulty[a_World:GetName()]
+	if (Difficulty == nil) then
+		Difficulty = 1
+	end
+
+	return Clamp(Difficulty, 0, 3)
+end
+
+function SetWorldDifficulty(a_World, a_Difficulty)
+	local Difficulty = Clamp(a_Difficulty, 0, 3)
+	WorldsWorldDifficulty[a_World:GetName()] = Difficulty
+
+	-- Update world.ini
+	local WorldIni = cIniFile()
+	WorldIni:ReadFile(a_World:GetIniFileName())
+	WorldIni:SetValue("Difficulty", "WorldDifficulty", Difficulty)
+	WorldIni:WriteFile(a_World:GetIniFileName())
+end
+
 function LoadWorldSettings(a_World)
 	local WorldIni = cIniFile()
 	WorldIni:ReadFile(a_World:GetIniFileName())
-	WorldsSpawnProtect[a_World:GetName()]   = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
-	WorldsWorldLimit[a_World:GetName()]     = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
-	WorldsWorldDifficulty[a_World:GetName()]= WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 2)
+	WorldsSpawnProtect[a_World:GetName()]    = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
+	WorldsWorldLimit[a_World:GetName()]      = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
+	WorldsWorldDifficulty[a_World:GetName()] = WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 1)
 	WorldIni:WriteFile(a_World:GetIniFileName())
 end
