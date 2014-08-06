@@ -105,6 +105,13 @@ g_PluginInfo =
 			HelpString = " ~ Kill a player",
 		},
 
+		["/list"] = 
+		{
+			Permission = "core.list",
+			Handler = HandleListCommand,
+			HelpString = " - Lists all connected players",
+		},
+
 		["/locate"] = 
 		{
 			Permission = "core.locate",
@@ -252,6 +259,13 @@ g_PluginInfo =
 			HelpString = " ~ Accept a teleportation request",
 		},
 
+		["/tps"] = 
+		{
+			Permission = "core.tps",
+			Handler = HandleTpsCommand,
+			HelpString = " - Returns the tps (ticks per second) from the server.",
+		},
+
 		["/unban"] = 
 		{
 			Permission = "core.unban",
@@ -365,6 +379,12 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsolePlayers,
 			HelpString =  " - Lists all connected players",
+		},
+
+		["plugins"] = 
+		{
+			Handler = HandleConsolePlugins,
+			HelpString = " - Show list of plugins",
 		},
 
 		["rank"] = 

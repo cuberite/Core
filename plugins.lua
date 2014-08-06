@@ -1,5 +1,4 @@
 function HandlePluginsCommand( Split, Player )
-
 	local PluginManager = cRoot:Get():GetPluginManager()
 	local PluginList = PluginManager:GetAllPlugins()
 
@@ -11,7 +10,6 @@ function HandlePluginsCommand( Split, Player )
 	end
 
 	SendMessage( Player, "There are " .. #PluginTable .. " loaded plugins" )
-	SendMessage( Player, table.concat( PluginTable , " " ) )
+	SendMessage( Player, table.concat( PluginTable , ", " ) )
 	return true
-
 end

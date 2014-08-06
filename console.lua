@@ -148,17 +148,15 @@ end
 
 
 function HandleConsoleList(Split)
-	-- Get a list of all players, one playername per line
-	local Out = ""
-	cRoot:Get():ForEachWorld(
-		function (a_World)
-			a_World:ForEachPlayer(
-				function (a_Player)
-					Out = Out .. a_Player:GetName() .. "\n"
-				end
-			)
-		end
-	)
+	local PlayerTable = {}
+
+	local ForEachPlayer = function(a_Player)
+		table.insert(PlayerTable, a_Player:GetName())
+	end
+	cRoot:Get():ForEachPlayer(ForEachPlayer)
+	table.sort(PlayerTable)
+
+	local Out = "Players (" .. #PlayerTable .. "): " .. table.concat(PlayerTable, ", ")
 	return true, Out
 end
 
@@ -233,6 +231,26 @@ function HandleConsolePlayers(Split)
 		end
 	end
 
+	return true, Out
+end
+
+
+
+
+
+function HandleConsolePlugins(Split)
+	local PluginManager = cRoot:Get():GetPluginManager()
+	local PluginList = PluginManager:GetAllPlugins()
+
+	local PluginTable = {}
+	for k, Plugin in pairs( PluginList ) do
+		if Plugin then
+			table.insert( PluginTable, Plugin:GetName() )
+		end
+	end
+	table.sort(PluginTable)
+
+	local Out = "There are " .. #PluginTable .. " loaded plugins: " .. table.concat(PluginTable, ", ")
 	return true, Out
 end
 

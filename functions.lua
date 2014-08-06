@@ -1,5 +1,5 @@
 function SetBackCoordinates( Player )
-	BackCoords[Player:GetName()] = Vector3i( Player:GetPosX(), Player:GetPosY(), Player:GetPosZ() )
+	BackCoords[Player:GetName()] = Vector3d( Player:GetPosX(), Player:GetPosY(), Player:GetPosZ() )
 end
 
 function SendMessage(a_Player, a_Message)
