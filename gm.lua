@@ -35,17 +35,20 @@ function HandleChangeGMCommand(Split, Player)
 end
 
 
+local GameModeTable =
+{
+	["survival"] =  gmSurvival,
+	["creative"] =  gmCreative,
+	["adventure"] = gmAdventure,
+	["spectator"] = 3,
+}
+
 function StringToGameMode(Str)
-	if ((NoCaseCompare(Str, "survival") == 0) or (Str == "0")) then
-		return gmSurvival
-	elseif ((NoCaseCompare(Str, "creative") == 0) or (Str == "1")) then
-		return gmCreative
-	elseif ((NoCaseCompare(Str, "adventure") == 0) or (Str == "2")) then
-		return gmAdventure
-	elseif ((NoCaseCompare(Str, "spectator") == 0) or (Str == "3")) then
-		-- return gmSpectator
-		return 3
-	else
-		return nil
+	local Number = tonumber(Str)
+	if ((Number ~= nil) and (Number >= gmMin) and (Number <= gmMax)) then
+		return Number
 	end
+
+	local StrLower = string.lower(Str)
+	return GameModeTable[StrLower]
 end
