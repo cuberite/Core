@@ -1,58 +1,51 @@
 function HandleChangeGMCommand(Split, Player)
-	if( Split[2] == nil ) then
-		SendMessage( Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] " )
-		return true
-	end
-	
-	-- Lowercase the split.
-	for k, v in pairs(Split) do
-		Split[k] = string.lower(v)
-	end
-	
-	if( Split[3] == nil ) then
-		if (Split[2] == "survival") or (Split[2] == "0") then
-			Player:SetGameMode(0)
-		elseif (Split[2] == "creative") or (Split[2] == "1") then
-			Player:SetGameMode(1)
-		elseif (Split[2] == "adventure") or (Split[2] == "2") then
-			Player:SetGameMode(2)
-		elseif (Split[2] == "spectator") or (Split[2] == "3") then
-			Player:SetGameMode(3)
-		else
-			SendMessage( Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] " )		
-		end
+	if (Split[2] == nil) then
+		SendMessage(Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] ")
 		return true
 	end
 
-	local IsPlayerOnline = false;
+	local GameMode = StringToGameMode(Split[2])
+	if (GameMode == nil) then
+		SendMessage(Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] ")
+		return true
+	end
+
+	if (Split[3] == nil) then
+		Player:SetGameMode(GameMode)
+		Player:SendMessageSuccess("Setted own gamemode to " .. Split[2] .. "!")
+		return true
+	end
+
 	local ChangeGM = function(OtherPlayer)
-		if (OtherPlayer:GetName() == Split[3]) then
-			IsPlayerOnline = true
-			if (Split[2] == "survival") or (Split[2] == "0") then
-				OtherPlayer:SetGameMode(0)
-			elseif (Split[2] == "creative") or (Split[2] == "1") then
-				OtherPlayer:SetGameMode(1)
-			elseif (Split[2] == "adventure") or (Split[2] == "2") then
-				OtherPlayer:SetGameMode(2)
-			elseif (Split[2] == "spectator") or (Split[2] == "3") then
-				OtherPlayer:SetGameMode(3)
-			else
-				IsPlayerOnline = invalidgm
-			end
+		OtherPlayer:SetGameMode(GameMode)
+		if (OtherPlayer:GetName() == Player:GetName()) then
+			Player:SendMessageSuccess("Setted own gamemode to " .. Split[2] .. "!")
+		else
+			OtherPlayer:SendMessageInfo(Player:GetName() .. " changed your gamemode to " .. Split[2] .. "!")
+			Player:SendMessageSuccess("Setted gamemode from " .. OtherPlayer:GetName() .. " to " .. Split[2])
 		end
+		return true
 	end
 
-	cRoot:Get():FindAndDoWithPlayer(Split[3], ChangeGM);
-	if (IsPlayerOnline) then
-		SendMessage( Player, "Changed gamemode for player " .. Split[3] )
-		return true
+	local Success = cRoot:Get():FindAndDoWithPlayer(Split[3], ChangeGM)
+	if (not Success) then
+		SendMessageFailure(Player, "Player not found")
 	end
-	if (IsPlayerOnline == invalidgm) then
-		SendMessage( Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] " )	
-		return true
-	end
-	if (IsPlayerOnline == false) then
-		SendMessageFailure( Player, "Player not found" )
-		return true
+	return true
+end
+
+
+function StringToGameMode(Str)
+	if ((NoCaseCompare(Str, "survival") == 0) or (Str == "0")) then
+		return gmSurvival
+	elseif ((NoCaseCompare(Str, "creative") == 0) or (Str == "1")) then
+		return gmCreative
+	elseif ((NoCaseCompare(Str, "adventure") == 0) or (Str == "2")) then
+		return gmAdventure
+	elseif ((NoCaseCompare(Str, "spectator") == 0) or (Str == "3")) then
+		-- return gmSpectator
+		return 3
+	else
+		return nil
 	end
 end
