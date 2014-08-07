@@ -12,17 +12,17 @@ function HandleChangeGMCommand(Split, Player)
 
 	if (Split[3] == nil) then
 		Player:SetGameMode(GameMode)
-		Player:SendMessageSuccess("Setted own gamemode to " .. Split[2] .. "!")
+		Player:SendMessageSuccess("You set your own gamemode to " .. Split[2])
 		return true
 	end
 
 	local ChangeGM = function(OtherPlayer)
 		OtherPlayer:SetGameMode(GameMode)
 		if (OtherPlayer:GetName() == Player:GetName()) then
-			Player:SendMessageSuccess("Setted own gamemode to " .. Split[2] .. "!")
+			Player:SendMessageSuccess("You set your own gamemode to " .. Split[2])
 		else
-			OtherPlayer:SendMessageInfo(Player:GetName() .. " changed your gamemode to " .. Split[2] .. "!")
-			Player:SendMessageSuccess("Setted gamemode from " .. OtherPlayer:GetName() .. " to " .. Split[2])
+			OtherPlayer:SendMessageInfo(Player:GetName() .. " changed your gamemode to " .. Split[2])
+			Player:SendMessageSuccess("Set gamemode of " .. OtherPlayer:GetName() .. " to " .. Split[2])
 		end
 		return true
 	end
