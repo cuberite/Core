@@ -113,6 +113,7 @@ function Initialize(Plugin)
 	Plugin:AddWebTab("Permissions",     HandleRequest_Permissions)
 	Plugin:AddWebTab("Plugins",         HandleRequest_ManagePlugins)
 	Plugin:AddWebTab("Time & Weather",  HandleRequest_Weather)
+	Plugin:AddWebTab("Ranks",           HandleRequest_Ranks)
 
 	LoadMotd()
 
