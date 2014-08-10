@@ -9,7 +9,7 @@
 
 --- Maximum number of groups displayed within a rank's row.
 -- If there are more groups than this, a triple-dot is displayed at the end of the list
-local MAX_GROUPS = 2
+local MAX_GROUPS = 10
 
 local ins = table.insert
 local con = table.concat
