@@ -78,48 +78,12 @@ end
 
 
 
---- Returns the HTML-formatted error message with the specified reason
-local function HTMLError(a_Reason)
-	return "<b style='color: #a00'>" .. a_Reason .. "</b>"
-end
-
-
-
-
-
---- Returns a HTML string representing a form's Submit button
--- The form has the subpage hidden field added, and any hidden values in the a_HiddenValues map
--- All keys are left as-is, all values are HTML-escaped
-local function GetFormButton(a_SubpageName, a_ButtonText, a_HiddenValues)
-	-- Check params:
-	assert(type(a_SubpageName) == "string")
-	assert(type(a_ButtonText) == "string")
-	assert(type(a_HiddenValues or {}) == "table")
-	
-	local res = {"<input type='submit' value='"}
-	ins(res, cWebAdmin:GetHTMLEscapedString(a_ButtonText))
-	ins(res, "'/><input type='hidden' name='subpage' value='")
-	ins(res, a_SubpageName)
-	ins(res, "'/>")
-	for k, v in pairs(a_HiddenValues) do
-		ins(res, "<input type='hidden' name='")
-		ins(res, k)
-		ins(res, "' value='")
-		ins(res, cWebAdmin:GetHTMLEscapedString(v))
-		ins(res, "'/>")
-	end
-	
-	return con(res)
-end
-
-
-
-
-
 --- Returns the HTML contents of a single row in the Ranks table
 local function GetRankRow(a_RankName)
-	-- Accumulator for the row contents
-	local Row = {"<tr><td>", a_RankName, "</td><td>"}
+	-- First row: rank name:
+	local Row = {"<tr><td>"}
+	ins(Row, cWebAdmin:GetHTMLEscapedString(a_RankName))
+	ins(Row, "</td><td>")
 	
 	-- List all groups in the rank:
 	local Groups = cRankManager:GetRankGroups(a_RankName)
@@ -132,7 +96,7 @@ local function GetRankRow(a_RankName)
 		ins(Row, con(Groups, "<br/>", 1, MAX_GROUPS))
 		ins(Row, "<br/>...")
 	end
-	ins(Row, "</form></td><td>")
+	ins(Row, "</td><td>")
 	
 	-- Display the visuals:
 	local MsgPrefix, MsgSuffix, MsgNameColorCode = cRankManager:GetRankVisuals(a_RankName)
@@ -456,7 +420,7 @@ function HandleRequest_Ranks(a_Request)
 	
 	local PageContent = Handler(a_Request)
 	
-	---[[
+	--[[
 	-- DEBUG: Save content to a file for debugging purposes:
 	local f = io.open("ranks.html", "wb")
 	if (f ~= nil) then
