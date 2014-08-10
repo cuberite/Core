@@ -37,18 +37,17 @@ end
 
 local GameModeTable =
 {
-	["survival"] =  gmSurvival,
-	["creative"] =  gmCreative,
+	["0"]         = gmSurvival,
+	["survival"]  = gmSurvival,
+	["1"]         = gmCreative,
+	["creative"]  = gmCreative,
+	["2"]         = gmAdventure,
 	["adventure"] = gmAdventure,
+	["3"]         = 3,
 	["spectator"] = 3,
 }
 
 function StringToGameMode(Str)
-	local Number = tonumber(Str)
-	if ((Number ~= nil) and (Number >= gmMin) and (Number <= gmMax)) then
-		return Number
-	end
-
 	local StrLower = string.lower(Str)
 	return GameModeTable[StrLower]
 end
