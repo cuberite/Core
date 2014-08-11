@@ -7,8 +7,10 @@ function HandlePortalCommand(Split, Player)
 		SendMessage(Player, "Usage: /portal [WorldName]")
 		return true
 	end
-
-	if( Player:MoveToWorld(Split[2]) == false ) or (Player:GetWorld():GetName() == Split[2]) then
+	if (Player:GetWorld():GetName() == Split[2]) then
+		SendMessageFailure( Player, "You are in " .. Split[2] .. "!" )
+		return true
+	elseif( Player:MoveToWorld(Split[2]) == false ) then
 		SendMessageFailure( Player, "Could not move to world " .. Split[2] .. "!" )
 		return true
 	end
@@ -16,6 +18,7 @@ function HandlePortalCommand(Split, Player)
 	SendMessageSuccess( Player, "Moved successfully to '" .. Split[2] .. "'! :D" )
 	return true
 end
+
 
 
 
