@@ -335,7 +335,7 @@ local function ShowSendPMPage(a_Request)
 	return table.concat({
 		"<h4>Send a message</h4><table><tr><th>Player</th><td>",
 		cWebAdmin:GetHTMLEscapedString(PlayerName),
-		"</td></tr><tr><th>Message</th><td><form method='POST'><input type='text' name='Msg' size=100/>",
+		"</td></tr><tr><th>Message</th><td><form method='POST'><input type='text' name='Msg' size=50/>",
 		"</td></tr><tr><th/><td>",
 		GetFormButton("sendpmproc", "Send message", PlayerIdent),
 		"</td></tr></table>"
