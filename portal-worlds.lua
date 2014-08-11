@@ -8,7 +8,7 @@ function HandlePortalCommand(Split, Player)
 		return true
 	end
 
-	if( Player:MoveToWorld(Split[2]) == false ) then
+	if( Player:MoveToWorld(Split[2]) == false ) or (Player:GetWorld():GetName() == Split[2]) then
 		SendMessageFailure( Player, "Could not move to world " .. Split[2] .. "!" )
 		return true
 	end
