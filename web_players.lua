@@ -111,6 +111,7 @@ local function GetPositionDetails(a_PlayerIdent)
 	)
 	
 	-- Display the current world and coords:
+	-- TODO: What to do if player not present in the world?
 	local Page =
 	{
 		"<table><tr><th>Current world</th><td>",
@@ -393,6 +394,16 @@ local function ShowSetRankPage(a_Request)
 	
 	-- Change the player's rank:
 	cRankManager:SetPlayerRank(PlayerUUID, PlayerName, RankName)
+	
+	-- Update each in-game player:
+	cRoot:Get():ForEachPlayer(
+		function(a_CBPlayer)
+			if (a_CBPlayer:GetName() == PlayerName) then
+				a_CBPlayer:SendMessage("You were assigned the rank " .. RankName .. " by webadmin.")
+				a_CBPlayer:LoadRank()
+			end
+		end
+	)
 	
 	-- Redirect the admin back to the player list:
 	return con({
