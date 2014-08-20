@@ -27,10 +27,17 @@ function HandleRankCommand(a_Split, a_Player)
 
 	-- Translate the PlayerName to a UUID:
 	local PlayerName = a_Split[2]
-	local PlayerUUID = cMojangAPI:GetUUIDFromPlayerName(PlayerName)
-	if ((PlayerUUID == nil) or (string.len(PlayerUUID) ~= 32)) then
-		SendMessage(a_Player, "There is no such player: " .. PlayerName)
-		return true
+	local PlayerUUID
+	if (cRoot:Get():GetServer():ShouldAuthenticate()) then
+		-- The server is in online-mode, get the UUID from Mojang servers and check for validity:
+		PlayerUUID = cMojangAPI:GetUUIDFromPlayerName(PlayerName)
+		if ((PlayerUUID == nil) or (string.len(PlayerUUID) ~= 32)) then
+			SendMessage(a_Player, "There is no such player: " .. PlayerName)
+			return true
+		end
+	else
+		-- The server is in offline mode, generate an offline-mode UUID, no validity check is possible:
+		PlayerUUID = cClientHandle:GenerateOfflineUUID(PlayerName)
 	end
 	
 	-- View the player's rank, if requested:
