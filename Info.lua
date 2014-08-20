@@ -63,13 +63,6 @@ g_PluginInfo =
 			HelpString = " ~ Change your gamemode",
 		},
 
-		["/groups"] = 
-		{
-			Permission = "core.groups",
-			Handler = HandleGroupsCommand,
-			HelpString = " - Shows a list of all the groups",
-		},
-
 		["/help"] = 
 		{
 			Permission = "core.help",
@@ -112,6 +105,14 @@ g_PluginInfo =
 			HelpString = " - Lists all connected players",
 		},
 
+		["/listranks"] =
+		{
+			Permission = "core.listranks",
+			Handler = HandleListRanksCommand,
+			HelpString = "List all the available ranks",
+			Alias = "/ranks",
+		},
+
 		["/locate"] = 
 		{
 			Permission = "core.locate",
@@ -147,21 +148,21 @@ g_PluginInfo =
 			HelpString = " - Show list of plugins",
 		},
 
-		["/portal"] = 
+		["/portal"] =
 		{
 			Permission = "core.portal",
 			Handler = HandlePortalCommand,
 			HelpString = " ~ Move to a different world",
 		},
 
-		["/rank"] = 
+		["/rank"] =
 		{
 			Permission = "core.rank",
 			Handler = HandleRankCommand,
-			HelpString = " ~ Add someone to a group",
+			HelpString = "View or set a player's rank",
 		},
 
-		["/regen"] = 
+		["/regen"] =
 		{
 			Permission = "core.regen",
 			Handler = HandleRegenCommand,
