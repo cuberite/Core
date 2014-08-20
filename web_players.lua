@@ -106,12 +106,17 @@ local function GetPositionDetails(a_PlayerIdent)
 			local Player = tolua.cast(a_Entity, "cPlayer")
 			PlayerInfo.Pos = Player:GetPosition()
 			PlayerInfo.LastBedPos = Player:GetLastBedPos()
+			PlayerInfo.Found = true
 			-- TODO: Other info?
 		end
 	)
+
+	-- If the player is not present (disconnected in the meantime), display no info:
+	if not(PlayerInfo.Found) then
+		return ""
+	end
 	
 	-- Display the current world and coords:
-	-- TODO: What to do if player not present in the world?
 	local Page =
 	{
 		"<table><tr><th>Current world</th><td>",
