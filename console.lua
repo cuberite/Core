@@ -394,7 +394,7 @@ function HandleConsoleRank(a_Split)
 	cRoot:Get():ForEachPlayer(
 		function(a_CBPlayer)
 			if (a_CBPlayer:GetName() == PlayerName) then
-				a_CBPlayer:SendMessage("You were assigned the rank " .. NewRank .. " by " .. a_Player:GetName() .. ".")
+				a_CBPlayer:SendMessage("You were assigned the rank " .. NewRank .. " by the server console admin.")
 				a_CBPlayer:LoadRank()
 			end
 		end
@@ -522,6 +522,46 @@ end
 
 
 
+function HandleConsoleUnrank(a_Split)
+	-- Check params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Too few or too many parameters:
+		return true, "Usage: unrank <PlayerName>"
+	end
+
+	-- Translate the PlayerName to a UUID:
+	local PlayerName = a_Split[2]
+	local PlayerUUID
+	if (cRoot:Get():GetServer():ShouldAuthenticate()) then
+		-- The server is in online-mode, get the UUID from Mojang servers and check for validity:
+		PlayerUUID = cMojangAPI:GetUUIDFromPlayerName(PlayerName)
+		if ((PlayerUUID == nil) or (string.len(PlayerUUID) ~= 32)) then
+			return true, "There is no such player: " .. PlayerName
+		end
+	else
+		-- The server is in offline mode, generate an offline-mode UUID, no validity check is possible:
+		PlayerUUID = cClientHandle:GenerateOfflineUUID(PlayerName)
+	end
+	
+	-- Unrank the player:
+	cRankManager:RemovePlayerRank(PlayerUUID)
+
+	-- Update all players in the game of the given name and let them know:
+	cRoot:Get():ForEachPlayer(
+		function(a_CBPlayer)
+			if (a_CBPlayer:GetName() == PlayerName) then
+				a_CBPlayer:SendMessage("You were unranked by the server console admin.")
+				a_CBPlayer:LoadRank()
+			end
+		end
+	)
+	return true, "Player " .. PlayerName .. " is now in the default rank."
+end
+
+
+
+
+
 function HandleConsoleVersion(Split)
 	if (#Split == 1) then
 		-- Display current version:
@@ -540,23 +580,23 @@ end
 
 
 function HandleConsoleWeather(Split)
-        if #Split ~= 3 then
-                return true, "Usage: /weather [world] [clear/rain/thunder]" 
-        end
+	if #Split ~= 3 then
+		return true, "Usage: /weather [world] [clear/rain/thunder]"
+	end
 
-        Root = cRoot:Get()
-        if Root:GetWorld(Split[2]) == nil then
-            return true, "No world named "..Split[2]
-        elseif (Split[3] == "clear") then
-            Root:GetWorld(Split[2]):SetWeather(0)
-            return true, "Downfall stopped" 
-        elseif (Split[3] == "rain") then
-            Root:GetWorld(Split[2]):SetWeather(1)
-            return true, "Let it rain!" 
-        elseif (Split[3] == "thunder") then
-            Root:GetWorld(Split[2]):SetWeather(2)
-            return true, "Thundery showers activate!"
-        end
+	Root = cRoot:Get()
+	if Root:GetWorld(Split[2]) == nil then
+		return true, "No world named "..Split[2]
+	elseif (Split[3] == "clear") then
+		Root:GetWorld(Split[2]):SetWeather(0)
+		return true, "Downfall stopped"
+	elseif (Split[3] == "rain") then
+		Root:GetWorld(Split[2]):SetWeather(1)
+		return true, "Let it rain!"
+	elseif (Split[3] == "thunder") then
+		Root:GetWorld(Split[2]):SetWeather(2)
+		return true, "Thundery showers activate!"
+	end
 end
 
 

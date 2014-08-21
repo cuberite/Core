@@ -434,8 +434,14 @@ g_PluginInfo =
 
 		["unloadchunks"] =
 		{
-			Handler =  HandleConsoleUnload,
-			HelpString =  " - Unloads all unused chunks",
+			Handler = HandleConsoleUnload,
+			HelpString = " - Unloads all unused chunks",
+		},
+		
+		["unrank"] =
+		{
+			Handler = HandleConsoleUnrank,
+			HelpString = "Resets the player's rank to default",
 		},
 
 		["weather"] =
