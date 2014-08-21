@@ -164,22 +164,40 @@ end
 
 
 
-function HandleConsoleListGroups(Split)
-	-- Read the groups.ini file:
-	local GroupsIni = cIniFile()
-	if (not(GroupsIni:ReadFile("groups.ini"))) then
-		return true, "No groups found"
+function HandleConsoleListGroups(a_Split)
+	if (a_Split[3] ~= nil) then
+		-- Too many params:
+		return true, "Too many parameters. Usage: listgroups [<RankName>]"
 	end
+	
+	-- If no params are given, list all groups that the manager knows:
+	local RankName = a_Split[2]
+	if (RankName == nil) then
+		-- Get all the groups:
+		local Groups = cRankManager:GetAllGroups()
 
-	-- Read the groups:
-	Number = GroupsIni:GetNumKeys()
-	Groups = {}
-	for i = 0, Number do
-		table.insert(Groups, GroupsIni:GetKeyName(i))
+		-- Output the groups, concatenated to a string:
+		local Out = "Available groups:\n"
+		Out = Out .. table.concat(Groups, ", ")
+		return true, Out
 	end
+	
+	-- A rank name is given, list the groups in that rank:
+	local Groups = cRankManager:GetRankGroups(RankName)
+	local Out = "Groups in rank " .. RankName .. ":\n" .. table.concat(Groups, ", ")
+	return true, Out
+end
+
+
+
+
+
+function HandleConsoleListRanks(Split)
+	-- Get all the groups:
+	local Groups = cRankManager:GetAllRanks()
 
 	-- Output the groups, concatenated to a string:
-	local Out = "Groups:\n"
+	local Out = "Available ranks:\n"
 	Out = Out .. table.concat(Groups, ", ")
 	return true, Out
 end
@@ -275,47 +293,56 @@ end
 
 
 
-function HandleConsoleRank(Split)
-	if (Split[2] == nil) or (Split[3] == nil) then
-		return true, "Usage: /rank [Player] [Group]"
+function HandleConsoleRank(a_Split)
+	-- Check parameters:
+	if ((a_Split[2] == nil) or (a_Split[4] ~= nil)) then
+		-- Not enough or too many parameters
+		return true, "Usage: rank <Player> [<Rank>]"
 	end
-	local Out = ""
-
-	-- Read the groups.ini file:
-	local GroupsIni = cIniFile()
-	if (not(GroupsIni:ReadFile("groups.ini"))) then
-		GroupsIni:WriteFile("groups.ini")
+	
+	-- Translate the PlayerName to a UUID:
+	local PlayerName = a_Split[2]
+	local PlayerUUID
+	if (cRoot:Get():GetServer():ShouldAuthenticate()) then
+		-- The server is in online-mode, get the UUID from Mojang servers and check for validity:
+		PlayerUUID = cMojangAPI:GetUUIDFromPlayerName(PlayerName)
+		if ((PlayerUUID == nil) or (string.len(PlayerUUID) ~= 32)) then
+			return true, "There is no such player: " .. PlayerName
+		end
+	else
+		-- The server is in offline mode, generate an offline-mode UUID, no validity check is possible:
+		PlayerUUID = cClientHandle:GenerateOfflineUUID(PlayerName)
+	end
+	
+	-- View the player's rank, if requested:
+	if (a_Split[3] == nil) then
+		-- "/rank <PlayerName>" usage, display the rank:
+		local CurrRank = cRankManager:GetPlayerRankName(PlayerUUID)
+		if (CurrRank == "") then
+			return true, "The player has no rank assigned to them."
+		else
+			return true, "The player's rank is " .. CurrRank
+		end
 	end
 
-	-- Find the group:
-	if (GroupsIni:FindKey(Split[3]) == -1) then
-		return true, Out .. "Group does not exist"
+	-- Change the player's rank:
+	local NewRank = a_Split[3]
+	if not(cRankManager:RankExists(NewRank)) then
+		SendMessage(a_Player, "The specified rank does not exist!")
+		return true
 	end
+	cRankManager:SetPlayerRank(PlayerUUID, PlayerName, NewRank)
 
-	-- Read the users.ini file:
-	local UsersIni = cIniFile()
-	UsersIni:ReadFile("users.ini")
-
-	-- Write the new group value to users.ini:
-	UsersIni:DeleteKey(Split[2])
-	UsersIni:GetValueSet(Split[2], "Groups", Split[3])
-	UsersIni:WriteFile("users.ini")
-
-	-- Reload the player's permissions:
-	cRoot:Get():ForEachWorld(
-		function (World)
-			World:ForEachPlayer(
-				function (Player)
-					if (Player:GetName() == Split[2]) then
-						SendMessageSuccess( Player, "You were moved to group " .. Split[3] )
-						Player:LoadPermissionsFromDisk()
-					end
-				end
-			)
+	-- Update all players in the game of the given name and let them know:
+	cRoot:Get():ForEachPlayer(
+		function(a_CBPlayer)
+			if (a_CBPlayer:GetName() == PlayerName) then
+				a_CBPlayer:SendMessage("You were assigned the rank " .. NewRank .. " by " .. a_Player:GetName() .. ".")
+				a_CBPlayer:LoadRank()
+			end
 		end
 	)
-
-	return true, Out .. "Player " .. Split[2] .. " was moved to " .. Split[3]
+	return true, "Player " .. PlayerName .. " is now in rank " .. NewRank
 end
 
 

@@ -294,131 +294,139 @@ g_PluginInfo =
 			Handler = HandleWorldsCommand,
 			HelpString = " - Shows a list of all the worlds",
 		},
-	},
+	},  -- Commands
+
+
 	
 	ConsoleCommands =
 	{
-		["ban"] = 
+		["ban"] =
 		{
 			Handler =  HandleConsoleBan,
 			HelpString =  " ~ Bans a player by name",
 		},
 
-		["banlist ips"] = 
+		["banlist ips"] =
 		{
 			Handler =  HandleConsoleBanList,
 			HelpString =  " - Lists all players banned by IP",
 		},
 
-		["banlist"] = 
+		["banlist"] =
 		{
 			Handler =  HandleConsoleBanList,
 			HelpString =  " - Lists all players banned by name",
 		},
 
-		["clear"] = 
+		["clear"] =
 		{
 			Handler =  HandleConsoleClear ,
 			HelpString =  " ~ Clear a player's inventory",
 		},
 
-		["gamemode"] = 
+		["gamemode"] =
 		{
 			Handler =  HandleConsoleGamemode,
 			HelpString =  " ~ Change a player's gamemode",
 		},
 
-		["getversion"] = 
+		["getversion"] =
 		{
 			Handler =  HandleConsoleVersion,
 			HelpString =  " - Gets server version reported to 1.4+ clients",
 		},
 
-		["gm"] = 
+		["gm"] =
 		{
 			Handler =  HandleConsoleGamemode,
 			HelpString =  " ~ Change a player's gamemode",
 		},
 
-		["give"] = 
+		["give"] =
 		{
 			Handler =  HandleConsoleGive,
 			HelpString =  " ~ Gives items to the specified player.",
 		},
 
-		["kick"] = 
+		["kick"] =
 		{
 			Handler =  HandleConsoleKick,
 			HelpString =  " ~ Kicks a player by name",
 		},
 
-		["kill"] = 
+		["kill"] =
 		{
 			Handler =  HandleConsoleKill,
 			HelpString =  " ~ Kill a player",
 		},
 
-		["list"] = 
+		["list"] =
 		{
 			Handler =  HandleConsoleList,
 			HelpString =  " - Lists all players in a machine-readable format",
 		},
 
-		["listgroups"] = 
+		["listgroups"] =
 		{
 			Handler =  HandleConsoleListGroups,
-			HelpString =  " - Shows a list of all the groups",
+			HelpString =  "Shows a list of all the groups",
 		},
 
-		["numchunks"] = 
+		["listranks"] =
+		{
+			Handler =  HandleConsoleListRanks,
+			HelpString =  "Shows a list of all the ranks",
+		},
+
+		["numchunks"] =
 		{
 			Handler =  HandleConsoleNumChunks,
 			HelpString =  " - Shows number of chunks currently loaded",
 		},
 
-		["players"] = 
+		["players"] =
 		{
 			Handler =  HandleConsolePlayers,
 			HelpString =  " - Lists all connected players",
 		},
 
-		["plugins"] = 
+		["plugins"] =
 		{
 			Handler = HandleConsolePlugins,
 			HelpString = " - Show list of plugins",
 		},
 
-		["rank"] = 
+		["rank"] =
 		{
 			Handler =  HandleConsoleRank,
-			HelpString =  " ~ Add a player to a group",
+			HelpString =  "Set or view a player's rank",
 		},
 
-		["save-all"] = 
+		["save-all"] =
 		{
 			Handler =  HandleConsoleSaveAll,
 			HelpString =  " - Saves all chunks",
 		},
 
-		["say"] = 
+		["say"] =
 		{
 			Handler =  HandleConsoleSay,
 			HelpString =  " ~ Sends a chat message to all players",
 		},
 
-		["setversion"] = 
+		["setversion"] =
 		{
 			Handler =  HandleConsoleVersion,
 			HelpString =  " ~ Sets server version reported to 1.4+ clients",
 		},
 
-		["tp"] = 
+		["tp"] =
 		{
 			Handler =  HandleConsoleTeleport,
 			HelpString =  " ~ Teleports a player",
 		},
 
-		["unban"] = 
+		["unban"] =
 		{
 			Handler =  HandleConsoleUnban,
 			HelpString =  " ~ Unbans a player by name",
@@ -430,7 +438,7 @@ g_PluginInfo =
 			HelpString =  " - Unloads all unused chunks",
 		},
 
-		["weather"] = 
+		["weather"] =
 		{
 			Handler =  HandleConsoleWeather,
 			HelpString =  " - Change weather in the specified world",
