@@ -1,10 +1,131 @@
+
+-- console.lua
+
 -- Implements things related to console commands
 
-function HandleConsoleGive(Split)
 
+
+
+
+function HandleConsoleBan(Split)
+	if (#Split < 2) then
+		return true, "Usage: ban <PlayerName> [<Reason>]"
+	end
+
+	local Reason = cChatColor.Red .. "You have been banned."
+	if( #Split > 2 ) then
+		Reason = table.concat(Split, " ", 3)
+	end
+
+	if not(KickPlayer(Split[2], Reason)) then
+		LOGINFO("Could not find player, but banned anyway" )
+	else
+		LOGINFO("Successfully kicked and banned player" )
+	end
+	BannedPlayersIni:SetValueB("Banned", Split[2], true)
+	BannedPlayersIni:WriteFile("banned.ini")
+
+	return true
+end
+
+
+
+
+
+function HandleConsoleBanList(Split)
+	if (#Split == 1) then
+		return true, BanListByName()
+	end
+
+	if (string.lower(Split[2]) == "ips") then
+		return true, BanListByIPs()
+	end
+
+	return true, "Unknown banlist subcommand"
+end
+
+
+
+
+
+function HandleConsoleClear(Split)
+	if (#Split == 1) then
+		return true, "Usage: clear <PlayerName>"
+    end
+    
+    local InventoryCleared = false;
+    local ClearInventory = function(Player)
+        if (Player:GetName() == Split[2]) then
+            Player:GetInventory():Clear()
+            InventoryCleared = true
+        end
+    end
+
+    cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory);
+    if (InventoryCleared) then
+        return true, "You cleared the inventory of " .. Split[2]
+    else
+        return true, "Player not found" 
+    end
+end
+
+
+
+
+
+
+local GameModeTable =
+{
+	["0"]         = gmSurvival,
+	["survival"]  = gmSurvival,
+	["1"]         = gmCreative,
+	["creative"]  = gmCreative,
+	["2"]         = gmAdventure,
+	["adventure"] = gmAdventure,
+	["3"]         = 3,
+	["spectator"] = 3,
+}
+
+
+
+
+
+function HandleConsoleGamemode(a_Split)
+	-- Check params, translate into gamemode:
+	local Gamemode = GameModeTable[a_Split[3] or ""]
+	if ((a_Split[2] == nil) or (a_Split[4] ~= nil) or (Gamemode == nil)) then
+		return true, "Usage: " .. a_Split[1] .. " {survival|creative|adventure} <PlayerName> "
+	end
+
+	-- Change the gamemode for the player:
+	local IsPlayerOnline = false;
+	local PlayerName = a_Split[3]
+	cRoot:Get():FindAndDoWithPlayer(PlayerName,
+		function(a_CBPlayer)
+			if (a_CBPlayer:GetName() == PlayerName) then
+				IsPlayerOnline = true
+				a_CBPlayer:SetGameMode(Gamemode)
+			end
+		end
+	)
+
+	-- Report success or failure:
+	if (IsPlayerOnline) then
+		return true, "Changed gamemode for player " .. PlayerName
+	else
+		return true, "Player not found" 
+	end
+end
+
+
+
+
+
+
+function HandleConsoleGive(Split)
 	-- Make sure there are a correct number of arguments.
 	if ((#Split < 3) or (#Split > 5)) then
-		return true, "Usage: give <player> <item> [amount] [meta]"
+		return true, "Usage: give <PlayerName> <item> [<amount>] [<meta>]"
 	end
 
 	-- Get the item from the arguments and check it's valid.
@@ -63,34 +184,9 @@ end
 
 
 
-function HandleConsoleBan(Split)
-	if (#Split < 2) then
-		return true, "Usage: ban [Player] <Reason>"
-	end
-
-	local Reason = cChatColor.Red .. "You have been banned."
-	if( #Split > 2 ) then
-		Reason = table.concat(Split, " ", 3)
-	end
-
-	if not(KickPlayer(Split[2], Reason)) then
-		LOGINFO("Could not find player, but banned anyway" )
-	else
-		LOGINFO("Successfully kicked and banned player" )
-	end
-	BannedPlayersIni:SetValueB("Banned", Split[2], true)
-	BannedPlayersIni:WriteFile("banned.ini")
-
-	return true
-end
-
-
-
-
-
 function HandleConsoleKick(Split)
 	if (#Split < 2) then
-		return true, "Usage: kick [Player] <Reason>"
+		return true, "Usage: kick <PlayerName> [<Reason>]"
 	end
 
 	local Reason = cChatColor.Red .. "You have been kicked."
@@ -109,39 +205,31 @@ end
 
 
 
-function HandleConsoleUnban(Split)
-
-	if #Split < 2 then
-		return true, "Usage: /unban [Player]"
-	end
-
-	if( BannedPlayersIni:GetValueB("Banned", Split[2], false) == false ) then
-		return true, Split[2] .. " is not banned!"
-	end
-
-	BannedPlayersIni:SetValueB("Banned", Split[2], false, false)
-	BannedPlayersIni:WriteFile("banned.ini")
-
-	LOGINFO("Unbanned " .. Split[2])
-	return true
-
-end
-
-
-
-
-
-function HandleConsoleBanList(Split)
+function HandleConsoleKill(Split)
+	-- Check the params:
 	if (#Split == 1) then
-		return true, BanListByName()
+		return true, "Usage: kill <PlayerName>"
 	end
 
-	if (string.lower(Split[2]) == "ips") then
-		return true, BanListByIPs()
+	-- Kill the player:
+	local HasKilled = false;
+	cRoot:Get():FindAndDoWithPlayer(Split[2],
+		function(Player)
+			if (Player:GetName() == Split[2]) then
+				Player:TakeDamage(dtAdmin, nil, 1000, 1000, 0)
+				HasKilled = true
+			end
+		end
+	);
+	
+	-- Report success or failure:
+	if (HasKilled) then
+		return true, "Player " .. Split[2] .. " is killed" 
+	else
+		return true, "Player not found" 
 	end
-
-	return true, "Unknown banlist subcommand"
 end
+
 
 
 
@@ -150,10 +238,11 @@ end
 function HandleConsoleList(Split)
 	local PlayerTable = {}
 
-	local ForEachPlayer = function(a_Player)
-		table.insert(PlayerTable, a_Player:GetName())
-	end
-	cRoot:Get():ForEachPlayer(ForEachPlayer)
+	cRoot:Get():ForEachPlayer(
+		function(a_Player)
+			table.insert(PlayerTable, a_Player:GetName())
+		end
+	)
 	table.sort(PlayerTable)
 
 	local Out = "Players (" .. #PlayerTable .. "): " .. table.concat(PlayerTable, ", ")
@@ -164,22 +253,40 @@ end
 
 
 
-function HandleConsoleListGroups(Split)
-	-- Read the groups.ini file:
-	local GroupsIni = cIniFile()
-	if (not(GroupsIni:ReadFile("groups.ini"))) then
-		return true, "No groups found"
+function HandleConsoleListGroups(a_Split)
+	if (a_Split[3] ~= nil) then
+		-- Too many params:
+		return true, "Too many parameters. Usage: listgroups [<RankName>]"
 	end
+	
+	-- If no params are given, list all groups that the manager knows:
+	local RankName = a_Split[2]
+	if (RankName == nil) then
+		-- Get all the groups:
+		local Groups = cRankManager:GetAllGroups()
 
-	-- Read the groups:
-	Number = GroupsIni:GetNumKeys()
-	Groups = {}
-	for i = 0, Number do
-		table.insert(Groups, GroupsIni:GetKeyName(i))
+		-- Output the groups, concatenated to a string:
+		local Out = "Available groups:\n"
+		Out = Out .. table.concat(Groups, ", ")
+		return true, Out
 	end
+	
+	-- A rank name is given, list the groups in that rank:
+	local Groups = cRankManager:GetRankGroups(RankName)
+	local Out = "Groups in rank " .. RankName .. ":\n" .. table.concat(Groups, ", ")
+	return true, Out
+end
+
+
+
+
+
+function HandleConsoleListRanks(Split)
+	-- Get all the groups:
+	local Groups = cRankManager:GetAllRanks()
 
 	-- Output the groups, concatenated to a string:
-	local Out = "Groups:\n"
+	local Out = "Available ranks:\n"
 	Out = Out .. table.concat(Groups, ", ")
 	return true, Out
 end
@@ -189,22 +296,19 @@ end
 
 
 function HandleConsoleNumChunks(Split)
+	-- List each world's chunk count into a table, sum the total chunk count:
 	local Output = {}
-	local AddNumChunks = function(World)
-		Output[World:GetName()] = World:GetNumChunks()
-	end
-
-	cRoot:Get():ForEachWorld(AddNumChunks)
-
 	local Total = 0
-	local Out = ""
-	for name, num in pairs(Output) do
-		Out = Out .. "  " .. name .. ": " .. num .. " chunks\n"
-		Total = Total + num
-	end
-	Out = Out .. "Total: " .. Total .. " chunks\n"
+	cRoot:Get():ForEachWorld(
+		function(a_World)
+			table.insert(Output, a_World:GetName() .. ": " .. a_World:GetNumChunks() .. " chunks")
+			Total = Total + a_World:GetNumChunks()
+		end
+	)
+	table.sort(Output)
 
-	return true, Out
+	-- Return the complete report:
+	return true, table.concat(Output, "\n") .. "\nTotal: " .. Total .. " chunks\n"
 end
 
 
@@ -243,15 +347,217 @@ function HandleConsolePlugins(Split)
 	local PluginList = PluginManager:GetAllPlugins()
 
 	local PluginTable = {}
-	for k, Plugin in pairs( PluginList ) do
+	for k, Plugin in pairs(PluginList) do
 		if Plugin then
-			table.insert( PluginTable, Plugin:GetName() )
+			table.insert(PluginTable, Plugin:GetName())
 		end
 	end
 	table.sort(PluginTable)
 
 	local Out = "There are " .. #PluginTable .. " loaded plugins: " .. table.concat(PluginTable, ", ")
 	return true, Out
+end
+
+
+
+
+
+function HandleConsoleRank(a_Split)
+	-- Check parameters:
+	if ((a_Split[2] == nil) or (a_Split[4] ~= nil)) then
+		-- Not enough or too many parameters
+		return true, "Usage: rank <Player> [<Rank>]"
+	end
+	
+	-- Translate the PlayerName to a UUID:
+	local PlayerName = a_Split[2]
+	local PlayerUUID
+	if (cRoot:Get():GetServer():ShouldAuthenticate()) then
+		-- The server is in online-mode, get the UUID from Mojang servers and check for validity:
+		PlayerUUID = cMojangAPI:GetUUIDFromPlayerName(PlayerName)
+		if ((PlayerUUID == nil) or (string.len(PlayerUUID) ~= 32)) then
+			return true, "There is no such player: " .. PlayerName
+		end
+	else
+		-- The server is in offline mode, generate an offline-mode UUID, no validity check is possible:
+		PlayerUUID = cClientHandle:GenerateOfflineUUID(PlayerName)
+	end
+	
+	-- View the player's rank, if requested:
+	if (a_Split[3] == nil) then
+		-- "/rank <PlayerName>" usage, display the rank:
+		local CurrRank = cRankManager:GetPlayerRankName(PlayerUUID)
+		if (CurrRank == "") then
+			return true, "The player has no rank assigned to them."
+		else
+			return true, "The player's rank is " .. CurrRank
+		end
+	end
+
+	-- Change the player's rank:
+	local NewRank = a_Split[3]
+	if not(cRankManager:RankExists(NewRank)) then
+		return true, "The specified rank does not exist!"
+	end
+	cRankManager:SetPlayerRank(PlayerUUID, PlayerName, NewRank)
+
+	-- Update all players in the game of the given name and let them know:
+	cRoot:Get():ForEachPlayer(
+		function(a_CBPlayer)
+			if (a_CBPlayer:GetName() == PlayerName) then
+				a_CBPlayer:SendMessage("You were assigned the rank " .. NewRank .. " by the server console admin.")
+				a_CBPlayer:LoadRank()
+			end
+		end
+	)
+	return true, "Player " .. PlayerName .. " is now in rank " .. NewRank
+end
+
+
+
+
+
+function HandleConsoleSaveAll(Split)
+	cRoot:Get():SaveAllChunks()
+	return true
+end
+
+
+
+
+
+function HandleConsoleSay(a_Split)
+	cRoot:Get():BroadcastChat(cChatColor.Gold .. "[SERVER] " .. cChatColor.Yellow .. table.concat(a_Split, " ", 2))
+	return true
+end
+
+
+
+
+
+
+function HandleConsoleTeleport(Split)
+	local TeleportToCoords = function(Player)
+		if (Player:GetName() == Split[2]) then
+			IsPlayerOnline = true
+			Player:TeleportToCoords(Split[3], Split[4], Split[5])
+		end
+	end
+	
+	local IsPlayerOnline = false;
+	local FirstPlayerOnline = false;
+	local GetPlayerCoords = function(Player)
+		if (Player:GetName() == Split[3]) then
+			PosX = Player:GetPosX()
+			PosY = Player:GetPosY()
+			PosZ = Player:GetPosZ()
+			FirstPlayerOnline = true
+		end
+	end
+	
+	local TeleportToPlayer = function(Player)
+		if (Player:GetName() == Split[2]) then
+		    Player:TeleportToCoords(PosX, PosY, PosZ)
+			IsPlayerOnline = true
+		end
+	end
+
+	if (#Split == 3) then
+		cRoot:Get():FindAndDoWithPlayer(Split[3], GetPlayerCoords);
+		if (FirstPlayerOnline) then
+			cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToPlayer);
+			if (IsPlayerOnline) then
+				return true, "Teleported " .. Split[2] .." to " .. Split[3]
+			end
+		else
+				return true, "Player " .. Split[3] .." not found"
+		end
+	elseif (#Split == 5) then
+		cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToCoords);
+		if (IsPlayerOnline) then
+			return true, "You teleported " .. Split[2] .. " to [X:" .. Split[3] .. " Y:" .. Split[4] .. " Z:" .. Split[5] .. "]"
+		else
+			return true, "Player not found"
+		end
+	else
+		return true, "Usage: tp <PlayerName> <ToPlayerName> or tp <PlayerName> <X> <Y> <Z>"
+	end
+end
+
+
+
+
+function HandleConsoleUnban(Split)
+	if (#Split < 2) then
+		return true, "Usage: unban <PlayerName>"
+	end
+
+	if( BannedPlayersIni:GetValueB("Banned", Split[2], false) == false ) then
+		return true, Split[2] .. " is not banned!"
+	end
+
+	BannedPlayersIni:SetValueB("Banned", Split[2], false, false)
+	BannedPlayersIni:WriteFile("banned.ini")
+
+	LOGINFO("Unbanned " .. Split[2])
+	return true
+
+end
+
+
+
+
+
+function HandleConsoleUnload(Split)
+	local UnloadChunks = function(World)
+		World:QueueUnloadUnusedChunks()
+	end
+
+	local Out = "Num loaded chunks before: " .. cRoot:Get():GetTotalChunkCount() .. "\n"
+	cRoot:Get():ForEachWorld(UnloadChunks)
+	Out = Out .. "Num loaded chunks after: " .. cRoot:Get():GetTotalChunkCount()
+	return true, Out
+end
+
+
+
+
+
+
+function HandleConsoleUnrank(a_Split)
+	-- Check params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Too few or too many parameters:
+		return true, "Usage: unrank <PlayerName>"
+	end
+
+	-- Translate the PlayerName to a UUID:
+	local PlayerName = a_Split[2]
+	local PlayerUUID
+	if (cRoot:Get():GetServer():ShouldAuthenticate()) then
+		-- The server is in online-mode, get the UUID from Mojang servers and check for validity:
+		PlayerUUID = cMojangAPI:GetUUIDFromPlayerName(PlayerName)
+		if ((PlayerUUID == nil) or (string.len(PlayerUUID) ~= 32)) then
+			return true, "There is no such player: " .. PlayerName
+		end
+	else
+		-- The server is in offline mode, generate an offline-mode UUID, no validity check is possible:
+		PlayerUUID = cClientHandle:GenerateOfflineUUID(PlayerName)
+	end
+	
+	-- Unrank the player:
+	cRankManager:RemovePlayerRank(PlayerUUID)
+
+	-- Update all players in the game of the given name and let them know:
+	cRoot:Get():ForEachPlayer(
+		function(a_CBPlayer)
+			if (a_CBPlayer:GetName() == PlayerName) then
+				a_CBPlayer:SendMessage("You were unranked by the server console admin.")
+				a_CBPlayer:LoadRank()
+			end
+		end
+	)
+	return true, "Player " .. PlayerName .. " is now in the default rank."
 end
 
 
@@ -275,259 +581,39 @@ end
 
 
 
-function HandleConsoleRank(Split)
-	if (Split[2] == nil) or (Split[3] == nil) then
-		return true, "Usage: /rank [Player] [Group]"
-	end
-	local Out = ""
-
-	-- Read the groups.ini file:
-	local GroupsIni = cIniFile()
-	if (not(GroupsIni:ReadFile("groups.ini"))) then
-		GroupsIni:WriteFile("groups.ini")
-	end
-
-	-- Find the group:
-	if (GroupsIni:FindKey(Split[3]) == -1) then
-		return true, Out .. "Group does not exist"
-	end
-
-	-- Read the users.ini file:
-	local UsersIni = cIniFile()
-	UsersIni:ReadFile("users.ini")
-
-	-- Write the new group value to users.ini:
-	UsersIni:DeleteKey(Split[2])
-	UsersIni:GetValueSet(Split[2], "Groups", Split[3])
-	UsersIni:WriteFile("users.ini")
-
-	-- Reload the player's permissions:
-	cRoot:Get():ForEachWorld(
-		function (World)
-			World:ForEachPlayer(
-				function (Player)
-					if (Player:GetName() == Split[2]) then
-						SendMessageSuccess( Player, "You were moved to group " .. Split[3] )
-						Player:LoadPermissionsFromDisk()
-					end
-				end
-			)
-		end
-	)
-
-	return true, Out .. "Player " .. Split[2] .. " was moved to " .. Split[3]
-end
+local g_WeatherNames =
+{
+	["clear"]        = wSunny,
+	["sunny"]        = wSunny,
+	["sun"]          = wSunny,
+	["rain"]         = wRain,
+	["rainy"]        = wRain,
+	["storm"]        = wStorm,
+	["thunder"]      = wStorm,
+	["thunderstorm"] = wStorm,
+	["lightning"]    = wStorm,
+}
 
 
 
 
 
-function HandleConsoleSaveAll(Split)
-
-	cRoot:Get():BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all chunks!")
-	cRoot:Get():SaveAllChunks()
-	return true
-end
-
-
-
-
-
-function HandleConsoleSay(Split)
-	table.remove(Split, 1)
-	local Message = ""
-	for i, Text in ipairs(Split) do
-		Message = Message .. " " .. Text
-	end
-	Message = Message:sub(2)  -- Cut off the first space
-	
-	cRoot:Get():BroadcastChat(cChatColor.Gold .. "[SERVER] " .. cChatColor.Yellow .. Message)
-	return true
-end
-
-
-
-
-
-
-function HandleConsoleUnload(Split)
-	local UnloadChunks = function(World)
-		World:QueueUnloadUnusedChunks()
+function HandleConsoleWeather(a_Split)
+	-- Check params:
+	local Weather = g_WeatherNames[a_Split[3] or ""]
+	if ((a_Split[2] == nil) or (a_Split[4] ~= nil) or (Weather == nil)) then
+		return true, "Usage: weather <WorldName> {clear/rain/thunder}"
 	end
 
-	local Out = "Num loaded chunks before: " .. cRoot:Get():GetTotalChunkCount() .. "\n"
-	cRoot:Get():ForEachWorld(UnloadChunks)
-	Out = Out .. "Num loaded chunks after: " .. cRoot:Get():GetTotalChunkCount()
-	return true, Out
-end
-
-
-
-
-
-
-function HandleConsoleKill(Split)
-	if (#Split == 1) then
-		return true, "Usage: /kill [Player]"
-	end
-    
-	local HasKilled = false;
-	local KillPlayer = function(Player)
-		if (Player:GetName() == Split[2]) then
-			Player:TakeDamage(dtInVoid, nil, 1000, 1000, 0)
-			HasKilled = true         
-		end
-	end
-
-	cRoot:Get():FindAndDoWithPlayer(Split[2], KillPlayer);
-	if (HasKilled) then
-		return true, "Player " .. Split[2] .. " is killed" 
-	else
-		return true, "Player not found" 
-	end
-end
-
-
-
-
-
-
-function HandleConsoleClear(Split)
-	if (#Split == 1) then
-		return true, "Usage: /clear [Player]"
-    end
-    
-    local InventoryCleared = false;
-    local ClearInventory = function(Player)
-        if (Player:GetName() == Split[2]) then
-            Player:GetInventory():Clear()
-            InventoryCleared = true
-        end
-    end
-
-    cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory);
-    if (InventoryCleared) then
-        return true, "You cleared the inventory of " .. Split[2]
-    else
-        return true, "Player not found" 
-    end
-end
-
-
-
-
-
-
-function HandleConsoleWeather(Split)
-        if #Split ~= 3 then
-                return true, "Usage: /weather [world] [clear/rain/thunder]" 
-        end
-
-        Root = cRoot:Get()
-        if Root:GetWorld(Split[2]) == nil then
-            return true, "No world named "..Split[2]
-        elseif (Split[3] == "clear") then
-            Root:GetWorld(Split[2]):SetWeather(0)
-            return true, "Downfall stopped" 
-        elseif (Split[3] == "rain") then
-            Root:GetWorld(Split[2]):SetWeather(1)
-            return true, "Let it rain!" 
-        elseif (Split[3] == "thunder") then
-            Root:GetWorld(Split[2]):SetWeather(2)
-            return true, "Thundery showers activate!"
-        end
-end
-
-
-
-
-
-
-function HandleConsoleGamemode(Split)
-	if #Split ~= 3 then
-		return true, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " 
-	end
-
-	local IsPlayerOnline = false;
-	local ChangeGM = function(Player)
-		if (Player:GetName() == Split[3]) then
-			IsPlayerOnline = true
-			if (Split[2] == "survival") or (Split[2] == "0") then
-				Player:SetGameMode(0)
-			elseif (Split[2] == "creative") or (Split[2] == "1") then
-				Player:SetGameMode(1)
-			elseif (Split[2] == "adventure") or (Split[2] == "2") then
-				Player:SetGameMode(2)
-			else
-				IsPlayerOnline = invalidgm
-			end
-		end
-	end
-
-	cRoot:Get():FindAndDoWithPlayer(Split[3], ChangeGM);
-	if (IsPlayerOnline) then
-		return true, "Changed gamemode for player " .. Split[3] 
-	end
-	if (IsPlayerOnline == invalidgm) then
-		return true, "Usage: " ..Split[1].. " [survival|creative|adventure] [player] " 
-	end
-	if (IsPlayerOnline == false) then
-		return true, "Player not found" 
-	end
-end
-
-
-
-
-
-
-function HandleConsoleTeleport(Split)
-	local TeleportToCoords = function(Player)
-		if (Player:GetName() == Split[2]) then
-			IsPlayerOnline = true
-            Player:TeleportToCoords(Split[3], Split[4], Split[5])
-		end
+	local World = cRoot:Get():GetWorld(a_Split[2])
+	if (World == nil) then
+		return true, "There's no such world"
 	end
 	
-	local IsPlayerOnline = false;
-	local FirstPlayerOnline = false;
-	local GetPlayerCoords = function(Player)
-		if (Player:GetName() == Split[3]) then
-			PosX = Player:GetPosX()
-			PosY = Player:GetPosY()
-			PosZ = Player:GetPosZ()
-			FirstPlayerOnline = true
-		end
-	end
-	
-	local TeleportToPlayer = function(Player)
-		if (Player:GetName() == Split[2]) then
-		    Player:TeleportToCoords(PosX, PosY, PosZ)
-			IsPlayerOnline = true
-		end
-	end
-
-	if #Split == 3 then
-	    cRoot:Get():FindAndDoWithPlayer(Split[3], GetPlayerCoords);
-	    if (FirstPlayerOnline) then
-	        cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToPlayer);
-	        if (IsPlayerOnline) then
-	            return true, "Teleported " .. Split[2] .." to " .. Split[3]
-	        end
-	    else
-	        return true, "Player " .. Split[3] .." not found"
-	    end
-	elseif #Split == 5 then
-	    cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToCoords);
-	    if (IsPlayerOnline) then
-		    return true, "You teleported " .. Split[2] .. " to [X:" .. Split[3] .. " Y:" .. Split[4] .. " Z:" .. Split[5] .. "]" 
-		else
-		    return true, "Player not found" 
-		end
-	else
-		return true, "Usage: /tp [player] [toplayer] or /tp [player] [X Y Z]" 
-	end
+	World:SetWeather(Weather)
+	return true, "Weather has been set"
 end
+
 
 
 

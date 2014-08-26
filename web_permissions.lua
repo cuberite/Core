@@ -1,135 +1,285 @@
-local function HTML_Option( value, text, selected )
-	if( selected == true ) then
-		return [[<option value="]] .. value .. [[" selected>]] .. text .. [[</option>]]
+
+-- web_permissions.lua
+
+-- Implements the Permissions tab in the webadmin
+
+
+
+
+
+--- Maximum number of permissions displayed within a group's row.
+-- If there are more permissions than this, a triple-dot is displayed at the end of the list
+local MAX_PERMISSIONS = 10
+
+local ins = table.insert
+local con = table.concat
+
+
+
+
+
+--- Returns the HTML for a single group's row in the listing table
+local function GetGroupRow(a_GroupName)
+	-- Check params:
+	assert(type(a_GroupName) == "string")
+	
+	-- First column: group name:
+	local Row = {"<tr><td>"}
+	ins(Row, cWebAdmin:GetHTMLEscapedString(a_GroupName))
+	ins(Row, "</td><td>")
+	
+	-- Second column: permissions:
+	local Permissions = cRankManager:GetGroupPermissions(a_GroupName)
+	table.sort(Permissions)
+	local NumPermissions = #Permissions
+	if (NumPermissions <= MAX_PERMISSIONS) then
+		ins(Row, con(Permissions, "<br/>"))
 	else
-		return [[<option value="]] .. value .. [[">]] .. text .. [[</option>"]]
+		ins(Row, con(Permissions, "<br/>", 1, MAX_PERMISSIONS))
+		ins(Row, "<br/>...")
 	end
-end
+	ins(Row, "</td><td>")
+	
+	-- Third column: operations:
+	ins(Row, "<form>")
+	ins(Row, GetFormButton("editpermissions", "Edit permissions", {GroupName = a_GroupName}))
+	ins(Row, "</form><form>")
+	ins(Row, GetFormButton("confirmdelgroup", "Delete group", {GroupName = a_GroupName}))
+	ins(Row, "</form></td></tr>")
 
-local function ShowUsersTable()
-	local Content = "<h4>Users</h4>"
-
-	local NumUsers = UsersIni:GetNumKeys()
-
-	Content = Content .. "<table>"
-
-	if( NumUsers > 0 ) then
-		Content = Content .. "<tr><th></th><th>User</th><th>Groups</th></tr>"
-
-		for i=0, NumUsers-1 do
-			local UserName = UsersIni:GetKeyName( i )
-
-			Content = Content .. "<tr>"
-			Content = Content .. "<td style='width: 10px;'>" .. i .. ".</td>"
-			Content = Content .. "<td>" .. UserName .. "</td>"
-			Content = Content .. "<td>"
-			Content = Content .. UsersIni:GetValue( UserName, "Groups", "-" )
-			Content = Content .. "</td>"
-			Content = Content .. "</tr>"
-		end
-	else
-		Content = Content .. "<tr><td>None</td></tr>"
-	end
-	Content = Content .. "</table>"
-
-
-	return Content
-end
-
-local function ShowGroupsTable()
-	local Content = "<h4>Groups</h4>"
-
-	local NumGroups = GroupsIni:GetNumKeys()
-
-	Content = Content .. "<table>"
-	if( NumGroups > 0 ) then
-		Content = Content .. "<tr><th></th><th>Name</th><th>Permissions</th><th>Color</th></tr>"
-
-		for i=0, NumGroups-1 do
-			local GroupName = GroupsIni:GetKeyName( i )
-
-			Content = Content .. "<tr>"
-			Content = Content .. "<td style='width: 10px;'>" .. i .. ".</td>"
-			Content = Content .. "<td>" .. GroupName .. "</td>"
-			Content = Content .. "<td>"
-			Content = Content .. GroupsIni:GetValue( GroupName, "Permissions", "-" )
-			Content = Content .. "</td>"
-			Content = Content .. "<td>"
-			Content = Content .. GroupsIni:GetValue( GroupName, "Color", "-" )
-			Content = Content .. "</td>"
-			Content = Content .. "</tr>"
-		end
-	else
-		Content = Content .. "<tr><td>None</td></tr>"
-	end
-	Content = Content .. "</table>"
-
-	return Content
-end
-
-local function HTML_Select_Group( name, defaultValue )
-	Groups = ""
-	for I=0, GroupsIni:GetNumKeys() - 1 do
-		local KeyName = GroupsIni:GetKeyName(I);
-		Groups = Groups ..
-		HTML_Option(KeyName, KeyName, (defaultValue == KeyName))
-	end
-	return [[<select name="]] .. name .. [[">]] .. Groups .. [[</select>]]
+	return con(Row)
 end
 
 
-local function AddPlayers( Request )
-	local Content = "<h4>Add or change Players</h4>"
-	if( Request.PostParams["AddPlayerToGroup"] ~= nil ) then
-		if Request.PostParams["AddPlayer"] ~= "" then
-			if Request.PostParams["AddGroups"] ~= "" then
-				if GroupsIni:FindKey(Request.PostParams["AddGroup"]) == -1 then
-					return "Group does not exist"
-				end
-				UsersIni:DeleteKey(Request.PostParams["AddPlayer"])
-				UsersIni:GetValueSet(Request.PostParams["AddPlayer"], "Groups", Request.PostParams["AddGroup"])
-				UsersIni:WriteFile("users.ini")
-				local loopPlayers = function( Player )
-					if Player:GetName() == Request.PostParams["AddPlayer"] then
-						SendMessageSuccess( Player, "You were moved to group " .. Request.PostParams["AddGroup"] )
-						Player:LoadPermissionsFromDisk()
-					end
-				end
-				local loopWorlds = function ( World )
-					World:ForEachPlayer( loopPlayers )
-				end
-				cRoot:Get():ForEachWorld( loopWorlds )
-			end
-		end
-	end
-	Content = Content .. [[
-	<form method="POST">
-	<table>
-	<tr><td style="width: 20%;">Player:</td>
-	<td><input type="text" name="AddPlayer" value=""></td></tr><br>
-	<tr><td style="width: 20%;">Group:</td>
-	<td>]] .. HTML_Select_Group("AddGroup", GroupsIni:GetKeyName(0) ) .. [[</td></tr>
-	</table>
-	<input type="submit" value="Add Player" name="AddPlayerToGroup">]]
 
-	return Content
+
+
+--- Displays the main Permissions page, listing the permission groups and their permissions
+local function ShowMainPermissionsPage(a_Request)
+	local Page = {"<h4>Create a new group</h4>"}
+	
+	-- Add the header for adding a new group:
+	ins(Page, "<form method='POST'><table><tr><th>Group name:</th><td><input type='text' name='GroupName'/></td></tr><tr><th/><td>")
+	ins(Page, GetFormButton("addgroup", "Create a new group", {}))
+	ins(Page, "</td></tr></table></form>")
+	
+	-- Display a table showing all groups currently known:
+	ins(Page, "<h4>Groups</h4><table><tr><th>Group name</th><th>Permissions</th><th>Actions</th></tr>")
+	local AllGroups = cRankManager:GetAllGroups()
+	table.sort(AllGroups)
+	for _, group in ipairs(AllGroups) do
+		ins(Page, GetGroupRow(group))
+	end
+	ins(Page, "</table>")
+	
+	return con(Page)
 end
 
-function HandleRequest_Permissions( Request )
-	GroupsIni = cIniFile()
-	if not(GroupsIni:ReadFile("groups.ini")) then
-		return "Could not read groups.ini!"
+
+
+
+
+--- Handles the AddGroup form in the main page
+-- Adds the group and redirects the user back to the group list
+local function ShowAddGroupPage(a_Request)
+	-- Check params:
+	local GroupName = a_Request.PostParams["GroupName"]
+	if (GroupName == nil) then
+		return HTMLError("Bad request, missing parameters.")
 	end
-	UsersIni = cIniFile()
-	if not(UsersIni:ReadFile("users.ini")) then
-		return "Could not read users.ini!"
-	end
-
-	local Content = ""
-
-	Content = Content .. AddPlayers( Request )
-	Content = Content .. ShowGroupsTable()
-	Content = Content .. ShowUsersTable()
-
-	return Content
+	
+	-- Add the group:
+	cRankManager:AddGroup(GroupName)
+	
+	-- Redirect the user:
+	return "<p>Group created. <a href='/" .. a_Request.Path .. "'>Return to group list</a>.</p>"
 end
+
+
+
+
+
+--- Handles the AddPermission form in the Edit permissions page
+-- Adds the permission to the group and redirects the user back to the permission list
+local function ShowAddPermissionPage(a_Request)
+	-- Check params:
+	local GroupName = a_Request.PostParams["GroupName"]
+	local Permission = a_Request.PostParams["Permission"]
+	if ((GroupName == nil) or (Permission == nil)) then
+		return HTMLError("Bad request, missing parameters.")
+	end
+	
+	-- Add the permission:
+	cRankManager:AddPermissionToGroup(Permission, GroupName)
+	
+	-- Redirect the user:
+	return
+		"<p>Permission added. <a href='/" ..
+		a_Request.Path ..
+		"?subpage=editpermissions&GroupName=" ..
+		cWebAdmin:GetHTMLEscapedString(GroupName) ..
+		"'>Return to group list</a>.</p>"
+end
+
+
+
+
+
+--- Shows a confirmation page for deleting a group
+local function ShowConfirmDelGroupPage(a_Request)
+	-- Check params:
+	local GroupName = a_Request.PostParams["GroupName"]
+	if (GroupName == nil) then
+		return HTMLError("Bad request, missing parameters.")
+	end
+	
+	-- Show the confirmation request:
+	local Page =
+	{
+		"<h4>Delete group</h4><p>Are you sure you want to delete group ",
+		GroupName,
+		"? It will be removed from all the ranks that are using it.</p>",
+		"<form method='POST'>",
+		GetFormButton("delgroup", "Delete the group", {GroupName = GroupName}),
+		"</form><form method='GET'>",
+		GetFormButton("", "Do NOT delete", {}),
+		"</form>"
+	}
+	return con(Page)
+end
+
+
+
+
+
+--- Handles the DelGroup button in the ConfirmDelGroup page
+-- Removes the group and redirects the user back to the group list
+local function ShowDelGroupPage(a_Request)
+	-- Check params:
+	local GroupName = a_Request.PostParams["GroupName"]
+	if (GroupName == nil) then
+		return HTMLError("Bad request, missing parameters.")
+	end
+	
+	-- Remove the group:
+	cRankManager:RemoveGroup(GroupName)
+	
+	-- Redirect the user:
+	return
+		"<p>Group removed. <a href='/" ..
+		a_Request.Path ..
+		"'>Return to group list</a>.</p>"
+end
+
+
+
+
+
+-- Handles the DelPermission form in the Edit permissions page
+-- Removes the permission from the group and redirects the user back to the permission list
+local function ShowDelPermissionPage(a_Request)
+	-- Check params:
+	local GroupName = a_Request.PostParams["GroupName"]
+	local Permission = a_Request.PostParams["Permission"]
+	if ((GroupName == nil) or (Permission == nil)) then
+		return HTMLError("Bad request, missing parameters.")
+	end
+	
+	-- Add the permission:
+	cRankManager:RemovePermissionFromGroup(Permission, GroupName)
+	
+	-- Redirect the user:
+	return
+		"<p>Permission removed. <a href='/" ..
+		a_Request.Path ..
+		"?subpage=editpermissions&GroupName=" ..
+		cWebAdmin:GetHTMLEscapedString(GroupName) ..
+		"'>Return to group list</a>.</p>"
+end
+
+
+
+
+
+--- Displays the Edit Permissions page for a single group
+local function ShowEditPermissionsPage(a_Request)
+	-- Check params:
+	local GroupName = a_Request.PostParams["GroupName"]
+	if (GroupName == nil) then
+		return HTMLError("Bad request, missing parameters.")
+	end
+	
+	-- Add the header for adding permissions:
+	local Page = {[[
+		<p><a href='/]] .. a_Request.Path .. [['>Return to the group list</a>.</p>
+		<h4>Add a permission</h4>
+		<form method='POST'><table><tr><th>Permission</th><td><input type='text' name='Permission'/></td></tr>
+		<tr><th/><td>
+	]]}
+	ins(Page, GetFormButton("addpermission", "Add permission", {GroupName = GroupName}))
+	ins(Page, "</td></tr></table></form>")
+	
+	-- Add the permission list:
+	local Permissions = cRankManager:GetGroupPermissions(GroupName)
+	table.sort(Permissions)
+	ins(Page, "<h4>Group permissions</h4><table>")
+	for _, permission in ipairs(Permissions) do
+		ins(Page, "<tr><td>")
+		ins(Page, cWebAdmin:GetHTMLEscapedString(permission))
+		ins(Page, "</td><td><form method='POST'>")
+		ins(Page, GetFormButton("delpermission", "Remove permission", {GroupName = GroupName, Permission = permission}))
+		ins(Page, "</form></td></tr>")
+	end
+	ins(Page, "</table>")
+	
+	return con(Page)
+end
+
+
+
+
+
+--- Handlers for the individual subpages in this tab
+-- Each item maps a subpage name to a handler function that receives a HTTPRequest object and returns the HTML to return
+local g_SubpageHandlers =
+{
+	[""]                = ShowMainPermissionsPage,
+	["addgroup"]        = ShowAddGroupPage,
+	["addpermission"]   = ShowAddPermissionPage,
+	["confirmdelgroup"] = ShowConfirmDelGroupPage,
+	["delgroup"]        = ShowDelGroupPage,
+	["delpermission"]   = ShowDelPermissionPage,
+	["editpermissions"] = ShowEditPermissionsPage,
+}
+
+
+
+
+
+--- Handles the web request coming from MCS
+-- Returns the entire tab's HTML contents, based on the player's request
+function HandleRequest_Permissions(a_Request)
+	local Subpage = (a_Request.PostParams["subpage"] or "")
+	local Handler = g_SubpageHandlers[Subpage]
+	if (Handler == nil) then
+		return HTMLError("An internal error has occurred, no handler for subpage " .. Subpage .. ".")
+	end
+	
+	local PageContent = Handler(a_Request)
+	
+	--[[
+	-- DEBUG: Save content to a file for debugging purposes:
+	local f = io.open("permissions.html", "wb")
+	if (f ~= nil) then
+		f:write(PageContent)
+		f:close()
+	end
+	--]]
+	
+	return PageContent
+end
+
+
+
+
+
