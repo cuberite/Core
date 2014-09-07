@@ -6,14 +6,14 @@ function HandleFlyCommand(Split, Player)
 		return true
 	end
 	
-	if(Split[2] == nil or Split[2] == Player:GetName()) then
+	if (Split[2] == nil or Split[2] == Player:GetName()) then
 		ChangeFly(Player)
 	elseif (Player:HasPermission("core.fly.others")) then
 		
 		if cRoot:Get():FindAndDoWithPlayer( Split[2], ChangeFly ) then
 			Player:SendMessageSuccess("Fly mode for player " .. Split[2] ..  " toggled!")
 		else
-			SendMessageFailure( Player, "There was no player that matched your query." )
+			SendMessageFailure( Player, "Player " .. Split[2] ..  " isn't online!")
 		end
 		
 	else 

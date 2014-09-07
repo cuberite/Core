@@ -2,15 +2,15 @@ TpsCache = {}
 GlobalTps = {}
 
 function HandleTpsCommand(Split, Player)
-	if(Player ~= nil) then
+	if (Player ~= nil) then
 		Player:SendMessageInfo("Global TPS: " .. GetAverageNum(GlobalTps))
 		for WorldName, WorldTps in pairs(TpsCache) do
 			Player:SendMessageInfo("World '" .. WorldName .. "': " .. GetAverageNum(WorldTps) .. " TPS");
 		end
 	else
-		LOG( "Global TPS: " .. GetAverageNum(GlobalTps))
+		LOG("Global TPS: " .. GetAverageNum(GlobalTps))
 		for WorldName, WorldTps in pairs(TpsCache) do
-			LOG( "World '" .. WorldName .. "': " .. GetAverageNum(WorldTps) .. " TPS");
+			LOG("World '" .. WorldName .. "': " .. GetAverageNum(WorldTps) .. " TPS");
 		end
 	end
 	return true
