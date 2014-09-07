@@ -47,6 +47,13 @@ g_PluginInfo =
 			Handler = HandleDifficultyCommand,
 			HelpString = " ~ Change world's difficulty.",
 		},
+		
+		["/fly"] = 
+		{
+			Permission = "core.fly",
+			Handler = HandleFlyCommand,
+			HelpString = " ~ Toggle fly",
+		},
 
 		["/give"] = 
 		{
