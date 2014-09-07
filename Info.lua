@@ -312,6 +312,13 @@ g_PluginInfo =
 			Handler =  HandleConsoleBan,
 			HelpString =  " ~ Bans a player by name",
 		},
+		
+		["tps"] =
+		{
+			Handler =  HandleTpsCommand,
+			HelpString =  " - Returns the tps (ticks per second) from the server.",
+		},
+
 
 		["banlist ips"] =
 		{
