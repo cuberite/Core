@@ -301,6 +301,14 @@ g_PluginInfo =
 			Handler = HandleWorldsCommand,
 			HelpString = " - Shows a list of all the worlds",
 		},
+
+		["/vanish"] = 
+		{
+			Permission = "core.vanish",
+			Handler = HandleVanishCommand,
+			HelpString = " - Vanish",
+		},
+		
 	},  -- Commands
 
 

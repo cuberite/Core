@@ -103,6 +103,9 @@
     <filename>viewdistance.lua</filename>
   </file>
   <file>
+    <filename>vanish.lua</filename>
+  </file>
+  <file>
     <filename>weather.lua</filename>
   </file>
   <file>
