@@ -19,6 +19,7 @@ g_UsePrefixes = true
 BackCoords = {}
 Messages = {}
 Destination = {}
+TeleportRequestType = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 WorldsWorldDifficulty = {}

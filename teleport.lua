@@ -46,12 +46,53 @@ function HandleTPACommand( Split, Player )
 		SendMessage( Player, "Usage: /tpa [Player]" )
 		return true
 	end
+	
+	if Split[2] == Player:GetName() then
+		SendMessage( Player, "You can't teleport to yourself!" )
+		return true
+	end
 
 	local loopPlayer = function( OtherPlayer )
 		if OtherPlayer:GetName() == Split[2] then
-			SendMessage( OtherPlayer, Player:GetName() .. " send a teleport request" )
-			SendMessageSuccess( Player, "You send a teleport request to " .. OtherPlayer:GetName() )
+			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them" )
+			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
+			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
+			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
 			Destination[OtherPlayer:GetName()] = Player:GetName()
+			TeleportRequestType[OtherPlayer:GetName()] = 1
+		end
+	end
+
+	local loopWorlds = function( World )
+		World:ForEachPlayer( loopPlayer )
+	end
+
+	cRoot:Get():ForEachWorld( loopWorlds )
+	return true
+
+end
+
+
+function HandleTPAHereCommand( Split, Player )
+
+	if Split[2] == nil then
+		SendMessage( Player, "Usage: /tpahere [Player]" )
+		return true
+	end
+	
+	if Split[2] == Player:GetName() then
+		SendMessage( Player, "You can't teleport to yourself!" )
+		return true
+	end
+
+	local loopPlayer = function( OtherPlayer )
+		if OtherPlayer:GetName() == Split[2] then
+			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them" )
+			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
+			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
+			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
+			Destination[OtherPlayer:GetName()] = Player:GetName()
+			TeleportRequestType[OtherPlayer:GetName()] = 2
 		end
 	end
 
@@ -74,12 +115,50 @@ function HandleTPAcceptCommand( Split, Player )
 	local loopPlayer = function( OtherPlayer )
 		if Destination[Player:GetName()] == OtherPlayer:GetName() then
 			if OtherPlayer:GetWorld():GetName() ~= Player:GetWorld():GetName() then
-				OtherPlayer:MoveToWorld( Player:GetWorld():GetName() )
+				if TeleportRequestType[OtherPlayer:GetName()] == 1 then
+					OtherPlayer:MoveToWorld( Player:GetWorld():GetName() )
+				elseif TeleportRequestType[OtherPlayer:GetName()] == 2 then
+					Player:MoveToWorld( OtherPlayer:GetWorld():GetName() )
+				end
 			end
-			OtherPlayer:TeleportToEntity( Player )
-			SendMessage( Player, OtherPlayer:GetName() .. " teleported to you" )
-			SendMessageSuccess( OtherPlayer, "You teleported to " .. Player:GetName() )
+			
+			if TeleportRequestType[Player:GetName()] == 1 then
+				OtherPlayer:TeleportToEntity( Player )
+				SendMessageSuccess( Player, OtherPlayer:GetName() .. " teleported to you" )
+				SendMessageSuccess( OtherPlayer, "You teleported to " .. Player:GetName() )
+			elseif TeleportRequestType[Player:GetName()] == 2 then
+				Player:TeleportToEntity( OtherPlayer )
+				SendMessageSuccess( OtherPlayer, Player:GetName() .. " teleported to you" )
+				SendMessageSuccess( Player, "You teleported to " .. OtherPlayer:GetName() )
+			end
+			
 			Destination[Player:GetName()] = nil
+			TeleportRequestType[Player:GetName()] = nil
+		end
+	end
+
+	local loopWorlds = function( World )
+		World:ForEachPlayer( loopPlayer )
+	end
+
+	cRoot:Get():ForEachWorld( loopWorlds )
+	return true
+
+end
+
+function HandleTPDenyCommand( Split, Player )
+
+	if Destination[Player:GetName()] == nil then
+		SendMessageFailure( Player, "Nobody has send you a teleport request" )
+		return true
+	end
+
+	local loopPlayer = function( OtherPlayer )
+		if Destination[Player:GetName()] == OtherPlayer:GetName() then
+			SendMessageSuccess( Player,"Request denied." )
+			SendMessageFailure( OtherPlayer, Player:GetName() .. " has denied your request" )
+			Destination[Player:GetName()] = nil
+			TeleportRequestType[Player:GetName()] = nil
 		end
 	end
 
