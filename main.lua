@@ -18,8 +18,6 @@ g_UsePrefixes = true
 -- Global variables
 BackCoords = {}
 Messages = {}
-Destination = {}
-TeleportRequestType = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 WorldsWorldDifficulty = {}

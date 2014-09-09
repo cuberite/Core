@@ -259,20 +259,19 @@ g_PluginInfo =
 			Handler = HandleTPACommand,
 			HelpString = " ~ Ask to teleport yourself to a player",
 		},
-		
-		["/tpahere"] = 
-		{
-			Permission = "core.tpahere",
-			Handler = HandleTPAHereCommand,
-			HelpString = " ~ Ask to teleport player to yourself",
-		},
-
 
 		["/tpaccept"] = 
 		{
 			Permission = "core.tpaccept",
 			Handler = HandleTPAcceptCommand,
 			HelpString = " ~ Accept a teleportation request",
+		},
+		
+		["/tpahere"] = 
+		{
+			Permission = "core.tpahere",
+			Handler = HandleTPAHereCommand,
+			HelpString = " ~ Ask to teleport player to yourself",
 		},
 		
 		["/tpdeny"] = 

@@ -1,3 +1,8 @@
+--When someone uses tpa (type 1), or tpahere(type 2), request type is saved in this array under targeted player uuid
+local TeleportRequestType = {}
+--Requesting player uuid, under target player uuid
+local Destination = {}
+
 function HandleTPCommand(a_Split, a_Player)
 
 	if #a_Split == 2 or #a_Split == 3 then
@@ -42,6 +47,8 @@ end
 
 function HandleTPACommand( Split, Player )
 
+	local flag = 0
+		
 	if Split[2] == nil then
 		SendMessage( Player, "Usage: /tpa [Player]" )
 		return true
@@ -51,23 +58,25 @@ function HandleTPACommand( Split, Player )
 		SendMessage( Player, "You can't teleport to yourself!" )
 		return true
 	end
-
+	
 	local loopPlayer = function( OtherPlayer )
 		if OtherPlayer:GetName() == Split[2] then
-			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them" )
+			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested to teleport to you." )
 			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
 			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
 			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
-			Destination[OtherPlayer:GetName()] = Player:GetName()
-			TeleportRequestType[OtherPlayer:GetName()] = 1
+			Destination[OtherPlayer:GetUniqueID()] = Player:GetUniqueID()
+			TeleportRequestType[OtherPlayer:GetUniqueID()] = 1
+			flag = 1
 		end
 	end
 
-	local loopWorlds = function( World )
-		World:ForEachPlayer( loopPlayer )
+	cRoot:Get():ForEachPlayer(loopPlayer)
+	
+	if flag == 0 then
+		SendMessageFailure(Player, "Player " ..  Split[2] .. " not found!")
 	end
-
-	cRoot:Get():ForEachWorld( loopWorlds )
+	
 	return true
 
 end
@@ -75,6 +84,8 @@ end
 
 function HandleTPAHereCommand( Split, Player )
 
+	local flag = 0
+	
 	if Split[2] == nil then
 		SendMessage( Player, "Usage: /tpahere [Player]" )
 		return true
@@ -87,86 +98,94 @@ function HandleTPAHereCommand( Split, Player )
 
 	local loopPlayer = function( OtherPlayer )
 		if OtherPlayer:GetName() == Split[2] then
-			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them" )
+			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them." )
 			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
 			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
 			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
-			Destination[OtherPlayer:GetName()] = Player:GetName()
-			TeleportRequestType[OtherPlayer:GetName()] = 2
+			Destination[OtherPlayer:GetUniqueID()] = Player:GetUniqueID()
+			TeleportRequestType[OtherPlayer:GetUniqueID()] = 2
+			flag = 1
 		end
 	end
 
-	local loopWorlds = function( World )
-		World:ForEachPlayer( loopPlayer )
+	cRoot:Get():ForEachPlayer(loopPlayer)
+	
+	if flag == 0 then
+		SendMessageFailure(Player, "Player " ..  Split[2] .. " not found!")
 	end
-
-	cRoot:Get():ForEachWorld( loopWorlds )
+	
 	return true
 
 end
 
 function HandleTPAcceptCommand( Split, Player )
 
-	if Destination[Player:GetName()] == nil then
-		SendMessageFailure( Player, "Nobody has send you a teleport request" )
+	local flag = 0
+	
+	if Destination[Player:GetUniqueID()] == nil then
+		SendMessageFailure( Player, "Nobody has send you a teleport request." )
 		return true
 	end
-
+	
 	local loopPlayer = function( OtherPlayer )
-		if Destination[Player:GetName()] == OtherPlayer:GetName() then
+		if Destination[Player:GetUniqueID()] == OtherPlayer:GetUniqueID() then
 			if OtherPlayer:GetWorld():GetName() ~= Player:GetWorld():GetName() then
-				if TeleportRequestType[OtherPlayer:GetName()] == 1 then
+				if TeleportRequestType[OtherPlayer:GetUniqueID()] == 1 then
 					OtherPlayer:MoveToWorld( Player:GetWorld():GetName() )
-				elseif TeleportRequestType[OtherPlayer:GetName()] == 2 then
+				elseif TeleportRequestType[OtherPlayer:GetUniqueID()] == 2 then
 					Player:MoveToWorld( OtherPlayer:GetWorld():GetName() )
 				end
 			end
 			
-			if TeleportRequestType[Player:GetName()] == 1 then
+			if TeleportRequestType[Player:GetUniqueID()] == 1 then
+				SetBackCoordinates(OtherPlayer)
 				OtherPlayer:TeleportToEntity( Player )
-				SendMessageSuccess( Player, OtherPlayer:GetName() .. " teleported to you" )
+				SendMessageSuccess( Player, OtherPlayer:GetName() .. " teleported to you." )
 				SendMessageSuccess( OtherPlayer, "You teleported to " .. Player:GetName() )
-			elseif TeleportRequestType[Player:GetName()] == 2 then
+			elseif TeleportRequestType[Player:GetUniqueID()] == 2 then
+				SetBackCoordinates(Player)
 				Player:TeleportToEntity( OtherPlayer )
-				SendMessageSuccess( OtherPlayer, Player:GetName() .. " teleported to you" )
+				SendMessageSuccess( OtherPlayer, Player:GetName() .. " teleported to you." )
 				SendMessageSuccess( Player, "You teleported to " .. OtherPlayer:GetName() )
 			end
 			
-			Destination[Player:GetName()] = nil
-			TeleportRequestType[Player:GetName()] = nil
+			flag = 1
 		end
 	end
 
-	local loopWorlds = function( World )
-		World:ForEachPlayer( loopPlayer )
+	cRoot:Get():ForEachPlayer(loopPlayer)
+	
+	Destination[Player:GetUniqueID()] = nil
+	TeleportRequestType[Player:GetUniqueID()] = nil
+	
+	if flag == 0 then
+		SendMessageFailure(Player, "Other player isn't online anymore!")
 	end
-
-	cRoot:Get():ForEachWorld( loopWorlds )
+	
 	return true
 
 end
 
 function HandleTPDenyCommand( Split, Player )
 
-	if Destination[Player:GetName()] == nil then
-		SendMessageFailure( Player, "Nobody has send you a teleport request" )
+	if Destination[Player:GetUniqueID()] == nil then
+		SendMessageFailure( Player, "Nobody has send you a teleport request." )
 		return true
 	end
-
+	
+	SendMessageSuccess( Player,"Request denied.")
+	
 	local loopPlayer = function( OtherPlayer )
-		if Destination[Player:GetName()] == OtherPlayer:GetName() then
-			SendMessageSuccess( Player,"Request denied." )
-			SendMessageFailure( OtherPlayer, Player:GetName() .. " has denied your request" )
-			Destination[Player:GetName()] = nil
-			TeleportRequestType[Player:GetName()] = nil
+		if Destination[Player:GetUniqueID()] == OtherPlayer:GetUniqueID() then
+			SendMessageFailure( OtherPlayer, Player:GetName() .. " has denied your request." )
 		end
 	end
 
-	local loopWorlds = function( World )
-		World:ForEachPlayer( loopPlayer )
-	end
-
-	cRoot:Get():ForEachWorld( loopWorlds )
+	cRoot:Get():ForEachPlayer(loopPlayer)
+	
+	Destination[Player:GetUniqueID()] = nil
+	TeleportRequestType[Player:GetUniqueID()] = nil
+	
 	return true
 
 end
