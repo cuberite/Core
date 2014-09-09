@@ -45,6 +45,37 @@ function HandleTPCommand(a_Split, a_Player)
 
 end
 
+function HandleTPHereCommand(Split, Player)
+	
+	local flag = 0
+	
+	if #Split == 2 then
+
+		local teleport = function( OtherPlayer )
+				SetBackCoordinates(OtherPlayer)
+				if OtherPlayer:GetWorld():GetName() ~= Player:GetWorld():GetName() then
+					OtherPlayer:MoveToWorld( Player:GetWorld():GetName() )
+				end
+				OtherPlayer:TeleportToEntity( Player )
+				SendMessageSuccess( Player, OtherPlayer:GetName() .. " teleported to you." )
+				SendMessageSuccess( OtherPlayer, "You teleported to " .. Player:GetName() )
+				flag = 1
+		end
+		
+		cRoot:Get():FindAndDoWithPlayer(Split[2], teleport)
+		
+		if flag == 0 then
+			SendMessageFailure(Player, "Player " ..  Split[2] .. " not found!")
+		end
+		
+		return true
+	else
+		SendMessage( Player, "Usage: /tphere [PlayerName]" )
+		return true
+	end
+
+end
+
 function HandleTPACommand( Split, Player )
 
 	local flag = 0

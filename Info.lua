@@ -280,6 +280,13 @@ g_PluginInfo =
 			Handler = HandleTPDenyCommand,
 			HelpString = " ~ Deny a teleportation request",
 		},
+		
+		["/tphere"] = 
+		{
+			Permission = "core.tphere",
+			Handler = HandleTPHereCommand,
+			HelpString = " ~ Teleport player to yourself",
+		},
 
 		["/tps"] = 
 		{
