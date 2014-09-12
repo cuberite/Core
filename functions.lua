@@ -14,27 +14,6 @@ function SendMessageFailure(a_Player, a_Message)
 	a_Player:SendMessageFailure(a_Message)
 end
 
---- Returns the list of players banned by name, separated by ", "
-function BanListByName()
-	local NumValues = BannedPlayersIni:NumValues("Banned");
-	local Banned = {};
-	local KeyID = BannedPlayersIni:FindKey("Banned");
-	for i = 1, NumValues do
-		local PlayerName = BannedPlayersIni:ValueName(KeyID, i - 1);
-		if (BannedPlayersIni:GetValueB("Banned", PlayerName)) then
-			-- Player listed AND banned
-			table.insert(Banned, PlayerName);
-		end
-	end
-	return table.concat(Banned, ", ");
-end
-
---- Returns the list of players banned by IP, separated by ", "
-function BanListByIPs()
-	-- TODO: No IP ban implemented yet
-	return "";
-end
-
 --- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
 function KickPlayer( PlayerName, Reason )
 

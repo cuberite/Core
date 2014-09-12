@@ -7,47 +7,6 @@
 
 
 
-function HandleConsoleBan(Split)
-	if (#Split < 2) then
-		return true, "Usage: ban <PlayerName> [<Reason>]"
-	end
-
-	local Reason = cChatColor.Red .. "You have been banned."
-	if( #Split > 2 ) then
-		Reason = table.concat(Split, " ", 3)
-	end
-
-	if not(KickPlayer(Split[2], Reason)) then
-		LOGINFO("Could not find player, but banned anyway" )
-	else
-		LOGINFO("Successfully kicked and banned player" )
-	end
-	BannedPlayersIni:SetValueB("Banned", Split[2], true)
-	BannedPlayersIni:WriteFile("banned.ini")
-
-	return true
-end
-
-
-
-
-
-function HandleConsoleBanList(Split)
-	if (#Split == 1) then
-		return true, BanListByName()
-	end
-
-	if (string.lower(Split[2]) == "ips") then
-		return true, BanListByIPs()
-	end
-
-	return true, "Unknown banlist subcommand"
-end
-
-
-
-
-
 function HandleConsoleClear(Split)
 	if (#Split == 1) then
 		return true, "Usage: clear <PlayerName>"
@@ -483,27 +442,6 @@ function HandleConsoleTeleport(Split)
 		return true, "Usage: tp <PlayerName> <ToPlayerName> or tp <PlayerName> <X> <Y> <Z>"
 	end
 end
-
-
-
-
-function HandleConsoleUnban(Split)
-	if (#Split < 2) then
-		return true, "Usage: unban <PlayerName>"
-	end
-
-	if( BannedPlayersIni:GetValueB("Banned", Split[2], false) == false ) then
-		return true, Split[2] .. " is not banned!"
-	end
-
-	BannedPlayersIni:SetValueB("Banned", Split[2], false, false)
-	BannedPlayersIni:WriteFile("banned.ini")
-
-	LOGINFO("Unbanned " .. Split[2])
-	return true
-
-end
-
 
 
 
