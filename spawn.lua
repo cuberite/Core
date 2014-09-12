@@ -12,13 +12,12 @@ function HandleSpawnCommand(Split, Player)
 		if Player:HasPermission("core.spawn.others") then
 			local FoundPlayerCallback = function(OtherPlayer)
 				if (OtherPlayer:GetName() == Split[2]) then
-						World = OtherPlayer:GetWorld()
-						--SetBackCoordinates(OtherPlayer)--
-						local OnAllChunksAvaliable = function()
-							OtherPlayer:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
-							SendMessageSuccess( Player, "Returned " .. OtherPlayer:GetName() .. " to world spawn" )
-							flag=1
-						end
+					World = OtherPlayer:GetWorld()
+					local OnAllChunksAvaliable = function()
+						OtherPlayer:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
+						SendMessageSuccess( Player, "Returned " .. OtherPlayer:GetName() .. " to world spawn" )
+						flag=1
+					end
 					World:ChunkStay({{SpawnX/16, SpawnZ/16}}, OnChunkAvailable, OnAllChunksAvaliable)		
 				end
 			end
