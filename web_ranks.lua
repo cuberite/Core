@@ -78,6 +78,35 @@ end
 
 
 
+--- Returns the HTML contents of the rank list
+local function GetRankList(a_SelectedRank)
+	local RankList = {}
+	ins(RankList, "<select name='NewGroupName'>")
+
+	local AllRanks = cRankManager:GetAllRanks()
+	table.sort(AllRanks)
+
+	for _, Rank in ipairs(AllRanks) do
+		local HTMLRankName = cWebAdmin:GetHTMLEscapedString(Rank)
+		ins(RankList, "<option value='")
+		ins(RankList, HTMLRankName)
+		if (HTMLRankName == a_SelectedRank) then
+			ins(RankList, "' selected>")
+		else
+			ins(RankList, "'>")
+		end
+		ins(RankList, HTMLRankName)
+		ins(RankList, "</option>")
+	end
+	ins(RankList, "</select>")
+
+	return con(RankList)
+end
+
+
+
+
+
 --- Returns the HTML contents of a single row in the Ranks table
 local function GetRankRow(a_RankName)
 	-- First row: rank name:
@@ -140,6 +169,15 @@ local function ShowMainRanksPage(a_Request)
 		ins(Page, GetRankRow(rank))
 	end
 	ins(Page, "</table>")
+
+	-- Display default rank:
+	--ins(Page, "<table><tr><th>Default rank</th><td>")
+	--ins(Page, GetRankList(cRankManager:GetDefaultRank()))
+	--ins(Page, "</td><td><input type='submit' name='EditDefaultRank' value='Edit' /></td></tr></table>")
+	ins(Page, "<form method='POST'><b>Default rank:</b> ")
+	ins(Page, GetRankList(cRankManager:GetDefaultRank()))
+	ins(Page, "<input type='submit' name='EditDefaultRank' value='Edit' />")
+	ins(Page, "<input type='hidden' name='subpage' value='editdefaultrank' /></form>")
 	
 	-- Return the entire concatenated string:
 	return con(Page)
@@ -267,6 +305,27 @@ end
 
 
 
+
+--- Changes the default rank and redirects back to the list
+local function ShowEditDefaultRankPage(a_Request)
+	-- Check the input:
+	local RankName = a_Request.PostParams["NewGroupName"]
+	if ((RankName == nil) or (RankName == "")) then
+		return HTMLError("Bad request")
+	end
+
+	-- Change the default rank:
+	if (cRankManager:SetDefaultRank(RankName)) then
+		return "<p>Default rank changed to " .. RankName .. "! <a href='/" .. a_Request.Path .. "'>Return to list</a></p>"
+	else
+		return "<p>Operation failed! <a href='/" .. a_Request.Path .. "'>Return to list</a></p>"
+	end
+end
+
+
+
+
+
 --- Displays a page with all the groups, lets user add and remove groups to a rank
 local function ShowEditGroupsPage(a_Request)
 	-- Check the input:
@@ -281,31 +340,18 @@ local function ShowEditGroupsPage(a_Request)
 		<h4>Add a group</h4>
 		<form method='POST'>
 		<input type='hidden' name='subpage' value='addgroup'/>
-		<table><tr>
-			<th>Group:</th>
-			<td><select name='NewGroupName'>
-	]] }
-	
-	-- Add all group names (TODO: not in the rank already):
-	local AllGroups = cRankManager:GetAllGroups()
-	for _, Group in ipairs(AllGroups) do
-		local GroupName = cWebAdmin:GetHTMLEscapedString(Group)
-		ins(Page, "<option value='")
-		ins(Page, GroupName)
-		ins(Page, "'>")
-		ins(Page, GroupName)
-		ins(Page, "</option>")
-	end
-	
-	-- Finish the page header:
-	ins(Page, [[
-			</select></td>
-		</tr><tr>
-			<td/>
-			<td><input type='submit' value='Add group'/></td>
-		</tr></table>
+		<table>
+			<tr>
+				<th>Group:</th>
+				<td>]] .. GetRankList("") .. [[</td>
+			</tr>
+			<tr>
+				<td/>
+				<td><input type='submit' value='Add group'/></td>
+			</tr>
+		</table>
 		<input type='hidden' name='RankName' value=']]
-	)
+	}
 	ins(Page, cWebAdmin:GetHTMLEscapedString(RankName))
 	ins(Page, "'/></form>")
 	
@@ -394,15 +440,16 @@ end
 -- Each item maps a subpage name to a handler function that receives a HTTPRequest object and returns the HTML to return
 local g_SubpageHandlers =
 {
-	[""]            = ShowMainRanksPage,
-	["addgroup"]    = ShowAddGroupPage,
-	["addrank"]     = ShowAddRankPage,
-	["addrankproc"] = ShowAddRankProcessPage,
-	["confirmdel"]  = ShowConfirmDelPage,
-	["del"]         = ShowDelPage,
-	["editgroups"]  = ShowEditGroupsPage,
-	["editvisuals"] = ShowEditVisualsPage,
-	["savevisuals"] = ShowSaveVisualsPage,
+	[""]                = ShowMainRanksPage,
+	["addgroup"]        = ShowAddGroupPage,
+	["addrank"]         = ShowAddRankPage,
+	["addrankproc"]     = ShowAddRankProcessPage,
+	["confirmdel"]      = ShowConfirmDelPage,
+	["del"]             = ShowDelPage,
+	["editdefaultrank"] = ShowEditDefaultRankPage,
+	["editgroups"]      = ShowEditGroupsPage,
+	["editvisuals"]     = ShowEditVisualsPage,
+	["savevisuals"]     = ShowSaveVisualsPage,
 }
 
 

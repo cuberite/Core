@@ -347,7 +347,7 @@ function ShowEditPlayerRankProcessPage(a_Request)
 	if (PlayerName == "") then
 		return [[
 			<p>Can't change the rank because this user doesn't exists!</p>
-			<p><a href="]] .. a_Request.Path .. [[">Go back</a></p>
+			<p><a href="/]] .. a_Request.Path .. [[">Go back</a></p>
 		]]
 	end
 
