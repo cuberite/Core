@@ -141,7 +141,7 @@ local function ShowMainRanksPage(a_Request)
 	end
 	ins(Page, "</table>")
 	
-	-- Returnthe entire concatenated string:
+	-- Return the entire concatenated string:
 	return con(Page)
 end
 
