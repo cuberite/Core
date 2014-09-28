@@ -365,6 +365,14 @@ end
 function ShowClearPlayersPage(a_Request)
 	cRankManager:ClearPlayerRanks();
 	LOGINFO("WebAdmin: A user cleared all player ranks")
+
+	-- Update ingame players:
+	cRoot:Get():ForEachPlayer(
+		function(a_Player)
+			a_Player:LoadRank()
+		end
+	)
+
 	return "<p>Cleared all player ranks! <a href='/" .. a_Request.Path .. "'>Return</a>.</p>"
 end
 
