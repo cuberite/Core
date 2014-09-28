@@ -114,7 +114,7 @@ function Initialize(Plugin)
 	Plugin:AddWebTab("Plugins",         HandleRequest_ManagePlugins)
 	Plugin:AddWebTab("Time & Weather",  HandleRequest_Weather)
 	Plugin:AddWebTab("Ranks",           HandleRequest_Ranks)
-	Plugin:AddWebTab("Player Ranks",     HandleRequest_PlayerRanks)
+	Plugin:AddWebTab("Player Ranks",    HandleRequest_PlayerRanks)
 
 	LoadMotd()
 
