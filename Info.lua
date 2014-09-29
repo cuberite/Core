@@ -303,19 +303,28 @@ g_PluginInfo =
 		["ban"] =
 		{
 			Handler =  HandleConsoleBan,
-			HelpString =  " ~ Bans a player by name",
+			HelpString =  "Bans a player by name",
 		},
 
-		["banlist ips"] =
+		["banip"] =
 		{
-			Handler =  HandleConsoleBanList,
-			HelpString =  " - Lists all players banned by IP",
+			Handler =  HandleConsoleBanIP,
+			HelpString =  "Bans a player by IP",
+			Alias = "ipban",
 		},
 
 		["banlist"] =
 		{
 			Handler =  HandleConsoleBanList,
-			HelpString =  " - Lists all players banned by name",
+			HelpString =  "Lists all players banned by name",
+		},
+
+		["banlist ips"] =
+		{
+			-- This is a dummy entry only to generate the documentation
+			-- the real processing is done by the "banlist" command
+			Handler =  HandleConsoleBanList,
+			HelpString =  "Lists all players banned by IP",
 		},
 
 		["clear"] =
@@ -429,7 +438,13 @@ g_PluginInfo =
 		["unban"] =
 		{
 			Handler =  HandleConsoleUnban,
-			HelpString =  " ~ Unbans a player by name",
+			HelpString =  "Unbans a player by name",
+		},
+
+		["unbanip"] =
+		{
+			Handler =  HandleConsoleUnbanIP,
+			HelpString =  "Unbans a player by IP",
 		},
 
 		["unloadchunks"] =

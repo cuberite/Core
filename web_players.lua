@@ -225,6 +225,11 @@ local function ShowMainPlayersPage(a_Request)
 		ins(Page, "<h4>")
 		ins(Page, worldname)
 		ins(Page, "</h4><table><tr><th>Player</th><th>Rank</th><th>Actions</th></tr>")
+		table.sort(PerWorldPlayers[worldname],
+			function (a_Player1, a_Player2)
+				return (a_Player1.PlayerName < a_Player2.PlayerName)
+			end
+		)
 		for _, player in ipairs(PerWorldPlayers[worldname]) do
 			ins(Page, GetPlayerRow(player))
 		end

@@ -90,19 +90,8 @@ function Initialize(Plugin)
 		WhiteListIni:WriteFile("whitelist.ini")
 	end
 
-	-- Load banned:
-	BannedPlayersIni = cIniFile() -- Global
-	if (BannedPlayersIni:ReadFile("banned.ini")) then
-		if (BannedPlayersIni:GetNumValues( "Banned" ) > 0) then
-			LOGINFO( "Loaded "  .. BannedPlayersIni:GetNumValues("Banned") .. " banned players." )
-		end
-	else
-		WhiteListIni:AddHeaderComment( "This is the banned players file for MCServer, used for storing banned playernames" )
-		WhiteListIni:AddHeaderComment( "The format is: PlayerName=1 for banned or PlayerName=0 for not (or just delete the value)" )
-		BannedPlayersIni:SetValue( "Banned", "", "" ) -- So it adds an empty header
-		BannedPlayersIni:DeleteValue( "Banned", "" ) -- And remove the value
-		BannedPlayersIni:WriteFile("banned.ini")
-	end
+	-- Initialize the banlist, load its DB, do whatever processing it needs on startup:
+	InitializeBanlist()
 
 	-- Add webadmin tabs:
 	Plugin:AddWebTab("Manage Server",   HandleRequest_ManageServer)
