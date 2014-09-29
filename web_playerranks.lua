@@ -110,7 +110,7 @@ function ShowMainPlayersPage(a_Request)
 
 	-- Add a table describing each player:
 	ins(PageText, "<table><tr><th>Playername</th><th>Rank</th><th>Action</th></tr>\n")
-	local AllPlayers = cRankManager:GetAllPlayers()
+	local AllPlayers = cRankManager:GetAllPlayerUUIDs()
 	table.sort(AllPlayers)
 	for i = StartRow, EndRow, 1 do
 		local PlayerUUID = AllPlayers[i + 1]
