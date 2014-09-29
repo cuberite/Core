@@ -95,7 +95,7 @@ end
 
 
 --- Returns the HTML contents of the main Rankplayers page
-function ShowMainPlayersPage(a_Request)
+local function ShowMainPlayersPage(a_Request)
 	-- Read the page number:
 	local PageNumber = tonumber(a_Request.Params["PageNumber"])
 	if (PageNumber == nil) then
@@ -111,7 +111,6 @@ function ShowMainPlayersPage(a_Request)
 	-- Add a table describing each player:
 	ins(PageText, "<table><tr><th>Playername</th><th>Rank</th><th>Action</th></tr>\n")
 	local AllPlayers = cRankManager:GetAllPlayerUUIDs()
-	table.sort(AllPlayers)
 	for i = StartRow, EndRow, 1 do
 		local PlayerUUID = AllPlayers[i + 1]
 		if (PlayerUUID ~= nil) then
@@ -151,7 +150,7 @@ end
 
 
 --- Returns the HTML contents of the player add page
-function ShowAddPlayerPage(a_Request)
+local function ShowAddPlayerPage(a_Request)
 	return [[
 		<h4>Add Player</h4>
 		<form method="POST">
@@ -185,7 +184,7 @@ end
 
 
 --- Processes the AddPlayer page's input, creating a new player and redirecting to the player rank list
-function ShowAddPlayerProcessPage(a_Request)
+local function ShowAddPlayerProcessPage(a_Request)
 	-- Check the received values:
 	local PlayerName = a_Request.PostParams["PlayerName"]
 	local PlayerUUID = a_Request.PostParams["PlayerUUID"]
@@ -248,7 +247,7 @@ end
 
 
 --- Deletes the specified player and redirects back to list
-function ShowDelPlayerPage(a_Request)
+local function ShowDelPlayerPage(a_Request)
 	-- Check the input:
 	local PlayerUUID = a_Request.PostParams["PlayerUUID"]
 	if (PlayerUUID == nil) then
@@ -268,7 +267,7 @@ end
 
 
 --- Shows a confirmation page for deleting the specified player
-function ShowConfirmDelPage(a_Request)
+local function ShowConfirmDelPage(a_Request)
 	-- Check the input:
 	local PlayerUUID = a_Request.PostParams["PlayerUUID"]
 	local PlayerName = a_Request.PostParams["PlayerName"]
@@ -291,7 +290,7 @@ end
 
 
 --- Returns the HTML contents of the playerrank edit page.
-function ShowEditPlayerRankPage(a_Request)
+local function ShowEditPlayerRankPage(a_Request)
 	-- Check the input:
 	local PlayerUUID = a_Request.PostParams["PlayerUUID"]
 	if ((PlayerUUID == nil) or (string.len(PlayerUUID) ~= 32)) then
@@ -334,7 +333,7 @@ end
 
 
 --- Processes the edit rank page's input, change the rank and redirecting to the player rank list
-function ShowEditPlayerRankProcessPage(a_Request)
+local function ShowEditPlayerRankProcessPage(a_Request)
 	-- Check the input:
 	local PlayerUUID = a_Request.PostParams["PlayerUUID"]
 	local NewRank    = a_Request.PostParams["RankName"]
@@ -362,7 +361,7 @@ end
 
 
 --- Processes the clear of all player ranks
-function ShowClearPlayersPage(a_Request)
+local function ShowClearPlayersPage(a_Request)
 	cRankManager:ClearPlayerRanks();
 	LOGINFO("WebAdmin: A user cleared all player ranks")
 
@@ -381,7 +380,7 @@ end
 
 
 --- Shows a confirmation page for deleting all players
-function ShowConfirmClearPage(a_Request)
+local function ShowConfirmClearPage(a_Request)
 	-- Show confirmation:
 	return [[
 		<h4>Clear all player ranks</h4>
