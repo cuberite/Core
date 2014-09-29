@@ -80,10 +80,10 @@ local function GetPlayerRow(a_PlayerUUID)
 	ins(Row, cWebAdmin:GetHTMLEscapedString(PlayerRank))
 
 	-- Display actions for this player:
-	ins(Row, "</td><td><form>")
-	ins(Row, GetFormButton("editplayer", "Edit player", {PlayerUUID = a_PlayerUUID}))
-	ins(Row, "</form><form>")
-	ins(Row, GetFormButton("confirmdel", "Delete player", {PlayerUUID = a_PlayerUUID, PlayerName = PlayerName}))
+	ins(Row, "</td><td><form style='float: left'>")
+	ins(Row, GetFormButton("editplayer", "Edit", {PlayerUUID = a_PlayerUUID}))
+	ins(Row, "</form><form style='float: left'>")
+	ins(Row, GetFormButton("confirmdel", "Remove rank", {PlayerUUID = a_PlayerUUID, PlayerName = PlayerName}))
 
 	-- Terminate the row and return the entire concatenated string:
 	ins(Row, "</form></td></tr>")
