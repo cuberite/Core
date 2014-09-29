@@ -7,9 +7,8 @@
 
 
 
---- Maximum number of groups displayed within a player's row.
--- If there are more players than this, a triple-dot is displayed at the end of the list
-local MAX_PLAYERS = 20
+--- Maximum number of players displayed on a single page.
+local PLAYERS_PER_PAGE = 20
 
 local ins = table.insert
 local con = table.concat
@@ -101,8 +100,8 @@ local function ShowMainPlayersPage(a_Request)
 	if (PageNumber == nil) then
 		PageNumber = 1
 	end
-	local StartRow = (PageNumber - 1) * MAX_PLAYERS
-	local EndRow = PageNumber * MAX_PLAYERS - 1
+	local StartRow = (PageNumber - 1) * PLAYERS_PER_PAGE
+	local EndRow = PageNumber * PLAYERS_PER_PAGE - 1
 
 	-- Accumulator for the page data
 	local PageText = {}
@@ -120,22 +119,18 @@ local function ShowMainPlayersPage(a_Request)
 	ins(PageText, "</table>")
 
 	-- Calculate the page num:
-	local MaxPages = #AllPlayers / MAX_PLAYERS
-	if ((MaxPages % 1) ~= 0) then
-		-- It's a double/float (-> round up)
-		MaxPages = math.floor(MaxPages) + 1
-	end
+	local MaxPages = math.floor((#AllPlayers + PLAYERS_PER_PAGE - 1) / PLAYERS_PER_PAGE)
 
 	-- Display the pages list:
 	ins(PageText, "<table style='width: 100%;'><tr>")
 	if (PageNumber > 1) then
-		ins(PageText, "<td><a href='?PageNumber=" .. (PageNumber - 1) .. "'><b>&lt;</b></a></td>")
+		ins(PageText, "<td><a href='?PageNumber=" .. (PageNumber - 1) .. "'><b>&lt;&lt;&lt;</b></a></td>")
 	else
 		ins(PageText, "<td><b>&lt;</b></td>")
 	end
 	ins(PageText, "<th style='width: 100%; text-align: center;'>Page " .. PageNumber .. " of " .. MaxPages .. "</th>")
 	if (PageNumber < MaxPages) then
-		ins(PageText, "<td><a href='?PageNumber=" .. (PageNumber + 1) .. "'><b>&gt;</b></a></td>")
+		ins(PageText, "<td><a href='?PageNumber=" .. (PageNumber + 1) .. "'><b>&gt;&gt;&gt;</b></a></td>")
 	else
 		ins(PageText, "<td><b>&gt;</b></td>")
 	end
