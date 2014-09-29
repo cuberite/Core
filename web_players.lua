@@ -59,7 +59,7 @@ local function GetPlayerRow(a_Player)
 	-- Second column: rank:
 	local RankName = cWebAdmin:GetHTMLEscapedString(cRankManager:GetPlayerRankName(a_Player.PlayerUUID))
 	if (RankName == "") then
-		RankName = "&nbsp;"
+		RankName = cWebAdmin:GetHTMLEscapedString(cRankManager:GetDefaultRank())
 	end
 	ins(Row, "<td>")
 	ins(Row, RankName)
@@ -155,7 +155,7 @@ local function GetRankDetails(a_PlayerIdent)
 	-- Display the current rank and its permissions:
 	local RankName = cWebAdmin:GetHTMLEscapedString(cRankManager:GetPlayerRankName(a_PlayerIdent.PlayerUUID))
 	if (RankName == "") then
-		RankName = "&nbsp;"
+		RankName = cWebAdmin:GetHTMLEscapedString(cRankManager:GetDefaultRank())
 	end
 	local Permissions = cRankManager:GetPlayerPermissions(a_PlayerIdent.PlayerUUID)
 	table.sort(Permissions)
