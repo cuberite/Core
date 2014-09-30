@@ -270,7 +270,7 @@ g_PluginInfo =
 		["/tpahere"] = 
 		{
 			Permission = "core.tpahere",
-			Handler = HandleTPAHereCommand,
+			Handler = HandleTPACommand,
 			HelpString = " ~ Ask to teleport player to yourself",
 		},
 		

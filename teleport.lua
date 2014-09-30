@@ -78,60 +78,37 @@ end
 function HandleTPACommand( Split, Player )
 
 	local flag = 0
+	
+	if Split[2] == nil then
+		SendMessage( Player, "Usage: " .. Split[1] .. " [Player]" )
+		return true
+	end
+	
+	if Split[2] == Player:GetName() then
+		SendMessage( Player, "You can't teleport to yourself!" )
+		return true
+	end
+
+	local loopPlayer = function( OtherPlayer )
+		if OtherPlayer:GetName() == Split[2] then
 		
-	if Split[2] == nil then
-		SendMessage( Player, "Usage: /tpa [Player]" )
-		return true
-	end
-	
-	if Split[2] == Player:GetName() then
-		SendMessage( Player, "You can't teleport to yourself!" )
-		return true
-	end
-	
-	local loopPlayer = function( OtherPlayer )
-		if OtherPlayer:GetName() == Split[2] then
-			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested to teleport to you." )
+			if Split[1] == "/tpa" then
+				SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested to teleport to you." )
+			else
+				SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them." )
+			end
+		
 			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
 			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
+			
 			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
-			TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpa", Destination = Player:GetUniqueID() }
-			flag = 1
-		end
-	end
-
-	cRoot:Get():ForEachPlayer(loopPlayer)
-	
-	if flag == 0 then
-		SendMessageFailure(Player, "Player " ..  Split[2] .. " not found!")
-	end
-	
-	return true
-
-end
-
-
-function HandleTPAHereCommand( Split, Player )
-
-	local flag = 0
-	
-	if Split[2] == nil then
-		SendMessage( Player, "Usage: /tpahere [Player]" )
-		return true
-	end
-	
-	if Split[2] == Player:GetName() then
-		SendMessage( Player, "You can't teleport to yourself!" )
-		return true
-	end
-
-	local loopPlayer = function( OtherPlayer )
-		if OtherPlayer:GetName() == Split[2] then
-			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them." )
-			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
-			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
-			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
-			TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpahere", Destination = Player:GetUniqueID() }
+			
+			if Split[1] == "/tpa" then
+				TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpa", Destination = Player:GetUniqueID() }
+			else
+				TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpahere", Destination = Player:GetUniqueID() }
+			end
+			
 			flag = 1
 		end
 	end
