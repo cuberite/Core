@@ -1,5 +1,5 @@
 --When someone uses tpa or tpahere request is saved in this array under targeted player uuid
---Type - Request type(used command - "/tpahere" or "/tpa"), Destination - uuid of dest player, Time - request time
+--Type - Request type(used command - "/tpahere" or "/tpa"), Requester - uuid of requesting player, Time - request time
 local TeleportRequests = {}
 
 function HandleTPCommand(a_Split, a_Player)
@@ -106,7 +106,7 @@ function HandleTPACommand( Split, Player )
 			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
 			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
 			
-			TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = Split[1], Destination = Player:GetUniqueID(), Time = GetTime() }
+			TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = Split[1], Requester = Player:GetUniqueID(), Time = GetTime() }
 			
 			flag = 1
 		end
@@ -141,7 +141,7 @@ function HandleTPAcceptCommand( Split, Player )
 	
 	local loopPlayer = function( OtherPlayer )
 	
-		if TeleportRequests[Player:GetUniqueID()].Destination == OtherPlayer:GetUniqueID() then
+		if TeleportRequests[Player:GetUniqueID()].Requester == OtherPlayer:GetUniqueID() then
 			if OtherPlayer:GetWorld():GetName() ~= Player:GetWorld():GetName() then
 				if TeleportRequests[Player:GetUniqueID()].Type == "/tpa" then
 					OtherPlayer:MoveToWorld( Player:GetWorld():GetName() )
@@ -196,7 +196,7 @@ function HandleTPDenyCommand( Split, Player )
 	SendMessageSuccess( Player,"Request denied.")
 	
 	local loopPlayer = function( OtherPlayer )
-		if TeleportRequests[Player:GetUniqueID()].Destination == OtherPlayer:GetUniqueID() then
+		if TeleportRequests[Player:GetUniqueID()].Requester == OtherPlayer:GetUniqueID() then
 			SendMessageFailure( OtherPlayer, Player:GetName() .. " has denied your request." )
 		end
 	end
