@@ -1,5 +1,5 @@
 --When someone uses tpa or tpahere request is saved in this array under targeted player uuid
---Request type, Requesting player uuid
+--Type - Request type, Destination - uuid of dest player, Time - request time
 local TeleportRequests = {}
 
 function HandleTPCommand(a_Split, a_Player)
@@ -98,15 +98,21 @@ function HandleTPACommand( Split, Player )
 				SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them." )
 			end
 		
+			if tonumber(TpRequestTimeLimit) > 0 then
+				OtherPlayer:SendMessage("This request will timeout after " .. TpRequestTimeLimit .. " seconds" )
+			end
+			
 			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
 			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
+			
+			
 			
 			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
 			
 			if Split[1] == "/tpa" then
-				TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpa", Destination = Player:GetUniqueID() }
+				TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpa", Destination = Player:GetUniqueID(), Time = GetTime() }
 			else
-				TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpahere", Destination = Player:GetUniqueID() }
+				TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpahere", Destination = Player:GetUniqueID(), Time = GetTime() }
 			end
 			
 			flag = 1
@@ -130,6 +136,14 @@ function HandleTPAcceptCommand( Split, Player )
 	if TeleportRequests[Player:GetUniqueID()] == nil then
 		SendMessageFailure( Player, "Nobody has send you a teleport request." )
 		return true
+	end
+	
+	if tonumber(TpRequestTimeLimit) > 0 then
+		if TeleportRequests[Player:GetUniqueID()].Time + tonumber(TpRequestTimeLimit) < GetTime() then
+			TeleportRequests[Player:GetUniqueID()] = nil
+			SendMessageFailure( Player, "Teleport request timed out." )
+			return true
+		end
 	end
 	
 	local loopPlayer = function( OtherPlayer )
@@ -176,6 +190,14 @@ function HandleTPDenyCommand( Split, Player )
 	if TeleportRequests[Player:GetUniqueID()] == nil then
 		SendMessageFailure( Player, "Nobody has send you a teleport request." )
 		return true
+	end
+	
+	if tonumber(TpRequestTimeLimit) > 0 then
+		if TeleportRequests[Player:GetUniqueID()].Time + tonumber(TpRequestTimeLimit) < GetTime() then
+			TeleportRequests[Player:GetUniqueID()] = nil
+			SendMessageFailure( Player, "Teleport request timed out." )
+			return true
+		end
 	end
 	
 	SendMessageSuccess( Player,"Request denied.")
