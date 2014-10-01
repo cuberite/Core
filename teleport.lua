@@ -51,14 +51,14 @@ function HandleTPHereCommand(Split, Player)
 	if #Split == 2 then
 
 		local teleport = function( OtherPlayer )
-				SetBackCoordinates(OtherPlayer)
-				if OtherPlayer:GetWorld():GetName() ~= Player:GetWorld():GetName() then
-					OtherPlayer:MoveToWorld( Player:GetWorld():GetName() )
-				end
-				OtherPlayer:TeleportToEntity( Player )
-				SendMessageSuccess( Player, OtherPlayer:GetName() .. " teleported to you." )
-				SendMessageSuccess( OtherPlayer, "You teleported to " .. Player:GetName() )
-				flag = 1
+			SetBackCoordinates(OtherPlayer)
+			if OtherPlayer:GetWorld():GetName() ~= Player:GetWorld():GetName() then
+				OtherPlayer:MoveToWorld( Player:GetWorld():GetName() )
+			end
+			OtherPlayer:TeleportToEntity( Player )
+			SendMessageSuccess( Player, OtherPlayer:GetName() .. " teleported to you." )
+			SendMessageSuccess( OtherPlayer, "You teleported to " .. Player:GetName() )
+			flag = 1
 		end
 		
 		cRoot:Get():FindAndDoWithPlayer(Split[2], teleport)
@@ -97,16 +97,13 @@ function HandleTPACommand( Split, Player )
 			else
 				SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them." )
 			end
-		
+			
 			if TpRequestTimeLimit > 0 then
 				OtherPlayer:SendMessage("This request will timeout after " .. TpRequestTimeLimit .. " seconds" )
 			end
 			
 			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
 			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
-			
-			
-			
 			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
 			
 			if Split[1] == "/tpa" then

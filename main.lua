@@ -66,7 +66,6 @@ function Initialize(Plugin)
 	if IniFile:GetNumKeyComments("Teleport") == 0 then
 		IniFile:AddKeyComment("Teleport", "RequestTimeLimit: Time after which tpa/tpahere will timeout, 0 - disabled");
 	end
-	
 	IniFile:WriteFile("settings.ini")
 	-- Load SpawnProtection and WorldLimit settings for individual worlds:
 	cRoot:Get():ForEachWorld(
