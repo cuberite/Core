@@ -62,7 +62,7 @@ function Initialize(Plugin)
 	IniFile = cIniFile()
 	IniFile:ReadFile("settings.ini")
 	HardCore = IniFile:GetValueSet("GameMode", "Hardcore", "false")
-	TpRequestTimeLimit = IniFile:GetValueSet("Teleport", "RequestTimeLimit", "0")
+	TpRequestTimeLimit = IniFile:GetValueSetI("Teleport", "RequestTimeLimit", 0)
 	IniFile:WriteFile("settings.ini")
 	-- Load SpawnProtection and WorldLimit settings for individual worlds:
 	cRoot:Get():ForEachWorld(

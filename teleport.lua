@@ -98,7 +98,7 @@ function HandleTPACommand( Split, Player )
 				SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them." )
 			end
 		
-			if tonumber(TpRequestTimeLimit) > 0 then
+			if TpRequestTimeLimit > 0 then
 				OtherPlayer:SendMessage("This request will timeout after " .. TpRequestTimeLimit .. " seconds" )
 			end
 			
@@ -138,8 +138,8 @@ function HandleTPAcceptCommand( Split, Player )
 		return true
 	end
 	
-	if tonumber(TpRequestTimeLimit) > 0 then
-		if TeleportRequests[Player:GetUniqueID()].Time + tonumber(TpRequestTimeLimit) < GetTime() then
+	if TpRequestTimeLimit > 0 then
+		if TeleportRequests[Player:GetUniqueID()].Time + TpRequestTimeLimit < GetTime() then
 			TeleportRequests[Player:GetUniqueID()] = nil
 			SendMessageFailure( Player, "Teleport request timed out." )
 			return true
@@ -192,8 +192,8 @@ function HandleTPDenyCommand( Split, Player )
 		return true
 	end
 	
-	if tonumber(TpRequestTimeLimit) > 0 then
-		if TeleportRequests[Player:GetUniqueID()].Time + tonumber(TpRequestTimeLimit) < GetTime() then
+	if TpRequestTimeLimit > 0 then
+		if TeleportRequests[Player:GetUniqueID()].Time + TpRequestTimeLimit < GetTime() then
 			TeleportRequests[Player:GetUniqueID()] = nil
 			SendMessageFailure( Player, "Teleport request timed out." )
 			return true
