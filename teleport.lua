@@ -1,5 +1,5 @@
 --When someone uses tpa or tpahere request is saved in this array under targeted player uuid
---Type - Request type, Destination - uuid of dest player, Time - request time
+--Type - Request type(used command - "/tpahere" or "/tpa"), Destination - uuid of dest player, Time - request time
 local TeleportRequests = {}
 
 function HandleTPCommand(a_Split, a_Player)
@@ -106,11 +106,7 @@ function HandleTPACommand( Split, Player )
 			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
 			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
 			
-			if Split[1] == "/tpa" then
-				TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpa", Destination = Player:GetUniqueID(), Time = GetTime() }
-			else
-				TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = "tpahere", Destination = Player:GetUniqueID(), Time = GetTime() }
-			end
+			TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = Split[1], Destination = Player:GetUniqueID(), Time = GetTime() }
 			
 			flag = 1
 		end
@@ -147,19 +143,19 @@ function HandleTPAcceptCommand( Split, Player )
 	
 		if TeleportRequests[Player:GetUniqueID()].Destination == OtherPlayer:GetUniqueID() then
 			if OtherPlayer:GetWorld():GetName() ~= Player:GetWorld():GetName() then
-				if TeleportRequests[Player:GetUniqueID()].Type == "tpa" then
+				if TeleportRequests[Player:GetUniqueID()].Type == "/tpa" then
 					OtherPlayer:MoveToWorld( Player:GetWorld():GetName() )
-				elseif TeleportRequests[Player:GetUniqueID()].Type == "tpahere" then
+				elseif TeleportRequests[Player:GetUniqueID()].Type == "/tpahere" then
 					Player:MoveToWorld( OtherPlayer:GetWorld():GetName() )
 				end
 			end
 			
-			if TeleportRequests[Player:GetUniqueID()].Type == "tpa" then
+			if TeleportRequests[Player:GetUniqueID()].Type == "/tpa" then
 				SetBackCoordinates(OtherPlayer)
 				OtherPlayer:TeleportToEntity( Player )
 				SendMessageSuccess( Player, OtherPlayer:GetName() .. " teleported to you." )
 				SendMessageSuccess( OtherPlayer, "You teleported to " .. Player:GetName() )
-			elseif TeleportRequests[Player:GetUniqueID()].Type == "tpahere" then
+			elseif TeleportRequests[Player:GetUniqueID()].Type == "/tpahere" then
 				SetBackCoordinates(Player)
 				Player:TeleportToEntity( OtherPlayer )
 				SendMessageSuccess( OtherPlayer, Player:GetName() .. " teleported to you." )
