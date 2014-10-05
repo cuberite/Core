@@ -299,7 +299,7 @@ function HandleRequest_ManagePlugins(Request)
 	if (g_NeedsReload) then
 		Content = Content .. [[
 			<form method='POST'>
-			<p style="background-color:#ffffaf"><b>
+			<p style="background-color:#ffffaf" class="warn"><b>
 			You need to reload the plugins in order for the changes to take effect.
 			&nbsp;<input type='submit' name='reload' value='Reload now!'>
 			</b></p></form>
