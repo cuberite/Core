@@ -22,6 +22,9 @@
     <filename>functions.lua</filename>
   </file>
   <file>
+    <filename>fly.lua</filename>
+  </file>
+  <file>
     <filename>give.lua</filename>
   </file>
   <file>
@@ -98,6 +101,9 @@
   </file>
   <file>
     <filename>viewdistance.lua</filename>
+  </file>
+  <file>
+    <filename>vanish.lua</filename>
   </file>
   <file>
     <filename>weather.lua</filename>

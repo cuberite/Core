@@ -47,6 +47,13 @@ g_PluginInfo =
 			Handler = HandleDifficultyCommand,
 			HelpString = " ~ Change world's difficulty.",
 		},
+		
+		["/fly"] = 
+		{
+			Permission = "core.fly",
+			Handler = HandleFlyCommand,
+			HelpString = " ~ Toggle fly",
+		},
 
 		["/give"] = 
 		{
@@ -259,6 +266,27 @@ g_PluginInfo =
 			Handler = HandleTPAcceptCommand,
 			HelpString = " ~ Accept a teleportation request",
 		},
+		
+		["/tpahere"] = 
+		{
+			Permission = "core.tpahere",
+			Handler = HandleTPACommand,
+			HelpString = " ~ Ask to teleport player to yourself",
+		},
+		
+		["/tpdeny"] = 
+		{
+			Permission = "core.tpdeny",
+			Handler = HandleTPDenyCommand,
+			HelpString = " ~ Deny a teleportation request",
+		},
+		
+		["/tphere"] = 
+		{
+			Permission = "core.tphere",
+			Handler = HandleTPHereCommand,
+			HelpString = " ~ Teleport player to yourself",
+		},
 
 		["/tps"] = 
 		{
@@ -294,6 +322,14 @@ g_PluginInfo =
 			Handler = HandleWorldsCommand,
 			HelpString = " - Shows a list of all the worlds",
 		},
+
+		["/vanish"] = 
+		{
+			Permission = "core.vanish",
+			Handler = HandleVanishCommand,
+			HelpString = " - Vanish",
+		},
+		
 	},  -- Commands
 
 
@@ -305,6 +341,13 @@ g_PluginInfo =
 			Handler =  HandleConsoleBan,
 			HelpString =  "Bans a player by name",
 		},
+		
+		["tps"] =
+		{
+			Handler =  HandleTpsCommand,
+			HelpString =  " - Returns the tps (ticks per second) from the server.",
+		},
+
 
 		["banip"] =
 		{
