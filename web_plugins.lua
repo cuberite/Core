@@ -116,14 +116,14 @@ local function ListCurrentPlugins(EnabledPlugins)
 		ins(res, [[
 			<h4>Loaded plugins</h4>
 			<p>These plugins have been successfully initialized and are currently running.</p>
-			<table style=\"background-color: #efffef\">
+			<table>
 			]]
 		);
 		local Num = #LoadedPlugins
 		for idx, name in pairs(LoadedPlugins) do
-			ins(res, [[<tr><td width="100%" style="background-color: #efffef">]])
+			ins(res, [[<tr><td width="100%">]])
 			ins(res, name)
-			ins(res, [[</td><td style="background-color: #efffef">]])
+			ins(res, [[</td><td>]])
 			if (idx == 1) then
 				ins(res, [[<button type="button" disabled>Move Up</button> </td>]])
 			else
@@ -131,7 +131,7 @@ local function ListCurrentPlugins(EnabledPlugins)
 				ins(res, name)
 				ins(res, '"><input type="submit" name="MoveUp" value="Move Up"></form></td>')
 			end
-			ins(res, [[</td><td style="background-color: #efffef">]])
+			ins(res, [[</td><td>]])
 			if (idx == Num) then
 				ins(res, '<button type="button" disabled>Move Down</button></td>')
 			else
@@ -139,7 +139,7 @@ local function ListCurrentPlugins(EnabledPlugins)
 				ins(res, name)
 				ins(res, '"><input type="submit" name="MoveDown" value="Move Down"></form></td>')
 			end
-			ins(res, '<td style=\"background-color: #efffef\"><form method="POST"><input type="hidden" name="PluginName" value="')
+			ins(res, '<td><form method="POST"><input type="hidden" name="PluginName" value="')
 			ins(res, name)
 			ins(res, '"><input type="submit" name="DisablePlugin" value="Disable"></form></td></tr>')
 		end
@@ -155,9 +155,9 @@ local function ListCurrentPlugins(EnabledPlugins)
 			<table>]]
 		)
 		for idx, name in ipairs(ErrorPlugins) do
-			ins(res, "<tr><td width=\"100%\" style=\"background-color: #ffefef\">")
+			ins(res, "<tr><td width=\"100%\">")
 			ins(res, name)
-			ins(res, "</td><td style=\"background-color: #ffefef\"><form method='POST'><input type='hidden' name='PluginName' value='")
+			ins(res, "</td><td><form method='POST'><input type='hidden' name='PluginName' value='")
 			ins(res, name)
 			ins(res, "'><input type='submit' name='DisablePlugin' value='Disable'></form></td></tr>")
 		end
@@ -299,7 +299,7 @@ function HandleRequest_ManagePlugins(Request)
 	if (g_NeedsReload) then
 		Content = Content .. [[
 			<form method='POST'>
-			<p style="background-color:#ffffaf" class="warn"><b>
+			<p class="warn"><b>
 			You need to reload the plugins in order for the changes to take effect.
 			&nbsp;<input type='submit' name='reload' value='Reload now!'>
 			</b></p></form>
