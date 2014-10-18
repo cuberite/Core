@@ -78,7 +78,36 @@ end
 
 
 
---- Returns the HTML contents of the rank list
+--- Returns the HTML contents of the group list combobox
+local function GetGroupList(a_SelectedGroup)
+	local GroupList = {}
+	ins(GroupList, "<select name='NewGroupName'>")
+
+	local AllGroups = cRankManager:GetAllGroups()
+	table.sort(AllGroups)
+
+	for _, group in ipairs(AllGroups) do
+		local HTMLGroupName = cWebAdmin:GetHTMLEscapedString(group)
+		ins(GroupList, "<option value='")
+		ins(GroupList, HTMLGroupName)
+		if (HTMLGroupName == a_SelectedGroup) then
+			ins(GroupList, "' selected>")
+		else
+			ins(GroupList, "'>")
+		end
+		ins(GroupList, HTMLGroupName)
+		ins(GroupList, "</option>")
+	end
+	ins(GroupList, "</select>")
+
+	return con(GroupList)
+end
+
+
+
+
+
+-- Returns the HTML contents of the rank list
 local function GetRankList(a_SelectedRank)
 	local RankList = {}
 	ins(RankList, "<select name='NewGroupName'>")
@@ -343,7 +372,7 @@ local function ShowEditGroupsPage(a_Request)
 		<table>
 			<tr>
 				<th>Group:</th>
-				<td>]] .. GetRankList("") .. [[</td>
+				<td>]] .. GetGroupList("") .. [[</td>
 			</tr>
 			<tr>
 				<td/>
