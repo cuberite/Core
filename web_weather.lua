@@ -19,19 +19,19 @@ function HandleRequest_Weather(Request)
 			-- Times used replicate vanilla: http://minecraft.gamepedia.com/Day-night_cycle#Commands
 			if (Request.PostParams["SetTime"] == "Dawn") then
 				workWorld:SetTimeOfDay(0)
-				LOG("Time set to Dawn in " .. workWorldName)
+				LOG("Time set to dawn in " .. workWorldName)
 			elseif (Request.PostParams["SetTime"] == "Day") then
 				workWorld:SetTimeOfDay(1000)
-				LOG("Time set to Day in " .. workWorldName)
+				LOG("Time set to day in " .. workWorldName)
 			elseif (Request.PostParams["SetTime"] == "Dusk") then
 				workWorld:SetTimeOfDay(12000)
-				LOG("Time set to Dusk in " .. workWorldName)
+				LOG("Time set to dusk in " .. workWorldName)
 			elseif (Request.PostParams["SetTime"] == "Night") then
 				workWorld:SetTimeOfDay(14000)
-				LOG("Time set to Night in " .. workWorldName)
+				LOG("Time set to night in " .. workWorldName)
 			elseif (Request.PostParams["SetTime"] == "Midnight") then
 				workWorld:SetTimeOfDay(18000)
-				LOG("Time set to Midnight in " .. workWorldName)
+				LOG("Time set to midnight in " .. workWorldName)
 			end
 		end
 		
