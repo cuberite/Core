@@ -21,16 +21,16 @@ function HandleRequest_Weather(Request)
 				workWorld:SetTimeOfDay(0)
 				LOG("Time set to Dawn in " .. workWorldName)
 			elseif (Request.PostParams["SetTime"] == "Day") then
-				workWorld.SetTimeOfDay(1000)
+				workWorld:SetTimeOfDay(1000)
 				LOG("Time set to Day in " .. workWorldName)
 			elseif (Request.PostParams["SetTime"] == "Dusk") then
-				workWorld.SetTimeOfDay(12000)
+				workWorld:SetTimeOfDay(12000)
 				LOG("Time set to Dusk in " .. workWorldName)
 			elseif (Request.PostParams["SetTime"] == "Night") then
 				workWorld:SetTimeOfDay(14000)
 				LOG("Time set to Night in " .. workWorldName)
 			elseif (Request.PostParams["SetTime"] == "Midnight") then
-				workWorld.SetTimeOfDay(18000)
+				workWorld:SetTimeOfDay(18000)
 				LOG("Time set to Midnight in " .. workWorldName)
 			end
 		end
