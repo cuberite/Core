@@ -1,10 +1,13 @@
 local function AddWorldButtons(inName)
-	result = "<form method='POST'><input type='hidden' name='WorldName' value='"..inName.."'>"
-	result = result.."<input type='submit' name='SetTime' value='Day'>"
-	result = result.."<input type='submit' name='SetTime' value='Night'>"
-	result = result.."<input type='submit' name='SetWeather' value='Sun'>"
-	result = result.."<input type='submit' name='SetWeather' value='Rain'>"
-	result = result.."<input type='submit' name='SetWeather' value='Storm'></form>"
+	result = "<form method='POST'><input type='hidden' name='WorldName' value='" .. inName .. "'>"
+	result = result .. "<input type='submit' name='SetTime' value='Dawn'>"
+	result = result .. "<input type='submit' name='SetTime' value='Day'>"
+	result = result .. "<input type='submit' name='SetTime' value='Dusk'>"
+	result = result .. "<input type='submit' name='SetTime' value='Night'>"
+	result = result .. "<input type='submit' name='SetTime' value='Midnight'>"
+	result = result .. "<input type='submit' name='SetWeather' value='Sun'>"
+	result = result .. "<input type='submit' name='SetWeather' value='Rain'>"
+	result = result .. "<input type='submit' name='SetWeather' value='Storm'></form>"
 	return result
 end
 
@@ -13,12 +16,22 @@ function HandleRequest_Weather(Request)
 		workWorldName = Request.PostParams["WorldName"]
 		workWorld = cRoot:Get():GetWorld(workWorldName)
 		if( Request.PostParams["SetTime"] ~= nil ) then
-			if (Request.PostParams["SetTime"] == "Day") then
+			-- Times used replicate vanilla: http://minecraft.gamepedia.com/Day-night_cycle#Commands
+			if (Request.PostParams["SetTime"] == "Dawn") then
 				workWorld:SetTimeOfDay(0)
-				LOG("Daylight on in "..workWorldName)
-			elseif (Request.PostParams["SetTime"] == "Night") then
-				workWorld:SetTimeOfDay(13000)
-				LOG("Night time on in " .. workWorldName)
+				LOG("Time set to Dawn in " .. workWorldName)
+			else if (Request.PostParams["SetTime"] == "Day") then
+				workWorld.SetTimeOfDay(1000)
+				LOG("Time set to Day in " .. workWorldName)
+			else if (Request.PostParams["SetTime"] == "Dusk") then
+				workWorld.SetTimeOfDay(12000)
+				LOG("Time set to Dusk in " .. workWorldName)
+			else if (Request.PostParams["SetTime"] == "Night") then
+				workWorld:SetTimeOfDay(14000)
+				LOG("Time set to Night in " .. workWorldName)
+			else if (Request.PostParams["SetTime"] == "Midnight") then
+				workWorld.SetTimeOfDay(18000)
+				LOG("Time set to Midnight in " .. workWorldName)
 			end
 		end
 		
@@ -29,7 +42,7 @@ function HandleRequest_Weather(Request)
 			else if (Request.PostParams["SetWeather"] == "Rain") then
 				workWorld:SetWeather(wRain)
 				LOG("Weather changed to rain in  " .. workWorldName)
-			else if (Request:PostParams["SetWeather"] == "Storm") then
+			else if (Request.PostParams["SetWeather"] == "Storm") then
 				workWorld:SetWeather(wStorm)
 				LOG("Weather changed to storm in " .. workWorldName)
 			end
