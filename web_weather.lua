@@ -20,16 +20,16 @@ function HandleRequest_Weather(Request)
 			if (Request.PostParams["SetTime"] == "Dawn") then
 				workWorld:SetTimeOfDay(0)
 				LOG("Time set to Dawn in " .. workWorldName)
-			else if (Request.PostParams["SetTime"] == "Day") then
+			elseif (Request.PostParams["SetTime"] == "Day") then
 				workWorld.SetTimeOfDay(1000)
 				LOG("Time set to Day in " .. workWorldName)
-			else if (Request.PostParams["SetTime"] == "Dusk") then
+			elseif (Request.PostParams["SetTime"] == "Dusk") then
 				workWorld.SetTimeOfDay(12000)
 				LOG("Time set to Dusk in " .. workWorldName)
-			else if (Request.PostParams["SetTime"] == "Night") then
+			elseif (Request.PostParams["SetTime"] == "Night") then
 				workWorld:SetTimeOfDay(14000)
 				LOG("Time set to Night in " .. workWorldName)
-			else if (Request.PostParams["SetTime"] == "Midnight") then
+			elseif (Request.PostParams["SetTime"] == "Midnight") then
 				workWorld.SetTimeOfDay(18000)
 				LOG("Time set to Midnight in " .. workWorldName)
 			end
@@ -39,10 +39,10 @@ function HandleRequest_Weather(Request)
 			if (Request.PostParams["SetWeather"] == "Sun") then
 				workWorld:SetWeather(wSunny)
 				LOG("Weather changed to sun in " .. workWorldName)
-			else if (Request.PostParams["SetWeather"] == "Rain") then
+			elseif (Request.PostParams["SetWeather"] == "Rain") then
 				workWorld:SetWeather(wRain)
 				LOG("Weather changed to rain in  " .. workWorldName)
-			else if (Request.PostParams["SetWeather"] == "Storm") then
+			elseif (Request.PostParams["SetWeather"] == "Storm") then
 				workWorld:SetWeather(wStorm)
 				LOG("Weather changed to storm in " .. workWorldName)
 			end
