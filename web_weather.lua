@@ -1,39 +1,42 @@
-local function AddWorldButtons( inName )
+local function AddWorldButtons(inName)
 	result = "<form method='POST'><input type='hidden' name='WorldName' value='"..inName.."'>"
 	result = result.."<input type='submit' name='SetTime' value='Day'>"
 	result = result.."<input type='submit' name='SetTime' value='Night'>"
 	result = result.."<input type='submit' name='SetWeather' value='Sun'>"
-	result = result.."<input type='submit' name='SetWeather' value='Rain'></form>"
+	result = result.."<input type='submit' name='SetWeather' value='Rain'>"
+	result = result.."<input type='submit' name='SetWeather' value='Storm'></form>"
 	return result
 end
 
-function HandleRequest_Weather( Request )
-	if( Request.PostParams["WorldName"] ~= nil ) then		-- World is selected!
+function HandleRequest_Weather(Request)
+	if (Request.PostParams["WorldName"] ~= nil) then		-- World is selected!
 		workWorldName = Request.PostParams["WorldName"]
-		workWorld = cRoot:Get():GetWorld( workWorldName )
+		workWorld = cRoot:Get():GetWorld(workWorldName)
 		if( Request.PostParams["SetTime"] ~= nil ) then
-			if( Request.PostParams["SetTime"] == "Day" ) then
-				workWorld:SetTimeOfDay( 0 )
-				LOG( "Daylight on in "..workWorldName )
-			elseif( Request.PostParams["SetTime"] == "Night" ) then
-				workWorld:SetTimeOfDay( 13000 )
-				LOG( "Night time on in "..workWorldName )
+			if (Request.PostParams["SetTime"] == "Day") then
+				workWorld:SetTimeOfDay(0)
+				LOG("Daylight on in "..workWorldName)
+			elseif (Request.PostParams["SetTime"] == "Night") then
+				workWorld:SetTimeOfDay(13000)
+				LOG("Night time on in " .. workWorldName)
 			end
 		end
 		
-		if( Request.PostParams["SetWeather"] ~= nil ) then
-			if( Request.PostParams["SetWeather"] == "Sun" ) then
-				workWorld:SetWeather( 0 )
-				LOG( "Sunny times in "..workWorldName )
-			elseif( Request.PostParams["SetWeather"] == "Rain" ) then
-				workWorld:SetWeather( 1 )
-				LOG( "Water drops from the sky in "..workWorldName )
+		if (Request.PostParams["SetWeather"] ~= nil) then
+			if (Request.PostParams["SetWeather"] == "Sun") then
+				workWorld:SetWeather(wSunny)
+				LOG("Weather changed to sun in " .. workWorldName)
+			else if (Request.PostParams["SetWeather"] == "Rain") then
+				workWorld:SetWeather(wRain)
+				LOG("Weather changed to rain in  " .. workWorldName)
+			else if (Request:PostParams["SetWeather"] == "Storm") then
+				workWorld:SetWeather(wStorm)
+				LOG("Weather changed to storm in " .. workWorldName)
 			end
 		end
 	end
 	
-	local content = GenerateContent()
-	return content
+	return GenerateContent()
 end
 
 function GenerateContent()
