@@ -20,7 +20,7 @@ function HandleRequest_ManageServer( Request )
 		</tr>
 	</th>
 	</table>
-	<br/>
+	<br>
 	<table>
 	<th colspan="2">Manage Worlds</th>
 	]]
