@@ -12,18 +12,21 @@ function HandleRequest_ManageServer( Request )
 	Content = Content .. [[
 	<form method="POST">
 	<table>
-	<th colspan="2">Manage Server</th>
-	<tr><td><input type="submit" value="Restart Server" name="RestartServer">  restart the server</td></tr> <br />
-	<tr><td><input type="submit" value="Reload Server" name="ReloadServer"> reload the server</td></tr> <br />
-	<tr><td><input type="submit" value="Stop Server" name="StopServer"> stop the server</td></tr> <br />
+	<th colspan="3">Manage Server</th>
+		<tr>
+			<td style="text-align:center;"><input type="submit" value="Restart Server" name="RestartServer"></td>
+			<td style="text-align:center;"><input type="submit" value="Reload Server" name="ReloadServer"></td>
+			<td style="text-align:center;"><input type="submit" value="Stop Server" name="StopServer"></td>
+		</tr>
 	</th>
 	</table>
+	<br/>
 	<table>
 	<th colspan="2">Manage Worlds</th>
 	]]
 	local LoopWorlds = function( World )
 		Content = Content .. [[
-		<tr><td><input type="submit" value="]] .. World:GetName() .. [[" name="WorldSaveAllChunks"> Save all the chunks of world ]] .. World:GetName() .. [[</td></tr> <br />
+		<tr><td><input type="submit" value="]] .. World:GetName() .. [[" name="WorldSaveAllChunks"></td><td> Save all the chunks of world: <strong>]] .. World:GetName() .. [[</strong></td></tr>
 		
 		]]
 	end
@@ -32,4 +35,3 @@ function HandleRequest_ManageServer( Request )
 	
 	return Content
 end
-
