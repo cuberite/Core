@@ -633,15 +633,10 @@ function GetEasyWorldSettings(Request)
 	<th colspan="2">General</th>
 	<tr><td>Dimension:</td>
 	<td>]] .. HTML_Select_Dimension("World_Dimension", WorldIni:GetValueI("General", "Dimension") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
+
 	<th colspan="2">Storage</th>
 	<tr><td>Schema:</td>
 	<td>]] .. HTML_Select_Scheme("World_Schema", WorldIni:GetValueI("Storage", "Schema") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">Spawn Position</th>
 	<tr><td>X:</td>
 	<td><input type="text" name="World_SpawnX" value="]] .. WorldIni:GetValue("SpawnPosition", "X") .. [["></td></tr>
@@ -649,32 +644,18 @@ function GetEasyWorldSettings(Request)
 	<td><input type="text" name="World_SpawnY" value="]] .. WorldIni:GetValue("SpawnPosition", "Y") .. [["></td></tr>
 	<tr><td>Z:</td>
 	<td><input type="text" name="World_SpawnZ" value="]] .. WorldIni:GetValue("SpawnPosition", "Z") .. [["></td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">LimitWorld</th>
 	<tr><td>Max chunks from spawn (0 to disable):</td>
 	<td><input type="text" name="LimitWorldWidth" value="]] .. WorldIni:GetValue("WorldLimit", "LimitRadius") .. [["></td></tr>
-	</table><br />    
-	<table>
 	<th colspan="2">Seed</th>
 	<tr><td>Seed:</td>
 	<td><input type="text" name="World_Seed" value="]] .. WorldIni:GetValue("Seed", "Seed") .. [["></td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">PVP</th>
 	<tr><td style="width: 50%;">PVP:</td>
 	<td>]] .. HTML_Select_On_Off("World_PVP", WorldIni:GetValueI("PVP", "Enabled") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">GameMode</th>
 	<tr><td style="width: 50%;">GameMode:</td>
 	<td>]] .. HTML_Select_GameMode("World_GameMode", WorldIni:GetValueI("GameMode", "GameMode") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">Physics</th>
 	<tr><td style="width: 50%;">DeepSnow:</td>
 	<td>]] .. HTML_Select_On_Off("World_DeepSnow", WorldIni:GetValueI("Physics", "DeepSnow") ) .. [[</td></tr>
@@ -684,9 +665,6 @@ function GetEasyWorldSettings(Request)
 	<td>]] .. HTML_Select_Simulator("World_WaterSimulator", WorldIni:GetValue("Physics", "WaterSimulator") ) .. [[</td></tr>
 	<tr><td style="width: 50%;">LavaSimulator:</td>
 	<td>]] .. HTML_Select_Simulator("World_LavaSimulator", WorldIni:GetValue("Physics", "LavaSimulator") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">Plants</th>
 	<tr><td>MaxCactusHeight:</td>
 	<td><input type="text" name="World_MaxCactusHeight" value="]] .. WorldIni:GetValue("Plants", "MaxCactusHeight") .. [["></td></tr>
@@ -714,9 +692,6 @@ function GetEasyWorldSettings(Request)
 	<td>]] .. HTML_Select_On_Off("World_SugarcaneBonemealable", WorldIni:GetValueI("Plants", "IsSugarcaneBonemealable") ) .. [[</td></tr>
 	<tr><td style="width: 50%;">CactusBonemealable:</td>
 	<td>]] .. HTML_Select_On_Off("World_CactusBonemealable", WorldIni:GetValueI("Plants", "IsCactusBonemealable") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">Generator</th>
 	<tr><td style="width: 50%;">BiomeGen:</td>
 	<td>]] .. HTML_Select_BiomeGen("World_BiomeGen", WorldIni:GetValue("Generator", "BiomeGen") ) .. [[</td></tr>
@@ -730,13 +705,7 @@ function GetEasyWorldSettings(Request)
 	<td><input type="text" size="50" name="World_Finishers" value="]] .. WorldIni:GetValue("Generator", "Finishers") .. [["></td></tr>
 	<tr><td style="width: 50%;">Generator:</td>
 	<td>]] .. HTML_Select_Generator("World_Generator", WorldIni:GetValue("Generator", "Generator") ) .. [[</td></tr>
-
-	</table>
-	<br />
-	<table>
 	<th colspan="1">Finetuning</th><br />
-	</table>
-	<table>
 	]]	
 	if WorldIni:GetValue( "Generator", "BiomeGen" ) ==  "Constant" then
 		Content = Content .. [[
