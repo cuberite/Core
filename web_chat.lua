@@ -97,6 +97,11 @@ local JavaScript = [[
 ]]
 
 local ChatLogMessages = {}
+local WebCommands     = {}
+
+
+
+
 
 function AddMessage( PlayerName, Message )
 	LastMessageID = LastMessageID + 1
@@ -106,10 +111,70 @@ function AddMessage( PlayerName, Message )
 	end
 end
 
+
+
+
+
+-- This function allows other plugins to add new commands to the webadmin.
+function BindWebCommand(a_CommandString, a_HelpString, a_PluginName, a_CallbackName)
+	assert(type(a_CommandString) == 'string')
+	assert(type(a_PluginName) == 'string')
+	assert(type(a_CallbackName) == 'string')
+	
+	for Idx, CommandInfo in ipairs(WebCommands) do
+		if (CommandInfo.Command == a_CommandString) then
+			return false, "That command is already bound to a plugin called \"" .. CommandInfo.PluginName .. "\"."
+		end
+	end
+	
+	table.insert(WebCommands, {CommandString = a_CommandString, HelpString = a_HelpString, PluginName = a_PluginName, CallbackName = a_CallbackName})
+	return true
+end
+
+
+
+
+
+function HandleWebHelpCommand(a_User, a_Message)
+	local Content = "Available Commands:"
+	for Idx, CommandInfo in ipairs(WebCommands) do
+		if (CommandInfo.HelpString ~= "") then
+			Content = Content .. '<br />' .. CommandInfo.CommandString .. '&ensp; - &ensp;' .. CommandInfo.HelpString
+		end
+	end
+	
+	return Content
+end
+
+
+
+
+
+function HandleWebReloadCommand(a_User, a_Message)
+	cPluginManager:Get():ReloadPlugins()
+	return "Reloading Plugins"
+end
+
+
+
+
+
+-- Register some basic commands
+BindWebCommand("/help", "Shows a list of all the possible commands", "Core", "HandleWebHelpCommand")
+BindWebCommand("/reload", "Reloads all the plugins", "Core", "HandleWebReloadCommand")
+
+
+
+
+
 function OnChat( Player, Message )
 	AddMessage( Player:GetName(), Message )
 end
-		
+
+
+
+
+
 function HandleRequest_Chat( Request )
 	local function CheckForLinks(Message)
 		local StartIdx = Message:find("http://") or Message:find("https://")
@@ -148,23 +213,27 @@ function HandleRequest_Chat( Request )
 	end
 	
 	if( Request.PostParams["ChatMessage"] ~= nil ) then
-		if( Request.PostParams["ChatMessage"] == "/help" ) then
-			AddMessage(nil, "Available commands: <br>" .. "/help, /reload" )
-			return Commands
-		elseif( Request.PostParams["ChatMessage"] == "/reload" ) then
-			cRoot:Get():BroadcastChat( cChatColor.Green .. "Reloading all plugins." )
-			AddMessage(nil, "Reloading all plugins")
-			cRoot:Get():GetPluginManager():ReloadPlugins()
-			return ""
-		else
-			if string.sub(Request.PostParams["ChatMessage"], 1, 1) == "/" then
-				AddMessage('Unknown Command "' .. Request.PostParams["ChatMessage"] .. '"', "")
+		local Split = StringSplit(Request.PostParams["ChatMessage"])
+		local CommandExecuted = false
+		for Idx, CommandInfo in ipairs(WebCommands) do
+			if (CommandInfo.CommandString == Split[1]) then
+				-- cPluginManager:CallPlugin doesn't support calling yourself, so we have to check if the command is from the Core.
+				if (CommandInfo.PluginName == "Core") then
+					AddMessage(nil, _G[CommandInfo.CallbackName](Request.Username, Request.PostParams["ChatMessage"]))
+				else
+					AddMessage(nil, cPluginManager:CallPlugin(CommandInfo.PluginName, CommandInfo.CallbackName, Request.Username, Request.PostParams["ChatMessage"]))
+				end
 				return ""
 			end
 		end
-		local Message = "[WebAdmin]: " .. Request.PostParams["ChatMessage"]
-		cRoot:Get():BroadcastChat( Message )
-		AddMessage("WebAdmin", Request.PostParams["ChatMessage"] )
+		
+		if (Request.PostParams["ChatMessage"]:sub(1, 1) == "/") then
+			AddMessage(nil, 'Unknown Command "' .. Request.PostParams["ChatMessage"] .. '"', "")
+			return ""
+		end
+		
+		cRoot:Get():BroadcastChat("[Web-" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"])
+		AddMessage("Web-" .. Request.Username, Request.PostParams["ChatMessage"] )
 		return ""
 	end
 
