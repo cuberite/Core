@@ -227,6 +227,10 @@ local function ShowWorldsSettings( Request )
 	return Content
 end
 
+
+
+
+
 local function SelectWorldButton( WorldName )
 	return "<form method='POST'><input type='hidden' name='WorldName' value='"..WorldName.."'><input type='submit' name='SelectWorld' value='Select'></form>"
 end
@@ -325,7 +329,57 @@ local function HTML_Select_Biome( name, defaultValue )
 		.. [[</select>]]
 end
 
+
+
+
+
+
+g_SelectedWorld = {}
+g_WorldSettingsLayout = {}
+slEasy     = 1
+slAdvanced = 2
+
+
+
+
 function ShowWorldSettings( Request )
+	local Content = ""
+	
+	local SettingLayout = g_WorldSettingsLayout[Request.Username] or slEasy
+	
+	if (Request.PostParams['ChangeWebLayout'] ~= nil) then
+		if (Request.PostParams['ChangeWebLayout'] == 'Easy') then
+			SettingLayout = slEasy
+		elseif(Request.PostParams['ChangeWebLayout'] == 'Advanced') then
+			SettingLayout = slAdvanced
+		end
+	end
+	
+	if (SettingLayout == slEasy) then
+		Content = Content .. '<form method="Post">'
+		Content = Content .. 'Change Web Layout to: <input type="submit" name="ChangeWebLayout" value="Advanced" />'
+		Content = Content .. '</form><br />'
+		Content = Content .. GetEasyWorldSettings(Request)
+	elseif (SettingLayout == slAdvanced) then
+		Content = Content .. '<form method="Post">'
+		Content = Content .. 'Change Web Layout to: <input type="submit" name="ChangeWebLayout" value="Easy" />'
+		Content = Content .. '</form><br />'
+		Content = Content .. GetAdvancedWorldSettings(Request)
+	else
+		Content = Content .. '<b style="red">The web type is unknown. Switching to easy layout.<br />'
+		Content = Content .. GetEasyWorldSettings(Request)
+		SettingLayout = slEasy
+	end
+	
+	g_WorldSettingsLayout[Request.Username] = SettingLayout
+	
+	return Content
+end
+
+
+
+
+function GetEasyWorldSettings(Request)
 	local Content = ""
 	local InfoMsg = nil
 	local SettingsIni = cIniFile()
@@ -579,15 +633,10 @@ function ShowWorldSettings( Request )
 	<th colspan="2">General</th>
 	<tr><td>Dimension:</td>
 	<td>]] .. HTML_Select_Dimension("World_Dimension", WorldIni:GetValueI("General", "Dimension") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
+
 	<th colspan="2">Storage</th>
 	<tr><td>Schema:</td>
 	<td>]] .. HTML_Select_Scheme("World_Schema", WorldIni:GetValueI("Storage", "Schema") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">Spawn Position</th>
 	<tr><td>X:</td>
 	<td><input type="text" name="World_SpawnX" value="]] .. WorldIni:GetValue("SpawnPosition", "X") .. [["></td></tr>
@@ -595,32 +644,18 @@ function ShowWorldSettings( Request )
 	<td><input type="text" name="World_SpawnY" value="]] .. WorldIni:GetValue("SpawnPosition", "Y") .. [["></td></tr>
 	<tr><td>Z:</td>
 	<td><input type="text" name="World_SpawnZ" value="]] .. WorldIni:GetValue("SpawnPosition", "Z") .. [["></td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">LimitWorld</th>
 	<tr><td>Max chunks from spawn (0 to disable):</td>
 	<td><input type="text" name="LimitWorldWidth" value="]] .. WorldIni:GetValue("WorldLimit", "LimitRadius") .. [["></td></tr>
-	</table><br />    
-	<table>
 	<th colspan="2">Seed</th>
 	<tr><td>Seed:</td>
 	<td><input type="text" name="World_Seed" value="]] .. WorldIni:GetValue("Seed", "Seed") .. [["></td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">PVP</th>
 	<tr><td style="width: 50%;">PVP:</td>
 	<td>]] .. HTML_Select_On_Off("World_PVP", WorldIni:GetValueI("PVP", "Enabled") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">GameMode</th>
 	<tr><td style="width: 50%;">GameMode:</td>
 	<td>]] .. HTML_Select_GameMode("World_GameMode", WorldIni:GetValueI("GameMode", "GameMode") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">Physics</th>
 	<tr><td style="width: 50%;">DeepSnow:</td>
 	<td>]] .. HTML_Select_On_Off("World_DeepSnow", WorldIni:GetValueI("Physics", "DeepSnow") ) .. [[</td></tr>
@@ -630,9 +665,6 @@ function ShowWorldSettings( Request )
 	<td>]] .. HTML_Select_Simulator("World_WaterSimulator", WorldIni:GetValue("Physics", "WaterSimulator") ) .. [[</td></tr>
 	<tr><td style="width: 50%;">LavaSimulator:</td>
 	<td>]] .. HTML_Select_Simulator("World_LavaSimulator", WorldIni:GetValue("Physics", "LavaSimulator") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">Plants</th>
 	<tr><td>MaxCactusHeight:</td>
 	<td><input type="text" name="World_MaxCactusHeight" value="]] .. WorldIni:GetValue("Plants", "MaxCactusHeight") .. [["></td></tr>
@@ -660,9 +692,6 @@ function ShowWorldSettings( Request )
 	<td>]] .. HTML_Select_On_Off("World_SugarcaneBonemealable", WorldIni:GetValueI("Plants", "IsSugarcaneBonemealable") ) .. [[</td></tr>
 	<tr><td style="width: 50%;">CactusBonemealable:</td>
 	<td>]] .. HTML_Select_On_Off("World_CactusBonemealable", WorldIni:GetValueI("Plants", "IsCactusBonemealable") ) .. [[</td></tr>
-	</table>
-	<br />
-	<table>
 	<th colspan="2">Generator</th>
 	<tr><td style="width: 50%;">BiomeGen:</td>
 	<td>]] .. HTML_Select_BiomeGen("World_BiomeGen", WorldIni:GetValue("Generator", "BiomeGen") ) .. [[</td></tr>
@@ -676,13 +705,7 @@ function ShowWorldSettings( Request )
 	<td><input type="text" size="50" name="World_Finishers" value="]] .. WorldIni:GetValue("Generator", "Finishers") .. [["></td></tr>
 	<tr><td style="width: 50%;">Generator:</td>
 	<td>]] .. HTML_Select_Generator("World_Generator", WorldIni:GetValue("Generator", "Generator") ) .. [[</td></tr>
-
-	</table>
-	<br />
-	<table>
 	<th colspan="1">Finetuning</th><br />
-	</table>
-	<table>
 	]]	
 	if WorldIni:GetValue( "Generator", "BiomeGen" ) ==  "Constant" then
 		Content = Content .. [[
@@ -813,6 +836,67 @@ function ShowWorldSettings( Request )
 	
 	Content = Content .. [[ <br />
 	<input type="submit" value="Save Settings" name="world_submit"> </form>WARNING: Any changes made here might require a server restart in order to be applied!
+	</form>]]
+	return Content
+end
+
+
+
+
+
+function GetAdvancedWorldSettings(Request)
+	local Content = ""
+	local InfoMsg = nil
+	local SettingsIni = cIniFile()
+	
+	if not(SettingsIni:ReadFile("settings.ini")) then
+		InfoMsg = [[<b style="color: red;">ERROR: Could not read settings.ini!</b>]]
+	end
+	
+	local WORLD;
+	local SelectedWorld = g_SelectedWorld[Request.Username];
+	
+	if (not g_SelectedWorld[Request.Username]) then
+		g_SelectedWorld[Request.Username] = cRoot:Get():GetDefaultWorld()
+		SelectedWorld = g_SelectedWorld[Request.Username]
+		WORLD = SelectedWorld:GetName()
+	else
+		WORLD = g_SelectedWorld[Request.Username]:GetName()
+	end
+		
+	if (Request.PostParams["WorldName"] ~= nil) then		-- World is selected!
+		WORLD = Request.PostParams["WorldName"]
+		g_SelectedWorld[Request.Username] = cRoot:Get():GetWorld(WORLD)
+		SelectedWorld = g_SelectedWorld[Request.Username]
+	end
+	
+	if (Request.PostParams['WorldIniContent'] ~= nil) then
+		local File = io.open(SelectedWorld:GetIniFileName(), "w")
+		File:write(Request.PostParams['WorldIniContent'])
+		File:close()
+	end
+	
+	Content = Content .. "<h4>World for operations: " .. WORLD .. "</h4>"
+	Content = Content .. "<table>"
+	local WorldNum = 0
+	cRoot:Get():ForEachWorld(
+		function(World)
+			WorldNum = WorldNum + 1
+			Content = Content .. "<tr>"
+			Content = Content .. "<td style='width: 10px;'>" .. WorldNum .. ".</td>"
+			Content = Content .. "<td>" .. World:GetName() .. "</td>"
+			Content = Content .. "<td>" .. SelectWorldButton(World:GetName()) .. "</td>"
+			Content = Content .. "</tr>"
+		end
+	)
+	Content = Content .. "</table>"
+
+	local WorldIniContent = cFile:ReadWholeFile(SelectedWorld:GetIniFileName())
+	Content = Content .. [[<br />
+	
+	<form method="post">
+	<textarea style="width: 100%; height: 500px;" name="WorldIniContent">]] .. WorldIniContent .. [[</textarea>
+	<input type="submit" value="Save Settings" name="world_submit"> WARNING: Any changes made here might require a server restart in order to be applied!
 	</form>]]
 	return Content
 end
