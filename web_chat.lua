@@ -232,7 +232,7 @@ function HandleRequest_Chat( Request )
 			return ""
 		end
 		
-		cRoot:Get():BroadcastChat("[Web-" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"])
+		cRoot:Get():BroadcastChat(cCompositeChat("[Web-" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"]):UnderlineUrls())
 		AddMessage("Web-" .. Request.Username, Request.PostParams["ChatMessage"] )
 		return ""
 	end
