@@ -167,8 +167,35 @@ BindWebCommand("/reload", "Reloads all the plugins", "Core", "HandleWebReloadCom
 
 
 
-function OnChat( Player, Message )
-	AddMessage( Player:GetName(), Message )
+function OnChat(a_Player, a_Message)
+	AddMessage(a_Player:GetName(), a_Message)
+end
+
+
+
+
+
+--- Replaces http and https links with HTML links
+local function CheckForLinks(a_Message)
+	-- TODO: Refactor this using a single gsub() call for each link protocol
+	-- Also note that multiple URLs may be given in a message
+	
+	local StartIdx = a_Message:find("http://") or a_Message:find("https://")
+	if StartIdx == nil then
+		return a_Message
+	end
+	
+	local Url = ""
+	for i = StartIdx, a_Message:len() do
+		local Char = a_Message:sub(i, i)
+		if (Char ~= " ") then
+			Url = Url .. Char
+		else
+			break
+		end
+	end
+	
+	return a_Message:gsub(Url, '<a href="' .. Url .. '" target="_blank">' .. Url .. '</a>')
 end
 
 
@@ -176,25 +203,6 @@ end
 
 
 function HandleRequest_Chat( Request )
-	local function CheckForLinks(Message)
-		local StartIdx = Message:find("http://") or Message:find("https://")
-		if StartIdx == nil then
-			return Message
-		end
-		
-		local Url = ""
-		for I=StartIdx, Message:len() do
-			local Char = Message:sub(I, I)
-			if Char ~= " " then
-				Url = Url .. Char
-			else
-				break
-			end
-		end
-		
-		return Message:gsub(Url, '<a href="' .. Url .. '" target="_blank">' .. Url .. '</a>')
-	end
-			
 	if( Request.PostParams["JustChat"] ~= nil ) then
 		local LastIdx = 0
 		if( Request.PostParams["LastMessageID"] ~= nil ) then LastIdx = tonumber( Request.PostParams["LastMessageID"] ) end
