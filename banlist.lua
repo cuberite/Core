@@ -254,13 +254,13 @@ function HandleBanCommand(a_Split, a_Player)
 	end
 
 	-- Add the player to the banlist:
-	AddPlayerToBanlist(a_Split[2], Reason);
+	AddPlayerToBanlist(a_Split[2], Reason, a_Player:GetName());
 	
 	-- Try akd kick the banned player, and send an appropriated response to the banner.
 	if (KickPlayer(Split[2], Reason)) then
-		SendMessageSuccess(Player, "Successfully kicked and banned " .. Split[2])
+		SendMessageSuccess(a_Player, "Successfully kicked and banned " .. Split[2])
 	else
-		SendMessageFailure(Player, "Successfully Banned " .. Split[2])
+		SendMessageFailure(a_Player, "Successfully Banned " .. Split[2])
 	end
 	
 	return true
