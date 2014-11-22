@@ -324,6 +324,26 @@ g_PluginInfo =
 			HelpString = " - Vanish",
 		},
 		
+		["/whitelist"] =
+		{
+			Permission = "core.whitelist",
+			Handler = HandleWhitelistCommand,
+			HelpString= "Adds a player to the whitelist",
+		},
+		
+		["/whitelistoff"] =
+		{
+			Permission = "core.whitelistoff",
+			Handler = HandleWhitelistOffCommand,
+			HelpString= "Turns whitelist processing off",
+		},
+
+		["/whiteliston"] =
+		{
+			Permission = "core.whiteliston",
+			Handler = HandleWhitelistOnCommand,
+			HelpString= "Turns whitelist processing on",
+		},
 	},  -- Commands
 
 
@@ -495,11 +515,35 @@ g_PluginInfo =
 			Handler = HandleConsoleUnrank,
 			HelpString = "Resets the player's rank to default",
 		},
+		
+		["unwhitelist"] =
+		{
+			Handler = HandleConsoleUnwhitelist,
+			HelpString = "Removes a player from the whitelist",
+		},
 
 		["weather"] =
 		{
 			Handler =  HandleConsoleWeather,
 			HelpString = "Change weather in the specified world",
+		},
+
+		["whitelist"] =
+		{
+			Handler = HandleConsoleWhitelist,
+			HelpString= "Shows the whitelist / adds a player to the whitelist",
+		},
+		
+		["whitelistoff"] =
+		{
+			Handler = HandleConsoleWhitelistOff,
+			HelpString= "Turns whitelist processing off",
+		},
+
+		["whiteliston"] =
+		{
+			Handler = HandleConsoleWhitelistOn,
+			HelpString= "Turns whitelist processing on",
 		},
 	},
 }

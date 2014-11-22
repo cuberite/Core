@@ -37,7 +37,6 @@ function Initialize(Plugin)
 	cPluginManager:AddHook(cPluginManager.HOOK_CRAFTING_NO_RECIPE,    OnCraftingNoRecipe)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_DESTROYED,      OnDisconnect);
 	cPluginManager:AddHook(cPluginManager.HOOK_KILLING,               OnKilling)
-	cPluginManager:AddHook(cPluginManager.HOOK_LOGIN,                 OnLogin)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_BREAKING_BLOCK, OnPlayerBreakingBlock)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_JOINED,         OnPlayerJoined)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_MOVING,         OnPlayerMoving)
@@ -75,27 +74,11 @@ function Initialize(Plugin)
 		end
 	)
 
-	-- Load whitelist:
-	WhiteListIni = cIniFile() -- Global
-	if WhiteListIni:ReadFile("whitelist.ini") then
-		if WhiteListIni:GetValueB("WhiteListSettings", "WhiteListOn", false) then
-			if (WhiteListIni:GetNumValues( "WhiteList" ) > 0) then
-				LOGINFO( "Loaded "  .. WhiteListIni:GetNumValues('WhiteList') .. " whitelisted players." )
-			else
-				LOGWARNING("Whitelist is on, but there are no players in the whitelist!" )
-			end
-		end
-	else
-		WhiteListIni:AddHeaderComment( "This is the whitelist file for MCServer, used for whitelisting players" )
-		WhiteListIni:AddHeaderComment( "The format is: PlayerName=1 for whitelisted or PlayerName=0 for not (or just delete the value)" )
-		WhiteListIni:SetValueB( "WhiteListSettings", "WhiteListOn", false )
-		WhiteListIni:SetValue( "WhiteList", "", "" )	-- So it adds an empty header
-		WhiteListIni:DeleteValue( "WhiteList", "" ) -- And remove the value
-		WhiteListIni:WriteFile("whitelist.ini")
-	end
-
 	-- Initialize the banlist, load its DB, do whatever processing it needs on startup:
 	InitializeBanlist()
+	
+	-- Initialize the whitelist, load its DB, do whatever processing it needs on startup:
+	InitializeWhitelist()
 
 	-- Add webadmin tabs:
 	Plugin:AddWebTab("Manage Server",   HandleRequest_ManageServer)
