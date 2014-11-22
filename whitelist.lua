@@ -17,10 +17,45 @@ local g_IsWhitelistEnabled = false
 
 
 
---- Adds the specified player to the whitelist
+--- Loads the config from the DB
+-- If any value cannot be read, it is kept unchanged
+local function LoadConfig()
+	-- Read the g_IsWhitelistEnabled value:
+	WhitelistDB:ExecuteStatement(
+		"SELECT Value FROM WhitelistConfig WHERE Name='isEnabled'",
+		{},
+		function (a_Val)
+			g_IsWhitelistEnabled = (a_Val["Value"] == "true")
+		end
+	)
+end
+
+
+
+
+
+--- Saves the current config into the DB
+local function SaveConfig()
+	-- Remove the value, if it exists:
+	WhitelistDB:ExecuteStatement(
+		"DELETE FROM WhitelistConfig WHERE Name='isEnabled'", {}
+	)
+	
+	-- Insert the current value:
+	WhitelistDB:ExecuteStatement(
+		"INSERT INTO WhitelistConfig(Name, Value) VALUES ('isEnabled', ?)",
+		{ tostring(g_IsWhitelistEnabled) }
+	)
+end
+
+
+
+
+
+--- API: Adds the specified player to the whitelist
 -- Resolves the player UUID, if needed, but only through cache, not to block
 -- Returns true on success, false and optional error message on failure
-local function AddPlayerToWhitelist(a_PlayerName, a_WhitelistedBy)
+function AddPlayerToWhitelist(a_PlayerName, a_WhitelistedBy)
 	-- Check params:
 	assert(type(a_PlayerName) == "string")
 	assert(type(a_WhitelistedBy) == "string")
@@ -47,10 +82,10 @@ end
 
 
 
---- Checks if the player is whitelisted
+--- API: Checks if the player is whitelisted
 -- Returns true if whitelisted, false if not
 -- Uses UUID for the check, and the playername with an empty UUID for a secondary check
-local function IsPlayerWhitelisted(a_PlayerUUID, a_PlayerName)
+function IsPlayerWhitelisted(a_PlayerUUID, a_PlayerName)
 	-- Check params:
 	assert(type(a_PlayerUUID) == "string")
 	assert(type(a_PlayerName) == "string")
@@ -82,11 +117,20 @@ end
 
 
 
---- Returns an array-table of all whitelisted players' names
-local function ListWhitelistedPlayers()
+--- API: Returns true if whitelist is enabled
+function IsWhitelistEnabled()
+	return g_IsWhitelistEnabled
+end
+
+
+
+
+
+--- Returns a sorted array-table of all whitelisted players' names
+function ListWhitelistedPlayerNames()
 	local res = {}
 	WhitelistDB:ExecuteStatement(
-		"SELECT Name FROM WhitelistNames", {},
+		"SELECT Name FROM WhitelistNames ORDER BY Name", {},
 		function (a_Columns)
 			table.insert(res, a_Columns["Name"])
 		end
@@ -98,10 +142,27 @@ end
 
 
 
---- Removes the specified player from the whitelist
+--- Returns an array-table of all whitelisted players, sorted by player name
+-- Each item is a table with the Name, OnlineUUID, OfflineUUID, Date and WhitelistedBy values
+function ListWhitelistedPlayers()
+	local res = {}
+	WhitelistDB:ExecuteStatement(
+		"SELECT * FROM WhitelistNames ORDER BY Name", {},
+		function (a_Columns)
+			table.insert(res, a_Columns)
+		end
+	)
+	return res
+end
+
+
+
+
+
+--- API: Removes the specified player from the whitelist
 -- No action if the player is not whitelisted
 -- Returns true on success, false and optional error message on failure
-local function RemovePlayerFromWhitelist(a_PlayerName)
+function RemovePlayerFromWhitelist(a_PlayerName)
 	-- Check params:
 	assert(type(a_PlayerName) == "string")
 	
@@ -110,6 +171,28 @@ local function RemovePlayerFromWhitelist(a_PlayerName)
 		"DELETE FROM WhitelistNames WHERE Name = ?",
 		{ a_PlayerName }
 	)
+end
+
+
+
+
+
+--- API: Disables the whitelist
+-- After this call, any player can connect to the server
+function WhitelistDisable()
+	g_IsWhitelistEnabled = false
+	SaveConfig()
+end
+
+
+
+
+
+--- API: Enables the whitelist
+-- After this call, only whitelisted players can connect to the server
+function WhitelistEnable()
+	g_IsWhitelistEnabled = true
+	SaveConfig()
 end
 
 
@@ -148,41 +231,6 @@ local function ResolveUUIDs()
 			{ uuid, name }
 		)
 	end
-end
-
-
-
-
-
---- Loads the config from the DB
--- If any value cannot be read, it is kept unchanged
-local function LoadConfig()
-	-- Read the g_IsWhitelistEnabled value:
-	WhitelistDB:ExecuteStatement(
-		"SELECT Value FROM WhitelistConfig WHERE Name='isEnabled'",
-		{},
-		function (a_Val)
-			g_IsWhitelistEnabled = (a_Val["Value"] == "true")
-		end
-	)
-end
-
-
-
-
-
---- Saves the current config into the DB
-local function SaveConfig()
-	-- Remove the value, if it exists:
-	WhitelistDB:ExecuteStatement(
-		"DELETE FROM WhitelistConfig WHERE Name='isEnabled'", {}
-	)
-	
-	-- Insert the current value:
-	WhitelistDB:ExecuteStatement(
-		"INSERT INTO WhitelistConfig(Name, Value) VALUES ('isEnabled', ?)",
-		{ tostring(g_IsWhitelistEnabled) }
-	)
 end
 
 
@@ -321,11 +369,10 @@ function HandleConsoleWhitelist(a_Split)
 		else
 			status = "Whitelist is DISABLED.\n"
 		end
-		local players = ListWhitelistedPlayers()
+		local players = ListWhitelistedPlayerNames()
 		if (players[1] == nil) then
 			return true, status .. "The whitelist is empty."
 		else
-			table.sort(players)
 			return true, status .. "Whitelisted players: " .. table.concat(players, ", ")
 		end
 	end
@@ -347,8 +394,7 @@ end
 
 
 function HandleConsoleWhitelistOff(a_Split)
-	g_IsWhitelistEnabled = false
-	SaveConfig()
+	WhitelistDisable()
 	return true, "Whitelist is disabled"
 end
 
@@ -357,8 +403,7 @@ end
 
 
 function HandleConsoleWhitelistOn(a_Split)
-	g_IsWhitelistEnabled = true
-	SaveConfig()
+	WhitelistEnable()
 	NotifyWhitelistEmpty()
 	return true, "Whitelist is enabled"
 end

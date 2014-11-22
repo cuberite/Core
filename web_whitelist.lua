@@ -1,79 +1,180 @@
-local function HTMLDeleteButton( name )
-	return "<form method=\"POST\"><input type=\"hidden\" name=\"whitelist-delete\" value=\"".. name .."\"><input type=\"submit\" value=\"Remove from whitelist\"></form>"
+
+-- web_whitelist.lua
+
+-- Implements the webadmin page for handling whitelist
+
+
+
+
+
+local ins = table.insert
+local con = table.concat
+
+
+
+
+
+--- Returns the HTML code for an action button specific for the specified player
+-- a_Player should be the player's description, as returned by ListWhitelistedPlayers()
+local function getPlayerActionButton(a_Action, a_Caption, a_Player)
+	-- Check params:
+	assert(type(a_Action)  == "string")
+	assert(type(a_Caption) == "string")
+	assert(type(a_Player)  == "table")
+	
+	-- Put together the code for the form:
+	local res = { "<form method='POST'><input type='hidden' name='action' value='" }
+	ins(res, a_Action)
+	ins(res, "'/><input type='submit' value='")
+	ins(res, a_Caption)
+	ins(res, "'/><input type='hidden' name='playername' value='")
+	ins(res, a_Player.Name)
+	ins(res, "'/></form> ")
+	return con(res)
 end
 
-function HandleRequest_WhiteList( Request )
-	local UpdateMessage = ""
-	if( Request.PostParams["whitelist-add"] ~= nil ) then
-		local PlayerName = Request.PostParams["whitelist-add"]
-		
-		if( WhiteListIni:GetValueB("WhiteList", PlayerName, false) == true ) then
-			UpdateMessage = "<b>".. cWebAdmin:GetHTMLEscapedString( PlayerName ) .."</b> is already on the whitelist"
-		else
-			WhiteListIni:SetValueB("WhiteList", PlayerName, true )
-			UpdateMessage = "Added <b>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</b> to whitelist."
-			WhiteListIni:WriteFile("whitelist.ini")
-		end
-	elseif( Request.PostParams["whitelist-delete"] ~= nil ) then
-		local PlayerName = Request.PostParams["whitelist-delete"]
-		WhiteListIni:DeleteValue( "WhiteList", PlayerName )
-		UpdateMessage = "Removed <b>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</b> from whitelist."
-		WhiteListIni:WriteFile("whitelist.ini")
-	elseif( Request.PostParams["whitelist-reload"] ~= nil ) then
-		WhiteListIni:Clear() -- Empty entire loaded ini first, otherwise weird shit goes down
-		WhiteListIni:ReadFile("whitelist.ini")
-		UpdateMessage = "Loaded from disk"
-	elseif( Request.Params["whitelist-setenable"] ~= nil ) then
-		local Enabled = Request.Params["whitelist-setenable"]
-		local CreateNewValue = false
-		if( WhiteListIni:FindValue( WhiteListIni:FindKey("WhiteListSettings"), "WhiteListOn" ) == cIniFile.noID ) then -- Find out whether the value is in the ini
-			CreateNewValue = true
-		end
-		
-		if( Enabled == "1" ) then
-			WhiteListIni:SetValueB("WhiteListSettings", "WhiteListOn", true, CreateNewValue )
-		else
-			WhiteListIni:SetValueB("WhiteListSettings", "WhiteListOn", false, CreateNewValue )
-		end
-		WhiteListIni:WriteFile("whitelist.ini")
-	end
-	
-	
-	local Content = ""
-	
-	local WhiteListEnabled = WhiteListIni:GetValueB("WhiteListSettings", "WhiteListOn", false)
-	if( WhiteListEnabled == false ) then
-		Content = Content .. "<p>Whitelist is currently disabled! Click <a href='?whitelist-setenable=1'>here</a> to enable.</p>"
-	end
-	
-	
-	Content = Content .. "<h4>Whitelisted players</h4>"
-	Content = Content .. "<table>"
-	local KeyNum = WhiteListIni:FindKey("WhiteList")
-	local NumValues = WhiteListIni:GetNumValues(KeyNum)
-	if( NumValues > 0 ) then
-		for Num = 0, NumValues-1 do
-			if( WhiteListIni:GetValue(KeyNum, Num, "0") == "1" ) then
-				local PlayerName = WhiteListIni:GetValueName(KeyNum, Num )
-				Content = Content .. "<tr><td>" .. cWebAdmin:GetHTMLEscapedString( PlayerName ) .. "</td><td>" .. HTMLDeleteButton( cWebAdmin:GetHTMLEscapedString( PlayerName ) ) .. "</td></tr>"
-			end
-		end
-	else
-		Content = Content .. "<tr><td>None</td></tr>"
-	end
-	Content = Content .. "</table>"
-	Content = Content .. "<br><h4>Add player to whitelist</h4>"
-	Content = Content .. "<form method=\"POST\">"
-	Content = Content .. "<input type=\"text\" name=\"whitelist-add\"><input type=\"submit\" value=\"Add player\">"
-	Content = Content .. "</form>"
-	Content = Content .. "<form method=\"POST\">"
-	Content = Content .. "<input type=\"submit\" name=\"whitelist-reload\" value=\"Reload from disk\">"
-	Content = Content .. "</form>"
-	Content = Content .. "<br>" .. UpdateMessage
-	
-	if( WhiteListEnabled == true ) then
-		Content = Content .. "<br><br><p>Whitelist is currently enabled, click <a href='?whitelist-setenable=0'>here</a> to disable.</p>"
-	end
-	
-	return Content
+
+
+
+
+--- Returns the table row for a single player
+-- a_Player should be the player's description, as returned by ListWhitelistedPlayers()
+local function getPlayerRow(a_Player)
+	-- Check the params:
+	assert(type(a_Player) == "table")
+
+	-- Put together the code for the entire row:
+	local res = { "<tr><td>" }
+	ins(res, cWebAdmin:GetHTMLEscapedString(a_Player.Name))
+	ins(res, "</td><td>")
+	ins(res, os.date("YYYY-MM-DD HH:mm:ss", a_Player.Timestamp or 0))
+	ins(res, "</td><td>")
+	ins(res, cWebAdmin:GetHTMLEscapedString(a_Player.WhitelistedBy or "<unknown>"))
+	ins(res, "</td><td>")
+	ins(res, getPlayerActionButton("delplayer", "Remove", a_Player))
+	ins(res, "</td></tr>")
+	return con(res)
 end
+
+
+
+
+
+--- Returns the list of whitelisted players
+local function showList(a_Request)
+	-- Show the whitelist status - enabled or disabled:
+	local res = { "<table><tr><td>" }
+	if (IsWhitelistEnabled()) then
+		ins(res, "Whitelist is ENABLED</td><td colspan=3><form method='POST'><input type='hidden' name='action' value='disable'/><input type='submit' value='Disable'/>")
+	else
+		ins(res, "Whitelist is DISABLED</td><td colspan=3><form method='POST'><input type='hidden' name='action' value='enable'/><input type='submit' value='Enable'/>")
+	end
+	ins(res, "</form></td></tr><tr><td colspan=4><hr/><br/></td></tr>")
+	
+	-- Add the form to whitelist players:
+	ins(res, "<tr><td>Add player to whitelist: ")
+	ins(res, "<form method='POST'><input type='hidden' name='action' value='addplayer'/><input type='text' name='playername' value='' hint='Player name'/>")
+	ins(res, "<input type='submit' value='Add'/></form></td></tr><tr><td colspan=4><hr/><br/></td></tr>")
+	
+	-- Show the whitelisted players:
+	local players = ListWhitelistedPlayers()
+	if (players[1] == nil) then
+		ins(res, "<tr><td colspan=4>There are no players in the whitelist.</td></tr>")
+	else
+		ins(res, "<tr><th>Name</th><th>Date whitelisted</th><th>Whitelisted by</th><th>Action</th></tr>")
+		for _, player in ipairs(players) do
+			ins(res, getPlayerRow(player))
+		end
+	end
+	
+	return con(res)
+end
+
+
+
+
+
+--- Processes the "addplayer" action, whitelisting the specified player and returning the player list
+local function showAddPlayer(a_Request)
+	-- Check HTML params:
+	local playerName = a_Request.PostParams["playername"] or ""
+	if (playerName == "") then
+		return HTMLError("Cannot add player, bad name") .. showList(a_Request)
+	end
+	
+	-- Whitelist the player:
+	AddPlayerToWhitelist(playerName, "<web: " .. a_Request.Username .. ">")
+	
+	-- Redirect back to the whitelist:
+	return showList(a_Request)
+end
+
+
+
+
+
+--- Processes the "delplayer" action, unwhitelisting the specified player and returning the player list
+local function showDelPlayer(a_Request)
+	-- Check HTML params:
+	local playerName = a_Request.PostParams["playername"] or ""
+	if (playerName == "") then
+		return HTMLError("Cannot remove player, bad name") .. showList(a_Request)
+	end
+	
+	-- Whitelist the player:
+	RemovePlayerFromWhitelist(playerName)
+	
+	-- Redirect back to the whitelist:
+	return showList(a_Request)
+end
+
+
+
+
+
+--- Processes the "disable" action, disabling the whitelist and returning the player list
+local function showDisableWhitelist(a_Request)
+	WhitelistDisable()
+	return showList(a_Request)
+end
+
+
+
+
+
+--- Processes the "disable" action, disabling the whitelist and returning the player list
+local function showEnableWhitelist(a_Request)
+	WhitelistEnable()
+	return showList(a_Request)
+end
+
+
+
+
+
+--- The table of all actions supported by this web tab:
+local g_ActionHandlers =
+{
+	[""]          = showList,
+	["addplayer"] = showAddPlayer,
+	["delplayer"] = showDelPlayer,
+	["disable"]   = showDisableWhitelist,
+	["enable"]    = showEnableWhitelist,
+}
+
+
+
+
+
+function HandleRequest_WhiteList(a_Request)
+	local action = a_Request.PostParams["action"] or ""
+	local handler = g_ActionHandlers[action]
+	if (handler == nil) then
+		return HTMLError("Error in whitelist processing: no action handler found for action \"" .. action .. "\"")
+	end
+	return handler(a_Request)
+end
+
+
+
+
