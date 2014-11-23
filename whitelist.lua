@@ -100,7 +100,7 @@ function IsPlayerWhitelisted(a_PlayerUUID, a_PlayerName)
 	local isWhitelisted
 	assert(WhitelistDB:ExecuteStatement(
 		[[
-			SELECT Reason FROM WhitelistNames WHERE
+			SELECT Name FROM WhitelistNames WHERE
 				(UUID = ?) OR
 				(OfflineUUID = ?) OR
 				((UUID = '') AND (Name = ?))
