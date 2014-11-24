@@ -176,26 +176,13 @@ end
 
 
 --- Replaces http and https links with HTML links
+--- It does this by selecting all the characters between "http(s)://" and a space, and puts an anker tag around it.
 local function CheckForLinks(a_Message)
-	-- TODO: Refactor this using a single gsub() call for each link protocol
-	-- Also note that multiple URLs may be given in a message
-	
-	local StartIdx = a_Message:find("http://") or a_Message:find("https://")
-	if StartIdx == nil then
-		return a_Message
+	local function PlaceString(a_Url)
+		return '<a href="' .. a_Url .. '" target="_blank">' .. a_Url .. '</a>'
 	end
 	
-	local Url = ""
-	for i = StartIdx, a_Message:len() do
-		local Char = a_Message:sub(i, i)
-		if (Char ~= " ") then
-			Url = Url .. Char
-		else
-			break
-		end
-	end
-	
-	return a_Message:gsub(Url, '<a href="' .. Url .. '" target="_blank">' .. Url .. '</a>')
+	return a_Message:gsub('http://[^%s]+', PlaceString):gsub('https://[^%s]+', PlaceString)
 end
 
 
