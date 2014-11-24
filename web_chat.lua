@@ -178,14 +178,11 @@ end
 --- Replaces http and https links with HTML links
 --- It does this by selecting all the characters between "http(s)://" and a space, and puts an anker tag around it.
 local function CheckForLinks(a_Message)
-	-- Add a space to the whole message, so that the pattern finder can find all the links properly.
-	a_Message = a_Message .. ' '
-	
 	local function PlaceString(a_Url)
 		return '<a href="' .. a_Url .. '" target="_blank">' .. a_Url .. '</a>'
 	end
 	
-	return a_Message:gsub('http://.- ', PlaceString):gsub('https://.- ', PlaceString)
+	return a_Message:gsub('http://[^%s]+', PlaceString):gsub('https://[^%s]+', PlaceString)
 end
 
 
