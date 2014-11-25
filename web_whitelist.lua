@@ -47,7 +47,7 @@ local function getPlayerRow(a_Player)
 	local res = { "<tr><td>" }
 	ins(res, cWebAdmin:GetHTMLEscapedString(a_Player.Name))
 	ins(res, "</td><td>")
-	ins(res, os.date("YYYY-MM-DD HH:mm:ss", a_Player.Timestamp or 0))
+	ins(res, os.date("%Y-%m-%d %H:%M:%S", a_Player.Timestamp or 0))
 	ins(res, "</td><td>")
 	ins(res, cWebAdmin:GetHTMLEscapedString(a_Player.WhitelistedBy or "<unknown>"))
 	ins(res, "</td><td>")
@@ -65,14 +65,14 @@ local function showList(a_Request)
 	-- Show the whitelist status - enabled or disabled:
 	local res = { "<table><tr><td>" }
 	if (IsWhitelistEnabled()) then
-		ins(res, "Whitelist is ENABLED</td><td colspan=3><form method='POST'><input type='hidden' name='action' value='disable'/><input type='submit' value='Disable'/>")
+		ins(res, "Whitelist is <b>ENABLED</b></td><td colspan=3><form method='POST'><input type='hidden' name='action' value='disable'/><input type='submit' value='Disable'/>")
 	else
-		ins(res, "Whitelist is DISABLED</td><td colspan=3><form method='POST'><input type='hidden' name='action' value='enable'/><input type='submit' value='Enable'/>")
+		ins(res, "Whitelist is <b>DISABLED</b></td><td colspan=3><form method='POST'><input type='hidden' name='action' value='enable'/><input type='submit' value='Enable'/>")
 	end
 	ins(res, "</form></td></tr><tr><td colspan=4><hr/><br/></td></tr>")
 	
 	-- Add the form to whitelist players:
-	ins(res, "<tr><td>Add player to whitelist: ")
+	ins(res, "<tr><td colspan=4>Add player to whitelist: ")
 	ins(res, "<form method='POST'><input type='hidden' name='action' value='addplayer'/><input type='text' name='playername' value='' hint='Player name'/>")
 	ins(res, "<input type='submit' value='Add'/></form></td></tr><tr><td colspan=4><hr/><br/></td></tr>")
 	
