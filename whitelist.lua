@@ -246,9 +246,9 @@ local function NotifyWhitelistStatus(a_Player)
 	
 	-- Send the notification msg to player / console:
 	if (a_Player == nil) then
-		LOG("Note: Whitelist is disabled. Use the \"whiteliston\" command to enable.")
+		LOG("Note: Whitelist is disabled. Use the \"whitelist on\" command to enable.")
 	else
-		a_Player:SendMessageInfo("Note: Whitelist is disabled. Use the \"/whiteliston\" command to enable.")
+		a_Player:SendMessageInfo("Note: Whitelist is disabled. Use the \"/whitelist on\" command to enable.")
 	end
 end
 
@@ -274,9 +274,9 @@ local function NotifyWhitelistEmpty(a_Player)
 	
 	-- Send the notification msg to player / console:
 	if (a_Player == nil) then
-		LOGINFO("Note: Whitelist is empty. No player can connect to the server now. Use the \"whitelist\" command to add players to whitelist.")
+		LOGINFO("Note: Whitelist is empty. No player can connect to the server now. Use the \"whitelist add\" command to add players to whitelist.")
 	else
-		a_Player:SendMessageInfo("Note: Whitelist is empty. No player can connect to the server now. Use the \"/whitelist\" command to add players to whitelist.")
+		a_Player:SendMessageInfo("Note: Whitelist is empty. No player can connect to the server now. Use the \"/whitelist add\" command to add players to whitelist.")
 	end
 end
 
@@ -284,25 +284,41 @@ end
 
 
 
-function HandleWhitelistCommand(a_Split, a_Player)
+function HandleWhitelistAddCommand(a_Split, a_Player)
 	-- Check params:
-	if (a_Split[2] == nil) then
-		SendMessage(a_Player, "Usage: /whitelist <PlayerName>")
+	if (a_Split[3] == nil) then
+		SendMessage(a_Player, "Usage: /whitelist add <PlayerName>")
 		return true
 	end
-	local playerName = a_Split[2]
+	local playerName = a_Split[3]
 
 	-- Add the player to the whitelist:
-	local isSuccess, msg = AddPlayerToWhitelist(a_Split[2], a_Player:GetName());
+	local isSuccess, msg = AddPlayerToWhitelist(playerName, a_Player:GetName());
 	if not(isSuccess) then
 		SendMessageFailure(a_Player, "Cannot whitelist " .. playerName .. ": " .. (msg or "<unknown error>"))
 		return true
 	end
 
 	-- Notify success:
-	LOGINFO(a_Player:GetName() .. " whitelisted " .. playerName)
-	SendMessageSuccess(a_Player, "Successfully whitelisted " .. playerName)
+	LOGINFO(a_Player:GetName() .. " added " .. playerName .. " to whitelist.")
+	SendMessageSuccess(a_Player, "Successfully added " .. playerName .. " to whitelist.")
 	NotifyWhitelistStatus(a_Player)
+	return true
+end
+
+
+
+
+
+function HandleWhitelistListCommand(a_Split, a_Player)
+	if (IsWhitelistEnabled()) then
+		a_Player:SendMessageSuccess("Whitelist is enabled")
+	else
+		a_Player:SendMessageSuccess("Whitelist is disabled")
+	end
+	local players = ListWhitelistedPlayerNames()
+	table.sort(players)
+	a_Player:SendMessageSuccess(table.concat(players, ", "))
 	return true
 end
 
@@ -333,13 +349,13 @@ end
 
 
 
-function HandleUnwhitelistCommand(a_Split, a_Player)
+function HandleWhitelistRemoveCommand(a_Split, a_Player)
 	-- Check params:
-	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
-		SendMessage(a_Player, "Usage: /unwhitelist [Player]")
+	if ((a_Split[3] == nil) or (a_Split[4] ~= nil)) then
+		SendMessage(a_Player, "Usage: /whitelist remove [PlayerName]")
 		return true
 	end
-	local playerName = a_Split[2]
+	local playerName = a_Split[3]
 
 	-- Remove the player from the whitelist:
 	local isSuccess, msg = RemovePlayerFromWhitelist(playerName)
@@ -349,8 +365,8 @@ function HandleUnwhitelistCommand(a_Split, a_Player)
 	end
 
 	-- Notify success:
-	LOGINFO(a_Player:GetName() .. " unwhitelisted " .. playerName)
-	SendMessageSuccess(a_Player, "Unwhitelisted " .. playerName)
+	LOGINFO(a_Player:GetName() .. " removed " .. playerName .. " from whitelist.")
+	SendMessageSuccess(a_Player, "Removed " .. playerName .. " from whitelist.")
 	NotifyWhitelistStatus(a_Player)
 	return true
 end
@@ -359,24 +375,12 @@ end
 
 
 
-function HandleConsoleWhitelist(a_Split)
+function HandleConsoleWhitelistAdd(a_Split)
 	-- Check params:
-	if (a_Split[2] == nil) then
-		-- No param, list the players in the whitelist:
-		local status
-		if (g_IsWhitelistEnabled) then
-			status = "Whitelist is ENABLED.\n"
-		else
-			status = "Whitelist is DISABLED.\n"
-		end
-		local players = ListWhitelistedPlayerNames()
-		if (players[1] == nil) then
-			return true, status .. "The whitelist is empty."
-		else
-			return true, status .. "Whitelisted players: " .. table.concat(players, ", ")
-		end
+	if (a_Split[3] == nil) then
+		return true, "Usage: whitelist add <PlayerName>"
 	end
-	local playerName = a_Split[2]
+	local playerName = a_Split[3]
 
 	-- Whitelist the player:
 	local isSuccess, msg = AddPlayerToWhitelist(playerName, "<console>")
@@ -386,7 +390,26 @@ function HandleConsoleWhitelist(a_Split)
 	
 	-- Notify success:
 	NotifyWhitelistStatus()
-	return true, "You whitelisted " .. playerName
+	return true, "You added " .. playerName .. " to whitelist."
+end
+
+
+
+
+
+function HandleConsoleWhitelistList(a_Split)
+	local status
+	if (g_IsWhitelistEnabled) then
+		status = "Whitelist is ENABLED.\n"
+	else
+		status = "Whitelist is DISABLED.\n"
+	end
+	local players = ListWhitelistedPlayerNames()
+	if (players[1] == nil) then
+		return true, status .. "The whitelist is empty."
+	else
+		return true, status .. "Whitelisted players: " .. table.concat(players, ", ")
+	end
 end
 
 
@@ -412,12 +435,12 @@ end
 
 
 
-function HandleConsoleUnwhitelist(a_Split)
+function HandleConsoleWhitelistRemove(a_Split)
 	-- Check params:
-	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
-		return true, "Usage: unwhitelist <PlayerName>"
+	if ((a_Split[3] == nil) or (a_Split[4] ~= nil)) then
+		return true, "Usage: whitelist remove <PlayerName>"
 	end
-	local playerName = a_Split[2]
+	local playerName = a_Split[3]
 
 	-- Unwhitelist the player:
 	local isSuccess, msg = RemovePlayerFromWhitelist(playerName)
@@ -427,7 +450,7 @@ function HandleConsoleUnwhitelist(a_Split)
 	
 	-- Notify success:
 	NotifyWhitelistStatus()
-	return true, "You unwhitelisted " .. playerName
+	return true, "You removed " .. playerName .. " from whitelist."
 end
 
 
