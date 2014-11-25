@@ -296,6 +296,13 @@ g_PluginInfo =
 			HelpString = "Unban a player",
 		},
 
+		["/vanish"] =
+		{
+			Permission = "core.vanish",
+			Handler = HandleVanishCommand,
+			HelpString = " - Vanish",
+		},
+		
 		["/viewdistance"] = 
 		{
 			Permission = "core.viewdistance",
@@ -310,20 +317,59 @@ g_PluginInfo =
 			HelpString = "Change world weather",
 		},
 
+		["/whitelist"] =
+		{
+			HelpString= "Manages the whitelist",
+			Subcommands =
+			{
+				add =
+				{
+					HelpString = "Adds a player to the whitelist",
+					Handler = HandleWhitelistAddCommand,
+					ParameterCombinations =
+					{
+						{
+							Params = "PlayerName",
+							Help = "Adds the specified player to the whitelist",
+						},
+					},
+				},
+				list =
+				{
+					HelpString = "Shows the players on the whitelist",
+					Handler = HandleWhitelistListCommand,
+				},
+				off =
+				{
+					HelpString = "Turns whitelist processing off",
+					Handler = HandleWhitelistOffCommand,
+				},
+				on =
+				{
+					HelpString= "Turns whitelist processing on",
+					Handler = HandleWhitelistOnCommand,
+				},
+				remove =
+				{
+					HelpString = "Removes a player from the whitelist",
+					Handler = HandleWhitelistRemoveCommand,
+					ParameterCombinations =
+					{
+						{
+							Params = "PlayerName",
+							Help = "Removes the specified player from the whitelist",
+						},
+					},
+				},
+			},  -- Subcommands
+		},  -- /whitelist
+
 		["/worlds"] = 
 		{
 			Permission = "core.worlds",
 			Handler = HandleWorldsCommand,
 			HelpString = "Shows a list of all the worlds",
 		},
-
-		["/vanish"] = 
-		{
-			Permission = "core.vanish",
-			Handler = HandleVanishCommand,
-			HelpString = " - Vanish",
-		},
-		
 	},  -- Commands
 
 
@@ -495,13 +541,60 @@ g_PluginInfo =
 			Handler = HandleConsoleUnrank,
 			HelpString = "Resets the player's rank to default",
 		},
-
+		
 		["weather"] =
 		{
 			Handler =  HandleConsoleWeather,
 			HelpString = "Change weather in the specified world",
 		},
-	},
-}
+
+		["whitelist"] =
+		{
+			HelpString= "Manages the whitelist",
+			Subcommands =
+			{
+				add =
+				{
+					HelpString = "Adds a player to the whitelist",
+					Handler = HandleConsoleWhitelistAdd,
+					ParameterCombinations =
+					{
+						{
+							Params = "PlayerName",
+							Help = "Adds the specified player to the whitelist",
+						},
+					},
+				},
+				list =
+				{
+					HelpString = "Lists all the players on the whitelist",
+					Handler = HandleConsoleWhitelistList,
+				},
+				off =
+				{
+					HelpString = "Turns off whitelist processing",
+					Handler = HandleConsoleWhitelistOff,
+				},
+				on =
+				{
+					HelpString = "Turns on whitelist processing",
+					Handler = HandleConsoleWhitelistOn,
+				},
+				remove =
+				{
+					HelpString = "Removes a player from the whitelist",
+					Handler = HandleConsoleWhitelistRemove,
+					ParameterCombinations =
+					{
+						{
+							Params = "PlayerName",
+							Help = "Removes the specified player from the whitelist",
+						},
+					},
+				},
+			},  -- Subcommands
+		},  -- whitelist
+	},  -- ConsoleCommands
+}  -- g_PluginInfo
 
 
