@@ -215,9 +215,73 @@ g_PluginInfo =
 
 		["/time"] = 
 		{
-			Permission = "core.time",
-			Handler = HandleTimeCommand,
-			HelpString = "Sets the time of day",
+			HelpString = "Set and display the time of day in the current world",
+			Subcommands = 
+			{
+			 day = 
+			 {
+			   HelpString = "Set the time to day",
+			   Permission = "core.time.set",
+			   Handler = HandleSpecialTimeCommand,
+			 },
+			 night = 
+			 {
+         HelpString = "Set the time to night",
+         Permission = "core.time.set",
+         Handler = HandleSpecialTimeCommand,
+       },
+       set = 
+       {
+         HelpString = "Set the time to the specified time",
+         Permission = "core.time.set",
+         Handler = HandleSetTimeCommand,
+         ParameterCombinations = 
+         {
+          {
+            Params = "time",
+            Help = "Set the world time to the given time",
+          },
+          {
+            Params = "day",
+            Help = "Set the world time to day",
+          },
+          {
+            Params = "night",
+            Help = "Set the world time to night",
+          },
+         },
+       },
+       add = 
+       {
+         HelpString = "Add the given time to the current world time",
+         Permission = "core.time.set",
+         Handler = HandleAddTimeCommand,
+         ParameterCombinations = 
+         {
+          {
+            Params = "amount",
+            Help = "Add the amount specified to the current world's time",
+          },
+         },
+       },
+       query = 
+       {
+         HelpString = "Display the current world's time",
+         Permission = "core.time.query",
+         Handler = HandleQueryTimeCommand,
+         ParameterCombinations = 
+         {
+          {
+            Params = "daytime",
+            Help = "Displays the time in the current world",
+          },
+          {
+            Params = "gametime",
+            Help = "Displays the amount of time elapsed since the start of the current world",
+          },          
+         },
+       },               
+			},
 		},
 
 		["/toggledownfall"] = 
