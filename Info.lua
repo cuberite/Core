@@ -215,7 +215,7 @@ g_PluginInfo =
 
 		["/time"] = 
 		{
-			HelpString = "Set and display the time of day in the current world",
+			HelpString = "Set and display the time in the current world",
 			Subcommands = 
 			{
 			 day = 
@@ -232,35 +232,35 @@ g_PluginInfo =
        },
        set = 
        {
-         HelpString = "Set the time to the specified time",
+         HelpString = "Set the time to the given time",
          Permission = "core.time.set",
          Handler = HandleSetTimeCommand,
          ParameterCombinations = 
          {
           {
             Params = "time",
-            Help = "Set the world time to the given time",
+            Help = "Set the time to the given time",
           },
           {
             Params = "day",
-            Help = "Set the world time to day",
+            Help = "Set the time to day",
           },
           {
             Params = "night",
-            Help = "Set the world time to night",
+            Help = "Set the time to night",
           },
          },
        },
        add = 
        {
-         HelpString = "Add the given time to the current world time",
+         HelpString = "Add the given time to the current time",
          Permission = "core.time.set",
          Handler = HandleAddTimeCommand,
          ParameterCombinations = 
          {
           {
             Params = "amount",
-            Help = "Add the amount specified to the current world's time",
+            Help = "Add the amount specified to the current time",
           },
          },
        },
@@ -653,6 +653,18 @@ g_PluginInfo =
 			},  -- Subcommands
 		},  -- whitelist
 	},  -- ConsoleCommands
+	Permissions = {
+	 ["core.time.set"] = 
+	 {
+	   Description = "Allows players to set the time of day",
+	   RecommendedGroups = "admins",
+	 },
+	 ["core.time.query"] =
+	 {
+	   Description = "Allows players to display the time of day",
+	   RecommendedGroups = "everyone",
+	 },
+	},
 }  -- g_PluginInfo
 
 
