@@ -463,16 +463,16 @@ function HandleConsoleTime(a_Split)
   local Op = string.upper( a_Split[3] )
   
   if Op == "DAY" then
-    cRoot:Get():BroadcastChat(cChatColor.Green .. "[INFO] " .. cChatColor.White .. "Time was set to daytime" )
+    World:BroadcastChatSuccess("Time was set to daytime")
   elseif Op == "NIGHT" then
     TimeToSet = 12000 + 1000
-    cRoot:Get():BroadcastChat( cChatColor.Green .. "[INFO] " .. cChatColor.White .. "Time was set to night time" )
+    World:BroadcastChatSuccess("Time was set to night time")
   elseif Op == "SET" and tonumber( a_Split[4] ) ~= nil then
     TimeToSet = tonumber(a_Split[4])
-    cRoot:Get():BroadcastChat( cChatColor.Green .. "[INFO] " .. cChatColor.White .. "Time was set to " .. TimeToSet )
+    World:BroadcastChatSuccess("Time was set to " .. TimeToSet)
   elseif Op == "ADD" and tonumber( a_Split[4] ) ~= nil then
     TimeToSet = CurrentTime + a_Split[4]
-    cRoot:Get():BroadcastChat( cChatColor.Green .. "[INFO] " .. cChatColor.White .. Split[4] .. "was added to the time" )
+    World:BroadcastChatSuccess(a_Split[4] .. "was added to the time")
   else
     return true, "Usage: time <WorldName> [day/night] or [set/add] [amount]"
   end
