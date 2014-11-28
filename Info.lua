@@ -567,7 +567,7 @@ g_PluginInfo =
     ["time"] = 
     {
       Handler = HandleConsoleTime,
-      HelpString = "Sets the time of day",
+      HelpString = "Sets or displays the time of day",
     },
     
 		["tp"] =

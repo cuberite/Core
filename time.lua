@@ -1,7 +1,10 @@
 -- Implements time related commands and console commands
 
 
-local PlayerTimeCommandUsage = "Usage: /time [day/night] or [set/add] [amount] or [query] [daytime/gametime]"
+--local PlayerTimeCommandUsage = "Usage: /time [day/night] or [set/add] [amount] or [query] [daytime/gametime]"
+local PlayerTimeAddCommandUsage = "Usage: /time add [amount]"
+local PlayerTimeQueryCommandUsage = "Usage: /time query [daytime/gametime]"
+local PlayerTimeSetCommandUsage = "Usage: /time set [amount/day/night]"
 local ConsoleTimeCommandUsage = "Usage: time <WorldName> [day/night] or [set/add] [amount] or [query] [daytime/gametime]"
 
 -- Times of day and night as defined in vanilla minecraft
@@ -65,7 +68,7 @@ function HandleAddTimeCommand( Split, Player )
   local amount = Split[3]
 
   if tonumber(amount) == nil then
-        SendMessage( Player, PlayerTimeCommandUsage )
+        SendMessage( Player, PlayerTimeAddCommandUsage )
     return true
   end
 
@@ -82,12 +85,6 @@ end
 function HandleSetTimeCommand( Split, Player )
 
   local Time = Split[3]
-  
-  if Time == nil then
-    SendMessage( Player, PlayerTimeCommandUsage )
-    return true
-  end
-  
   local World = Player:GetWorld()
   
   -- Handle the vanilla cases of /time set [day/night], for compatibility
@@ -96,7 +93,7 @@ function HandleSetTimeCommand( Split, Player )
   elseif tonumber( Time ) ~= nil then
     SetTime( World, tonumber(Time) )
   else
-    SendMessage( Player, PlayerTimeCommandUsage )
+    SendMessage( Player, PlayerTimeSetCommandUsage )
   end
   
   return true
@@ -117,12 +114,6 @@ end
 function HandleQueryTimeCommand( Split, Player )
 
   local Option = Split[3]
-
-  if Option == nil then
-        SendMessage( Player, PlayerTimeCommandUsage )
-    return true
-  end
-
   local World = Player:GetWorld()
   local WorldName = World:GetName()
   
@@ -132,7 +123,7 @@ function HandleQueryTimeCommand( Split, Player )
   elseif Option == "gametime" then
     SendMessage( Player, "The World \"" .. WorldName .. "\" has existed for " .. World:GetWorldAge() )
   else
-    SendMessage( Player, PlayerTimeCommandUsage )
+    SendMessage( Player, PlayerTimeQueryCommandUsage )
   end
 
   return true
