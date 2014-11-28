@@ -39,15 +39,15 @@ local function SetTime( World, TimeToSet )
 		local TimeOfDay = World:GetTimeOfDay()
 		if AnimationForward then
 			if TimeOfDay < TimeToSet then
-			World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
-			World:ScheduleTask(1, DoAnimation)
+				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
+				World:ScheduleTask(1, DoAnimation)
 			else
-			World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
+				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
 			end
 		else
 			if TimeOfDay > TimeToSet then
-			World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
-			World:ScheduleTask(1, DoAnimation)
+				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
+				World:ScheduleTask(1, DoAnimation)
 			else
 				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
 			end
