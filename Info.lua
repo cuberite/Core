@@ -218,69 +218,69 @@ g_PluginInfo =
 			HelpString = "Set and display the time in the current world",
 			Subcommands = 
 			{
-			 day = 
-			 {
-			   HelpString = "Set the time to day",
-			   Permission = "core.time.set",
-			   Handler = HandleSpecialTimeCommand,
-			 },
-			 night = 
-			 {
-         HelpString = "Set the time to night",
-         Permission = "core.time.set",
-         Handler = HandleSpecialTimeCommand,
-       },
-       set = 
-       {
-         HelpString = "Set the time to the given time",
-         Permission = "core.time.set",
-         Handler = HandleSetTimeCommand,
-         ParameterCombinations = 
-         {
-          {
-            Params = "time",
-            Help = "Set the time to the given time",
-          },
-          {
-            Params = "day",
-            Help = "Set the time to day",
-          },
-          {
-            Params = "night",
-            Help = "Set the time to night",
-          },
-         },
-       },
-       add = 
-       {
-         HelpString = "Add the given time to the current time",
-         Permission = "core.time.set",
-         Handler = HandleAddTimeCommand,
-         ParameterCombinations = 
-         {
-          {
-            Params = "amount",
-            Help = "Add the amount specified to the current time",
-          },
-         },
-       },
-       query = 
-       {
-         HelpString = "Display the current world's time",
-         Permission = "core.time.query",
-         Handler = HandleQueryTimeCommand,
-         ParameterCombinations = 
-         {
-          {
-            Params = "daytime",
-            Help = "Displays the time in the current world",
-          },
-          {
-            Params = "gametime",
-            Help = "Displays the amount of time elapsed since the start of the current world",
-          },          
-         },
-       },               
+				day = 
+				{
+					HelpString = "Set the time to day",
+					Permission = "core.time.set",
+					Handler = HandleSpecialTimeCommand,
+				},
+				night = 
+				{
+					HelpString = "Set the time to night",
+					Permission = "core.time.set",
+					Handler = HandleSpecialTimeCommand,
+				},
+				set = 
+				{
+					HelpString = "Set the time to the given time",
+					Permission = "core.time.set",
+					Handler = HandleSetTimeCommand,
+					ParameterCombinations = 
+					{
+						{
+							Params = "time",
+							Help = "Set the time to the given time",
+						},
+						{
+							Params = "day",
+							Help = "Set the time to day",
+						},
+						{
+							Params = "night",
+							Help = "Set the time to night",
+						},
+					},
+				},
+				add = 
+				{
+					HelpString = "Add the given time to the current time",
+					Permission = "core.time.set",
+					Handler = HandleAddTimeCommand,
+					ParameterCombinations = 
+					{
+						{
+							Params = "amount",
+							Help = "Add the amount specified to the current time",
+						},
+					},
+				},
+				query = 
+				{
+					HelpString = "Display the current world's time",
+					Permission = "core.time.query",
+					Handler = HandleQueryTimeCommand,
+					ParameterCombinations = 
+					{
+						{
+							Params = "daytime",
+							Help = "Displays the time in the current world",
+						},
+						{
+							Params = "gametime",
+							Help = "Displays the amount of time elapsed since the start of the current world",
+						},
+					},
+				},
 			},
 		},
 
@@ -563,13 +563,13 @@ g_PluginInfo =
 			Handler =  HandleConsoleVersion,
 			HelpString = "Sets server version reported to 1.4+ clients",
 		},
-		
-    ["time"] = 
-    {
-      Handler = HandleConsoleTime,
-      HelpString = "Sets or displays the time of day",
-    },
-    
+
+		["time"] = 
+		{
+			Handler = HandleConsoleTime,
+			HelpString = "Sets or displays the time of day",
+		},
+
 		["tp"] =
 		{
 			Handler =  HandleConsoleTeleport,
@@ -653,18 +653,20 @@ g_PluginInfo =
 			},  -- Subcommands
 		},  -- whitelist
 	},  -- ConsoleCommands
-	Permissions = {
-	 ["core.time.set"] = 
-	 {
-	   Description = "Allows players to set the time of day",
-	   RecommendedGroups = "admins",
-	 },
-	 ["core.time.query"] =
-	 {
-	   Description = "Allows players to display the time of day",
-	   RecommendedGroups = "everyone",
-	 },
-	},
+	Permissions = 
+	{
+		["core.time.set"] = 
+		{
+			Description = "Allows players to set the time of day",
+			RecommendedGroups = "admins",
+		},
+
+		["core.time.query"] =
+		{
+			Description = "Allows players to display the time of day",
+			RecommendedGroups = "everyone",
+		},
+	},  -- Permissions
 }  -- g_PluginInfo
 
 
