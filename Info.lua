@@ -80,7 +80,7 @@ g_PluginInfo =
 		["/item"] = 
 		{
 			Alias = "/i",
-            Permission = "core.give",
+			Permission = "core.give",
 			Handler = HandleItemCommand,
 			HelpString = "Give yourself an item.",
 		},
