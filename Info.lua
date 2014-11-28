@@ -77,15 +77,9 @@ g_PluginInfo =
 			HelpString = "Show available commands",
 		},
 
-		["/i"] = 
-		{
-			Permission = "core.give",
-			Handler = HandleItemCommand,
-			HelpString = "",
-		},
-
 		["/item"] = 
 		{
+			Alias = "/i",
 			Permission = "core.give",
 			Handler = HandleItemCommand,
 			HelpString = "Give yourself an item.",
