@@ -1,11 +1,11 @@
 -- Implements time related commands and console commands
 
 
---local PlayerTimeCommandUsage = "Usage: /time [day/night] or [set/add] [amount] or [query] [daytime/gametime]"
-local PlayerTimeAddCommandUsage = "Usage: /time add [amount]"
-local PlayerTimeQueryCommandUsage = "Usage: /time query [daytime/gametime]"
-local PlayerTimeSetCommandUsage = "Usage: /time set [amount/day/night]"
-local ConsoleTimeCommandUsage = "Usage: time <WorldName> [day/night] or [set/add] [amount] or [query] [daytime/gametime]"
+--local PlayerTimeCommandUsage = "Usage: /time <day|night> or <set|add> <amount> or <query> <daytime|gametime>"
+local PlayerTimeAddCommandUsage = "Usage: /time add <amount>"
+local PlayerTimeQueryCommandUsage = "Usage: /time query <daytime|gametime>"
+local PlayerTimeSetCommandUsage = "Usage: /time set <amount|day|night>"
+local ConsoleTimeCommandUsage = "Usage: time <WorldName> <day|night> or <set|add> <amount> or <query> <daytime|gametime>"
 
 -- Times of day and night as defined in vanilla minecraft
 local SpecialTimes = {
@@ -62,7 +62,7 @@ local function SetTime( World, TimeToSet )
 end
 
 
--- Handler for "/time add [amount]" subcommand 
+-- Handler for "/time add <amount>" subcommand 
 function HandleAddTimeCommand( Split, Player )
 
 	local amount = Split[3]
@@ -81,13 +81,13 @@ function HandleAddTimeCommand( Split, Player )
 end
 
 
--- Handler for "/time set [value]" subcommand 
+-- Handler for "/time set <value>" subcommand 
 function HandleSetTimeCommand( Split, Player )
 
 	local Time = Split[3]
 	local World = Player:GetWorld()
 
-	-- Handle the vanilla cases of /time set [day/night], for compatibility
+	-- Handle the vanilla cases of /time set <day|night>, for compatibility
 	if Time == "night" or Time == "day" then
 		SetTime( World, SpecialTimes[Time] )
 	elseif tonumber( Time ) ~= nil then
@@ -101,7 +101,7 @@ function HandleSetTimeCommand( Split, Player )
 end
 
 
--- Handler for /time [day/night]
+-- Handler for /time <day|night>
 function HandleSpecialTimeCommand( Split, Player )
 
 	SetTime( Player:GetWorld(), SpecialTimes[Split[2]] )
@@ -110,7 +110,7 @@ function HandleSpecialTimeCommand( Split, Player )
 end
 
 
--- Handler for /time query [daytime/gametime]
+-- Handler for /time query <daytime|gametime>
 function HandleQueryTimeCommand( Split, Player )
 
 	local Option = Split[3]
@@ -146,12 +146,12 @@ function HandleConsoleTime(a_Split)
 	local CurrentTime = World:GetTimeOfDay()
 	local Command = a_Split[3]
 
-	-- Handle the "time set [value]" console command
+	-- Handle the "time set <value>" console command
 	local function SetTimeCommandParse()
 
 		local Time = a_Split[4]
 
-		-- Handle the vanilla values of [day/night] for compatibility
+		-- Handle the vanilla values of day|night for compatibility
 		if Time == "night" or Time == "day" then
 			SetTime( World, SpecialTimes[Time] )
 		elseif tonumber( Time ) ~= nil then
@@ -163,7 +163,7 @@ function HandleConsoleTime(a_Split)
 		return true
 	end
 
-	-- Handle the "time query [daytime/gametime]" console command
+	-- Handle the "time query <daytime|gametime>" console command
 	local function QueryTimeCommandParse()
 
 		local option = a_Split[4]
