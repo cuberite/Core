@@ -55,9 +55,9 @@ local GameModeTable =
 
 function HandleConsoleGamemode(a_Split)
 	-- Check params, translate into gamemode:
-	local Gamemode = GameModeTable[a_Split[3] or ""]
+	local Gamemode = GameModeTable[a_Split[2] or ""]
 	if ((a_Split[2] == nil) or (a_Split[4] ~= nil) or (Gamemode == nil)) then
-		return true, "Usage: " .. a_Split[1] .. " {survival|creative|adventure} <PlayerName> "
+		return true, "Usage: " .. a_Split[1] .. " <survival|creative|adventure|spectator> <PlayerName> "
 	end
 
 	-- Change the gamemode for the player:

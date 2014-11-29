@@ -1,12 +1,12 @@
 function HandleChangeGMCommand(Split, Player)
 	if (Split[2] == nil) then
-		SendMessage(Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] ")
+		SendMessage(Player, "Usage: " .. Split[1] .. " <survival|creative|adventure|spectator> [player] ")
 		return true
 	end
 
 	local GameMode = StringToGameMode(Split[2])
 	if (GameMode == nil) then
-		SendMessage(Player, "Usage: " .. Split[1] .. " [survival|creative|adventure|spectator] [player] ")
+		SendMessage(Player, "Usage: " .. Split[1] .. " <survival|creative|adventure|spectator> [player] ")
 		return true
 	end
 
