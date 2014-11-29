@@ -7,10 +7,10 @@ local function HTML_Option(value, text, selected)
 	end
 end
 
-local function HTML_Select_On_Off(name, defaultValue)
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("1", "On",  defaultValue == 1)
-		.. HTML_Option("0", "Off", defaultValue == 0)
+local function HTML_Select_On_Off(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("1", "On",  DefaultValue == 1)
+		.. HTML_Option("0", "Off", DefaultValue == 0)
 		.. [[</select>]]
 end
 
@@ -114,35 +114,35 @@ local function ShowWorldsSettings( Request )
 		InfoMsg = [[<b style="color: red;">ERROR: Could not read settings.ini!</b>]]
 	end
 	
-	if( Request.PostParams["RemoveWorld"] ~= nil ) then
+	if (Request.PostParams["RemoveWorld"] ~= nil) then
 		Content = Content .. Request.PostParams["RemoveWorld"]
-		local WorldIdx = string.sub( Request.PostParams["RemoveWorld"], string.len("Remove ") )
+		local WorldIdx = string.sub(Request.PostParams["RemoveWorld"], string.len("Remove "))
 		local KeyIdx = SettingsIni:FindKey("Worlds")
-		local WorldName = SettingsIni:GetValue( KeyIdx, WorldIdx )
-		if( SettingsIni:DeleteValueByID( KeyIdx, WorldIdx ) == true ) then
+		local WorldName = SettingsIni:GetValue(KeyIdx, WorldIdx)
+		if (SettingsIni:DeleteValueByID(KeyIdx, WorldIdx) == true) then
 			InfoMsg = "<b style=\"color: green;\">INFO: Successfully removed world " .. WorldName .. "!</b><br />"
 			bSaveIni = true
 		end
 	end
 	
-	if( Request.PostParams["AddWorld"] ~= nil ) then
-		if( Request.PostParams["WorldName"] ~= nil and Request.PostParams["WorldName"] ~= "" ) then
-			SettingsIni:SetValue("Worlds", "World", Request.PostParams["WorldName"], true )
+	if (Request.PostParams["AddWorld"] ~= nil) then
+		if (Request.PostParams["WorldName"] ~= nil and Request.PostParams["WorldName"] ~= "") then
+			SettingsIni:SetValue("Worlds", "World", Request.PostParams["WorldName"], true)
 			InfoMsg = "<b style=\"color: green;\">INFO: Successfully added world " .. Request.PostParams["WorldName"] .. "!</b><br />"
 			bSaveIni = true
 		end
 	end
 	
-	if( Request.PostParams["worlds_submit"] ~= nil ) then
+	if (Request.PostParams["worlds_submit"] ~= nil) then
 		SettingsIni:SetValue("Worlds", "DefaultWorld", Request.PostParams["Worlds_DefaultWorld"], false )
-		if( Request.PostParams["Worlds_World"] ~= nil ) then
+		if (Request.PostParams["Worlds_World"] ~= nil) then
 			SettingsIni:SetValue("Worlds", "World", Request.PostParams["Worlds_World"], true )
 		end
 		bSaveIni = true
 	end
 	
-	if( bSaveIni == true ) then
-		if( InfoMsg == nil ) then InfoMsg = "" end
+	if (bSaveIni == true) then
+		if (InfoMsg == nil) then InfoMsg = "" end
 		if not(SettingsIni:WriteFile("settings.ini")) then
 			InfoMsg = InfoMsg .. "<b style=\"color: red;\">ERROR: Could not write to settings.ini!</b>"
 		else
@@ -163,9 +163,9 @@ local function ShowWorldsSettings( Request )
 	<td><input type="Submit" name="Worlds_DefaultWorld" value="]] .. SettingsIni:GetValue("Worlds", "DefaultWorld") .. [["></td></tr>]]
 	
 	local KeyIdx = SettingsIni:FindKey("Worlds")
-	local NumValues = SettingsIni:GetNumValues( KeyIdx )
+	local NumValues = SettingsIni:GetNumValues(KeyIdx)
 	for i = 0, NumValues-1 do
-		local ValueName = SettingsIni:GetValueName(KeyIdx, i )
+		local ValueName = SettingsIni:GetValueName(KeyIdx, i)
 		if( ValueName == "World" ) then
 			local WorldName = SettingsIni:GetValue(KeyIdx, i)
 			Content = Content .. [[
@@ -187,7 +187,7 @@ end
 
 
 
-local function SelectWorldButton( WorldName )
+local function SelectWorldButton(WorldName)
 	return "<form method='POST'><input type='hidden' name='WorldName' value='"..WorldName.."'><input type='submit' name='SelectWorld' value='Select'></form>"
 end
 
@@ -320,7 +320,7 @@ slAdvanced = 2
 
 
 
-function ShowWorldSettings( Request )
+function ShowWorldSettings(Request)
 	local Content = ""
 	
 	local SettingLayout = g_WorldSettingsLayout[Request.Username] or slEasy
@@ -328,7 +328,7 @@ function ShowWorldSettings( Request )
 	if (Request.PostParams['ChangeWebLayout'] ~= nil) then
 		if (Request.PostParams['ChangeWebLayout'] == 'Easy') then
 			SettingLayout = slEasy
-		elseif(Request.PostParams['ChangeWebLayout'] == 'Advanced') then
+		elseif (Request.PostParams['ChangeWebLayout'] == 'Advanced') then
 			SettingLayout = slAdvanced
 		end
 	end
