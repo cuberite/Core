@@ -39,12 +39,16 @@ local GameModeTable =
 {
 	["0"]         = gmSurvival,
 	["survival"]  = gmSurvival,
+	["s"]  = gmSurvival,
 	["1"]         = gmCreative,
 	["creative"]  = gmCreative,
+	["c"]  = gmCreative,
 	["2"]         = gmAdventure,
 	["adventure"] = gmAdventure,
-	["3"]         = 3,
-	["spectator"] = 3,
+	["a"] = gmAdventure,
+	["3"]         = gmSpectator,
+	["spectator"] = gmSpectator,
+	["sp"] = gmSpectator,
 }
 
 function StringToGameMode(Str)
