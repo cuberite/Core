@@ -502,23 +502,6 @@ end
 
 
 
-function HandleConsoleVersion(Split)
-	if (#Split == 1) then
-		-- Display current version:
-		local Version = cRoot:Get():GetPrimaryServerVersion()
-		return true, "Primary server version: #" .. Version .. ", " .. cRoot:GetProtocolVersionTextFromInt(Version)
-	end
-
-	-- Set new value as the version:
-	cRoot:Get():SetPrimaryServerVersion(tonumber(Split[2]))
-	local Version = cRoot:Get():GetPrimaryServerVersion()
-	return true, "Primary server version is now #" .. Version .. ", " .. cRoot:GetProtocolVersionTextFromInt(Version)
-end
-
-
-
-
-
 local g_WeatherNames =
 {
 	["clear"]        = wSunny,

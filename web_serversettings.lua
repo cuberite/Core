@@ -14,18 +14,6 @@ local function HTML_Select_On_Off( name, defaultValue )
 		.. [[</select>]]
 end
 
-local function HTML_Select_Version( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("0",  "Latest Version", defaultValue == 0 )
-		.. HTML_Option("61", "1.5.2", defaultValue == 1 )
-		.. HTML_Option("60", "1.5.0", defaultValue == 2 )
-		.. HTML_Option("49", "1.4.5", defaultValue == 3 )
-		.. HTML_Option("47", "1.4.2", defaultValue == 4 )
-		.. HTML_Option("39", "1.3.2", defaultValue == 5 )
-		.. HTML_Option("29", "1.2.5", defaultValue == 6 )
-		.. [[</select>]]
-end
-
 
 local function ShowGeneralSettings( Request )
 	local Content = ""
@@ -49,9 +37,6 @@ local function ShowGeneralSettings( Request )
 		end
 		if( tonumber( Request.PostParams["Server_PortsIPv6"] ) ~= nil ) then
 			SettingsIni:SetValue("Server", "PortsIPv6", Request.PostParams["Server_PortsIPv6"], false )
-		end
-		if( tonumber( Request.PostParams["Server_Version"] ) ~= nil ) then
-			SettingsIni:SetValue("Server", "PrimaryServerVersion", Request.PostParams["Server_Version"], false )
 		end
 		if( tonumber( Request.PostParams["Authentication_Authenticate"] ) ~= nil ) then
 			SettingsIni:SetValue("Authentication", "Authenticate", Request.PostParams["Authentication_Authenticate"], false )
@@ -83,8 +68,6 @@ local function ShowGeneralSettings( Request )
 	<td><input type="text" name="Server_Port" value="]] .. SettingsIni:GetValue("Server", "Port") .. [["></td></tr>
 	<tr><td>PortsIPv6:</td>
 	<td><input type="text" name="Server_PortsIPv6" value="]] .. SettingsIni:GetValue("Server", "PortsIPv6") .. [["></td></tr>
-	<tr><td>Shown Version:</td>
-	<td>]] .. HTML_Select_Version("Server_Version", SettingsIni:GetValueI("Server", "PrimaryServerVersion") ) .. [[</td></tr>
 	</table><br />
 	
 	<table>
