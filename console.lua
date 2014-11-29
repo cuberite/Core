@@ -32,59 +32,6 @@ end
 
 
 
-
-local GameModeTable =
-{
-	["0"]         = gmSurvival,
-	["survival"]  = gmSurvival,
-	["s"]  = gmSurvival,
-	["1"]         = gmCreative,
-	["creative"]  = gmCreative,
-	["c"]  = gmCreative,
-	["2"]         = gmAdventure,
-	["adventure"] = gmAdventure,
-	["a"] = gmAdventure,
-	["3"]         = gmSpectator,
-	["spectator"] = gmSpectator,
-	["sp"] = gmSpectator,
-}
-
-
-
-
-
-function HandleConsoleGamemode(a_Split)
-	-- Check params, translate into gamemode:
-	local Gamemode = GameModeTable[a_Split[2] or ""]
-	if ((a_Split[2] == nil) or (a_Split[4] ~= nil) or (Gamemode == nil)) then
-		return true, "Usage: " .. a_Split[1] .. " <survival|creative|adventure|spectator> <PlayerName> "
-	end
-
-	-- Change the gamemode for the player:
-	local IsPlayerOnline = false;
-	local PlayerName = a_Split[3]
-	cRoot:Get():FindAndDoWithPlayer(PlayerName,
-		function(a_CBPlayer)
-			if (a_CBPlayer:GetName() == PlayerName) then
-				IsPlayerOnline = true
-				a_CBPlayer:SetGameMode(Gamemode)
-			end
-		end
-	)
-
-	-- Report success or failure:
-	if (IsPlayerOnline) then
-		return true, "Changed gamemode for player " .. PlayerName
-	else
-		return true, "Player not found" 
-	end
-end
-
-
-
-
-
-
 function HandleConsoleGive(Split)
 	-- Make sure there are a correct number of arguments.
 	if ((#Split < 3) or (#Split > 5)) then
