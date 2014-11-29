@@ -416,12 +416,6 @@ g_PluginInfo =
 			HelpString = "Change a player's gamemode",
 		},
 
-		["getversion"] =
-		{
-			Handler =  HandleConsoleVersion,
-			HelpString = "Gets server version reported to 1.4+ clients",
-		},
-
 		["gm"] =
 		{
 			Handler =  HandleConsoleGamemode,
@@ -498,12 +492,6 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsoleSay,
 			HelpString = "Sends a chat message to all players",
-		},
-
-		["setversion"] =
-		{
-			Handler =  HandleConsoleVersion,
-			HelpString = "Sets server version reported to 1.4+ clients",
 		},
 
 		["tp"] =
