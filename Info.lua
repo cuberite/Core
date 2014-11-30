@@ -266,18 +266,19 @@ g_PluginInfo =
 				},
 				query = 
 				{
-					HelpString = "Display the current world's time",
-					Permission = "core.time.query",
-					Handler = HandleQueryTimeCommand,
-					ParameterCombinations = 
+					Subcommands = 
 					{
+						daytime = 
 						{
-							Params = "daytime",
-							Help = "Displays the time in the current world",
+							HelpString = "Display the time in the current world",
+							Permission = "core.time.query.daytime",
+							Handler = HandleQueryDaytimeCommand,
 						},
+						gametime =
 						{
-							Params = "gametime",
-							Help = "Displays the amount of time elapsed since the start of the current world",
+							HelpString = "Displays the amount of time elapsed since the start of the current world",
+							Permission = "core.time.query.gametime",
+							Handler = HandleQueryGametimeCommand
 						},
 					},
 				},

@@ -110,21 +110,25 @@ function HandleSpecialTimeCommand( Split, Player )
 end
 
 
--- Handler for /time query <daytime|gametime>
-function HandleQueryTimeCommand( Split, Player )
+-- Handler for /time query daytime
+function HandleQueryDaytimeCommand( Split, Player )
 
-	local Option = Split[3]
 	local World = Player:GetWorld()
 	local WorldName = World:GetName()
 
-	-- Options daytime and gametime are based on their usage in vanilla
-	if Option == "daytime" then
-		SendMessage( Player, "The current time in World \"" .. WorldName .. "\" is " .. World:GetTimeOfDay() )
-	elseif Option == "gametime" then
-		SendMessage( Player, "The World \"" .. WorldName .. "\" has existed for " .. World:GetWorldAge() )
-	else
-		SendMessage( Player, PlayerTimeQueryCommandUsage )
-	end
+	SendMessage( Player, "The current time in World \"" .. WorldName .. "\" is " .. World:GetTimeOfDay() )
+
+	return true
+end
+
+
+-- Handler for /time query gametime
+function HandleQueryGametimeCommand( Split, Player )
+
+	local World = Player:GetWorld()
+	local WorldName = World:GetName()
+
+	SendMessage( Player, "The World \"" .. WorldName .. "\" has existed for " .. World:GetWorldAge() )
 
 	return true
 end
