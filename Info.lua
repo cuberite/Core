@@ -558,12 +558,6 @@ g_PluginInfo =
 			HelpString = "Sends a chat message to all players",
 		},
 
-		["setversion"] =
-		{
-			Handler =  HandleConsoleVersion,
-			HelpString = "Sets server version reported to 1.4+ clients",
-		},
-
 		["time"] = 
 		{
 			Handler = HandleConsoleTime,
