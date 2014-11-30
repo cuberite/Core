@@ -16,14 +16,8 @@ local function SetTime( World, TimeToSet )
 
 	local CurrentTime = World:GetTimeOfDay()
 
-	-- Is this correct, or should it roll over?
-	-- For example, 25000 becoming 1000 rather then 24000 as it does currently
-	-- Or, as another example, -1000 becoming 23000 instead of 0.
-	if TimeToSet > 24000 then
-		TimeToSet = 24000
-	elseif TimeToSet < 0 then
-		TimeToSet = 0
-	end
+	-- Handle the cases where TimeToSet < 0 or > 24000
+	TimeToSet = TimeToSet % 24000
 
 	local AnimationForward = true
 	local AnimationSpeed = 480
@@ -36,18 +30,18 @@ local function SetTime( World, TimeToSet )
 	local function DoAnimation()
 		local TimeOfDay = World:GetTimeOfDay()
 		if AnimationForward then
-			if TimeOfDay < TimeToSet then
+			if TimeOfDay < TimeToSet and (24000 - TimeToSet) > AnimationSpeed then -- Without the second check the animation can get stuck in a infinite loop
 				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
 				World:ScheduleTask(1, DoAnimation)
 			else
-				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
+				World:SetTimeOfDay(TimeToSet) -- Make sure we actually get the time that was asked for.
 			end
 		else
 			if TimeOfDay > TimeToSet then
 				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
 				World:ScheduleTask(1, DoAnimation)
 			else
-				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
+				World:SetTimeOfDay(TimeToSet) -- Make sure we actually get the time that was asked for.
 			end
 		end
 	end
@@ -154,12 +148,12 @@ function HandleConsoleTime(a_Split)
 		local Time = a_Split[4]
 
 		-- Handle the vanilla values of day|night for compatibility
-		if Time == "night" or Time == "day" then
-			SetTime( World, SpecialTimes[Time] )
-		elseif tonumber( Time ) ~= nil then
-			SetTime( World, tonumber(Time) )
-		else
+		local TimeToSet = SpecialTimes[Time] or tonumber(Time)
+
+		if not TimeToSet then
 			LOG(ConsoleTimeCommandUsage)
+		else
+			SetTime( World, TimeToSet )
 		end
 
 		return true
