@@ -37,7 +37,8 @@ Implements some of the basic commands needed to run a simple server.
 |/time add | core.time.set | Add the given time to the current time|
 |/time day | core.time.set | Set the time to day|
 |/time night | core.time.set | Set the time to night|
-|/time query | core.time.query | Display the current world's time|
+|/time query daytime | core.time.query.daytime | Display the time in the current world|
+|/time query gametime | core.time.query.gametime | Displays the amount of time elapsed since the start of the current world|
 |/time set | core.time.set | Set the time to the given time|
 |/toggledownfall | core.toggledownfall | Toggles downfall|
 |/top | core.top | Teleport yourself to the topmost block|
@@ -93,7 +94,8 @@ Implements some of the basic commands needed to run a simple server.
 | core.sudo |  | `/sudo` |  |
 | core.teleport |  | `/tp` |  |
 | core.tell |  | `/tell` |  |
-| core.time.query | Allows players to display the time of day | `/time query` | everyone |
+| core.time.query.daytime | Allows players to display the time of day | `/time query daytime` | everyone |
+| core.time.query.gametime | Allows players to display how long the world has existed | `/time query gametime` |  |
 | core.time.set | Allows players to set the time of day | `/time night`, `/time day`, `/time set`, `/time add` | admins |
 | core.toggledownfall |  | `/toggledownfall` |  |
 | core.top |  | `/top` |  |

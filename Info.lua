@@ -656,10 +656,15 @@ g_PluginInfo =
 			RecommendedGroups = "admins",
 		},
 
-		["core.time.query"] =
+		["core.time.query.daytime"] =
 		{
 			Description = "Allows players to display the time of day",
 			RecommendedGroups = "everyone",
+		},
+
+		["core.time.query.gametime"] =
+		{
+			Description = "Allows players to display how long the world has existed",
 		},
 	},  -- Permissions
 }  -- g_PluginInfo

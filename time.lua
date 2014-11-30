@@ -1,9 +1,7 @@
 -- Implements time related commands and console commands
 
 
---local PlayerTimeCommandUsage = "Usage: /time <day|night> or <set|add> <amount> or <query> <daytime|gametime>"
 local PlayerTimeAddCommandUsage = "Usage: /time add <amount>"
-local PlayerTimeQueryCommandUsage = "Usage: /time query <daytime|gametime>"
 local PlayerTimeSetCommandUsage = "Usage: /time set <amount|day|night>"
 local ConsoleTimeCommandUsage = "Usage: time <WorldName> <day|night> or <set|add> <amount> or <query> <daytime|gametime>"
 
@@ -88,12 +86,12 @@ function HandleSetTimeCommand( Split, Player )
 	local World = Player:GetWorld()
 
 	-- Handle the vanilla cases of /time set <day|night>, for compatibility
-	if Time == "night" or Time == "day" then
-		SetTime( World, SpecialTimes[Time] )
-	elseif tonumber( Time ) ~= nil then
-		SetTime( World, tonumber(Time) )
-	else
+	local TimeToSet = SpecialTimes[Time] or tonumber(Time)
+	
+	if not TimeToSet then
 		SendMessage( Player, PlayerTimeSetCommandUsage )
+	else
+		SetTime( World, TimeToSet )
 	end
 
 	return true
