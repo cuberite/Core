@@ -1,65 +1,275 @@
-function HandleTimeCommand( Split, Player )
+-- Implements time related commands and console commands
 
-	if Split[2] == nil then
-		SendMessage( Player, "Usage: /time [day/night] or [set/add] [amount]" )
-		return true
-	end
-	
-	local World = Player:GetWorld()
-	local TimeToSet = 0
+
+local PlayerTimeAddCommandUsage = "Usage: /time add <amount> [WorldName]"
+local PlayerTimeSetCommandUsage = "Usage: /time set <amount|day|night> [WorldName]"
+local ConsoleSetTimeCommandUsage = "Usage: time set <amount|day|night> [WorldName]"
+local ConsoleAddTimeCommandUsage = "Usage: time add <amount> [WorldName]"
+
+-- Times of day and night as defined in vanilla minecraft
+local SpecialTimesTable = {
+	["day"] = 1000,
+	["night"] = 1000 + 12000,
+}
+
+-- Used to animate the transition between previous and new times
+local function SetTime( World, TimeToSet )
+
 	local CurrentTime = World:GetTimeOfDay()
+	local MaxTime = 24000
 
-	local Server = cRoot:Get():GetServer()
-	if string.upper( Split[2] ) == "DAY" then
-		cRoot:Get():BroadcastChat(cChatColor.Green .. "[INFO] " .. cChatColor.White .. "Time was set to daytime" )
-	elseif string.upper( Split[2] ) == "NIGHT" then
-		TimeToSet = 12000 + 1000
-		cRoot:Get():BroadcastChat( cChatColor.Green .. "[INFO] " .. cChatColor.White .. "Time was set to night time" )
-	elseif string.upper( Split[2] ) == "SET" and tonumber( Split[3] ) ~= nil then
-		TimeToSet = tonumber(Split[3])
-		cRoot:Get():BroadcastChat( cChatColor.Green .. "[INFO] " .. cChatColor.White .. "Time was set to " .. Split[3] )
-	elseif string.upper( Split[2] ) == "ADD" and tonumber( Split[3] ) ~= nil then
-		TimeToSet = CurrentTime + Split[3]
-		cRoot:Get():BroadcastChat( cChatColor.Green .. "[INFO] " .. cChatColor.White .. Split[3] .. "was added to the time" )
-	else
-		SendMessage( Player, "Usage: /time [day/night] or [set/add] [amount]" )
-		return true
-	end
-	
-	if TimeToSet > 24000 then
-		TimeToSet = 24000
-	elseif TimeToSet < 0 then
-		TimeToSet = 0
-	end
-	
+	-- Handle the cases where TimeToSet < 0 or > 24000
+	TimeToSet = TimeToSet % MaxTime
+
 	local AnimationForward = true
 	local AnimationSpeed = 480
-	
+
 	if CurrentTime > TimeToSet then
 		AnimationForward = false
-		AnimationSpeed = -480
+		AnimationSpeed = -AnimationSpeed
 	end
-	
+
 	local function DoAnimation()
 		local TimeOfDay = World:GetTimeOfDay()
 		if AnimationForward then
-			if TimeOfDay < TimeToSet then
+			if TimeOfDay < TimeToSet and (MaxTime - TimeToSet) > AnimationSpeed then -- Without the second check the animation can get stuck in a infinite loop
 				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
 				World:ScheduleTask(1, DoAnimation)
 			else
-				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
+				World:SetTimeOfDay(TimeToSet) -- Make sure we actually get the time that was asked for.
 			end
 		else
 			if TimeOfDay > TimeToSet then
 				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
 				World:ScheduleTask(1, DoAnimation)
 			else
-				World:SetTimeOfDay(TimeToSet) -- Make sure we actualy get the time that was asked for.
+				World:SetTimeOfDay(TimeToSet) -- Make sure we actually get the time that was asked for.
 			end
 		end
 	end
-	
+
 	World:ScheduleTask(1, DoAnimation)
+	World:BroadcastChatSuccess("Time was set to " .. TimeToSet)
+	LOG("Time in world \"" .. World:GetName() .. "\" was set to " .. TimeToSet) -- Let the console know about time changes
+
+	return true
+end
+
+-- Returns the cWorld object represented by the given name,
+-- if no name is given, returns the world the player is in, and
+-- if no world of the given name is found, returns nil and informs the player
+local function GetWorld( WorldName, Player )
+
+	if not WorldName then
+		return Player:GetWorld()
+		
+	else
+		local World = cRoot:Get():GetWorld(WorldName)
+		
+		if not World then
+			SendMessage( Player, "There is no world \"" .. WorldName .. "\"")
+		end
+		
+		return World
+	end
+end
+
+
+-- Returns the cWorld object represented by the given name,
+-- if no name is given, returns the default world, and
+-- if no world of the given name is found, returns nil and Logs to console 
+local function GetWorldConsole( WorldName )
+
+	if not WorldName then
+		return cRoot:Get():GetDefaultWorld()
+	else
+		local World = cRoot:Get():GetWorld(WorldName)
+
+		if not World then
+			LOG("There is no world \"" .. WorldName .. "\"")
+		end
+		
+		return World
+	end
+end
+
+
+-- Code common to console and in-game `time add` command
+local function CommonAddTime( World, Time )
+
+	-- Stop if an invalid world was given
+	if not World then
+		return true
+	end
+
+	local TimeToAdd = tonumber( Time )
+
+	if not TimeToAdd then
+		return false
+	end
+
+	local TimeToSet = World:GetTimeOfDay() + TimeToAdd
+	SetTime( World, TimeToSet )
+	
+	return true
+end
+
+
+-- Handler for "/time add <amount> [WorldName]" subcommand 
+function HandleAddTimeCommand( Split, Player )
+
+	if not CommonAddTime( GetWorld( Split[4], Player ), Split[3] ) then
+		SendMessage( Player, PlayerTimeAddCommandUsage )
+	end
+
+	return true
+end
+
+
+-- Handler for console command: time add <value> [WorldName]
+function HandleConsoleAddTime(a_Split)
+
+	if not CommonAddTime( GetWorldConsole( a_Split[4] ), a_Split[3] ) then
+		LOG(ConsoleAddTimeCommandUsage)
+	end
+
+	return true
+end
+
+
+-- Code common to console and in-game `time set` command
+local function CommonSetTime( World, Time )
+
+	-- Stop if an invalid world was given
+	if not World then
+		return true
+	end
+
+	-- Handle the vanilla cases of /time set <day|night>, for compatibility
+	local TimeToSet = SpecialTimesTable[Time] or tonumber(Time)
+	
+	if not TimeToSet then
+		return false
+	else
+		SetTime( World, TimeToSet )
+	end
+
+	return true
+end
+
+
+-- Handler for "/time set <value> [WorldName]" subcommand 
+function HandleSetTimeCommand( Split, Player )
+
+	if not CommonSetTime( GetWorld( Split[4], Player ), Split[3] ) then
+		SendMessage( Player, PlayerTimeSetCommandUsage )
+	end
+
 	return true
 
+end
+
+
+-- Handler for console command: time set <day|night|value> [WorldName]
+function HandleConsoleSetTime(a_Split)
+
+	if not CommonSetTime( GetWorldConsole( a_Split[4] ), a_Split[3] ) then
+		LOG(ConsoleSetTimeCommandUsage)
+	end
+	
+	return true
+end
+
+
+-- Code common to console and in-game time <day|night> commands
+local function CommonSpecialTime( World, TimeName )
+
+	-- Stop if an invalid world was given
+	if not World then
+		return true
+	end
+	
+	SetTime( World, SpecialTimesTable[TimeName] )
+
+	return true
+end
+
+
+-- Handler for /time <day|night> [WorldName]
+function HandleSpecialTimeCommand( Split, Player )
+
+	return CommonSpecialTime( GetWorld( Split[3], Player ), Split[2] )
+
+end
+
+
+-- Handler for console command: time <day|night> [WorldName]
+function HandleConsoleSpecialTime(a_Split)
+
+	return CommonSpecialTime( GetWorldConsole( a_Split[3] ), a_Split[2] )
+
+end
+
+
+-- Handler for /time query daytime [WorldName]
+function HandleQueryDaytimeCommand( Split, Player )
+
+	local World = GetWorld( Split[4], Player )
+
+	-- Stop if an invalid world was given
+	if not World then
+		return true
+	end
+
+	SendMessage( Player, "The current time in World \"" .. World:GetName() .. "\" is " .. World:GetTimeOfDay() )
+
+	return true
+end
+
+
+-- Handler for console command: time query daytime [WorldName]
+function HandleConsoleQueryDaytime(a_Split)
+
+	local World = GetWorldConsole( a_Split[4] )
+
+	-- Stop if an invalid world was given
+	if not World then
+		return true
+	end
+
+	LOG( "The current time in World \"" .. World:GetName() .. "\" is " .. World:GetTimeOfDay() )
+
+	return true
+end
+
+
+-- Handler for /time query gametime [WorldName]
+function HandleQueryGametimeCommand( Split, Player )
+
+	local World = GetWorld( Split[4], Player )
+
+	-- Stop if an invalid world was given
+	if not World then
+		return true
+	end
+
+	SendMessage( Player, "The World \"" .. World:GetName() .. "\" has existed for " .. World:GetWorldAge() )
+
+	return true
+end
+
+
+-- Handler for console command: time query gametime [WorldName]
+function HandleConsoleQueryGametime(a_Split)
+
+	local World = GetWorldConsole( a_Split[4] )
+
+	-- Stop if an invalid world was given
+	if not World then
+		return true
+	end
+
+	LOG( "The World \"" .. World:GetName() .. "\" has existed for " .. World:GetWorldAge() )
+
+	return true
 end
