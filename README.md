@@ -33,13 +33,13 @@ Implements some of the basic commands needed to run a simple server.
 |/stop | core.stop | Stops the server|
 |/sudo | core.sudo | Runs a command as a player|
 |/tell | core.tell | Send a private message|
-|/time |  | Set and display the time in the current world|
-|/time add | core.time.set | Add the given time to the current time|
+|/time |  | Set or display the time|
+|/time add | core.time.set | Add the amount given to the current time|
 |/time day | core.time.set | Set the time to day|
 |/time night | core.time.set | Set the time to night|
-|/time query daytime | core.time.query.daytime | Display the time in the current world|
-|/time query gametime | core.time.query.gametime | Displays the amount of time elapsed since the start of the current world|
-|/time set | core.time.set | Set the time to the given time|
+|/time query daytime | core.time.query.daytime | Display the current time|
+|/time query gametime | core.time.query.gametime | Display the amount of time elapsed since start|
+|/time set | core.time.set | Set the time to the value given|
 |/toggledownfall | core.toggledownfall | Toggles downfall|
 |/top | core.top | Teleport yourself to the topmost block|
 |/tp | core.teleport | Teleport yourself to a player|
