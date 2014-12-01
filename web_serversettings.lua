@@ -1,21 +1,21 @@
 -- Some HTML helper functions
-local function HTML_Option( value, text, selected )
-	if( selected == true ) then
-		return [[<option value="]] .. value .. [[" selected>]] .. text .. [[</option>]]
+local function HTML_Option(Value, Text, Selected)
+	if (Selected) then
+		return [[<option value="]] .. Value .. [[" selected>]] .. Text .. [[</option>]]
 	else
-		return [[<option value="]] .. value .. [[">]] .. text .. [[</option>"]]
+		return [[<option value="]] .. Value .. [[">]] .. Text .. [[</option>]]
 	end
 end
 
-local function HTML_Select_On_Off( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("1", "On",  defaultValue == 1 )
-		.. HTML_Option("0", "Off", defaultValue == 0 )
+local function HTML_Select_On_Off(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("1", "On",  DefaultValue == 1)
+		.. HTML_Option("0", "Off", DefaultValue == 0)
 		.. [[</select>]]
 end
 
 
-local function ShowGeneralSettings( Request )
+local function ShowGeneralSettings(Request)
 	local Content = ""
 	local InfoMsg = nil
 	
@@ -25,22 +25,33 @@ local function ShowGeneralSettings( Request )
 	end
 	
 	if (Request.PostParams["general_submit"] ~= nil) then
-		
-		SettingsIni:SetValue("Server", "Description",Request.PostParams["Server_Description"],false )
-		if( tonumber( Request.PostParams["Server_MaxPlayers"] ) ~= nil ) then
-			SettingsIni:SetValue("Server", "MaxPlayers", Request.PostParams["Server_MaxPlayers"], false )
+		local ServerDescription = Request.PostParams["Server_Description"]
+		local MaxPlayers = tonumber(Request.PostParams["Server_MaxPlayers"])
+		local Ports = Request.PostParams["Server_Port"]
+		local PortsIPv6 = Request.PostParams["Server_PortsIPv6"]
+		local DefaultViewDistance = tonumber(Request.PostParams["Server_ViewDistance"])
+		local HardcoreEnabled = (Request.PostParams["Server_Hardcore"] == "1")
+
+		SettingsIni:SetValue("Server", "Description", ServerDescription)
+		if (MaxPlayers ~= nil) then
+			SettingsIni:SetValueI("Server", "MaxPlayers", MaxPlayers)
 		end
-		if( tonumber( Request.PostParams["Server_Port"] ) ~= nil ) then
-			if( tonumber( Request.PostParams["Server_Port"] ) > 0 ) then
-				SettingsIni:SetValue("Server", "Port", Request.PostParams["Server_Port"], false )
-			end
+		SettingsIni:SetValue("Server", "Port", Ports)
+		SettingsIni:SetValue("Server", "PortsIPv6", PortsIPv6)
+		if (DefaultViewDistance ~= nil) then
+			SettingsIni:SetValueI("Server", "DefaultViewDistance", DefaultViewDistance)
 		end
-		if( tonumber( Request.PostParams["Server_PortsIPv6"] ) ~= nil ) then
-			SettingsIni:SetValue("Server", "PortsIPv6", Request.PostParams["Server_PortsIPv6"], false )
-		end
-		if( tonumber( Request.PostParams["Authentication_Authenticate"] ) ~= nil ) then
-			SettingsIni:SetValue("Authentication", "Authenticate", Request.PostParams["Authentication_Authenticate"], false )
-		end
+		SettingsIni:SetValueB("Server", "HardcoreEnabled", HardcoreEnabled)
+
+		local AuthenticateEnabled = (Request.PostParams["Authentication_Authenticate"] == "1")
+		local AuthenticateAllowBungee = (Request.PostParams["Authentication_AllowBungee"] == "1")
+		local AuthenticateServer = Request.PostParams["Authentication_Server"]
+		local AuthenticateAddress = Request.PostParams["Authentication_Address"]
+
+		SettingsIni:SetValueB("Authentication", "Authenticate", AuthenticateEnabled)
+		SettingsIni:SetValueB("Authentication", "AllowBungeeCord", AuthenticateAllowBungee)
+		SettingsIni:SetValue("Authentication", "Server", AuthenticateServer)
+		SettingsIni:SetValue("Authentication", "Address", AuthenticateAddress)
 
 		if not(SettingsIni:WriteFile("settings.ini")) then
 			InfoMsg =  [[<b style="color: red;">ERROR: Could not write to settings.ini!</b>]]
@@ -54,7 +65,7 @@ local function ShowGeneralSettings( Request )
 	<form method="POST">
 	<h4>General Settings</h4>]]
 	
-	if( InfoMsg ~= nil ) then
+	if (InfoMsg ~= nil) then
 		Content = Content .. "<p>" .. InfoMsg .. "</p>"
 	end
 	Content = Content .. [[
@@ -64,16 +75,26 @@ local function ShowGeneralSettings( Request )
 	<td><input type="text" name="Server_Description" value="]] .. SettingsIni:GetValue("Server", "Description") .. [["></td></tr>
 	<tr><td>Max Players:</td>
 	<td><input type="text" name="Server_MaxPlayers" value="]] .. SettingsIni:GetValue("Server", "MaxPlayers") .. [["></td></tr>
-	<tr><td>Port:</td>
+	<tr><td>IPv4 Ports:</td>
 	<td><input type="text" name="Server_Port" value="]] .. SettingsIni:GetValue("Server", "Port") .. [["></td></tr>
-	<tr><td>PortsIPv6:</td>
+	<tr><td>IPv6 Ports:</td>
 	<td><input type="text" name="Server_PortsIPv6" value="]] .. SettingsIni:GetValue("Server", "PortsIPv6") .. [["></td></tr>
+	<tr><td>Default ViewDistance:</td>
+	<td><input type="text" name="Server_ViewDistance" value="]] .. SettingsIni:GetValueI("Server", "DefaultViewDistance") .. [["></td></tr>
+	<tr><td>Hardcore:</td>
+	<td>]] .. HTML_Select_On_Off("Server_Hardcore", SettingsIni:GetValueI("Server", "HardcoreEnabled")) .. [[</tr>
 	</table><br />
 	
 	<table>
 	<th colspan="2">Authentication</th>
 	<tr><td style="width: 50%;">Authenticate:</td>
 	<td>]] .. HTML_Select_On_Off("Authentication_Authenticate", SettingsIni:GetValueI("Authentication", "Authenticate") ) .. [[</td></tr>
+	<tr><td>Allow BungeeCord:</td>
+	<td>]] .. HTML_Select_On_Off("Authentication_AllowBungee", SettingsIni:GetValueI("Authentication", "AllowBungeeCord")) .. [[</td></tr>
+	<tr><td>Authentication Server:</td>
+	<td><input type="text" name="Authentication_Server" value="]] .. SettingsIni:GetValue("Authentication", "Server") .. [["></td></tr>
+	<tr><td>Authentication Address:</td>
+	<td><input type="text" name="Authentication_Address" value="]] .. SettingsIni:GetValue("Authentication", "Address") .. [["></td></tr>
 	</table><br />
 	
 	<input type="submit" value="Save Settings" name="general_submit"> WARNING: Any changes made here might require a server restart in order to be applied!
@@ -83,55 +104,7 @@ local function ShowGeneralSettings( Request )
 end
 
 
-local function ShowMonstersSettings( Request )
-	local Content = ""
-	local InfoMsg = nil
-	
-	local SettingsIni = cIniFile()
-	if not(SettingsIni:ReadFile("settings.ini")) then
-		InfoMsg = "<b style=\"color: red;\">ERROR: Could not read settings.ini!</b>"
-	end
-	
-	if( Request.PostParams["monsters_submit"] ~= nil ) then
-		
-		if( tonumber( Request.PostParams["Monsters_AnimalsOn"] ) ~= nil ) then
-			SettingsIni:SetValue("Monsters", "AnimalsOn", Request.PostParams["Monsters_AnimalsOn"], false )
-		end
-		if( tonumber( Request.PostParams["Monsters_AnimalSpawnInterval"] ) ~= nil ) then
-			SettingsIni:SetValue("Monsters", "AnimalSpawnInterval", Request.PostParams["Monsters_AnimalSpawnInterval"], false )
-		end
-		SettingsIni:SetValue("Monsters", "Types", Request.PostParams["Monsters_Types"], false )
-		if not(SettingsIni:WriteFile("settings.ini")) then
-			InfoMsg =  "<b style=\"color: red;\">ERROR: Could not write to settings.ini!</b>"
-		else
-			InfoMsg = "<b style=\"color: green;\">INFO: Successfully saved changes to settings.ini</b>"
-		end
-	end
-	
-	Content = Content .. "<form method=\"POST\">"
-	
-	Content = Content .. "<h4>Monsters Settings</h4>"
-	if( InfoMsg ~= nil ) then
-		Content = Content .. "<p>" .. InfoMsg .. "</p>"
-	end
-	
-	Content = Content .. [[
-	<table>
-	<th colspan="2">Monsters</th>
-	<tr><td style="width: 50%;">Animals On:</td>
-	<td>]] .. HTML_Select_On_Off("Monsters_AnimalsOn", SettingsIni:GetValueI("Monsters", "AnimalsOn") ) .. [[</td></tr>
-	<tr><td>Animal Spawn Interval:</td>
-	<td><input type="text" name="Monsters_AnimalSpawnInterval" value="]] .. SettingsIni:GetValue("Monsters", "AnimalSpawnInterval") .. [["></td></tr>
-	<tr><td>Monster Types:</td>
-	<td><input type="text" name="Monsters_Types" value="]] .. SettingsIni:GetValue("Monsters", "Types") .. [["></td></tr>
-	</table><br />
-	<input type="submit" value="Save Settings" name="monsters_submit"> WARNING: Any changes made here might require a server restart in order to be applied!
-	</form>]]
-	
-	return Content
-end
-
-local function ShowWorldsSettings( Request )
+local function ShowWorldsSettings(Request)
 	local Content = ""
 	local InfoMsg = nil
 	local bSaveIni = false
@@ -141,35 +114,35 @@ local function ShowWorldsSettings( Request )
 		InfoMsg = [[<b style="color: red;">ERROR: Could not read settings.ini!</b>]]
 	end
 	
-	if( Request.PostParams["RemoveWorld"] ~= nil ) then
+	if (Request.PostParams["RemoveWorld"] ~= nil) then
 		Content = Content .. Request.PostParams["RemoveWorld"]
-		local WorldIdx = string.sub( Request.PostParams["RemoveWorld"], string.len("Remove ") )
+		local WorldIdx = string.sub(Request.PostParams["RemoveWorld"], string.len("Remove "))
 		local KeyIdx = SettingsIni:FindKey("Worlds")
-		local WorldName = SettingsIni:GetValue( KeyIdx, WorldIdx )
-		if( SettingsIni:DeleteValueByID( KeyIdx, WorldIdx ) == true ) then
+		local WorldName = SettingsIni:GetValue(KeyIdx, WorldIdx)
+		if (SettingsIni:DeleteValueByID(KeyIdx, WorldIdx) == true) then
 			InfoMsg = "<b style=\"color: green;\">INFO: Successfully removed world " .. WorldName .. "!</b><br />"
 			bSaveIni = true
 		end
 	end
 	
-	if( Request.PostParams["AddWorld"] ~= nil ) then
-		if( Request.PostParams["WorldName"] ~= nil and Request.PostParams["WorldName"] ~= "" ) then
-			SettingsIni:SetValue("Worlds", "World", Request.PostParams["WorldName"], true )
+	if (Request.PostParams["AddWorld"] ~= nil) then
+		if (Request.PostParams["WorldName"] ~= nil and Request.PostParams["WorldName"] ~= "") then
+			SettingsIni:SetValue("Worlds", "World", Request.PostParams["WorldName"], true)
 			InfoMsg = "<b style=\"color: green;\">INFO: Successfully added world " .. Request.PostParams["WorldName"] .. "!</b><br />"
 			bSaveIni = true
 		end
 	end
 	
-	if( Request.PostParams["worlds_submit"] ~= nil ) then
+	if (Request.PostParams["worlds_submit"] ~= nil) then
 		SettingsIni:SetValue("Worlds", "DefaultWorld", Request.PostParams["Worlds_DefaultWorld"], false )
-		if( Request.PostParams["Worlds_World"] ~= nil ) then
+		if (Request.PostParams["Worlds_World"] ~= nil) then
 			SettingsIni:SetValue("Worlds", "World", Request.PostParams["Worlds_World"], true )
 		end
 		bSaveIni = true
 	end
 	
-	if( bSaveIni == true ) then
-		if( InfoMsg == nil ) then InfoMsg = "" end
+	if (bSaveIni) then
+		if (InfoMsg == nil) then InfoMsg = "" end
 		if not(SettingsIni:WriteFile("settings.ini")) then
 			InfoMsg = InfoMsg .. "<b style=\"color: red;\">ERROR: Could not write to settings.ini!</b>"
 		else
@@ -190,9 +163,9 @@ local function ShowWorldsSettings( Request )
 	<td><input type="Submit" name="Worlds_DefaultWorld" value="]] .. SettingsIni:GetValue("Worlds", "DefaultWorld") .. [["></td></tr>]]
 	
 	local KeyIdx = SettingsIni:FindKey("Worlds")
-	local NumValues = SettingsIni:GetNumValues( KeyIdx )
+	local NumValues = SettingsIni:GetNumValues(KeyIdx)
 	for i = 0, NumValues-1 do
-		local ValueName = SettingsIni:GetValueName(KeyIdx, i )
+		local ValueName = SettingsIni:GetValueName(KeyIdx, i)
 		if( ValueName == "World" ) then
 			local WorldName = SettingsIni:GetValue(KeyIdx, i)
 			Content = Content .. [[
@@ -214,104 +187,126 @@ end
 
 
 
-local function SelectWorldButton( WorldName )
+local function SelectWorldButton(WorldName)
 	return "<form method='POST'><input type='hidden' name='WorldName' value='"..WorldName.."'><input type='submit' name='SelectWorld' value='Select'></form>"
 end
 
-local function HTML_Select_Dimension( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("0", "Overworld",  defaultValue == 0 )
-		.. HTML_Option("-1", "Nether", defaultValue == 1 )
-		.. HTML_Option("1", "The End",  defaultValue == 2 )
+local function HTML_Select_Dimension(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("Overworld", "Overworld", NoCaseCompare("Overworld", DefaultValue) == 0)
+		.. HTML_Option("Nether", "Nether", NoCaseCompare("Nether", DefaultValue) == 0)
+		.. HTML_Option("End", "The End", NoCaseCompare("End", DefaultValue) == 0)
 		.. [[</select>]]
 end
 
-local function HTML_Select_Scheme( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("Default", "Default",  defaultValue == "Default" )
-		.. HTML_Option("Forgetful", "Forgetful", defaultValue == "Forgetful" )
-		.. HTML_Option("Compact", "Compact",  defaultValue == "Compact" )
+local function HTML_Select_Number(Name, MinNumber, MaxNumber, DefaultValue)
+	local ToReturn = [[<select name="]] .. Name .. [[">]]
+	for i = MinNumber, MaxNumber do
+		ToReturn = ToReturn .. HTML_Option(i, i, DefaultValue == i)
+	end
+
+	ToReturn = ToReturn .. [[</select>]]
+	return ToReturn
+end
+
+local function HTML_Select_Scheme(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("Default", "Default", NoCaseCompare("Default", DefaultValue) == 0)
+		.. HTML_Option("Anvil", "Anvil", NoCaseCompare("Anvil", DefaultValue) == 0)
+		.. HTML_Option("Forgetful", "Forgetful", NoCaseCompare("Forgetful", DefaultValue) == 0)
 		.. [[</select>]]
 end
 
-local function HTML_Select_GameMode( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("0", "Survival", defaultValue == 0 )
-		.. HTML_Option("1", "Creative",  defaultValue == 1 )
-		.. HTML_Option("2", "Adventure",  defaultValue == 2 )
+local function HTML_Select_GameMode(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("0", "Survival", DefaultValue == 0)
+		.. HTML_Option("1", "Creative",  DefaultValue == 1)
+		.. HTML_Option("2", "Adventure",  DefaultValue == 2)
 		.. [[</select>]]
 end
 
-local function HTML_Select_Simulator( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("Floody", "Floody", defaultValue == 0 )
-		.. HTML_Option("Noop", "Noop",  defaultValue == 1 )
-		.. HTML_Option("Vaporize", "Vaporize",  defaultValue == 2 )
+local function HTML_Select_Shrapnel_Level(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("0", "None", DefaultValue == 0)
+		.. HTML_Option("1", "Only Gravity Affected", DefaultValue == 1)
+		.. HTML_Option("2", "All", DefaultValue == 2)
 		.. [[</select>]]
 end
 
-local function HTML_Select_BiomeGen( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("MultiStepMap", "MultiStepMap", defaultValue == "MultiStepMap" )
-		.. HTML_Option("DistortedVoronoi", "DistortedVoronoi",  defaultValue == "DistortedVoronoi" )
-		.. HTML_Option("Voronoi", "Voronoi",  defaultValue == "Voronoi" )
-		.. HTML_Option("CheckerBoard", "CheckerBoard",  defaultValue == "CheckerBoard" )
-		.. HTML_Option("Constant", "Constant",  defaultValue == "Constant" )
+local function HTML_Select_Fluid_Simulator(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("Noop", "Disabled", NoCaseCompare("Noop", DefaultValue) == 0 or NoCaseCompare("null", DefaultValue) == 0 or NoCaseCompare("nil", DefaultValue) == 0)
+		.. HTML_Option("Vaporize", "Vaporize", NoCaseCompare("Vaporize", DefaultValue) == 0)
+		.. HTML_Option("Floody", "Floody", NoCaseCompare("Floody", DefaultValue) == 0)
+		.. HTML_Option("Vanilla", "Vanilla", NoCaseCompare("Vanilla", DefaultValue) == 0)
 		.. [[</select>]]
 end
 
-local function HTML_Select_HeightGen( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("Noise3D", "Noise3D", defaultValue == "Noise3D" )
-		.. HTML_Option("Biomal", "Biomal", defaultValue == "Biomal" )
-		.. HTML_Option("Classic", "Classic",  defaultValue == "Classic" )
-		.. HTML_Option("Flat", "Flat",  defaultValue == "Flat" )
+local function HTML_Select_Redstone_Simulator(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("Noop", "Disabled", NoCaseCompare("Noop", DefaultValue) == 0)
+		.. HTML_Option("Incremental", "Incremental", NoCaseCompare("Incremental", DefaultValue) == 0)
 		.. [[</select>]]
 end
 
-local function HTML_Select_CompositionGen( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("Noise3D", "Noise3D", defaultValue == "Noise3D" )
-		.. HTML_Option("Biomal", "Biomal", defaultValue == "Biomal" )
-		.. HTML_Option("Classic", "Classic",  defaultValue == "Classic" )
-		.. HTML_Option("SameBlock", "SameBlock",  defaultValue == "SameBlock" )
-		.. HTML_Option("DebugBiomes", "DebugBiomes",  defaultValue == "DebugBiomes" )
+local function HTML_Select_Generator(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("Noise3D", "Noise3D", NoCaseCompare("Noise3D", DefaultValue) == 0)
+		.. HTML_Option("Composable", "Composable", NoCaseCompare("Composable", DefaultValue) == 0)
 		.. [[</select>]]
 end
 
-local function HTML_Select_Generator( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("Composable", "Composable", defaultValue == "Composable" )
+local function HTML_Select_BiomeGen(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("MultiStepMap", "MultiStepMap", NoCaseCompare("MultiStepMap", DefaultValue) == 0)
+		.. HTML_Option("Constant", "Constant", NoCaseCompare("Constant", DefaultValue) == 0)
+		.. HTML_Option("CheckerBoard", "CheckerBoard", NoCaseCompare("CheckerBoard", DefaultValue) == 0)
+		.. HTML_Option("Voronoi", "Voronoi", NoCaseCompare("Voronoi", DefaultValue) == 0)
+		.. HTML_Option("DistortedVoronoi", "DistortedVoronoi", NoCaseCompare("DistortedVoronoi", DefaultValue) == 0)
+		.. HTML_Option("TwoLevel", "TwoLevel", NoCaseCompare("TwoLevel", DefaultValue) == 0)
+		.. HTML_Option("Grown", "Grown", NoCaseCompare("Grown", DefaultValue) == 0)
+		.. HTML_Option("GrownProt", "GrownProt", NoCaseCompare("GrownProt", DefaultValue) == 0)
 		.. [[</select>]]
 end
 
-local function HTML_Select_Biome( name, defaultValue )
-	return [[<select name="]] .. name .. [[">]]
-		.. HTML_Option("Ocean", "Ocean", defaultValue == "Ocean" )
-		.. HTML_Option("Plains", "Plains",  defaultValue == "Plains" )
-		.. HTML_Option("Extreme Hills", "Extreme Hills",  defaultValue == "Extreme Hills" )
-		.. HTML_Option("Forest", "Forest",  defaultValue == "Forest" )
-		.. HTML_Option("Taiga", "Taiga",  defaultValue == "Taiga" )
-		.. HTML_Option("Swampland", "Swampland",  defaultValue == "Swampland" )
-		.. HTML_Option("River", "River",  defaultValue == "River" )
-		.. HTML_Option("Hell", "Hell",  defaultValue == "Hell" )
-		.. HTML_Option("Sky", "Sky",  defaultValue == "Sky" )
-		.. HTML_Option("FrozenOcean", "FrozenOcean",  defaultValue == "FrozenOcean" )
-		.. HTML_Option("FrozenRiver", "FrozenRiver",  defaultValue == "FrozenRiver" )
-		.. HTML_Option("Ice Plains", "Ice Plains",  defaultValue == "Ice Plains" )
-		.. HTML_Option("Ice Mountains", "Ice Mountains",  defaultValue == "Ice Mountains" )
-		.. HTML_Option("MushroomIsland", "MushroomIsland",  defaultValue == "MushroomIsland" )
-		.. HTML_Option("MushroomIslandShore", "MushroomIslandShore",  defaultValue == "MushroomIslandShore" )
-		.. HTML_Option("Beach", "Beach",  defaultValue == "Beach" )
-		.. HTML_Option("DesertHills", "DesertHills",  defaultValue == "DesertHills" )
-		.. HTML_Option("ForestHills", "ForestHills",  defaultValue == "ForestHills" )
-		.. HTML_Option("TaigaHills", "TaigaHills",  defaultValue == "TaigaHills" )
-		.. HTML_Option("Extreme Hills Edge", "Extreme Hills Edge",  defaultValue == "Extreme Hills Edge" )
-		.. HTML_Option("Jungle", "Jungle",  defaultValue == "Jungle" )
-		.. HTML_Option("JungleHills", "JungleHills",  defaultValue == "JungleHills" )
+local function HTML_Select_HeightGen(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("Biomal", "Biomal", NoCaseCompare("Biomal", DefaultValue) == 0)
+		.. HTML_Option("Flat", "Flat", NoCaseCompare("Flat", DefaultValue) == 0)
+		.. HTML_Option("Classic", "Classic", NoCaseCompare("Classic", DefaultValue) == 0)
+		.. HTML_Option("DistortedHeightmap", "DistortedHeightmap", NoCaseCompare("DistortedHeightmap", DefaultValue) == 0)
+		.. HTML_Option("End", "End", NoCaseCompare("End", DefaultValue) == 0)
+		.. HTML_Option("MinMax", "MinMax", NoCaseCompare("MinMax", DefaultValue) == 0)
+		.. HTML_Option("Mountains", "Mountains", NoCaseCompare("Mountains", DefaultValue) == 0)
+		.. HTML_Option("BiomalNoise3D", "BiomalNoise3D", NoCaseCompare("BiomalNoise3D", DefaultValue) == 0)
+		.. HTML_Option("Noise3D", "Noise3D", NoCaseCompare("Noise3D", DefaultValue) == 0)
 		.. [[</select>]]
 end
 
+local function HTML_Select_ShapeGen(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("BiomalNoise3D", "BiomalNoise3D", NoCaseCompare("BiomalNoise3D", DefaultValue) == 0)
+		.. HTML_Option("HeightMap", "HeightMap", NoCaseCompare("HeightMap", DefaultValue) == 0)
+		.. HTML_Option("DistortedHeightmap", "DistortedHeightmap", NoCaseCompare("DistortedHeightmap", DefaultValue) == 0)
+		.. HTML_Option("End", "End", NoCaseCompare("End", DefaultValue) == 0)
+		.. HTML_Option("Noise3D", "Noise3D", NoCaseCompare("Noise3D", DefaultValue) == 0)
+		.. HTML_Option("TwoHeights", "TwoHeights", NoCaseCompare("TwoHeights", DefaultValue) == 0)
+		.. [[</select>]]
+end
+
+local function HTML_Select_CompositionGen(Name, DefaultValue)
+	return [[<select name="]] .. Name .. [[">]]
+		.. HTML_Option("Biomal", "Biomal", NoCaseCompare("Biomal", DefaultValue) == 0)
+		.. HTML_Option("BiomalNoise3D", "BiomalNoise3D", NoCaseCompare("BiomalNoise3D", DefaultValue) == 0)
+		.. HTML_Option("Classic", "Classic", NoCaseCompare("Classic", DefaultValue) == 0)
+		.. HTML_Option("DebugBiomes", "DebugBiomes", NoCaseCompare("DebugBiomes", DefaultValue) == 0)
+		.. HTML_Option("DistortedHeightmap", "DistortedHeightmap", NoCaseCompare("DistortedHeightmap", DefaultValue) == 0)
+		.. HTML_Option("End", "End", NoCaseCompare("End", DefaultValue) == 0)
+		.. HTML_Option("Nether", "Nether", NoCaseCompare("Nether", DefaultValue) == 0)
+		.. HTML_Option("Noise3D", "Noise3D", NoCaseCompare("Noise3D", DefaultValue) == 0)
+		.. HTML_Option("SameBlock", "SameBlock", NoCaseCompare("SameBlock", DefaultValue) == 0)
+		.. [[</select>]]
+end
 
 
 
@@ -325,15 +320,14 @@ slAdvanced = 2
 
 
 
-function ShowWorldSettings( Request )
+function ShowWorldSettings(Request)
 	local Content = ""
-	
 	local SettingLayout = g_WorldSettingsLayout[Request.Username] or slEasy
 	
 	if (Request.PostParams['ChangeWebLayout'] ~= nil) then
 		if (Request.PostParams['ChangeWebLayout'] == 'Easy') then
 			SettingLayout = slEasy
-		elseif(Request.PostParams['ChangeWebLayout'] == 'Advanced') then
+		elseif (Request.PostParams['ChangeWebLayout'] == 'Advanced') then
 			SettingLayout = slAdvanced
 		end
 	end
@@ -355,7 +349,6 @@ function ShowWorldSettings( Request )
 	end
 	
 	g_WorldSettingsLayout[Request.Username] = SettingLayout
-	
 	return Content
 end
 
@@ -370,232 +363,64 @@ function GetEasyWorldSettings(Request)
 		InfoMsg = [[<b style="color: red;">ERROR: Could not read settings.ini!</b>]]
 	end
 	if (Request.PostParams["SelectWorld"] ~= nil and Request.PostParams["WorldName"] ~= nil) then		-- World is selected!
-		WORLD = Request.PostParams["WorldName"]
-		SelectedWorld = cRoot:Get():GetWorld(WORLD)
+		SelectedWorld = cRoot:Get():GetWorld(Request.PostParams["WorldName"])
 	elseif SelectedWorld == nil then
-		WORLD = SettingsIni:GetValue("Worlds", "DefaultWorld")
-		SelectedWorld = cRoot:Get():GetWorld( WORLD )
+		local WorldName = SettingsIni:GetValue("Worlds", "DefaultWorld")
+		SelectedWorld = cRoot:Get():GetWorld(WorldName)
 	end
+
 	local WorldIni = cIniFile()
 	WorldIni:ReadFile(SelectedWorld:GetIniFileName())
-	if (Request.PostParams["world_submit"]) ~= nil then
-		if( tonumber( Request.PostParams["World_Dimension"] ) ~= nil ) then
-			WorldIni:SetValue( "General", "Dimension", Request.PostParams["World_Dimension"] )
-		end
-		if( tonumber( Request.PostParams["World_Schema"] ) ~= nil ) then
-			WorldIni:SetValue( "General", "Schema", Request.PostParams["World_Schema"] )
-		end
-		if( tonumber( Request.PostParams["World_SpawnX"] ) ~= nil ) then
-			WorldIni:SetValue( "SpawnPosition", "X", Request.PostParams["World_SpawnX"] )
-		end
-		if( tonumber( Request.PostParams["World_SpawnY"] ) ~= nil ) then
-			WorldIni:SetValue( "SpawnPosition", "Y", Request.PostParams["World_SpawnY"] )
-		end
-		if( tonumber( Request.PostParams["World_SpawnZ"] ) ~= nil ) then
-			WorldIni:SetValue( "SpawnPosition", "Z", Request.PostParams["World_SpawnZ"] )
-		end
-		if( tonumber( Request.PostParams["LimitWorldWidth"] ) ~= nil ) then
-			WorldIni:SetValue( "WorldLimit", "LimitRadius", Request.PostParams["LimitWorldWidth"] )
-		end
-		if( tonumber( Request.PostParams["World_Seed"] ) ~= nil ) then
-			WorldIni:SetValue( "Seed", "Seed", Request.PostParams["World_Seed"] )
-		end
-		if( tonumber( Request.PostParams["World_PVP"] ) ~= nil ) then
-			WorldIni:SetValue( "PVP", "Enabled", Request.PostParams["World_PVP"] )
-		end
-		if( tonumber( Request.PostParams["World_GameMode"] ) ~= nil ) then
-			WorldIni:SetValue( "GameMode", "GameMode", Request.PostParams["World_GameMode"] )
-		end
-		if( tonumber( Request.PostParams["World_DeepSnow"] ) ~= nil ) then
-			WorldIni:SetValue( "Physics", "DeepSnow", Request.PostParams["World_DeepSnow"] )
-		end
-		if( tonumber( Request.PostParams["World_SandInstantFall"] ) ~= nil ) then
-			WorldIni:SetValue( "Physics", "SandInstantFall", Request.PostParams["World_SandInstantFall"] )
-		end
-		if( tonumber( Request.PostParams["World_WaterSimulator"] ) ~= nil ) then
-			WorldIni:SetValue( "Physics", "WaterSimulator", Request.PostParams["World_WaterSimulator"] )
-		end
-		if( tonumber( Request.PostParams["World_LavaSimulator"] ) ~= nil ) then
-			WorldIni:SetValue( "Physics", "LavaSimulator", Request.PostParams["World_LavaSimulator"] )
-		end
-		if( tonumber( Request.PostParams["World_MaxSugarcaneHeight"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "MaxSugarcaneHeight", Request.PostParams["World_MaxSugarcaneHeight"] )
-		end
-		if( tonumber( Request.PostParams["World_MaxCactusHeight"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "MaxCactusHeight", Request.PostParams["World_MaxCactusHeight"] )
-		end
-		if( tonumber( Request.PostParams["World_CarrotsBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsCarrotsBonemealable", Request.PostParams["World_CarrotsBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_CropsBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsCropsBonemealable", Request.PostParams["World_CropsBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_GrassBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsGrassBonemealable", Request.PostParams["World_GrassBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_SaplingBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsSaplingBonemealable", Request.PostParams["World_SaplingBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_MelonStemBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsMelonStemBonemealable", Request.PostParams["World_MelonStemBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_MelonBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsMelonBonemealable", Request.PostParams["World_MelonBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_PotatoesBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsPotatoesBonemealable", Request.PostParams["World_PotatoesBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_PumpkinStemBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsPumpkinStemBonemealable", Request.PostParams["World_PumpkinStemBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_PumpkinBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsPumpkinBonemealable", Request.PostParams["World_PumpkinBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_SugarCaneBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsSugarCaneBonemealable", Request.PostParams["World_SugarCaneBonemealable"] )
-		end
-		if( tonumber( Request.PostParams["World_CactusBonemealable"] ) ~= nil ) then
-			WorldIni:SetValue( "Plants", "IsCactusBonemealable", Request.PostParams["World_CactusBonemealable"] )
-		end
-		if( ( Request.PostParams["World_BiomeGen"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "BiomeGen", Request.PostParams["World_BiomeGen"] )
-		end
-			if( ( Request.PostParams["World_Biome"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ConstantBiome", Request.PostParams["World_Biome"] )
-			end
-			if( ( Request.PostParams["World_MultiStepMapOceanCellSize"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "MultiStepMapOceanCellSize", Request.PostParams["World_MultiStepMapOceanCellSize"] )
-			end
-			if( ( Request.PostParams["World_MultiStepMapMushroomIslandSize"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "MultiStepMapMushroomIslandSize", Request.PostParams["World_MultiStepMapMushroomIslandSize"] )
-			end
-			if( ( Request.PostParams["World_MultiStepMapRiverCellSize"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "MultiStepMapRiverCellSize", Request.PostParams["World_MultiStepMapRiverCellSize"] )
-			end
-			if( ( Request.PostParams["World_MultiStepMapRiverWidth"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "MultiStepMapRiverWidth", Request.PostParams["World_MultiStepMapRiverWidth"] )
-			end
-			if( ( Request.PostParams["World_MultiStepMapLandBiomeSize"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "MultiStepMapLandBiomeSize", Request.PostParams["World_MultiStepMapLandBiomeSize"] )
-			end
-			if( ( Request.PostParams["World_DistortedVoronoiCellSize"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "DistortedVoronoiCellSize", Request.PostParams["World_DistortedVoronoiCellSize"] )
-			end
-			if( ( Request.PostParams["World_DistortedVoronoiBiomes"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "DistortedVoronoiBiomes", Request.PostParams["World_DistortedVoronoiBiomes"] )
-			end
-			if( ( Request.PostParams["World_VoronoiCellSize"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "VoronoiCellSize", Request.PostParams["World_VoronoiCellSize"] )
-			end
-			if( ( Request.PostParams["World_VoronoiBiomesdVoronoiBiomes"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "VoronoiBiomes", Request.PostParams["World_VoronoiBiomes"] )
-			end
-			if( ( Request.PostParams["World_CheckerBoardBiomes"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "CheckerBoardBiomes", Request.PostParams["World_CheckerBoardBiomes"] )
-			end
-			if( ( Request.PostParams["World_CheckerBoardBiomeSize"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "CheckerBoardBiomeSize", Request.PostParams["World_CheckerBoardBiomeSize"] )
-			end
-		if( ( Request.PostParams["World_HeightGen"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "HeightGen", Request.PostParams["World_HeightGen"] )
-		end
-			if( ( Request.PostParams["World_FlatHeight"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "FlatHeight", Request.PostParams["World_FlatHeight"] )
-			end
-		if( ( Request.PostParams["World_CompositionGen"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "CompositionGen", Request.PostParams["World_CompositionGen"] )
-		end
-			if( ( Request.PostParams["World_Noise3DSeaLevel"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "Noise3DSeaLevel", Request.PostParams["World_Noise3DSeaLevel"] )
-			end
-			if( ( Request.PostParams["World_Noise3DHeightAmplification"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "Noise3DHeightAmplification", Request.PostParams["World_Noise3DHeightAmplification"] )
-			end
-			if( ( Request.PostParams["World_Noise3DMidPoint"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "Noise3DMidPoint", Request.PostParams["World_Noise3DMidPoint"] )
-			end
-			if( ( Request.PostParams["World_Noise3DFrequencyX"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "Noise3DFrequencyX", Request.PostParams["World_Noise3DFrequencyX"] )
-			end
-			if( ( Request.PostParams["World_Noise3DFrequencyY"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "Noise3DFrequencyY", Request.PostParams["World_Noise3DFrequencyY"] )
-			end
-			if( ( Request.PostParams["World_Noise3DFrequencyZ"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "Noise3DFrequencyZ", Request.PostParams["World_Noise3DFrequencyZ"] )
-			end
-			if( ( Request.PostParams["World_Noise3DAirThreshold"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "Noise3DAirThreshold", Request.PostParams["World_Noise3DAirThreshold"] )
-			end
-			if( ( Request.PostParams["World_ClassicSeaLevel"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicSeaLevel", Request.PostParams["World_ClassicSeaLevel"] )
-			end
-			if( ( Request.PostParams["World_ClassicBeachHeight"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicBeachHeight", Request.PostParams["World_ClassicBeachHeight"] )
-			end
-			if( ( Request.PostParams["World_ClassicBeachDepth"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicBeachDepth", Request.PostParams["World_ClassicBeachDepth"] )
-			end
-			if( ( Request.PostParams["World_ClassicBlockTop"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicBlockTop", Request.PostParams["World_ClassicBlockTop"] )
-			end
-			if( ( Request.PostParams["World_ClassicBlockMiddle"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicBlockMiddle", Request.PostParams["World_ClassicBlockMiddle"] )
-			end
-			if( ( Request.PostParams["World_ClassicBlockBottom"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicBlockBottom", Request.PostParams["World_ClassicBlockBottom"] )
-			end
-			if( ( Request.PostParams["World_ClassicBlockBeach"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicBlockBeach", Request.PostParams["World_ClassicBlockBeach"] )
-			end
-			if( ( Request.PostParams["World_ClassicBlockBeachBottom"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicBlockBeachBottom", Request.PostParams["World_ClassicBlockBeachBottom"] )
-			end
-			if( ( Request.PostParams["World_ClassicBlockSea"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "ClassicBlockSea", Request.PostParams["World_ClassicBlockSea"] )
-			end
-			if( ( Request.PostParams["World_SameBlockType"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "SameBlockType", Request.PostParams["World_SameBlockType"] )
-			end
-			if( ( Request.PostParams["World_SameBlockBedrocked"] ) ~= nil ) then
-				WorldIni:SetValue( "Generator", "SameBlockBedrocked", Request.PostParams["World_SameBlockBedrocked"] )
-			end
-		if( ( Request.PostParams["World_Structures"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "Structures", Request.PostParams["World_Structures"] )
-		end
-		if( ( Request.PostParams["World_Finishers"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "Finishers", Request.PostParams["World_Finishers"] )
-		end
-		if( ( Request.PostParams["World_Generator"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "Generator", Request.PostParams["World_Generator"] )
-		end
-		if( ( Request.PostParams["World_MineShaftsGridSize"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "MineShaftsGridSize", Request.PostParams["World_MineShaftsGridSize"] )
-		end
-		if( ( Request.PostParams["World_MineShaftsMaxSystemSize"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "MineShaftsMaxSystemSize", Request.PostParams["World_MineShaftsMaxSystemSize"] )
-		end
-		if( ( Request.PostParams["World_MineShaftsChanceCorridor"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "MineShaftsChanceCorridor", Request.PostParams["World_MineShaftsChanceCorridor"] )
-		end
-		if( ( Request.PostParams["World_MineShaftsChanceCrossing"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "MineShaftsChanceCrossing", Request.PostParams["World_MineShaftsChanceCrossing"] )
-		end
-		if( ( Request.PostParams["World_MineShaftsChanceStaircase"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "MineShaftsChanceStaircase", Request.PostParams["World_MineShaftsChanceStaircase"] )
-		end
-		if( ( Request.PostParams["World_LavaLakesProbability"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "LavaLakesProbability", Request.PostParams["World_LavaLakesProbability"] )
-		end
-		if( ( Request.PostParams["World_WaterLakesProbability"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "WaterLakesProbability", Request.PostParams["World_WaterLakesProbability"] )
-		end
-		if( ( Request.PostParams["World_BottomLavaLevel"] ) ~= nil ) then
-			WorldIni:SetValue( "Generator", "BottomLavaLevel", Request.PostParams["World_BottomLavaLevel"] )
-		end
+
+	if (Request.PostParams["world_submit"] ~= nil) then
+		WorldIni:SetValue("General", "Dimension", Request.PostParams["General_Dimension"])
+		WorldIni:SetValueB("General", "IsDaylightCycleEnabled", Request.PostParams["General_DaylightCycle"] == "1")
+		WorldIni:SetValueI("General", "Gamemode", tonumber(Request.PostParams["General_GameMode"]))
+
+		WorldIni:SetValueB("Broadcasting", "BroadcastDeathMessages", Request.PostParams["Broadcasting_DeathMessages"] == "1")
+		WorldIni:SetValueB("Broadcasting", "BroadcastAchievementMessages", Request.PostParams["Broadcasting_AchievementMessages"] == "1")
+
+		WorldIni:SetValueI("SpawnPosition", "X", tonumber(Request.PostParams["Spawn_X"]))
+		WorldIni:SetValueI("SpawnPosition", "Y", tonumber(Request.PostParams["Spawn_Y"]))
+		WorldIni:SetValueI("SpawnPosition", "Z", tonumber(Request.PostParams["Spawn_Z"]))
+		WorldIni:SetValueI("SpawnPosition", "MaxViewDistance", tonumber(Request.PostParams["Spawn_MaxViewDistance"]))
+		WorldIni:SetValueI("SpawnPosition", "PregenerateDistance", tonumber(Request.PostParams["Spawn_PregenerateDistance"]))
+
+		WorldIni:SetValue("Storage", "Schema", Request.PostParams["Storage_Schema"])
+		WorldIni:SetValueI("Storage", "CompressionFactor", tonumber(Request.PostParams["Storage_CompressionFactor"]))
+
+		WorldIni:SetValueB("Physics", "DeepSnow", Request.PostParams["Physics_DeepSnow"] == "1")
+		WorldIni:SetValueB("Physics", "ShouldLavaSpawnFire", Request.PostParams["Physics_ShouldLavaSpawnFire"] == "1")
+		WorldIni:SetValueI("Physics", "TNTShrapnelLevel", tonumber(Request.PostParams["Physics_TNTShrapnelLevel"]))
+		WorldIni:SetValueB("Physics", "SandInstantFall", Request.PostParams["Physics_SandInstantFall"] == "1")
+		WorldIni:SetValue("Physics", "WaterSimulator", Request.PostParams["Physics_WaterSimulator"])
+		WorldIni:SetValue("Physics", "LavaSimulator", Request.PostParams["Physics_LavaSimulator"])
+		WorldIni:SetValue("Physics", "RedstoneSimulator", Request.PostParams["Physics_RedstoneSimulator"])
+
+		WorldIni:SetValueB("Mechanics", "CommandBlocksEnabled", Request.PostParams["Mechanics_CommandBlocksEnabled"] == "1")
+		WorldIni:SetValueB("Mechanics", "PVPEnabled", Request.PostParams["Mechanics_PVPEnabled"] == "1")
+		WorldIni:SetValueB("Mechanics", "UseChatPrefixes", Request.PostParams["Mechanics_UseChatPrefixes"] == "1")
+
+		WorldIni:SetValueB("Monsters", "VillagersShouldHarvestCrops", Request.PostParams["Monsters_VillagersShouldHarvestCrops"] == "1")
+		WorldIni:SetValueB("Monsters", "AnimalsOn", Request.PostParams["Monsters_AnimalsOn"] == "1")
+		WorldIni:SetValue("Monsters", "Types", Request.PostParams["Monsters_Types"])
+
+		WorldIni:SetValue("LinkedWorlds", "NetherWorldName", Request.PostParams["LinkedWorlds_Nether"])
+		WorldIni:SetValue("LinkedWorlds", "EndWorldName", Request.PostParams["LinkedWorlds_End"])
+
+		WorldIni:SetValueI("Seed", "Seed", tonumber(Request.PostParams["Seed"]))
+
+		WorldIni:SetValue("Generator", "Generator", Request.PostParams["Generator"])
+		WorldIni:SetValue("Generator", "BiomeGen", Request.PostParams["Generator_BiomeGen"])
+		WorldIni:SetValue("Generator", "HeightGen", Request.PostParams["Generator_HeightGen"])
+		WorldIni:SetValue("Generator", "ShapeGen", Request.PostParams["Generator_ShapeGen"])
+		WorldIni:SetValue("Generator", "CompositionGen", Request.PostParams["Generator_CompositionGen"])
+		WorldIni:SetValue("Generator", "Finishers", Request.PostParams["Generator_Finishers"])
 		
 		WorldIni:WriteFile(SelectedWorld:GetIniFileName())
 	end
-	Content = Content .. "<h4>World for operations: " .. WORLD .. "</h4>"
+
+	Content = Content .. "<h4>World for operations: " .. SelectedWorld:GetName() .. "</h4>"
 	Content = Content .. "<table>"
 	local WorldNum = 0
 	local AddWorldToTable = function(World)
@@ -608,213 +433,98 @@ function GetEasyWorldSettings(Request)
 	end
 	cRoot:Get():ForEachWorld(AddWorldToTable)
 	Content = Content .. "</table>"
-	
-	
+
 	Content = Content .. [[<table>
 	<form method="POST">
 	<br />
 	<th colspan="2">General</th>
-	<tr><td>Dimension:</td>
-	<td>]] .. HTML_Select_Dimension("World_Dimension", WorldIni:GetValueI("General", "Dimension") ) .. [[</td></tr>
+	<tr><td style="width: 50%;">Dimension:</td>
+	<td>]] .. HTML_Select_Dimension("General_Dimension", WorldIni:GetValue("General", "Dimension")) .. [[</td></tr>
+	<tr><td>Daylight Cycle Enabled:</td>
+	<td>]] .. HTML_Select_On_Off("General_DaylightCycle", WorldIni:GetValueI("General", "IsDaylightCycleEnabled")) .. [[</td></tr>
+	<tr><td>Default GameMode:</td>
+	<td>]] .. HTML_Select_GameMode("General_GameMode", WorldIni:GetValueI("General", "Gamemode")) .. [[</td></tr>
+
+	<th colspan="2">Broadcasting</th>
+	<tr><td>Death Messages:</td>
+	<td>]] .. HTML_Select_On_Off("Broadcasting_DeathMessages", WorldIni:GetValueI("Broadcasting", "BroadcastDeathMessages")) .. [[</td></tr>
+	<tr><td>Achievement Messages:</td>
+	<td>]] .. HTML_Select_On_Off("Broadcasting_AchievementMessages", WorldIni:GetValueI("Broadcasting", "BroadcastAchievementMessages")) .. [[</td></tr>
+
+	<th colspan="2">Spawn Position</th>
+	<tr><td>X:</td>
+	<td><input type="text" name="Spawn_X" value="]] .. WorldIni:GetValue("SpawnPosition", "X") .. [["></td></tr>
+	<tr><td>Y:</td>
+	<td><input type="text" name="Spawn_Y" value="]] .. WorldIni:GetValue("SpawnPosition", "Y") .. [["></td></tr>
+	<tr><td>Z:</td>
+	<td><input type="text" name="Spawn_Z" value="]] .. WorldIni:GetValue("SpawnPosition", "Z") .. [["></td></tr>
+	<tr><td>Max View Distance:</td>
+	<td>]] .. HTML_Select_Number("Spawn_MaxViewDistance", cClientHandle.MIN_VIEW_DISTANCE, cClientHandle.MAX_VIEW_DISTANCE, WorldIni:GetValueI("SpawnPosition", "MaxViewDistance")) .. [[</td></tr>
+	<tr><td>Pregenerate Distance:</td>
+	<td><input type="text" name="Spawn_PregenerateDistance" value="]] .. WorldIni:GetValue("SpawnPosition", "PregenerateDistance") .. [["></td></tr>
 
 	<th colspan="2">Storage</th>
 	<tr><td>Schema:</td>
-	<td>]] .. HTML_Select_Scheme("World_Schema", WorldIni:GetValueI("Storage", "Schema") ) .. [[</td></tr>
-	<th colspan="2">Spawn Position</th>
-	<tr><td>X:</td>
-	<td><input type="text" name="World_SpawnX" value="]] .. WorldIni:GetValue("SpawnPosition", "X") .. [["></td></tr>
-	<tr><td>Y:</td>
-	<td><input type="text" name="World_SpawnY" value="]] .. WorldIni:GetValue("SpawnPosition", "Y") .. [["></td></tr>
-	<tr><td>Z:</td>
-	<td><input type="text" name="World_SpawnZ" value="]] .. WorldIni:GetValue("SpawnPosition", "Z") .. [["></td></tr>
-	<th colspan="2">LimitWorld</th>
-	<tr><td>Max chunks from spawn (0 to disable):</td>
-	<td><input type="text" name="LimitWorldWidth" value="]] .. WorldIni:GetValue("WorldLimit", "LimitRadius") .. [["></td></tr>
+	<td>]] .. HTML_Select_Scheme("Storage_Schema", WorldIni:GetValue("Storage", "Schema")) .. [[</td></tr>
+	<tr><td>Compression Factor:</td>
+	<td>]] .. HTML_Select_Number("Storage_CompressionFactor", 0, 6, WorldIni:GetValueI("Storage", "CompressionFactor")) .. [[</td></tr>
+
+	<th colspan="2">Physics</th>
+	<tr><td>Deep snow:</td>
+	<td>]] .. HTML_Select_On_Off("Physics_DeepSnow", WorldIni:GetValueI("Physics", "DeepSnow")) .. [[</td></tr>
+	<tr><td>Should lava spawn fire:</td>
+	<td>]] .. HTML_Select_On_Off("Physics_ShouldLavaSpawnFire", WorldIni:GetValueI("Physics", "ShouldLavaSpawnFire")) .. [[</td></tr>
+	<tr><td>TNT Shrapnel Level:</td>
+	<td>]] .. HTML_Select_Shrapnel_Level("Physics_TNTShrapnelLevel", WorldIni:GetValueI("Physics", "TNTShrapnelLevel")) .. [[</td></tr>
+	<tr><td>Sand Instant Fall:</td>
+	<td>]] .. HTML_Select_On_Off("Physics_SandInstantFall", WorldIni:GetValueI("Physics", "SandInstantFall")) .. [[</td></tr>
+	<tr><td>Water Simulator:</td>
+	<td>]] .. HTML_Select_Fluid_Simulator("Physics_WaterSimulator", WorldIni:GetValue("Physics", "WaterSimulator"))  .. [[</td></tr>
+	<tr><td>Lava Simulator:</td>
+	<td>]] .. HTML_Select_Fluid_Simulator("Physics_LavaSimulator", WorldIni:GetValue("Physics", "LavaSimulator")) .. [[</td></tr>
+	<tr><td>Redstone Simulator:</td>
+	<td>]] .. HTML_Select_Redstone_Simulator("Physics_RedstoneSimulator", WorldIni:GetValue("Physics", "RedstoneSimulator")) .. [[</td></tr>
+
+	<th colspan="2">Mechanics</th>
+	<tr><td>Command blocks:</td>
+	<td>]] .. HTML_Select_On_Off("Mechanics_CommandBlocksEnabled", WorldIni:GetValueI("Mechanics", "CommandBlocksEnabled")) .. [[</td></tr>
+	<tr><td>PVP:</td>
+	<td>]] .. HTML_Select_On_Off("Mechanics_PVPEnabled", WorldIni:GetValueI("Mechanics", "PVPEnabled")) .. [[</td></tr>
+	<tr><td>Use Chat Prefixes:</td>
+	<td>]] .. HTML_Select_On_Off("Mechanics_UseChatPrefixes", WorldIni:GetValueI("Mechanics", "UseChatPrefixes")) .. [[</td></tr>
+
+	<th colspan="2">Monsters</th>
+	<tr><td>Should villagers harvest crops:</td>
+	<td>]] .. HTML_Select_On_Off("Monsters_VillagersShouldHarvestCrops", WorldIni:GetValueI("Monsters", "VillagersShouldHarvestCrops")) .. [[</td></tr>
+	<tr><td>Animals on:</td>
+	<td>]] .. HTML_Select_On_Off("Monsters_AnimalsOn", WorldIni:GetValueI("Monsters", "AnimalsOn")) .. [[</td></tr>
+	<tr><td>Types (Only this types will spawn):</td>
+	<td><input type="text" name="Monsters_Types" value="]] .. WorldIni:GetValue("Monsters", "Types") .. [["></td></tr>
+
+	<th colspan="2">Linked worlds</th>
+	<tr><td>Nether:</td>
+	<td><input type="text" name="LinkedWorlds_Nether" value="]] .. WorldIni:GetValue("LinkedWorlds", "NetherWorldName") .. [["></td></tr>
+	<tr><td>The End:</td>
+	<td><input type="text" name="LinkedWorlds_End" value="]] .. WorldIni:GetValue("LinkedWorlds", "EndWorldName") .. [["></td></tr>
+
 	<th colspan="2">Seed</th>
 	<tr><td>Seed:</td>
-	<td><input type="text" name="World_Seed" value="]] .. WorldIni:GetValue("Seed", "Seed") .. [["></td></tr>
-	<th colspan="2">PVP</th>
-	<tr><td style="width: 50%;">PVP:</td>
-	<td>]] .. HTML_Select_On_Off("World_PVP", WorldIni:GetValueI("PVP", "Enabled") ) .. [[</td></tr>
-	<th colspan="2">GameMode</th>
-	<tr><td style="width: 50%;">GameMode:</td>
-	<td>]] .. HTML_Select_GameMode("World_GameMode", WorldIni:GetValueI("GameMode", "GameMode") ) .. [[</td></tr>
-	<th colspan="2">Physics</th>
-	<tr><td style="width: 50%;">DeepSnow:</td>
-	<td>]] .. HTML_Select_On_Off("World_DeepSnow", WorldIni:GetValueI("Physics", "DeepSnow") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">SandInstantFall:</td>
-	<td>]] .. HTML_Select_On_Off("World_SandInstantFall", WorldIni:GetValueI("Physics", "SandInstantFall") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">WaterSimulator:</td>
-	<td>]] .. HTML_Select_Simulator("World_WaterSimulator", WorldIni:GetValue("Physics", "WaterSimulator") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">LavaSimulator:</td>
-	<td>]] .. HTML_Select_Simulator("World_LavaSimulator", WorldIni:GetValue("Physics", "LavaSimulator") ) .. [[</td></tr>
-	<th colspan="2">Plants</th>
-	<tr><td>MaxCactusHeight:</td>
-	<td><input type="text" name="World_MaxCactusHeight" value="]] .. WorldIni:GetValue("Plants", "MaxCactusHeight") .. [["></td></tr>
-	<tr><td>MaxSugarcaneHeigh:</td>
-	<td><input type="text" name="World_MaxSugarcaneHeight" value="]] .. WorldIni:GetValue("Plants", "MaxSugarcaneHeight") .. [["></td></tr>
-	<tr><td style="width: 50%;">CarrotsBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_CarrotsBonemealable", WorldIni:GetValueI("Plants", "IsCarrotsBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">CropsBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_CropsBonemealable", WorldIni:GetValueI("Plants", "IsCropsBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">GrassBonemealabl:</td>
-	<td>]] .. HTML_Select_On_Off("World_GrassBonemealable", WorldIni:GetValueI("Plants", "IsGrassBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">SaplingBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_SaplingBonemealable", WorldIni:GetValueI("Plants", "IsSaplingBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">MelonStemBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_MelonStemBonemealable", WorldIni:GetValueI("Plants", "IsMelonStemBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">MelonBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_MelonBonemealable", WorldIni:GetValueI("Plants", "IsMelonBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">PotatoesBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_PotatoesBonemealable", WorldIni:GetValueI("Plants", "IsPotatoesBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">PumpkinStemBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_PumpkinStemBonemealable", WorldIni:GetValueI("Plants", "IsPumpkinStemBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">PumpkinBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_PumpkinBonemealable", WorldIni:GetValueI("Plants", "IsPumpkinBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">SugarcaneBonemealabl:</td>
-	<td>]] .. HTML_Select_On_Off("World_SugarcaneBonemealable", WorldIni:GetValueI("Plants", "IsSugarcaneBonemealable") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">CactusBonemealable:</td>
-	<td>]] .. HTML_Select_On_Off("World_CactusBonemealable", WorldIni:GetValueI("Plants", "IsCactusBonemealable") ) .. [[</td></tr>
+	<td><input type="text" name="Seed" value="]] .. WorldIni:GetValue("Seed", "Seed") .. [["></td></tr>
+
 	<th colspan="2">Generator</th>
-	<tr><td style="width: 50%;">BiomeGen:</td>
-	<td>]] .. HTML_Select_BiomeGen("World_BiomeGen", WorldIni:GetValue("Generator", "BiomeGen") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">HeightGen:</td>
-	<td>]] .. HTML_Select_HeightGen("World_HeightGen", WorldIni:GetValue("Generator", "HeightGen") ) .. [[</td></tr>
-	<tr><td style="width: 50%;">CompositionGen:</td>
-	<td>]] .. HTML_Select_CompositionGen("World_CompositionGen", WorldIni:GetValue("Generator", "CompositionGen") ) .. [[</td></tr>
-	<tr><td>Structures:</td>
-	<td><input type="text" size="50" name="World_Structures" value="]] .. WorldIni:GetValue("Generator", "Structures") .. [["></td></tr>
+	<tr><td>Generator:</td>
+	<td>]] .. HTML_Select_Generator("Generator", WorldIni:GetValue("Generator", "Generator")) .. [[</td></tr>
+	<tr><td>Biome Generator:</td>
+	<td>]] .. HTML_Select_BiomeGen("Generator_BiomeGen", WorldIni:GetValue("Generator", "BiomeGen")) .. [[</td></tr>
+	<tr><td>Height Generator:</td>
+	<td>]] .. HTML_Select_HeightGen("Generator_HeightGen", WorldIni:GetValue("Generator", "HeightGen")) .. [[</td></tr>
+	<tr><td>Shape Generator:</td>
+	<td>]] .. HTML_Select_ShapeGen("Generator_ShapeGen", WorldIni:GetValue("Generator", "ShapeGen")) .. [[</td></tr>
+	<tr><td style="width: 50%;">Composition Generator:</td>
+	<td>]] .. HTML_Select_CompositionGen("Generator_CompositionGen", WorldIni:GetValue("Generator", "CompositionGen") ) .. [[</td></tr>
 	<tr><td>Finishers:</td>
-	<td><input type="text" size="50" name="World_Finishers" value="]] .. WorldIni:GetValue("Generator", "Finishers") .. [["></td></tr>
-	<tr><td style="width: 50%;">Generator:</td>
-	<td>]] .. HTML_Select_Generator("World_Generator", WorldIni:GetValue("Generator", "Generator") ) .. [[</td></tr>
-	<th colspan="1">Finetuning</th><br />
-	]]	
-	if WorldIni:GetValue( "Generator", "BiomeGen" ) ==  "Constant" then
-		Content = Content .. [[
-		<th colspan="2">Biome Generator</th>
-		<tr><td style="width: 50%;">ConstantBiome:</td>
-		<td>]] .. HTML_Select_Biome( "World_Biome", WorldIni:GetValue("Generator", "ConstantBiome" ) ) .. [[</td></tr>]]
-	elseif WorldIni:GetValue( "Generator", "BiomeGen" ) == "MultiStepMap" then
-		Content = Content .. [[
-		<th colspan="2">Biome Generator</th>
-		<tr><td>MultiStepMapOceanCellSize:</td>
-		<td><input type="text" name="World_MultiStepMapOceanCellSize" value="]] .. WorldIni:GetValue("Generator", "MultiStepMapOceanCellSize") .. [["></td></tr>
-		<tr><td>MultiStepMapOceanCellSize:</td>
-		<td><input type="text" name="World_MultiStepMapMushroomIslandSize" value="]] .. WorldIni:GetValue("Generator", "MultiStepMapMushroomIslandSize") .. [["></td></tr>
-		<tr><td>MultiStepMapOceanCellSize:</td>
-		<td><input type="text" name="World_MultiStepMapRiverCellSize" value="]] .. WorldIni:GetValue("Generator", "MultiStepMapRiverCellSize") .. [["></td></tr>
-		<tr><td>MultiStepMapOceanCellSize:</td>
-		<td><input type="text" name="World_MultiStepMapRiverWidth" value="]] .. WorldIni:GetValue("Generator", "MultiStepMapRiverWidth") .. [["></td></tr>
-		<tr><td>MultiStepMapOceanCellSize:</td>
-		<td><input type="text" name="World_MultiStepMapLandBiomeSize" value="]] .. WorldIni:GetValue("Generator", "MultiStepMapLandBiomeSize") .. [["></td></tr>]]
-	elseif WorldIni:GetValue( "Generator", "BiomeGen" ) == "DistortedVoronoi" then
-		Content = Content .. [[
-		<th colspan="2">Biome Generator</th>
-		<tr><td>DistortedVoronoiCellSize:</td>
-		<td><input type="text" name="World_DistortedVoronoiCellSize" value="]] .. WorldIni:GetValue("Generator", "DistortedVoronoiCellSize") .. [["></td></tr>
-		<tr><td>DistortedVoronoiBiomes:</td>
-		<td><input type="text" name="World_DistortedVoronoiBiomes" value="]] .. WorldIni:GetValue("Generator", "DistortedVoronoiBiomes") .. [["></td></tr>]]
-	elseif WorldIni:GetValue( "Generator", "BiomeGen" ) == "Voronoi" then
-		Content = Content .. [[
-		<th colspan="2">Biome Generator</th>
-		<tr><td>VoronoiCellSize:</td>
-		<td><input type="text" name="World_VoronoiCellSize" value="]] .. WorldIni:GetValue("Generator", "VoronoiCellSize") .. [["></td></tr>
-		<tr><td>VoronoiBiomes:</td>
-		<td><input type="text" name="World_VoronoiBiomes" value="]] .. WorldIni:GetValue("Generator", "VoronoiBiomes") .. [["></td></tr>]]
-	elseif WorldIni:GetValue( "Generator", "BiomeGen" ) == "CheckerBoard" then
-		Content = Content .. [[
-		<th colspan="2">Biome Generator</th>
-		<tr><td>CheckerBoardBiomes:</td>
-		<td><input type="text" name="World_CheckerBoardBiomes" value="]] .. WorldIni:GetValue("Generator", "CheckerBoardBiomes") .. [["></td></tr>
-		<tr><td>CheckerBoardBiomeSize:</td>
-		<td><input type="text" name="World_CheckerBoardBiomeSize" value="]] .. WorldIni:GetValue("Generator", "CheckerBoardBiomeSize") .. [["></td></tr>]]
-	end
-	
-	if WorldIni:GetValue( "Generator", "CompositionGen" ) == "Noise3D" then
-		Content = Content .. [[
-		<th colspan="2">Composition Generator</th>
-		<tr><td>Noise3DSeaLevel:</td>
-		<td><input type="text" name="World_Noise3DSeaLevel" value="]] .. WorldIni:GetValue("Generator", "Noise3DSeaLevel") .. [["></td></tr>
-		<tr><td>Noise3DHeightAmplification:</td>
-		<td><input type="text" name="World_Noise3DHeightAmplification" value="]] .. WorldIni:GetValue("Generator", "Noise3DHeightAmplification") .. [["></td></tr>
-		<tr><td>Noise3DMidPoint:</td>
-		<td><input type="text" name="World_Noise3DMidPoint" value="]] .. WorldIni:GetValue("Generator", "Noise3DMidPoint") .. [["></td></tr>
-		<tr><td>Noise3DFrequencyX:</td>
-		<td><input type="text" name="World_Noise3DFrequencyX" value="]] .. WorldIni:GetValue("Generator", "Noise3DFrequencyX") .. [["></td></tr>
-		<tr><td>Noise3DFrequencyY:</td>
-		<td><input type="text" name="World_Noise3DFrequencyY" value="]] .. WorldIni:GetValue("Generator", "Noise3DFrequencyY") .. [["></td></tr>
-		<tr><td>Noise3DFrequencyZ:</td>
-		<td><input type="text" name="World_Noise3DFrequencyZ" value="]] .. WorldIni:GetValue("Generator", "Noise3DFrequencyZ") .. [["></td></tr>
-		<tr><td>Noise3DAirThreshold:</td>
-		<td><input type="text" name="World_Noise3DAirThreshold" value="]] .. WorldIni:GetValue("Generator", "Noise3DAirThreshold") .. [["></td></tr>]]
-	elseif WorldIni:GetValue( "Generator", "CompositionGen" ) == "Classic" then
-		Content = Content .. [[
-		<th colspan="2">Composition Generator</th>
-		<tr><td>ClassicSeaLevel:</td>
-		<td><input type="text" name="World_ClassicSeaLevel" value="]] .. WorldIni:GetValue("Generator", "ClassicSeaLevel") .. [["></td></tr>
-		<tr><td>ClassicBeachHeight:</td>
-		<td><input type="text" name="World_ClassicBeachHeight" value="]] .. WorldIni:GetValue("Generator", "ClassicBeachHeight") .. [["></td></tr>
-		<tr><td>ClassicBeachDepth:</td>
-		<td><input type="text" name="World_ClassicBeachDepth" value="]] .. WorldIni:GetValue("Generator", "ClassicBeachDepth") .. [["></td></tr>
-		<tr><td>ClassicBlockTop:</td>
-		<td><input type="text" name="World_ClassicBlockTop" value="]] .. WorldIni:GetValue("Generator", "ClassicBlockTop") .. [["></td></tr>
-		<tr><td>ClassicBlockMiddle:</td>
-		<td><input type="text" name="World_ClassicBlockMiddle" value="]] .. WorldIni:GetValue("Generator", "ClassicBlockMiddle") .. [["></td></tr>
-		<tr><td>ClassicBlockBottom:</td>
-		<td><input type="text" name="World_ClassicBlockBottom" value="]] .. WorldIni:GetValue("Generator", "ClassicBlockBottom") .. [["></td></tr>
-		<tr><td>ClassicBlockBeach:</td>
-		<td><input type="text" name="World_ClassicBlockBeach" value="]] .. WorldIni:GetValue("Generator", "ClassicBlockBeach") .. [["></td></tr>
-		<tr><td>ClassicBlockBeachBottom:</td>
-		<td><input type="text" name="World_ClassicBlockBeachBottom" value="]] .. WorldIni:GetValue("Generator", "ClassicBlockBeachBottom") .. [["></td></tr>
-		<tr><td>ClassicBlockSea:</td>
-		<td><input type="text" name="World_ClassicBlockSea" value="]] .. WorldIni:GetValue("Generator", "ClassicBlockSea") .. [["></td></tr>]]
-	elseif WorldIni:GetValue( "Generator", "CompositionGen" ) == "SameBlock" then
-		Content = Content .. [[
-		<th colspan="2">Composition Generator</th>
-		<tr><td>SameBlockType:</td>
-		<td><input type="text" name="World_SameBlockType" value="]] .. WorldIni:GetValue("Generator", "SameBlockType") .. [["></td></tr>
-		<tr><td>SameBlockBedrocked:</td>
-		<td><input type="text" name="World_SameBlockBedrocked" value="]] .. WorldIni:GetValue("Generator", "SameBlockBedrocked") .. [["></td></tr>]]		
-	end
-	if WorldIni:GetValue( "Generator", "HeightGen" ) == "Flat" then
-		Content = Content .. [[
-		<th colspan="2">Height Generator</th>
-		<tr><td>FlatHeight:</td>
-		<td><input type="text" name="World_FlatHeight" value="]] .. WorldIni:GetValue("Generator", "FlatHeight") .. [["></td></tr>]]
-	end
-	if string.find( WorldIni:GetValue( "Generator", "Structures" ), "MineShafts" ) ~= nil then
-		Content = Content .. [[
-		<th colspan="2">MineShafts</th>
-		<tr><td>MineShaftsGridSize:</td>
-		<td><input type="text" name="World_MineShaftsGridSize" value="]] .. WorldIni:GetValue("Generator", "MineShaftsGridSize") .. [["></td></tr>
-		<tr><td>MineShaftsMaxSystemSize:</td>
-		<td><input type="text" name="World_MineShaftsMaxSystemSize" value="]] .. WorldIni:GetValue("Generator", "MineShaftsMaxSystemSize") .. [["></td></tr>
-		<tr><td>MineShaftsChanceCorridor:</td>
-		<td><input type="text" name="World_MineShaftsChanceCorridor" value="]] .. WorldIni:GetValue("Generator", "MineShaftsChanceCorridor") .. [["></td></tr>
-		<tr><td>MineShaftsChanceCrossing:</td>
-		<td><input type="text" name="World_MineShaftsChanceCrossing" value="]] .. WorldIni:GetValue("Generator", "MineShaftsChanceCrossing") .. [["></td></tr>
-		<tr><td>MineShaftsChanceStaircase:</td>
-		<td><input type="text" name="World_MineShaftsChanceStaircase" value="]] .. WorldIni:GetValue("Generator", "MineShaftsChanceStaircase") .. [["></td></tr>]]
-	end
-	if string.find( WorldIni:GetValue( "Generator", "Structures" ), "LavaLakes" ) ~= nil then
-		Content = Content .. [[
-		<th colspan="2">LavaLakes</th>
-		<tr><td>LavaLakesProbability:</td>
-		<td><input type="text" name="World_LavaLakesProbability" value="]] .. WorldIni:GetValue("Generator", "LavaLakesProbability") .. [["></td></tr>]]
-	end
-	if string.find( WorldIni:GetValue( "Generator", "Structures" ), "WaterLakes" ) ~= nil then
-			Content = Content .. [[
-		<th colspan="2">WaterLakes</th>
-		<tr><td>WaterLakesProbability:</td>
-		<td><input type="text" name="World_WaterLakesProbability" value="]] .. WorldIni:GetValue("Generator", "WaterLakesProbability") .. [["></td></tr>]]
-	end
-	if string.find( WorldIni:GetValue( "Generator", "Finishers" ), "BottomLava" ) ~= nil then
-		Content = Content .. [[
-		<th colspan="2">BottomLavaLevel</th>
-		<tr><td>BottomLavaLevel:</td>
-		<td><input type="text" name="World_BottomLavaLevel" value="]] .. WorldIni:GetValue("Generator", "BottomLavaLevel") .. [["></td></tr>]]
-	end
+	<td><input type="text" name="Generator_Finishers" value="]] .. WorldIni:GetValue("Generator", "Finishers") .. [["></td></tr>
+	]]
 	Content = Content .. [[</table>]]
 	
 	Content = Content .. [[ <br />
@@ -886,7 +596,7 @@ end
 
 
 
-function HandleRequest_ServerSettings( Request )
+function HandleRequest_ServerSettings(Request)
 	local Content = ""
 
 	Content = Content .. [[
@@ -894,21 +604,18 @@ function HandleRequest_ServerSettings( Request )
 	<table>
 	<tr>
 	<td><a href="?tab=General">General</a></td>
-	<td><a href="?tab=Monsters">Monsters</a></td>
 	<td><a href="?tab=Worlds">Worlds</a></td>
 	<td><a href="?tab=World">World</a></td>
 	</tr>
 	</table>
 	<br />]]
 	
-	if( Request.Params["tab"] == "Monsters" ) then
-		Content = Content .. ShowMonstersSettings( Request )
-	elseif( Request.Params["tab"] == "Worlds" ) then
-		Content = Content .. ShowWorldsSettings( Request )
-	elseif( Request.Params["tab"] == "World" ) then
-		Content = Content .. ShowWorldSettings( Request )
+	if (Request.Params["tab"] == "Worlds") then
+		Content = Content .. ShowWorldsSettings(Request)
+	elseif (Request.Params["tab"] == "World") then
+		Content = Content .. ShowWorldSettings(Request)
 	else
-		Content = Content .. ShowGeneralSettings( Request ) -- Default to general settings
+		Content = Content .. ShowGeneralSettings(Request) -- Default to general settings
 	end
 	
 	return Content
