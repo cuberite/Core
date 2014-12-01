@@ -215,7 +215,7 @@ g_PluginInfo =
 
 		["/time"] = 
 		{
-			HelpString = "Set and display the time in the current world",
+			HelpString = "Set or display the time",
 			Subcommands = 
 			{
 				day = 
@@ -223,23 +223,37 @@ g_PluginInfo =
 					HelpString = "Set the time to day",
 					Permission = "core.time.set",
 					Handler = HandleSpecialTimeCommand,
+					ParameterCombinations = 
+					{
+						{
+							Params = "WorldName",
+							Help = "Set the time in the given world, rather then the current world",
+						},
+					},
 				},
 				night = 
 				{
 					HelpString = "Set the time to night",
 					Permission = "core.time.set",
 					Handler = HandleSpecialTimeCommand,
+					ParameterCombinations = 
+					{
+						{
+							Params = "WorldName",
+							Help = "Set the time in the given world, rather then the current world",
+						},
+					},
 				},
 				set = 
 				{
-					HelpString = "Set the time to the given time",
+					HelpString = "Set the time to the value given",
 					Permission = "core.time.set",
 					Handler = HandleSetTimeCommand,
 					ParameterCombinations = 
 					{
 						{
 							Params = "time",
-							Help = "Set the time to the given time",
+							Help = "Set the time to the value given",
 						},
 						{
 							Params = "day",
@@ -249,18 +263,26 @@ g_PluginInfo =
 							Params = "night",
 							Help = "Set the time to night",
 						},
+						{
+							Params = "WorldName",
+							Help = "Set the time in the given world, rather then the current world",
+						},
 					},
 				},
 				add = 
 				{
-					HelpString = "Add the given time to the current time",
+					HelpString = "Add the amount given to the current time",
 					Permission = "core.time.set",
 					Handler = HandleAddTimeCommand,
 					ParameterCombinations = 
 					{
 						{
 							Params = "amount",
-							Help = "Add the amount specified to the current time",
+							Help = "Add the amount given to the current time",
+						},
+						{
+							Params = "WorldName",
+							Help = "Add to the time in the given world, rather then the current world",
 						},
 					},
 				},
@@ -270,15 +292,29 @@ g_PluginInfo =
 					{
 						daytime = 
 						{
-							HelpString = "Display the time in the current world",
+							HelpString = "Display the current time",
 							Permission = "core.time.query.daytime",
 							Handler = HandleQueryDaytimeCommand,
+							ParameterCombinations = 
+							{
+								{
+									Params = "WorldName",
+									Help = "Display the time in the given world, rather then the current world",
+								},
+							},
 						},
 						gametime =
 						{
-							HelpString = "Displays the amount of time elapsed since the start of the current world",
+							HelpString = "Display the amount of time elapsed since start",
 							Permission = "core.time.query.gametime",
-							Handler = HandleQueryGametimeCommand
+							Handler = HandleQueryGametimeCommand,
+							ParameterCombinations = 
+							{
+								{
+									Params = "WorldName",
+									Help = "Display the time in the given world, rather then the current world",
+								},
+							},
 						},
 					},
 				},
@@ -561,8 +597,104 @@ g_PluginInfo =
 
 		["time"] = 
 		{
-			Handler = HandleConsoleTime,
-			HelpString = "Sets or displays the time of day",
+			HelpString = "Set or display the time",
+			Subcommands = 
+			{
+				day =
+				{
+					Handler = HandleConsoleSpecialTime,
+					HelpString = "Set the time to day",
+					ParameterCombinations =
+					{
+						{
+							Params = "WorldName",
+							Help = "Set the time in the given world, rather then the default world",
+						},
+					},
+				},
+				night =
+				{
+					Handler = HandleConsoleSpecialTime,
+					HelpString = "Set the time to night",
+					ParameterCombinations =
+					{
+						{
+							Params = "WorldName",
+							Help = "Set the time in the given world, rather then the default world",
+						},
+					},
+				},
+				set =
+				{
+					Handler = HandleConsoleSetTime,
+					HelpString = "Set the time to the value given",
+					ParameterCombinations =
+					{
+						{
+							Params = "time",
+							Help = "Set the time to the given value"
+						},
+						{
+							Params = "day",
+							Help = "Set the time to day",
+						},
+						{
+							Params = "night",
+							Help = "Set the time to night",
+						},
+						{
+							Params = "WorldName",
+							Help = "Set the time in the given world, rather then the default world",
+						},
+					},
+				},
+				add =
+				{
+					Handler = HandleConsoleAddTime,
+					HelpString = "Add the amount given to the current time",
+					ParameterCombinations =
+					{
+						{
+							Params = "amount",
+							Help = "Add the amount given to the current time"
+						},
+						{
+							Params = "WorldName",
+							Help = "Add to the time in the given world, rather then the default world",
+						},
+					},
+				},
+				query =
+				{
+					Subcommands =
+					{
+						daytime =
+						{
+							Handler = HandleConsoleQueryDaytime,
+							HelpString = "Display the current time",
+							ParameterCombinations =
+							{
+								{
+									Params = "WorldName",
+									Help = "Display the time in the given world, rather then the default world",
+								},
+							},
+						},
+						gametime =
+						{
+							Handler = HandleConsoleQueryGametime,
+							HelpString = "Display the amount of time elapsed since start",
+							ParameterCombinations =
+							{
+								{
+									Params = "WorldName",
+									Help = "Display the time in the given world, rather then the default world",
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 
 		["tp"] =
