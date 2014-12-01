@@ -1,9 +1,9 @@
 -- Some HTML helper functions
-local function HTML_Option(value, text, selected)
-	if (selected == true) then
-		return [[<option value="]] .. value .. [[" selected>]] .. text .. [[</option>]]
+local function HTML_Option(Value, Text, Selected)
+	if (Selected) then
+		return [[<option value="]] .. Value .. [[" selected>]] .. Text .. [[</option>]]
 	else
-		return [[<option value="]] .. value .. [[">]] .. text .. [[</option>]]
+		return [[<option value="]] .. Value .. [[">]] .. Text .. [[</option>]]
 	end
 end
 
@@ -75,9 +75,9 @@ local function ShowGeneralSettings(Request)
 	<td><input type="text" name="Server_Description" value="]] .. SettingsIni:GetValue("Server", "Description") .. [["></td></tr>
 	<tr><td>Max Players:</td>
 	<td><input type="text" name="Server_MaxPlayers" value="]] .. SettingsIni:GetValue("Server", "MaxPlayers") .. [["></td></tr>
-	<tr><td>Port:</td>
+	<tr><td>IPv4 Ports:</td>
 	<td><input type="text" name="Server_Port" value="]] .. SettingsIni:GetValue("Server", "Port") .. [["></td></tr>
-	<tr><td>Ports IPv6:</td>
+	<tr><td>IPv6 Ports:</td>
 	<td><input type="text" name="Server_PortsIPv6" value="]] .. SettingsIni:GetValue("Server", "PortsIPv6") .. [["></td></tr>
 	<tr><td>Default ViewDistance:</td>
 	<td><input type="text" name="Server_ViewDistance" value="]] .. SettingsIni:GetValueI("Server", "DefaultViewDistance") .. [["></td></tr>
@@ -104,7 +104,7 @@ local function ShowGeneralSettings(Request)
 end
 
 
-local function ShowWorldsSettings( Request )
+local function ShowWorldsSettings(Request)
 	local Content = ""
 	local InfoMsg = nil
 	local bSaveIni = false
@@ -141,7 +141,7 @@ local function ShowWorldsSettings( Request )
 		bSaveIni = true
 	end
 	
-	if (bSaveIni == true) then
+	if (bSaveIni) then
 		if (InfoMsg == nil) then InfoMsg = "" end
 		if not(SettingsIni:WriteFile("settings.ini")) then
 			InfoMsg = InfoMsg .. "<b style=\"color: red;\">ERROR: Could not write to settings.ini!</b>"
@@ -322,7 +322,6 @@ slAdvanced = 2
 
 function ShowWorldSettings(Request)
 	local Content = ""
-	
 	local SettingLayout = g_WorldSettingsLayout[Request.Username] or slEasy
 	
 	if (Request.PostParams['ChangeWebLayout'] ~= nil) then
@@ -350,7 +349,6 @@ function ShowWorldSettings(Request)
 	end
 	
 	g_WorldSettingsLayout[Request.Username] = SettingLayout
-	
 	return Content
 end
 
@@ -598,7 +596,7 @@ end
 
 
 
-function HandleRequest_ServerSettings( Request )
+function HandleRequest_ServerSettings(Request)
 	local Content = ""
 
 	Content = Content .. [[
