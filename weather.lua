@@ -1,6 +1,7 @@
 --Implements weather related commands and console commands
 
 
+-- Translate from weather descriptors to the weather value
 -- Non-Vanilla weather descriptors were kept from previous console implementation
 local WeatherNames =
 {
