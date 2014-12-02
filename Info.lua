@@ -68,6 +68,17 @@ g_PluginInfo =
 			Permission = "core.changegm",
 			Handler = HandleChangeGMCommand,
 			HelpString = "Change your gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode",
+					Help = "The gamemode to change to, can be (s)urvival, (c)reative, (a)dventure, or (sp)ectator",
+				},
+				{
+					Params = "PlayerName",
+					Help = "Change the gamemode of the specified player, rather then your own (optional)",
+				},
+			},
 		},
 
 		["/help"] = 
@@ -515,12 +526,34 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsoleGamemode,
 			HelpString = "Change a player's gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode",
+					Help = "The gamemode to change to, can be (s)urvival, (c)reative, (a)dventure, or (sp)ectator",
+				},
+				{
+					Params = "PlayerName",
+					Help = "Change gamemode of this player",
+				},
+			},
 		},
 
 		["gm"] =
 		{
 			Handler =  HandleConsoleGamemode,
 			HelpString = "Change a player's gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode",
+					Help = "The gamemode to change to, can be (s)urvival, (c)reative, (a)dventure, or (sp)ectator",
+				},
+				{
+					Params = "PlayerName",
+					Help = "Change gamemode of this player",
+				},
+			},
 		},
 
 		["give"] =
@@ -782,6 +815,12 @@ g_PluginInfo =
 	},  -- ConsoleCommands
 	Permissions = 
 	{
+		["core.changegm"] =
+		{
+			Description = "Allows players to change gamemodes",
+			RecommendedGroups = "admins",
+		},
+
 		["core.time.set"] = 
 		{
 			Description = "Allows players to set the time of day",
