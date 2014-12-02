@@ -852,11 +852,13 @@ g_PluginInfo =
 		["core.toggledownfall"] =
 		{
 			Description = "Allows players to toggle the weather between clear skies and rain",
+			RecommendedGroups = "admins",
 		},
 		
 		["core.weather"] =
 		{
 			Description = "Allows players to change the weather",
+			RecommendedGroups = "admins",
 		},
 		
 	},  -- Permissions

@@ -40,7 +40,7 @@ Implements some of the basic commands needed to run a simple server.
 |/time query daytime | core.time.query.daytime | Display the current time|
 |/time query gametime | core.time.query.gametime | Display the amount of time elapsed since start|
 |/time set | core.time.set | Set the time to the value given|
-|/toggledownfall | core.toggledownfall | Toggles downfall|
+|/toggledownfall | core.toggledownfall | Toggles the weather between clear skies and rain|
 |/top | core.top | Teleport yourself to the topmost block|
 |/tp | core.teleport | Teleport yourself to a player|
 |/tpa | core.tpa | Ask to teleport yourself to a player|
@@ -52,7 +52,7 @@ Implements some of the basic commands needed to run a simple server.
 |/unban | core.unban | Unban a player|
 |/vanish | core.vanish |  - Vanish|
 |/viewdistance | core.viewdistance | Change your view distance|
-|/weather | core.weather | Change world weather|
+|/weather | core.weather | Change world's weather|
 |/whitelist |  | Manages the whitelist|
 |/whitelist add |  | Adds a player to the whitelist|
 |/whitelist list |  | Shows the players on the whitelist|
@@ -97,7 +97,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.time.query.daytime | Allows players to display the time of day | `/time query daytime` | everyone |
 | core.time.query.gametime | Allows players to display how long the world has existed | `/time query gametime` |  |
 | core.time.set | Allows players to set the time of day | `/time night`, `/time day`, `/time set`, `/time add` | admins |
-| core.toggledownfall |  | `/toggledownfall` |  |
+| core.toggledownfall | Allows players to toggle the weather between clear skies and rain | `/toggledownfall` | admins |
 | core.top |  | `/top` |  |
 | core.tpa |  | `/tpa` |  |
 | core.tpaccept |  | `/tpaccept` |  |
@@ -108,5 +108,5 @@ Implements some of the basic commands needed to run a simple server.
 | core.unban |  | `/unban` |  |
 | core.vanish |  | `/vanish` |  |
 | core.viewdistance |  | `/viewdistance` |  |
-| core.weather |  | `/weather` |  |
+| core.weather | Allows players to change the weather | `/weather` | admins |
 | core.worlds |  | `/worlds` |  |
