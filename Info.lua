@@ -697,6 +697,12 @@ g_PluginInfo =
 			},
 		},
 
+		["toggledownfall"] =
+		{
+			Handler = HandleDownfallCommand,
+			HelpString = "Change world weather",
+		},
+
 		["tp"] =
 		{
 			Handler =  HandleConsoleTeleport,
@@ -729,7 +735,7 @@ g_PluginInfo =
 		
 		["weather"] =
 		{
-			Handler =  HandleConsoleWeather,
+			Handler =  HandleWeatherCommand,
 			HelpString = "Change weather in the specified world",
 		},
 
