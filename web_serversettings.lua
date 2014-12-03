@@ -222,6 +222,7 @@ local function HTML_Select_GameMode(Name, DefaultValue)
 		.. HTML_Option("0", "Survival", DefaultValue == 0)
 		.. HTML_Option("1", "Creative",  DefaultValue == 1)
 		.. HTML_Option("2", "Adventure",  DefaultValue == 2)
+		.. HTML_Option("3", "Spectator",  DefaultValue == 3)
 		.. [[</select>]]
 end
 
