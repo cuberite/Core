@@ -1,5 +1,5 @@
 TpsCache = {}
-GlobalTps = {} --Note: This is used in weather.lua, please update that if changed
+GlobalTps = {}  -- Note: This is used in weather.lua, please update that if changed
 
 function HandleTpsCommand(Split, Player)
 	if (Player ~= nil) then

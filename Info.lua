@@ -330,7 +330,7 @@ g_PluginInfo =
 			{
 				{
 					Params = "WorldName",
-					Help = "Change the weather in the given world, rather then the current world",
+					Help = "Change the weather in the given world, rather than the current world",
 				},
 			},
 		},
@@ -429,7 +429,7 @@ g_PluginInfo =
 				},
 				{
 					Params = "Weather WorldName",
-					Help = "Set the weather to the given condition in the given world, rather then the default world",
+					Help = "Set the weather to the given condition in the given world, rather than the default world",
 				},
 				{
 					Params = "Weather DurationInSeconds WorldName",
@@ -731,7 +731,7 @@ g_PluginInfo =
 			{
 				{
 					Params = "WorldName",
-					Help = "Change the weather in the given world, rather then the default world",
+					Help = "Change the weather in the given world, rather than the default world",
 				},
 			},
 		},
@@ -782,7 +782,7 @@ g_PluginInfo =
 				},
 				{
 					Params = "Weather WorldName",
-					Help = "Set the weather to the given condition in the given world, rather then the default world",
+					Help = "Set the weather to the given condition in the given world, rather than the default world",
 				},
 				{
 					Params = "Weather DurationInSeconds WorldName",

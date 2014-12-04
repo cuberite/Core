@@ -1,4 +1,4 @@
---Implements weather related commands and console commands
+-- Implements weather related commands and console commands
 
 
 -- Translate from weather descriptors to the weather value
@@ -39,7 +39,7 @@ function HandleWeatherCommand( Split, Player )
 
 	-- Parse the command into its components
 	local Weather = WeatherNames[Split[2]]
-	local TPS = GetAverageNum(GlobalTps) -- This function is in tps.lua
+	local TPS = GetAverageNum(GlobalTps)  -- This function is in tps.lua
 	local TicksToChange = ( tonumber( Split[3] ) or 0 ) * TPS
 	local WorldName = Split[4]
 
@@ -47,9 +47,9 @@ function HandleWeatherCommand( Split, Player )
 		WorldName = Split[3]
 	end
 	
-	local World = GetWorld( WorldName, Player ) -- Function is in functions.lus
+	local World = GetWorld( WorldName, Player )  -- Function is in functions.lua
 
-	-- If an invaild weather string is given, exit
+	-- If an invalid weather string is given, exit
 	if not Weather then
 		if Player then
 			SendMessage( Player, WeatherUsage )
@@ -89,7 +89,7 @@ end
 --
 function HandleDownfallCommand( Split, Player )
 
-	local World = GetWorld( Split[2], Player ) -- In functions.lua
+	local World = GetWorld( Split[2], Player )  -- In functions.lua
 
 	-- If an invalid world is given, exit
 	if not World then
