@@ -1,5 +1,5 @@
 TpsCache = {}
-GlobalTps = {}  -- Note: This is used in weather.lua, please update that if changed
+GlobalTps = {}
 
 function HandleTpsCommand(Split, Player)
 	if (Player ~= nil) then
@@ -16,7 +16,7 @@ function HandleTpsCommand(Split, Player)
 	return true
 end
 
--- Note: This function is used in weather.lua, please update that accordingly if changed 
+
 function GetAverageNum(Table)
 	local Sum = 0
 	for i,Num in ipairs(Table) do

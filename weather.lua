@@ -39,7 +39,7 @@ function HandleWeatherCommand( Split, Player )
 
 	-- Parse the command into its components
 	local Weather = WeatherNames[Split[2]]
-	local TPS = GetAverageNum(GlobalTps)  -- This function is in tps.lua
+	local TPS = 20
 	local TicksToChange = ( tonumber( Split[3] ) or 0 ) * TPS
 	local WorldName = Split[4]
 
