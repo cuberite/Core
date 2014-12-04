@@ -45,26 +45,26 @@ local MessageFailure = "Player not found"
 local function ChangeGameMode( GameMode, PlayerName )
 
 	local GMChanged = false
+	local lcPlayerName = string.lower(PlayerName)
 
 	-- Search through online players and if one matches
 	-- the given PlayerName then change their gamemode
 	cRoot:Get():FindAndDoWithPlayer(PlayerName, 
 		function(PlayerMatch)
-			if string.lower(PlayerMatch:GetName()) == string.lower(PlayerName) then
+			if string.lower(PlayerMatch:GetName()) == lcPlayerName then
 				PlayerMatch:SetGameMode(GameMode)
 				SendMessage(PlayerMatch, "Gamemode set to " .. GameModeNameTable[GameMode] )
 				GMChanged = true
 			end
 			return true
 		end
-		)
+	)
 
 	return GMChanged
 
 end
 
---- Handles the `/gamemode <survival|creative|adventure|spectator> [PlayerName]`
---  and the `/gm <survival|creative|adventure|spectator> [PlayerName]` in-game commands
+--- Handles the `/gamemode <survival|creative|adventure|spectator> [PlayerName]` in-game command
 --  
 function HandleChangeGMCommand(Split, Player)
 
@@ -98,8 +98,7 @@ function HandleChangeGMCommand(Split, Player)
 end
 
 
---- Handles the `gamemode <survival|creative|adventure|spectator> [PlayerName]`
---  and the `gm <survival|creative|adventure|spectator> [PlayerName]` console commands
+--- Handles the `gamemode <survival|creative|adventure|spectator> [PlayerName]` console command
 --  
 function HandleConsoleGamemode( a_Split )
 

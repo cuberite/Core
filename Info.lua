@@ -72,11 +72,11 @@ g_PluginInfo =
 			{
 				{
 					Params = "gamemode",
-					Help = "The gamemode to change to, can be (s)urvival, (c)reative, (a)dventure, or (sp)ectator",
+					Help = "Change your own gamemode.",
 				},
 				{
-					Params = "PlayerName",
-					Help = "Change the gamemode of the specified player, rather then your own (optional)",
+					Params = "gamemode PlayerName",
+					Help = "Change the gamemode of the specified player, rather then your own",
 				},
 			},
 		},
@@ -529,12 +529,8 @@ g_PluginInfo =
 			ParameterCombinations = 
 			{
 				{
-					Params = "gamemode",
-					Help = "The gamemode to change to, can be (s)urvival, (c)reative, (a)dventure, or (sp)ectator",
-				},
-				{
-					Params = "PlayerName",
-					Help = "Change gamemode of this player",
+					Params = "gamemode PlayerName",
+					Help = "Change gamemode of the given player",
 				},
 			},
 		},
@@ -546,12 +542,8 @@ g_PluginInfo =
 			ParameterCombinations = 
 			{
 				{
-					Params = "gamemode",
-					Help = "The gamemode to change to, can be (s)urvival, (c)reative, (a)dventure, or (sp)ectator",
-				},
-				{
-					Params = "PlayerName",
-					Help = "Change gamemode of this player",
+					Params = "gamemode PlayerName",
+					Help = "Change gamemode of the given player",
 				},
 			},
 		},
