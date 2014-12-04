@@ -238,7 +238,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the current world",
+							Help = "Set the time in the given world, rather than the current world",
 						},
 					},
 				},
@@ -251,7 +251,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the current world",
+							Help = "Set the time in the given world, rather than the current world",
 						},
 					},
 				},
@@ -275,8 +275,16 @@ g_PluginInfo =
 							Help = "Set the time to night",
 						},
 						{
-							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the current world",
+							Params = "time WorldName",
+							Help = "Set the time to the given value in the given world, rather than the current world",
+						},
+						{
+							Params = "day WorldName",
+							Help = "Set the time to day in the given world, rather than the current world",
+						},
+						{
+							Params = "night WorldName",
+							Help = "Set the time to night in the given world, rather than the current world",
 						},
 					},
 				},
@@ -292,8 +300,8 @@ g_PluginInfo =
 							Help = "Add the amount given to the current time",
 						},
 						{
-							Params = "WorldName",
-							Help = "Add to the time in the given world, rather then the current world",
+							Params = "amount WorldName",
+							Help = "Add the amount to the time in the given world, rather than the current world",
 						},
 					},
 				},
@@ -310,7 +318,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather then the current world",
+									Help = "Display the time in the given world, rather than the current world",
 								},
 							},
 						},
@@ -323,7 +331,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather then the current world",
+									Help = "Display the time in the given world, rather than the current world",
 								},
 							},
 						},
@@ -633,7 +641,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the default world",
+							Help = "Set the time in the given world, rather than the default world",
 						},
 					},
 				},
@@ -645,7 +653,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the default world",
+							Help = "Set the time in the given world, rather than the default world",
 						},
 					},
 				},
@@ -668,8 +676,16 @@ g_PluginInfo =
 							Help = "Set the time to night",
 						},
 						{
-							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the default world",
+							Params = "time WorldName",
+							Help = "Set the time to the given value in the given world, rather than the default world",
+						},
+						{
+							Params = "day WorldName",
+							Help = "Set the time to day in the given world, rather than the default world",
+						},
+						{
+							Params = "night WorldName",
+							Help = "Set the time to night in the given world, rather than the default world",
 						},
 					},
 				},
@@ -684,8 +700,8 @@ g_PluginInfo =
 							Help = "Add the amount given to the current time"
 						},
 						{
-							Params = "WorldName",
-							Help = "Add to the time in the given world, rather then the default world",
+							Params = "add WorldName",
+							Help = "Add the amount to the time in the given world, rather than the default world",
 						},
 					},
 				},
@@ -701,7 +717,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather then the default world",
+									Help = "Display the time in the given world, rather than the default world",
 								},
 							},
 						},
@@ -713,7 +729,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather then the default world",
+									Help = "Display the time in the given world, rather than the default world",
 								},
 							},
 						},
