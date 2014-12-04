@@ -424,12 +424,16 @@ g_PluginInfo =
 					Help = "Set the weather to to the given condition, can be: clear, rain, or thunder",
 				},
 				{
-					Params = "Duration in seconds",
-					Help = "How long the given weather should last before it changes (optional)",
+					Params = "Weather DurationInSeconds",
+					Help = "Set the weather to the given condition, for the specified duration",
 				},
 				{
-					Params = "WorldName",
-					Help = "Change the weather in the given world, rather then the current world",
+					Params = "Weather WorldName",
+					Help = "Set the weather to the given condition in the given world, rather then the default world",
+				},
+				{
+					Params = "Weather DurationInSeconds WorldName",
+					Help = "Set the weather to the given condition, have it last for the specified duration, in the given world",
 				},
 			},
 		},
@@ -773,12 +777,16 @@ g_PluginInfo =
 					Help = "Set the weather to to the given condition, can be: clear, rain, or thunder",
 				},
 				{
-					Params = "Duration in seconds",
-					Help = "How long the given weather should last before it changes (optional)",
+					Params = "Weather DurationInSeconds",
+					Help = "Set the weather to the given condition, for the specified duration",
 				},
 				{
-					Params = "WorldName",
-					Help = "Change the weather in the given world, rather then the default world",
+					Params = "Weather WorldName",
+					Help = "Set the weather to the given condition in the given world, rather then the default world",
+				},
+				{
+					Params = "Weather DurationInSeconds WorldName",
+					Help = "Set the weather to the given condition, have it last for the specified duration, in the given world",
 				},
 			},
 		},
