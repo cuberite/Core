@@ -68,12 +68,12 @@ Implements some of the basic commands needed to run a simple server.
 | ----------- | ----------- | -------- | ------------------ |
 | core.back |  | `/back` |  |
 | core.ban |  | `/ban` |  |
-| core.changegm |  | `/gamemode` |  |
+| core.changegm | Allows players to change gamemodes | `/gamemode` | admins |
 | core.clear |  | `/clear` |  |
 | core.difficulty |  | `/difficulty` |  |
 | core.do |  | `/do` |  |
 | core.fly |  | `/fly` |  |
-| core.give |  | `/give`, `/i`, `/item` |  |
+| core.give |  | `/give`, `/item` |  |
 | core.help |  | `/help` |  |
 | core.kick |  | `/kick` |  |
 | core.kill |  | `/kill` |  |

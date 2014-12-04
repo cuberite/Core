@@ -68,6 +68,17 @@ g_PluginInfo =
 			Permission = "core.changegm",
 			Handler = HandleChangeGMCommand,
 			HelpString = "Change your gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode",
+					Help = "Change your own gamemode.",
+				},
+				{
+					Params = "gamemode PlayerName",
+					Help = "Change the gamemode of the specified player, rather then your own",
+				},
+			},
 		},
 
 		["/help"] = 
@@ -515,12 +526,26 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsoleGamemode,
 			HelpString = "Change a player's gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode PlayerName",
+					Help = "Change gamemode of the given player",
+				},
+			},
 		},
 
 		["gm"] =
 		{
 			Handler =  HandleConsoleGamemode,
 			HelpString = "Change a player's gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode PlayerName",
+					Help = "Change gamemode of the given player",
+				},
+			},
 		},
 
 		["give"] =
@@ -782,6 +807,12 @@ g_PluginInfo =
 	},  -- ConsoleCommands
 	Permissions = 
 	{
+		["core.changegm"] =
+		{
+			Description = "Allows players to change gamemodes",
+			RecommendedGroups = "admins",
+		},
+
 		["core.time.set"] = 
 		{
 			Description = "Allows players to set the time of day",
