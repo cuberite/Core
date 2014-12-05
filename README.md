@@ -109,5 +109,5 @@ Implements some of the basic commands needed to run a simple server.
 | core.vanish |  | `/vanish` |  |
 | core.viewdistance |  | `/viewdistance` |  |
 | core.weather |  | `/weather` |  |
-| core.whitelist | Allows players to manage the whitelist | `/whitelist off`, `/whitelist list`, `/whitelist remove`, `/whitelist on`, `/whitelist add` |  |
+| core.whitelist | Allows players to manage the whitelist | `/whitelist off`, `/whitelist list`, `/whitelist remove`, `/whitelist on`, `/whitelist add` | admins |
 | core.worlds |  | `/worlds` |  |

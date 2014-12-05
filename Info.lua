@@ -853,7 +853,8 @@ g_PluginInfo =
 
 		["core.whitelist"] =
 		{
-			Description = "Allows players to manage the whitelist"
+			Description = "Allows players to manage the whitelist",
+			RecommendedGroups = "admins",
 		},
 	},  -- Permissions
 }  -- g_PluginInfo
