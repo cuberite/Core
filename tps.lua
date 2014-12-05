@@ -16,6 +16,7 @@ function HandleTpsCommand(Split, Player)
 	return true
 end
 
+
 function GetAverageNum(Table)
 	local Sum = 0
 	for i,Num in ipairs(Table) do

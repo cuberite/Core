@@ -344,7 +344,14 @@ g_PluginInfo =
 		{
 			Permission = "core.toggledownfall",
 			Handler = HandleDownfallCommand,
-			HelpString = "Toggles downfall",
+			HelpString = "Toggles the weather between clear skies and rain",
+			ParameterCombinations =
+			{
+				{
+					Params = "WorldName",
+					Help = "Change the weather in the given world, rather than the current world",
+				},
+			},
 		},
 
 		["/top"] = 
@@ -428,7 +435,26 @@ g_PluginInfo =
 		{
 			Permission = "core.weather",
 			Handler = HandleWeatherCommand,
-			HelpString = "Change world weather",
+			HelpString = "Change world's weather",
+			ParameterCombinations =
+			{
+				{
+					Params = "Weather",
+					Help = "Set the weather to to the given condition, can be: clear, rain, or thunder",
+				},
+				{
+					Params = "Weather DurationInSeconds",
+					Help = "Set the weather to the given condition, for the specified duration",
+				},
+				{
+					Params = "Weather WorldName",
+					Help = "Set the weather to the given condition in the given world, rather than the default world",
+				},
+				{
+					Params = "Weather DurationInSeconds WorldName",
+					Help = "Set the weather to the given condition, have it last for the specified duration, in the given world",
+				},
+			},
 		},
 
 		["/whitelist"] =
@@ -743,6 +769,19 @@ g_PluginInfo =
 			},
 		},
 
+		["toggledownfall"] =
+		{
+			Handler = HandleDownfallCommand,
+			HelpString = "Toggles the weather between clear skies and rain",
+			ParameterCombinations =
+			{
+				{
+					Params = "WorldName",
+					Help = "Change the weather in the given world, rather than the default world",
+				},
+			},
+		},
+
 		["tp"] =
 		{
 			Handler =  HandleConsoleTeleport,
@@ -775,8 +814,27 @@ g_PluginInfo =
 		
 		["weather"] =
 		{
-			Handler =  HandleConsoleWeather,
-			HelpString = "Change weather in the specified world",
+			Handler =  HandleWeatherCommand,
+			HelpString = "Change world's weather",
+			ParameterCombinations =
+			{
+				{
+					Params = "Weather",
+					Help = "Set the weather to to the given condition, can be: clear, rain, or thunder",
+				},
+				{
+					Params = "Weather DurationInSeconds",
+					Help = "Set the weather to the given condition, for the specified duration",
+				},
+				{
+					Params = "Weather WorldName",
+					Help = "Set the weather to the given condition in the given world, rather than the default world",
+				},
+				{
+					Params = "Weather DurationInSeconds WorldName",
+					Help = "Set the weather to the given condition, have it last for the specified duration, in the given world",
+				},
+			},
 		},
 
 		["whitelist"] =
@@ -850,6 +908,19 @@ g_PluginInfo =
 		{
 			Description = "Allows players to display how long the world has existed",
 		},
+		
+		["core.toggledownfall"] =
+		{
+			Description = "Allows players to toggle the weather between clear skies and rain",
+			RecommendedGroups = "admins",
+		},
+		
+		["core.weather"] =
+		{
+			Description = "Allows players to change the weather",
+			RecommendedGroups = "admins",
+		},
+		
 
 		["core.whitelist"] =
 		{

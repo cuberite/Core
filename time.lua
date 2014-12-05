@@ -55,44 +55,6 @@ local function SetTime( World, TimeToSet )
 	return true
 end
 
--- Returns the cWorld object represented by the given name,
--- if no name is given, returns the world the player is in, and
--- if no world of the given name is found, returns nil and informs the player
-local function GetWorld( WorldName, Player )
-
-	if not WorldName then
-		return Player:GetWorld()
-		
-	else
-		local World = cRoot:Get():GetWorld(WorldName)
-		
-		if not World then
-			SendMessage( Player, "There is no world \"" .. WorldName .. "\"")
-		end
-		
-		return World
-	end
-end
-
-
--- Returns the cWorld object represented by the given name,
--- if no name is given, returns the default world, and
--- if no world of the given name is found, returns nil and Logs to console 
-local function GetWorldConsole( WorldName )
-
-	if not WorldName then
-		return cRoot:Get():GetDefaultWorld()
-	else
-		local World = cRoot:Get():GetWorld(WorldName)
-
-		if not World then
-			LOG("There is no world \"" .. WorldName .. "\"")
-		end
-		
-		return World
-	end
-end
-
 
 -- Code common to console and in-game `time add` command
 local function CommonAddTime( World, Time )
@@ -129,7 +91,7 @@ end
 -- Handler for console command: time add <value> [WorldName]
 function HandleConsoleAddTime(a_Split)
 
-	if not CommonAddTime( GetWorldConsole( a_Split[4] ), a_Split[3] ) then
+	if not CommonAddTime( GetWorld( a_Split[4] ), a_Split[3] ) then
 		LOG(ConsoleAddTimeCommandUsage)
 	end
 
@@ -173,7 +135,7 @@ end
 -- Handler for console command: time set <day|night|value> [WorldName]
 function HandleConsoleSetTime(a_Split)
 
-	if not CommonSetTime( GetWorldConsole( a_Split[4] ), a_Split[3] ) then
+	if not CommonSetTime( GetWorld( a_Split[4] ), a_Split[3] ) then
 		LOG(ConsoleSetTimeCommandUsage)
 	end
 	
@@ -206,7 +168,7 @@ end
 -- Handler for console command: time <day|night> [WorldName]
 function HandleConsoleSpecialTime(a_Split)
 
-	return CommonSpecialTime( GetWorldConsole( a_Split[3] ), a_Split[2] )
+	return CommonSpecialTime( GetWorld( a_Split[3] ), a_Split[2] )
 
 end
 
@@ -230,7 +192,7 @@ end
 -- Handler for console command: time query daytime [WorldName]
 function HandleConsoleQueryDaytime(a_Split)
 
-	local World = GetWorldConsole( a_Split[4] )
+	local World = GetWorld( a_Split[4] )
 
 	-- Stop if an invalid world was given
 	if not World then
@@ -262,7 +224,7 @@ end
 -- Handler for console command: time query gametime [WorldName]
 function HandleConsoleQueryGametime(a_Split)
 
-	local World = GetWorldConsole( a_Split[4] )
+	local World = GetWorld( a_Split[4] )
 
 	-- Stop if an invalid world was given
 	if not World then
