@@ -439,6 +439,7 @@ g_PluginInfo =
 				add =
 				{
 					HelpString = "Adds a player to the whitelist",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistAddCommand,
 					ParameterCombinations =
 					{
@@ -451,21 +452,25 @@ g_PluginInfo =
 				list =
 				{
 					HelpString = "Shows the players on the whitelist",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistListCommand,
 				},
 				off =
 				{
 					HelpString = "Turns whitelist processing off",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistOffCommand,
 				},
 				on =
 				{
 					HelpString= "Turns whitelist processing on",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistOnCommand,
 				},
 				remove =
 				{
 					HelpString = "Removes a player from the whitelist",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistRemoveCommand,
 					ParameterCombinations =
 					{
@@ -844,6 +849,12 @@ g_PluginInfo =
 		["core.time.query.gametime"] =
 		{
 			Description = "Allows players to display how long the world has existed",
+		},
+
+		["core.whitelist"] =
+		{
+			Description = "Allows players to manage the whitelist",
+			RecommendedGroups = "admins",
 		},
 	},  -- Permissions
 }  -- g_PluginInfo
