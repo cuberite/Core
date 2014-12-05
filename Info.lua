@@ -68,6 +68,17 @@ g_PluginInfo =
 			Permission = "core.changegm",
 			Handler = HandleChangeGMCommand,
 			HelpString = "Change your gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode",
+					Help = "Change your own gamemode.",
+				},
+				{
+					Params = "gamemode PlayerName",
+					Help = "Change the gamemode of the specified player, rather then your own",
+				},
+			},
 		},
 
 		["/help"] = 
@@ -227,7 +238,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the current world",
+							Help = "Set the time in the given world, rather than the current world",
 						},
 					},
 				},
@@ -240,7 +251,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the current world",
+							Help = "Set the time in the given world, rather than the current world",
 						},
 					},
 				},
@@ -264,8 +275,16 @@ g_PluginInfo =
 							Help = "Set the time to night",
 						},
 						{
-							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the current world",
+							Params = "time WorldName",
+							Help = "Set the time to the given value in the given world, rather than the current world",
+						},
+						{
+							Params = "day WorldName",
+							Help = "Set the time to day in the given world, rather than the current world",
+						},
+						{
+							Params = "night WorldName",
+							Help = "Set the time to night in the given world, rather than the current world",
 						},
 					},
 				},
@@ -281,8 +300,8 @@ g_PluginInfo =
 							Help = "Add the amount given to the current time",
 						},
 						{
-							Params = "WorldName",
-							Help = "Add to the time in the given world, rather then the current world",
+							Params = "amount WorldName",
+							Help = "Add the amount to the time in the given world, rather than the current world",
 						},
 					},
 				},
@@ -299,7 +318,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather then the current world",
+									Help = "Display the time in the given world, rather than the current world",
 								},
 							},
 						},
@@ -312,7 +331,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather then the current world",
+									Help = "Display the time in the given world, rather than the current world",
 								},
 							},
 						},
@@ -446,6 +465,7 @@ g_PluginInfo =
 				add =
 				{
 					HelpString = "Adds a player to the whitelist",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistAddCommand,
 					ParameterCombinations =
 					{
@@ -458,21 +478,25 @@ g_PluginInfo =
 				list =
 				{
 					HelpString = "Shows the players on the whitelist",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistListCommand,
 				},
 				off =
 				{
 					HelpString = "Turns whitelist processing off",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistOffCommand,
 				},
 				on =
 				{
 					HelpString= "Turns whitelist processing on",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistOnCommand,
 				},
 				remove =
 				{
 					HelpString = "Removes a player from the whitelist",
+					Permission = "core.whitelist",
 					Handler = HandleWhitelistRemoveCommand,
 					ParameterCombinations =
 					{
@@ -541,12 +565,26 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsoleGamemode,
 			HelpString = "Change a player's gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode PlayerName",
+					Help = "Change gamemode of the given player",
+				},
+			},
 		},
 
 		["gm"] =
 		{
 			Handler =  HandleConsoleGamemode,
 			HelpString = "Change a player's gamemode",
+			ParameterCombinations = 
+			{
+				{
+					Params = "gamemode PlayerName",
+					Help = "Change gamemode of the given player",
+				},
+			},
 		},
 
 		["give"] =
@@ -634,7 +672,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the default world",
+							Help = "Set the time in the given world, rather than the default world",
 						},
 					},
 				},
@@ -646,7 +684,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the default world",
+							Help = "Set the time in the given world, rather than the default world",
 						},
 					},
 				},
@@ -669,8 +707,16 @@ g_PluginInfo =
 							Help = "Set the time to night",
 						},
 						{
-							Params = "WorldName",
-							Help = "Set the time in the given world, rather then the default world",
+							Params = "time WorldName",
+							Help = "Set the time to the given value in the given world, rather than the default world",
+						},
+						{
+							Params = "day WorldName",
+							Help = "Set the time to day in the given world, rather than the default world",
+						},
+						{
+							Params = "night WorldName",
+							Help = "Set the time to night in the given world, rather than the default world",
 						},
 					},
 				},
@@ -685,8 +731,8 @@ g_PluginInfo =
 							Help = "Add the amount given to the current time"
 						},
 						{
-							Params = "WorldName",
-							Help = "Add to the time in the given world, rather then the default world",
+							Params = "add WorldName",
+							Help = "Add the amount to the time in the given world, rather than the default world",
 						},
 					},
 				},
@@ -702,7 +748,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather then the default world",
+									Help = "Display the time in the given world, rather than the default world",
 								},
 							},
 						},
@@ -714,7 +760,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather then the default world",
+									Help = "Display the time in the given world, rather than the default world",
 								},
 							},
 						},
@@ -840,6 +886,12 @@ g_PluginInfo =
 	},  -- ConsoleCommands
 	Permissions = 
 	{
+		["core.changegm"] =
+		{
+			Description = "Allows players to change gamemodes",
+			RecommendedGroups = "admins",
+		},
+
 		["core.time.set"] = 
 		{
 			Description = "Allows players to set the time of day",
@@ -869,6 +921,12 @@ g_PluginInfo =
 			RecommendedGroups = "admins",
 		},
 		
+
+		["core.whitelist"] =
+		{
+			Description = "Allows players to manage the whitelist",
+			RecommendedGroups = "admins",
+		},
 	},  -- Permissions
 }  -- g_PluginInfo
 

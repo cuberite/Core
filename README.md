@@ -54,11 +54,11 @@ Implements some of the basic commands needed to run a simple server.
 |/viewdistance | core.viewdistance | Change your view distance|
 |/weather | core.weather | Change world's weather|
 |/whitelist |  | Manages the whitelist|
-|/whitelist add |  | Adds a player to the whitelist|
-|/whitelist list |  | Shows the players on the whitelist|
-|/whitelist off |  | Turns whitelist processing off|
-|/whitelist on |  | Turns whitelist processing on|
-|/whitelist remove |  | Removes a player from the whitelist|
+|/whitelist add | core.whitelist | Adds a player to the whitelist|
+|/whitelist list | core.whitelist | Shows the players on the whitelist|
+|/whitelist off | core.whitelist | Turns whitelist processing off|
+|/whitelist on | core.whitelist | Turns whitelist processing on|
+|/whitelist remove | core.whitelist | Removes a player from the whitelist|
 |/worlds | core.worlds | Shows a list of all the worlds|
 
 
@@ -68,12 +68,12 @@ Implements some of the basic commands needed to run a simple server.
 | ----------- | ----------- | -------- | ------------------ |
 | core.back |  | `/back` |  |
 | core.ban |  | `/ban` |  |
-| core.changegm |  | `/gamemode` |  |
+| core.changegm | Allows players to change gamemodes | `/gamemode` | admins |
 | core.clear |  | `/clear` |  |
 | core.difficulty |  | `/difficulty` |  |
 | core.do |  | `/do` |  |
 | core.fly |  | `/fly` |  |
-| core.give |  | `/give`, `/i`, `/item` |  |
+| core.give |  | `/give`, `/item` |  |
 | core.help |  | `/help` |  |
 | core.kick |  | `/kick` |  |
 | core.kill |  | `/kill` |  |
@@ -109,4 +109,5 @@ Implements some of the basic commands needed to run a simple server.
 | core.vanish |  | `/vanish` |  |
 | core.viewdistance |  | `/viewdistance` |  |
 | core.weather | Allows players to change the weather | `/weather` | admins |
+| core.whitelist | Allows players to manage the whitelist | `/whitelist off`, `/whitelist list`, `/whitelist remove`, `/whitelist on`, `/whitelist add` | admins |
 | core.worlds |  | `/worlds` |  |
