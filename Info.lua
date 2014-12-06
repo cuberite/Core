@@ -589,7 +589,7 @@ g_PluginInfo =
 
 		["give"] =
 		{
-			Handler =  HandleConsoleGive,
+			Handler =  HandleGiveCommand,
 			HelpString = "Gives items to the specified player.",
 		},
 

@@ -1,72 +1,168 @@
-function HandleGiveCommand(Split, Player )
 
-	-- Make sure there are a correct number of arguments.
-	if #Split ~= 3 and #Split ~= 4 and #Split ~= 5 and #Split ~= 6 and #Split ~= 7 then
-		SendMessage( Player, "Usage: /give <player> <item> [amount] [meta] [custom name] [lore]" )
-		SendMessage( Player, "The newline character for lore is \"`\"")
+local DataTagTable = {}
+
+local UsageHead = "Usage: "
+local UsageTail = " <player> <item> [amount] [data] [dataTag]"
+
+local MessagePlayerFailure = "Player not found"
+local MessageAmountFailureHead = "The number you have entered ("
+local MessageAmountFailureTail = ") is too big, it must be at most 64"
+local MessageItemNameFailure = "There is no such item with name [ "
+local MessageDataTagFailure = "Error processing dataTag: "
+local MessageUnknownError = "< Unknown Error >"
+
+local MaxNumberOfItems = 64
+
+local function SplitDataTag( DataTag )
+
+	local table = {}
+
+	DataTag = string.gsub(DataTag,":","=")
+	DataTag = string.gsub(DataTag, "%[", "{")
+	DataTag = string.gsub(DataTag, "%]", "}")
+
+	local DataTagFunc, err = loadstring("dt = " .. DataTag)
+	if not DataTagFunc then
+		return false, err
+	end
+
+	setfenv(DataTagFunc, table)
+	local Success, errMsg = pcall(DataTagFunc)
+	if not Success then
+		return false, errMsg
+	end
+	
+	DataTagTable = table.dt
+
+	return true, nil
+end
+
+
+function HandleGiveCommand( Split, Player )
+
+	local PlayerName = Split[2]
+	local lcPlayerName = string.lower( PlayerName or "" )
+	local ItemName = Split[3]
+	local Amount = tonumber( Split[4] ) or 1
+	local DataValue = tonumber( Split[5] ) or 0
+	local Name
+	local Damage  -- Need to find out how this is passed in the DataTag, maybe add a non-standard?
+
+	if not PlayerName or not ItemName or Amount < 1 or DataValue < 0 or DataValue > 15 then
+		local Message = UsageHead .. Split[1] .. UsageTail
+		if Player then
+			SendMessage( Player, Message )
+		else
+			LOG( Message )
+		end
 		return true
 	end
 
 	-- Get the item from the arguments and check it's valid.
-	local FoundItem = nil
 	local Item = cItem()
-	if #Split == 5 then
-		FoundItem = StringToItem( Split[3] .. ":" .. Split[5], Item )
-	else
-		FoundItem = StringToItem( Split[3], Item )
-	end
+	local FoundItem = StringToItem( ItemName .. ":" .. DataValue, Item)
 
 	if not IsValidItem( Item.m_ItemType ) then  -- StringToItem does not check if item is valid
 		FoundItem = false
 	end
 
 	if not FoundItem  then
-		SendMessageFailure( Player, "Invalid item id or name!" )
+		local Message = MessageItemNameFailure .. ItemName .. " ]"
+		if Player then
+			SendMessageFailure( Player, Message )
+		else
+			LOG( Message )
+		end
 		return true
 	end
 
-	-- Work out how many items the user wants.
-	local ItemAmount = 1
-	if #Split > 3 then
-		ItemAmount = tonumber( Split[4] )
-		if ItemAmount == nil or ItemAmount < 1 or ItemAmount > 512 then
-			SendMessageFailure( Player, "Invalid amount!" )
+	if Split[6] then
+
+		local Success, errMsg = SplitDataTag( Split[6] )
+
+		if not Success then
+
+			local Message = MessageDataTagFailure .. errMsg or MessageUnknownError
+			if Player then
+				SendMessageFailure( Player, Message )
+			else
+				LOG( Message )
+			end
+
 			return true
 		end
-	end
 
-	Item.m_ItemCount = ItemAmount
-	if (Split[6] ~= nil) then
-		Item.m_CustomName = tostring(Split[6])
-	end
-	if (Split[7] ~= nil) then
-		Item.m_Lore = tostring(Split[7])
-	end
-
-	-- Get the playername from the split.
-	local playerName = Split[2]
-
-	local function giveItems( newPlayer )
-		local ItemsGiven = newPlayer:GetInventory():AddItem( Item )
-		if ItemsGiven == ItemAmount then
-			SendMessageSuccess( newPlayer, "You were given " .. Item.m_ItemCount .. " of " .. Item.m_ItemType .. "." )
-			if not newPlayer == Player then
-				SendMessageSuccess( Player, "Items given!" )
-			end
-			LOG("Gave " .. newPlayer:GetName() .. " " .. Item.m_ItemCount .. " times " .. Item.m_ItemType .. ":" .. Item.m_ItemDamage )
-		else
-			SendMessageFailure( Player, "Not enough space in inventory, only gave " .. ItemsGiven )
-			LOG( "Player " .. Player:GetName() .. " asked for " .. Item.m_ItemCount .. " times " .. Item.m_ItemType .. ":" .. Item.m_ItemDamage ..", but only could fit " .. ItemsGiven )
+		if DataTagTable.display.Name then
+			Name = DataTagTable.display.Name
+			Item.m_CustomName = Name
 		end
+
+		if DataTagTable.display.Lore then
+			local Lore = ""
+			for _, value in ipairs(DataTagTable.display.Lore) do
+				LOG(value)
+				Lore = Lore .. value .. "`"  -- Newline is '`' character rather than "\n"
+			end
+			Item.m_Lore = Lore
+		end
+
+		if DataTagTable.ench then
+			for _, enchants in ipairs(DataTagTable.ench) do
+				Item.m_Enchantments:SetLevel(enchants.id,enchants.lvl)
+			end
+		end
+
+	end
+
+	if Amount > MaxNumberOfItems then
+		local Message = MessageAmountFailureHead .. Amount .. MessageAmountFailureTail
+		if Player then
+			SendMessageFailure( Player, Message )
+		else
+			LOG( Message )
+		end
+		return true
+	end
+
+	local function giveItems( NewPlayer )
+
+		if string.lower( NewPlayer:GetName() ) ~= lcPlayerName then
+			return false
+		end
+
+		Item:AddCount(Amount - 1)
+		NewPlayer:GetInventory():AddItem( Item )
+		
+		local MessageHead = "Given [" .. Name or ItemToString( Item ) .. "] x " .. Amount
+		local MessageTail = " to " .. NewPlayer:GetName()
+		SendMessageSuccess( NewPlayer, MessageHead )
+		if Player then
+			SendMessageSuccess( Player, MessageHead .. MessageTail )
+		end
+		LOG( Player and Player:GetName() or "Console" .. ": " .. MessageHead .. MessageTail )
+
 		return true
 	end
 
 	-- Finally give the items to the player.
 	-- Check to make sure that giving items was successful.
-	if not cRoot:Get():FindAndDoWithPlayer( playerName, giveItems ) then
-		SendMessageFailure( Player, "There was no player that matched your query." )
+	if not cRoot:Get():FindAndDoWithPlayer( PlayerName, giveItems ) then
+		if Player then
+			SendMessageFailure( Player, MessagePlayerFailure )
+		else
+			LOG( MessagePlayerFailure )
+		end
 	end
 
+	return true
+end
+
+
+function HandleItemCommand( Split, Player )
+
+	table.insert( Split, 2, Player:GetName() )
+
+	HandleGiveCommand( newSplit, Player )
 	return true
 
 end
