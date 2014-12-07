@@ -5,7 +5,7 @@
 local DataTagTable = {}
 
 local CommandUsage = "Usage: %s %s"
-local ItemCommandUsageTail = "<item> [amount] [data] [dataTag]"
+local ItemCommandUsageTail = "<ItemName> [Amount] [Data] [DataTag]"
 local GiveCommandUsageTail = "<PlayerName>" .. ItemCommandUsageTail
 
 local MessagePlayerFailure = "Player not found"
@@ -49,10 +49,12 @@ local function SplitDataTag( DataTag )
 	return true, nil
 end
 
---- Handle the `give` console and in-game command
---  Usage: give <PlayerName> <item> [amount] [data] [dataTag]
+--- Handles `give` and `item` commands, other then usage strings 
+--  which are taken care of in their registered handlers
 --  
-function HandleGiveCommand( Split, Player )
+--  @return False if PlayerName or ItemName are missing, or Amount or DataValue are invalid, true otherwise
+--  
+local function GiveItemCommand( Split, Player )
 
 	local PlayerName = Split[2]
 	local lcPlayerName = string.lower( PlayerName or "" )
@@ -63,13 +65,7 @@ function HandleGiveCommand( Split, Player )
 	local Damage  -- Need to find out how this is passed in the DataTag, maybe add a non-standard?
 
 	if not PlayerName or not ItemName or Amount < 1 or DataValue < 0 or DataValue > 15 then
-		local Message = string.format( CommandUsage, Split[1] , string.find( Split[1], "give" ) and GiveCommandUsageTail or ItemCommandUsageTail )
-		if Player then
-			SendMessage( Player, Message )
-		else
-			LOG( Message )
-		end
-		return true
+		return false
 	end
 
 	-- Get the item from the arguments and check it's valid.
@@ -186,6 +182,23 @@ function HandleGiveCommand( Split, Player )
 end
 
 
+--- Handle the `give` console and in-game command
+--  Usage: give <PlayerName> <item> [amount] [data] [dataTag]
+--  
+function HandleGiveCommand( Split, Player )
+
+	if not GiveItemCommand( Split, Player ) then
+		local Message = string.format( CommandUsage, Split[1] , GiveCommandUsageTail )
+		if Player then
+			SendMessage( Player, Message )
+		else
+			LOG( Message )
+		end
+	end
+
+	return true
+end
+
 --- Handle the `item` in-game command
 --  Usage: item <item> [amount] [data] [dataTag]
 --  
@@ -193,7 +206,15 @@ function HandleItemCommand( Split, Player )
 
 	table.insert( Split, 2, Player:GetName() )
 
-	HandleGiveCommand( newSplit, Player )
+	if not GiveItemCommand( Split, Player ) then
+		local Message = string.format( CommandUsage, Split[1] , ItemCommandUsageTail )
+		if Player then
+			SendMessage( Player, Message )
+		else
+			LOG( Message )
+		end
+	end
+
 	return true
 
 end
