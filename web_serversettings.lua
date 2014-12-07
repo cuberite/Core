@@ -127,16 +127,18 @@ local function ShowWorldsSettings(Request)
 	
 	if (Request.PostParams["AddWorld"] ~= nil) then
 		if (Request.PostParams["WorldName"] ~= nil and Request.PostParams["WorldName"] ~= "") then
-			SettingsIni:SetValue("Worlds", "World", Request.PostParams["WorldName"], true)
+			SettingsIni:AddValue("Worlds", "World", Request.PostParams["WorldName"])
 			InfoMsg = "<b style=\"color: green;\">INFO: Successfully added world " .. Request.PostParams["WorldName"] .. "!</b><br />"
 			bSaveIni = true
 		end
 	end
 	
-	if (Request.PostParams["worlds_submit"] ~= nil) then
-		SettingsIni:SetValue("Worlds", "DefaultWorld", Request.PostParams["Worlds_DefaultWorld"], false )
+	if (Request.PostParams["worlds_submit"] ~= nil ) then
+		if Request.PostParams["Worlds_DefaultWorld"] ~= nil then
+			SettingsIni:SetValue("Worlds", "DefaultWorld", Request.PostParams["Worlds_DefaultWorld"], false )
+		end
 		if (Request.PostParams["Worlds_World"] ~= nil) then
-			SettingsIni:SetValue("Worlds", "World", Request.PostParams["Worlds_World"], true )
+			SettingsIni:AddValue("Worlds", "World", Request.PostParams["Worlds_World"])
 		end
 		bSaveIni = true
 	end
