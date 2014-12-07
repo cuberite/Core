@@ -14,7 +14,7 @@ Implements some of the basic commands needed to run a simple server.
 |/gamemode | core.changegm | Change your gamemode|
 |/give | core.give | Give someone an item|
 |/help | core.help | Show available commands|
-|/item | core.give | Give yourself an item.|
+|/item | core.item | Give yourself an item.|
 |/kick | core.kick | Kick a player|
 |/kill | core.kill | Kill a player|
 |/list | core.list | Lists all connected players|
@@ -73,8 +73,9 @@ Implements some of the basic commands needed to run a simple server.
 | core.difficulty |  | `/difficulty` |  |
 | core.do |  | `/do` |  |
 | core.fly |  | `/fly` |  |
-| core.give |  | `/give`, `/item` |  |
+| core.give | Allows players to give items to other players | `/give` | admins |
 | core.help |  | `/help` |  |
+| core.item | Allows players to give items to themselves | `/item` | admins |
 | core.kick |  | `/kick` |  |
 | core.kill |  | `/kill` |  |
 | core.list |  | `/list` |  |

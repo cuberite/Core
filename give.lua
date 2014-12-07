@@ -1,4 +1,4 @@
--- Implements give, unsafegive, item, and unsafeitem commands and console commands
+-- Implements give and item commands and console commands
 
 
 -- Table to hold the processed data tag
@@ -51,6 +51,7 @@ local function SplitDataTag( DataTag )
 	return true, nil
 end
 
+
 --- Handles `give` and `item` commands, other then usage strings 
 --  which are taken care of in their registered handlers
 --  
@@ -64,9 +65,8 @@ local function GiveItemCommand( Split, Player )
 	local Amount = tonumber( Split[4] ) or 1
 	local DataValue = tonumber( Split[5] ) or 0
 	local Name
-	local Damage  -- Need to find out how this is passed in the DataTag, maybe add a non-standard?
 
-	if not PlayerName or not ItemName or Amount < 1 or DataValue < 0 or DataValue > 15 then
+	if not PlayerName or not ItemName or Amount < 1 or DataValue < 0 then
 		return false
 	end
 
