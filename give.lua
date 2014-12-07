@@ -6,7 +6,7 @@ local DataTagTable = {}
 
 local CommandUsage = "Usage: %s %s"
 local ItemCommandUsageTail = "<ItemName> [Amount] [Data] [DataTag]"
-local GiveCommandUsageTail = "<PlayerName>" .. ItemCommandUsageTail
+local GiveCommandUsageTail = "<PlayerName> " .. ItemCommandUsageTail
 
 local MessagePlayerFailure = "Player not found"
 local MessageAmountFailure = "The number you have entered ( %d ) is too big, it must be at most 64"
@@ -14,6 +14,8 @@ local MessageItemNameFailure = "There is no such item with name [ %s ]"
 local MessageDataTagFailure = "Error processing dataTag: "
 local MessageUnknownError = "< Unknown Error >"
 local MessageGiveSuccessful = "Given [ %s ] x %d"
+local MessageBadAmount = "Amount must be a number"
+local MessageBadData = "Data must be a number"
 
 local MaxNumberOfItems = 64
 
@@ -68,6 +70,26 @@ local function GiveItemCommand( Split, Player )
 		return false
 	end
 
+	-- Make sure that if an amount was given, that it was actually a number
+	if Split[4] and not tonumber( Split[4] ) then
+		if Player then
+			SendMessageFailure( Player, MessageBadAmount )
+		else
+			LOG( MessageBadAmount )
+		end
+		return true
+	end
+	
+	-- Make sure that if a data value was given that it was actually a number
+	if Split[5] and not tonumber( Split[5] ) then
+		if Player then
+			SendMessageFailure( Player, MessageBadData )
+		else
+			LOG( MessageBadData )
+		end
+		return true
+	end
+
 	-- Get the item from the arguments and check it's valid.
 	local Item = cItem()
 	local FoundItem = StringToItem( ItemName .. ":" .. DataValue, Item)
@@ -107,23 +129,27 @@ local function GiveItemCommand( Split, Player )
 			return true
 		end
 
-		-- Set a custom name if given
-		if DataTagTable.display.Name then
-			Name = DataTagTable.display.Name
-			Item.m_CustomName = Name
-		end
+		if DataTagTable.display then
 
-		-- Set Lore if given
-		if DataTagTable.display.Lore then
-			local Lore = ""
-			for _, value in ipairs(DataTagTable.display.Lore) do
-				Lore = Lore .. value .. "`"  -- Newline is '`' character rather than "\n"
+			-- Set a custom name if given
+			if DataTagTable.display.Name then
+				Name = DataTagTable.display.Name
+				Item.m_CustomName = Name
 			end
-			Item.m_Lore = Lore
+
+			-- Set Lore if given
+			if DataTagTable.display.Lore then
+				local Lore = ""
+				for _, value in ipairs(DataTagTable.display.Lore) do
+					Lore = Lore .. value .. "`"  -- Newline is '`' character rather than "\n"
+				end
+				Item.m_Lore = Lore
+			end
+			
 		end
 
-		-- Add enchantments, if given
-		if DataTagTable.ench then
+		-- Add enchantments, if given and the item is enchantable
+		if DataTagTable.ench and cItem:IsEnchantable(Item.m_ItemType, true) then
 			for _, enchants in ipairs(DataTagTable.ench) do
 				Item.m_Enchantments:SetLevel(enchants.id,enchants.lvl)
 			end
@@ -160,7 +186,7 @@ local function GiveItemCommand( Split, Player )
 		local MessageHead = string.format( MessageGiveSuccessful, ( Name or ItemToString( Item ) ), Amount )
 		local MessageTail = " to " .. NewPlayer:GetName()
 		SendMessageSuccess( NewPlayer, MessageHead )
-		if Player then
+		if Player and NewPlayer:GetName() ~= Player:GetName() then
 			SendMessageSuccess( Player, MessageHead .. MessageTail )
 		end
 		LOG( ( Player and Player:GetName() or "Console" ) .. ": " .. MessageHead .. MessageTail )
@@ -198,6 +224,7 @@ function HandleGiveCommand( Split, Player )
 
 	return true
 end
+
 
 --- Handle the `item` in-game command
 --  Usage: item <item> [amount] [data] [dataTag]
