@@ -32,68 +32,6 @@ end
 
 
 
-function HandleConsoleGive(Split)
-	-- Make sure there are a correct number of arguments.
-	if ((#Split < 3) or (#Split > 5)) then
-		return true, "Usage: give <PlayerName> <item> [<amount>] [<meta>]"
-	end
-
-	-- Get the item from the arguments and check it's valid.
-	local Item = cItem()
-	if #Split == 5 then
-		local FoundItem = StringToItem(Split[3] .. ":" .. Split[5], Item)
-	else
-		local FoundItem = StringToItem(Split[3], Item)
-	end
-	if not IsValidItem(Item.m_ItemType) then  -- StringToItem does not check if item is valid
-		FoundItem = false
-	end
-
-	if not FoundItem  then
-		return true, "Invalid item id or name!"
-	end
-
-	-- Work out how many items the user wants.
-	local ItemAmount = 1
-	if #Split > 3 then
-		ItemAmount = tonumber(Split[4])
-		if ItemAmount == nil or ItemAmount < 1 or ItemAmount > 512 then
-			return true, "Invalid amount!"
-		end
-	end
-
-	Item.m_ItemCount = ItemAmount
-
-	-- Get the playername from the split.
-	local playerName = Split[2]
-
-	local function giveItems(newPlayer)
-		local ItemsGiven = newPlayer:GetInventory():AddItem(Item)
-		if ItemsGiven == ItemAmount then
-			SendMessageSuccess( newPlayer, "There you go!" )
-			LOG("Gave " .. newPlayer:GetName() .. " " .. Item.m_ItemCount .. " times " .. Item.m_ItemType .. ":" .. Item.m_ItemDamage)
-		else
-			SendMessageFailure( Player, "Not enough space in inventory, only gave " .. ItemsGiven)
-			return true, "Only " .. Item.m_ItemCount .. " out of " .. ItemsGiven .. "items could be delivered."
-		end
-	end
-
-	-- Finally give the items to the player.
-	itemStatus = cRoot:Get():FindAndDoWithPlayer(playerName, giveItems)
-
-	-- Check to make sure that giving items was successful.
-	if not itemStatus then
-		return true, "There was no player that matched your query."
-	end
-
-	return true
-
-end
-
-
-
-
-
 function HandleConsoleKick(Split)
 	if (#Split < 2) then
 		return true, "Usage: kick <PlayerName> [<Reason>]"

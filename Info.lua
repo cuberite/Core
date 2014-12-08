@@ -60,6 +60,25 @@ g_PluginInfo =
 			Permission = "core.give",
 			Handler = HandleGiveCommand,
 			HelpString = "Give someone an item",
+			ParameterCombinations = 
+			{
+				{
+					Params = "PlayerName ItemName",
+					Help = "Gives the player one of the specified item",
+				},
+				{
+					Params = "PlayerName ItemName Amount",
+					Help = "Gives the player the given amount of the specified item",
+				},
+				{
+					Params = "PlayerName ItemName Amount Data",
+					Help = "Gives the player the given amount of the specified item with the given data value",
+				},
+				{
+					Params = "PlayerName ItemName Amount Data DataTag",
+					Help = "Gives the player the given amount of the specified item with the given data value and DataTag",
+				},
+			},
 		},
 
 		["/gamemode"] = 
@@ -91,9 +110,28 @@ g_PluginInfo =
 		["/item"] = 
 		{
 			Alias = "/i",
-			Permission = "core.give",
+			Permission = "core.item",
 			Handler = HandleItemCommand,
 			HelpString = "Give yourself an item.",
+			ParameterCombinations = 
+			{
+				{
+					Params = "ItemName",
+					Help = "Gives the caller one of the specified item",
+				},
+				{
+					Params = "ItemName Amount",
+					Help = "Gives the caller the given amount of the specified item",
+				},
+				{
+					Params = "ItemName Amount Data",
+					Help = "Gives the caller the given amount of the specified item with the given data value",
+				},
+				{
+					Params = "ItemName Amount Data DataTag",
+					Help = "Gives the caller the given amount of the specified item with the given data value and DataTag",
+				},
+			},
 		},
 
 		["/kick"] = 
@@ -589,8 +627,27 @@ g_PluginInfo =
 
 		["give"] =
 		{
-			Handler =  HandleConsoleGive,
+			Handler =  HandleGiveCommand,
 			HelpString = "Gives items to the specified player.",
+			ParameterCombinations = 
+			{
+				{
+					Params = "PlayerName ItemName",
+					Help = "Gives the player one of the specified item",
+				},
+				{
+					Params = "PlayerName ItemName Amount",
+					Help = "Gives the player the given amount of the specified item",
+				},
+				{
+					Params = "PlayerName ItemName Amount Data",
+					Help = "Gives the player the given amount of the specified item with the given data value",
+				},
+				{
+					Params = "PlayerName ItemName Amount Data DataTag",
+					Help = "Gives the player the given amount of the specified item with the given data value and DataTag",
+				},
+			},
 		},
 
 		["kick"] =
@@ -889,6 +946,18 @@ g_PluginInfo =
 		["core.changegm"] =
 		{
 			Description = "Allows players to change gamemodes",
+			RecommendedGroups = "admins",
+		},
+
+		["core.give"] =
+		{
+			Description = "Allows players to give items to other players",
+			RecommendedGroups = "admins",
+		},
+
+		["core.item"] =
+		{
+			Description = "Allows players to give items to themselves",
 			RecommendedGroups = "admins",
 		},
 
