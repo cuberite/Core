@@ -103,9 +103,9 @@ local WebCommands     = {}
 
 
 
-function AddMessage( PlayerName, Message )
+function AddMessage(a_PlayerName, a_Message, a_WebUser)
 	LastMessageID = LastMessageID + 1
-	table.insert( ChatLogMessages, { timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), name = PlayerName, message = Message, id = LastMessageID } )
+	table.insert( ChatLogMessages, { timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), name = a_PlayerName, message = a_Message, id = LastMessageID, webuser = a_WebUser } )
 	while( #ChatLogMessages > CHAT_HISTORY ) do
 		table.remove( ChatLogMessages, 1 )
 	end
@@ -143,7 +143,8 @@ function HandleWebHelpCommand(a_User, a_Message)
 		end
 	end
 	
-	return Content
+	AddMessage(nil, Content, a_User)
+	return true
 end
 
 
@@ -152,7 +153,8 @@ end
 
 function HandleWebReloadCommand(a_User, a_Message)
 	cPluginManager:Get():ReloadPlugins()
-	return "Reloading Plugins"
+	AddMessage(nil, "Reloading Plugins", a_User)
+	return true
 end
 
 
@@ -181,7 +183,6 @@ local function CheckForLinks(a_Message)
 	local function PlaceString(a_Url)
 		return '<a href="' .. a_Url .. '" target="_blank">' .. a_Url .. '</a>'
 	end
-	
 	return a_Message:gsub('http://[^%s]+', PlaceString):gsub('https://[^%s]+', PlaceString)
 end
 
@@ -196,10 +197,12 @@ function HandleRequest_Chat( Request )
 		local Content = ""
 		for key, value in pairs(ChatLogMessages) do 
 			if( value.id > LastIdx ) then
-				if value.name == nil then
-					Content = Content .. value.timestamp .. CheckForLinks(value.message) .. "<br>"
-				else
-					Content = Content .. value.timestamp .. " [" .. value.name .. "]: " .. CheckForLinks(value.message) .. "<br>"
+				if (not value.webuser or (value.webuser == Request.Username)) then
+					if value.name == nil then
+						Content = Content .. value.timestamp .. CheckForLinks(value.message) .. "<br>"
+					else
+						Content = Content .. value.timestamp .. " [" .. value.name .. "]: " .. CheckForLinks(value.message) .. "<br>"
+					end
 				end
 			end
 		end
@@ -214,16 +217,20 @@ function HandleRequest_Chat( Request )
 			if (CommandInfo.CommandString == Split[1]) then
 				-- cPluginManager:CallPlugin doesn't support calling yourself, so we have to check if the command is from the Core.
 				if (CommandInfo.PluginName == "Core") then
-					AddMessage(nil, _G[CommandInfo.CallbackName](Request.Username, Request.PostParams["ChatMessage"]))
+					if (not _G[CommandInfo.CallbackName](Request.Username, Request.PostParams["ChatMessage"])) then
+						AddMessage(nil, "Something went wrong while calling \"" .. CommandInfo.CallbackName .. "\" From \"" .. CommandInfo.PluginName .. "\".", Request.Username)
+					end
 				else
-					AddMessage(nil, cPluginManager:CallPlugin(CommandInfo.PluginName, CommandInfo.CallbackName, Request.Username, Request.PostParams["ChatMessage"]))
+					if (not cPluginManager:CallPlugin(CommandInfo.PluginName, CommandInfo.CallbackName, Request.Username, Request.PostParams["ChatMessage"])) then
+						AddMessage(nil, "Something went wrong while calling \"" .. CommandInfo.CallbackName .. "\" From \"" .. CommandInfo.PluginName .. "\".", Request.Username)
+					end
 				end
 				return ""
 			end
 		end
 		
 		if (Request.PostParams["ChatMessage"]:sub(1, 1) == "/") then
-			AddMessage(nil, 'Unknown Command "' .. Request.PostParams["ChatMessage"] .. '"', "")
+			AddMessage(nil, 'Unknown Command "' .. Request.PostParams["ChatMessage"] .. '"', nil)
 			return ""
 		end
 		
@@ -234,7 +241,7 @@ function HandleRequest_Chat( Request )
 
 	local Content = JavaScript
 	Content = Content .. [[
-	<div style="font-family: Courier; border: 1px solid #DDD; padding: 10px; width: 97%; height: 200px; overflow: scroll;" id="ChatDiv"></div>
+	<div style="font-family: Courier; border: 1px solid #DDD; padding: 10px; width: 97%; height: 400px; overflow: scroll;" id="ChatDiv"></div>
 	<input type="text" id="ChatMessage" onKeyPress="if (event.keyCode == 13) { SendChatMessage(); }"><input type="submit" value="Submit" onClick="SendChatMessage();">
 	]]
 	return Content
