@@ -28,27 +28,78 @@ local MaxNumberOfItems = 64
 --  
 local function SplitDataTag( DataTag )
 
-	local table = {}
+	-- Table where the assembled SataTag table is temporarily stored
+	local Sandbox = {}
+	
+	-- Table where users strings are stored to protect from processing
+	local SavedStrings = {}
+
+
+	--- Save user strings to table to preserve them from additional processing
+	--  
+	--  @param StringToSave The string to be saved
+	--  
+	--  @return The string "%s#" where # is the position in the table where the string was saved
+	--  
+	local function PreserveString( StringToSave )
+		table.insert( SavedStrings, StringToSave )
+		return "\"%s" .. table.getn( SavedStrings ) .. "\""
+	end
+
+
+	--- Handle the un-escaped strings that Mojang allows into vanilla minecraft data tags
+	--  and store them into the SavedStrings table
+	--  
+	--  @param StringToFix The string to be escaped
+	--  
+	--  @return The string ":[%s#]" where # is the position in the table where the string was saved
+	--  
+	local function HandleUnquotedString( StringToFix )
+		StringToFix = string.gsub( StringToFix, ",", "\",\"" )
+		return ":[" .. PreserveString( StringToFix ) .. "]"
+	end
+	
+	
+	-- This preserves the users names, lore, etc before further processing
+	-- We run prior to correcting escaping unquoted strings to allow for any 
+	-- combination of symbols in strings that are entered by the user with 
+	-- the appropriate leading and trailing quotes in place
+	DataTag = string.gsub( DataTag, "\"([^\"]+)\"", PreserveString )
+
+	-- This handles the unquoted strings in-between certain square brackets that vanilla allows
+	-- Currently you cannot use the a `]` in those strings,
+	-- but everything else is handled
+	DataTag = string.gsub( DataTag, ":%s-%[%s-([^{\"%s][^%]]+[^\"])%]", HandleUnquotedString )
+
 
 	-- Modify the vanilla minecraft dataTag format to a lua table format
-	DataTag = string.gsub(DataTag,":","=")
-	DataTag = string.gsub(DataTag, "%[", "{")
-	DataTag = string.gsub(DataTag, "%]", "}")
+	DataTag = string.gsub( DataTag, ":", "=" )
+	DataTag = string.gsub( DataTag, "%[", "{" )
+	DataTag = string.gsub( DataTag, "%]", "}" )
+
+
+	-- Restore lore, names, etc. into the string
+	for index, value in ipairs( SavedStrings ) do
+		DataTag = string.gsub( DataTag, "%%s" .. index, value )
+	end
+	
+
 
 	-- Load the DataTag string into lua
 	local DataTagFunc, err = loadstring( "dt = " .. DataTag )
 	if not DataTagFunc then
 		return false, err
 	end
-	setfenv(DataTagFunc, table)
+	setfenv(DataTagFunc, Sandbox)
 	local Success, errMsg = pcall(DataTagFunc)
 	if not Success then
 		return false, errMsg
 	end
 
-	DataTagTable = table.dt
+	DataTagTable = Sandbox.dt
 
 	return true, nil
+
 end
 
 
@@ -119,7 +170,7 @@ local function GiveItemCommand( Split, Player )
 
 		if not Success then
 
-			local Message = MessageDataTagFailure .. errMsg or MessageUnknownError
+			local Message = string.format( "%s%s", MessageDataTagFailure, errMsg or MessageUnknownError )
 			if Player then
 				SendMessageFailure( Player, Message )
 			else
