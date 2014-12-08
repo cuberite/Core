@@ -17,6 +17,11 @@ local MessageGiveSuccessful = "Given [ %s ] x %d"
 local MessageBadAmount = "Amount must be a number"
 local MessageBadData = "Data must be a number"
 
+local UnbalancedCurleyBracesFailure = "Missing or unexpected '{' or '}' detected"
+local UnbalancedSquareBracketsFailure = "Missing or unexpected '[' or ']' detected"
+local StartWithBraceFailure = "DataTag must start with a '{'"
+local EndWithBraceFailure = "DataTag must end with a '}'"
+
 local MaxNumberOfItems = 64
 
 
@@ -30,7 +35,7 @@ local function SplitDataTag( DataTag )
 
 	-- Table where the assembled SataTag table is temporarily stored
 	local Sandbox = {}
-	
+
 	-- Table where users strings are stored to protect from processing
 	local SavedStrings = {}
 
@@ -58,18 +63,75 @@ local function SplitDataTag( DataTag )
 		StringToFix = string.gsub( StringToFix, ",", "\",\"" )
 		return ":[" .. PreserveString( StringToFix ) .. "]"
 	end
-	
-	
+
+
+	--- Implements basic sanity checking on the DataTag to generate more meaningful error messages 
+	--  
+	--  @return True if checks pass, false with an error message otherwise
+	--  
+	local function VerifyDataTagFormat()
+
+		-- Verify string starts and ends with expected brace
+		if string.sub( DataTag, 1, 1 ) ~= "{" then
+			return false, StartWithBraceFailure
+		end
+		if string.sub( DataTag, -1, -1 ) ~= "}" then
+			return false, EndWithBraceFailure
+		end
+
+		-- Check for balanced curly braces and square brackets
+		local FirstLoc, LastLoc = string.find( DataTag, "%b{}" )
+		if FirstLoc ~= 1 or LastLoc ~= string.len( DataTag ) then
+			return false, UnbalancedCurleyBracesFailure
+		end
+
+		local DataTagLen = string.len( DataTag )
+		FirstLoc, LastLoc = string.find( DataTag, "%b[]" )
+
+		if FirstLoc and LastLoc then
+			local FirstBrace = math.min( string.find( DataTag, "%[" ) or DataTagLen , string.find( DataTag, "%]" ) or DataTagLen )
+			local LastBrace = math.max( string.find( DataTag, "%[", LastLoc + 1 ) or 0, string.find( DataTag, "%]", LastLoc + 1 ) or 0)
+
+			-- Loop over the string and make sure we've found all the square bracket pairs
+			while LastLoc < LastBrace do
+				local _, Tmp = string.find( DataTag, "%b[]", LastLoc + 1 )
+				if not Tmp then
+					break
+				end
+				LastLoc = Tmp
+				Tmp = math.max( string.find( DataTag, "%[", LastLoc + 1 ) or 0 , string.find( DataTag, "%]", LastLoc + 1 ) or 0 )
+				if Tmp and Tmp > LastBrace then
+					LastBrace = Tmp
+				end
+			end
+
+			if ( FirstLoc > FirstBrace ) or ( LastLoc < LastBrace ) then
+				return false, UnbalancedSquareBracketsFailure
+			end
+		end
+
+		return true
+	end
+
+
 	-- This preserves the users names, lore, etc before further processing
 	-- We run prior to correcting escaping unquoted strings to allow for any 
 	-- combination of symbols in strings that are entered by the user with 
 	-- the appropriate leading and trailing quotes in place
 	DataTag = string.gsub( DataTag, "\"([^\"]+)\"", PreserveString )
 
+
 	-- This handles the unquoted strings in-between certain square brackets that vanilla allows
 	-- Currently you cannot use the a `]` in those strings,
 	-- but everything else is handled
 	DataTag = string.gsub( DataTag, ":%s-%[%s-([^{\"%s][^%]]+[^\"])%]", HandleUnquotedString )
+
+
+	-- Preliminary sanity checks on DataTag
+	local Success, errMsg = VerifyDataTagFormat()
+	if not Success then
+		return false, errMsg
+	end
 
 
 	-- Modify the vanilla minecraft dataTag format to a lua table format
@@ -91,6 +153,7 @@ local function SplitDataTag( DataTag )
 		return false, err
 	end
 	setfenv(DataTagFunc, Sandbox)
+	-- TODO: Investigate switching to xpcall() for better error handling
 	local Success, errMsg = pcall(DataTagFunc)
 	if not Success then
 		return false, errMsg
@@ -130,7 +193,7 @@ local function GiveItemCommand( Split, Player )
 		end
 		return true
 	end
-	
+
 	-- Make sure that if a data value was given that it was actually a number
 	if Split[5] and not tonumber( Split[5] ) then
 		if Player then
