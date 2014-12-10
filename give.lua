@@ -33,7 +33,7 @@ local MaxNumberOfItems = 64
 --  
 local function SplitDataTag( DataTag )
 
-	-- Table where the assembled SataTag table is temporarily stored
+	-- Table where the assembled DataTag table is temporarily stored
 	local Sandbox = {}
 
 	-- Table where users strings are stored to protect from processing
@@ -206,7 +206,7 @@ local function GiveItemCommand( Split, Player )
 
 	-- Get the item from the arguments and check it's valid.
 	local Item = cItem()
-	local FoundItem = StringToItem( ItemName .. ":" .. DataValue, Item)
+	local FoundItem = StringToItem( ItemName .. ( DataValue ~= 0 and ( ":" .. DataValue ) or "" ), Item)
 
 	-- StringToItem does not check if item is valid
 	if not IsValidItem( Item.m_ItemType ) then
