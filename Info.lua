@@ -455,6 +455,58 @@ g_PluginInfo =
 			HelpString = "Unban a player",
 		},
 
+		["/unsafegive"] = 
+		{
+			Permission = "core.give.unsafe",
+			Handler = HandleGiveCommand,
+			HelpString = "Give someone an item, even if it is blacklisted.",
+			ParameterCombinations = 
+			{
+				{
+					Params = "PlayerName ItemName",
+					Help = "Gives the player one of the specified item",
+				},
+				{
+					Params = "PlayerName ItemName Amount",
+					Help = "Gives the player the given amount of the specified item",
+				},
+				{
+					Params = "PlayerName ItemName Amount Data",
+					Help = "Gives the player the given amount of the specified item with the given data value",
+				},
+				{
+					Params = "PlayerName ItemName Amount Data DataTag",
+					Help = "Gives the player the given amount of the specified item with the given data value and DataTag",
+				},
+			},
+		},
+
+		["/unsafeitem"] = 
+		{
+			Permission = "core.item.unsafe",
+			Handler = HandleItemCommand,
+			HelpString = "Give yourself an item, even if it is blacklisted.",
+			ParameterCombinations = 
+			{
+				{
+					Params = "ItemName",
+					Help = "Gives the caller one of the specified item",
+				},
+				{
+					Params = "ItemName Amount",
+					Help = "Gives the caller the given amount of the specified item",
+				},
+				{
+					Params = "ItemName Amount Data",
+					Help = "Gives the caller the given amount of the specified item with the given data value",
+				},
+				{
+					Params = "ItemName Amount Data DataTag",
+					Help = "Gives the caller the given amount of the specified item with the given data value and DataTag",
+				},
+			},
+		},
+
 		["/vanish"] =
 		{
 			Permission = "core.vanish",
@@ -869,6 +921,31 @@ g_PluginInfo =
 			HelpString = "Resets the player's rank to default",
 		},
 		
+		["unsafegive"] =
+		{
+			Handler =  HandleGiveCommand,
+			HelpString = "Gives items to the specified player, even if its blacklisted.",
+			ParameterCombinations = 
+			{
+				{
+					Params = "PlayerName ItemName",
+					Help = "Gives the player one of the specified item",
+				},
+				{
+					Params = "PlayerName ItemName Amount",
+					Help = "Gives the player the given amount of the specified item",
+				},
+				{
+					Params = "PlayerName ItemName Amount Data",
+					Help = "Gives the player the given amount of the specified item with the given data value",
+				},
+				{
+					Params = "PlayerName ItemName Amount Data DataTag",
+					Help = "Gives the player the given amount of the specified item with the given data value and DataTag",
+				},
+			},
+		},
+		
 		["weather"] =
 		{
 			Handler =  HandleWeatherCommand,
@@ -955,10 +1032,22 @@ g_PluginInfo =
 			RecommendedGroups = "admins",
 		},
 
+		["core.give.unsafe"] =
+		{
+			Description = "Allows players to give items to other players, even if the item is blacklisted",
+			RecommendedGroups = "none",
+		},
+
 		["core.item"] =
 		{
 			Description = "Allows players to give items to themselves",
 			RecommendedGroups = "admins",
+		},
+
+		["core.item.unsafe"] =
+		{
+			Description = "Allows players to give items to themselves, even if the item is blacklisted",
+			RecommendedGroups = "none",
 		},
 
 		["core.time.set"] = 

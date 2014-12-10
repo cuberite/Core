@@ -1,6 +1,9 @@
 -- Implements give and item commands and console commands
 
 
+-- cIniFile object to store the blacklist
+local ItemBlackList
+
 -- Table to hold the processed data tag
 local DataTagTable = {}
 
@@ -22,7 +25,14 @@ local UnbalancedSquareBracketsFailure = "Missing or unexpected '[' or ']' detect
 local StartWithBraceFailure = "DataTag must start with a '{'"
 local EndWithBraceFailure = "DataTag must end with a '}'"
 
+local BlackListHeaderComment = "Contains the list of items that cannot be obtained through the give and item commands."
+local BlackListKeyComment = "Change values to false to remove items from blacklist."
+local BlackListFileName = "itemblacklist.ini"
+local BlackListFileCreationError = ": Could not create the file: " .. BlackListFileName
+local BlackListKeyName = "ItemBlackList"
+
 local MaxNumberOfItems = 64
+local SafeCommand
 
 
 --- Takes the given NBT DataTag and converts it to a table
@@ -166,6 +176,25 @@ local function SplitDataTag( DataTag )
 end
 
 
+--- Checks to see if the given item is on the blacklist
+--  
+--  @param Item The item to check
+--  
+--  @return False if checking is disabled or if the item is not blacklisted, true otherwise
+--  
+local function CheckUnSafeItem( Item )
+
+	-- If using unsafegive or unsafeitem, do not check if item is blacklisted
+	if not SafeCommand then
+		return false
+	end
+
+	-- If the value is on the blacklist and enabled, then don't let the user get the item
+	return ItemBlackList:GetValueB( BlackListKeyName, Item.m_ItemType )
+
+end
+
+
 --- Handles `give` and `item` commands, other then usage strings 
 --  which are taken care of in their registered handlers
 --  
@@ -210,6 +239,11 @@ local function GiveItemCommand( Split, Player )
 
 	-- StringToItem does not check if item is valid
 	if not IsValidItem( Item.m_ItemType ) then
+		FoundItem = false
+	end
+
+	-- Check to see if the item is blacklisted
+	if CheckUnSafeItem( Item ) then
 		FoundItem = false
 	end
 
@@ -327,6 +361,26 @@ end
 --  
 function HandleGiveCommand( Split, Player )
 
+	SafeCommand = true
+	if not GiveItemCommand( Split, Player ) then
+		local Message = string.format( CommandUsage, Split[1] , GiveCommandUsageTail )
+		if Player then
+			SendMessage( Player, Message )
+		else
+			LOG( Message )
+		end
+	end
+
+	return true
+end
+
+
+--- Handle the `unsafegive` console and in-game command
+--  Usage: unsafegive <PlayerName> <item> [amount] [data] [dataTag]
+--  
+function HandleUnSafeGiveCommand( Split, Player )
+
+	SafeCommand = false
 	if not GiveItemCommand( Split, Player ) then
 		local Message = string.format( CommandUsage, Split[1] , GiveCommandUsageTail )
 		if Player then
@@ -346,16 +400,101 @@ end
 function HandleItemCommand( Split, Player )
 
 	table.insert( Split, 2, Player:GetName() )
+	SafeCommand = true
 
 	if not GiveItemCommand( Split, Player ) then
 		local Message = string.format( CommandUsage, Split[1] , ItemCommandUsageTail )
-		if Player then
-			SendMessage( Player, Message )
-		else
-			LOG( Message )
-		end
+		SendMessage( Player, Message )
 	end
 
 	return true
+end
 
+
+--- Handle the `unsafeitem` in-game command
+--  Usage: unsafeitem <item> [amount] [data] [dataTag]
+--  
+function HandleUnsafeItemCommand( Split, Player )
+
+	table.insert( Split, 2, Player:GetName() )
+	SafeCommand = false
+
+	if not GiveItemCommand( Split, Player ) then
+		local Message = string.format( CommandUsage, Split[1] , ItemCommandUsageTail )
+		SendMessage( Player, Message )
+	end
+
+	return true
+end
+
+
+--- Initialize the Item Blacklist
+--  If the blacklist file cannot be found it attempts to create a new one
+--  
+function IntializeItemBlacklist( Plugin )
+
+	-- Technical blocks that should NOT be given to players by default
+	local DefaultBlackList = 
+	{
+		E_BLOCK_PISTON_EXTENSION = true,
+		E_BLOCK_PISTON_MOVED_BLOCK = true,
+		E_BLOCK_FLOWER_POT = true,
+		E_BLOCK_BED = true,
+		E_BLOCK_HEAD = true,
+		E_BLOCK_SIGN_POST = true,
+		E_BLOCK_WALLSIGN = true,
+		E_BLOCK_BREWING_STAND = true,
+		E_BLOCK_CAULDRON = true,
+		E_BLOCK_WOODEN_DOOR = true,
+		E_ITEM_SPRUCE_DOOR = true,
+		E_ITEM_BIRCH_DOOR = true,
+		E_ITEM_JUNGLE_DOOR = true,
+		E_ITEM_ACACIA_DOOR = true,
+		E_ITEM_DARK_OAK_DOOR = true,
+		E_ITEM_IRON_DOOR = true,
+		E_BLOCK_LIT_FURNACE = true,
+		E_BLOCK_REDSTONE_WIRE = true,
+		E_BLOCK_REDSTONE_ORE_GLOWING = true,
+		E_BLOCK_REDSTONE_TORCH_OFF = true,
+		E_BLOCK_REDSTONE_REPEATER_ON = true,
+		E_BLOCK_REDSTONE_LAMP_ON = true,
+		E_BLOCK_ACTIVE_COMPARATOR = true,
+		E_BLOCK_INVERTED_DAYLIGHT_SENSOR = true,
+		E_BLOCK_STATIONARY_WATER = true,
+		E_BLOCK_WATER = true,
+		E_BLOCK_LAVA = true,
+		E_BLOCK_STATIONARY_LAVA = true,
+		E_BLOCK_FARMLAND = true,
+		E_BLOCK_CROPS = true,
+		E_BLOCK_POTATOES = true,
+		E_BLOCK_CARROTS = true,
+		E_BLOCK_PUMPKIN_STEM = true,
+		E_BLOCK_MELON_STEM = true,
+		E_BLOCK_REEDS = true,
+		E_BLOCK_NETHER_WART = true,
+		E_BLOCK_CAKE = true,
+		E_BLOCK_END_PORTAL = true,
+		E_BLOCK_NETHER_PORTAL = true,
+	}
+
+	ItemBlackList = cIniFile()
+	local Success = ItemBlackList:ReadFile( BlackListFileName )
+	
+	if not Success then
+		ItemBlackList:AddKeyName( BlackListKeyName )
+		ItemBlackList:AddHeaderComment( BlackListHeaderComment )
+		ItemBlackList:AddKeyComment( BlackListKeyName, BlackListKeyComment )
+		
+		for ValueName, Value in pairs( DefaultBlackList ) do
+			ItemBlackList:AddValueB( BlackListKeyName, ValueName, Value )
+		end
+		
+		Success = ItemBlackList:WriteFile( BlackListFileName )
+		if not Success then
+			LOG( Plugin:GetName() .. BlackListFileCreationError )
+		end
+		
+	end
+
+	return true
 end
