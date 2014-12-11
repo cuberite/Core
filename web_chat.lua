@@ -108,7 +108,7 @@ local ltError         = 4
 
 
 -- Checks the chatlogs to see if the size gets too big.
-function CheckWebChatSize()
+function TrimWebChatIfNeeded()
 	while( #ChatLogMessages > CHAT_HISTORY ) do
 		table.remove( ChatLogMessages, 1 )
 	end
@@ -119,10 +119,11 @@ end
 
 
 -- Adds a plain message to the chat log
+-- The a_WebUser parameter can be nil to send it to every web user.
 function WEBLOG(a_Message, a_WebUser)
 	LastMessageID = LastMessageID + 1
 	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltNormal})
-	CheckWebChatSize()
+	TrimWebChatIfNeeded()
 end
 
 
@@ -130,10 +131,11 @@ end
 
 
 -- Adds a yellow-ish message to the chat log.
+-- The a_WebUser parameter can be nil to send it to every web user.
 function WEBLOGINFO(a_Message, a_WebUser)
 	LastMessageID = LastMessageID + 1
 	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltInfo})
-	CheckWebChatSize()
+	TrimWebChatIfNeeded()
 end
 
 
@@ -141,10 +143,11 @@ end
 
 
 -- Adds a red message to the chat log
+-- The a_WebUser parameter can be nil to send it to every web user.
 function WEBLOGWARN(a_Message, a_WebUser)
 	LastMessageID = LastMessageID + 1
 	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltWarning})
-	CheckWebChatSize()
+	TrimWebChatIfNeeded()
 end
 
 
@@ -152,10 +155,11 @@ end
 
 
 -- Adds a message with a red background to the chat log
+-- The a_WebUser parameter can be nil to send it to every web user.
 function WEBLOGERROR(a_Message, a_WebUser)
 	LastMessageID = LastMessageID + 1
 	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltError})
-	CheckWebChatSize()
+	TrimWebChatIfNeeded()
 end
 
 
