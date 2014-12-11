@@ -477,9 +477,11 @@ function IntializeItemBlacklist( Plugin )
 		[90]  = true,  -- E_BLOCK_NETHER_PORTAL,
 	}
 
+	-- Check for an existing blacklist, this lets the use customize the list to their needs
 	ItemBlackList = cIniFile()
 	local Success = ItemBlackList:ReadFile( BlackListFileName )
 	
+	-- If the file doesn't exist, then create one with the default blacklist
 	if not Success then
 		ItemBlackList:AddKeyName( BlackListKeyName )
 		ItemBlackList:AddHeaderComment( BlackListHeaderComment )
