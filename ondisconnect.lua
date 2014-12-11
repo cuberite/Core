@@ -1,3 +1,3 @@
-function OnDisconnect(Player)
-	AddMessage(nil, " " .. Player:GetName() .. " has left the game.")
+function OnDisconnect(a_Player)
+	WEBLOGINFO(a_Player:GetName() .. " has left the game")
 end

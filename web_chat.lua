@@ -98,19 +98,64 @@ local JavaScript = [[
 
 local ChatLogMessages = {}
 local WebCommands     = {}
+local ltNormal        = 1
+local ltInfo          = 2
+local ltWarning       = 3
+local ltError         = 4
 
 
 
 
 
--- Adds a message to the LogMessages
--- a_PlayerName can be nothingm and a_WebUser can be nothing
-function AddMessage(a_PlayerName, a_Message, a_WebUser)
-	LastMessageID = LastMessageID + 1
-	table.insert( ChatLogMessages, { timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), name = a_PlayerName, message = a_Message, id = LastMessageID, webuser = a_WebUser } )
+-- Checks the chatlogs to see if the size gets too big.
+function CheckWebChatSize()
 	while( #ChatLogMessages > CHAT_HISTORY ) do
 		table.remove( ChatLogMessages, 1 )
 	end
+end
+
+
+
+
+
+-- Adds a plain message to the chat log
+function WEBLOG(a_Message, a_WebUser)
+	LastMessageID = LastMessageID + 1
+	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltNormal})
+	CheckWebChatSize()
+end
+
+
+
+
+
+-- Adds a yellow-ish message to the chat log.
+function WEBLOGINFO(a_Message, a_WebUser)
+	LastMessageID = LastMessageID + 1
+	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltInfo})
+	CheckWebChatSize()
+end
+
+
+
+
+
+-- Adds a red message to the chat log
+function WEBLOGWARN(a_Message, a_WebUser)
+	LastMessageID = LastMessageID + 1
+	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltWarning})
+	CheckWebChatSize()
+end
+
+
+
+
+
+-- Adds a message with a red background to the chat log
+function WEBLOGERROR(a_Message, a_WebUser)
+	LastMessageID = LastMessageID + 1
+	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltError})
+	CheckWebChatSize()
 end
 
 
@@ -152,7 +197,7 @@ function HandleWebHelpCommand(a_User, a_Message)
 		end
 	end
 	
-	AddMessage(nil, Content, a_User)
+	WEBLOG(Content, a_User)
 	return true
 end
 
@@ -163,7 +208,7 @@ end
 -- Used by the webadmin to reload the server
 function HandleWebReloadCommand(a_User, a_Message)
 	cPluginManager:Get():ReloadPlugins()
-	AddMessage(nil, "Reloading Plugins", a_User)
+	WEBLOG("Reloading Plugins", a_User)
 	return true
 end
 
@@ -181,7 +226,7 @@ BindWebCommand("/reload", "Reloads all the plugins", "Core", "HandleWebReloadCom
 
 -- Add a chatmessage from a player to the chatlog
 function OnChat(a_Player, a_Message)
-	AddMessage(a_Player:GetName(), a_Message)
+	WEBLOG("[" .. a_Player:GetName() .. "]: " .. a_Message)
 end
 
 
@@ -202,19 +247,24 @@ end
 
 
 function HandleRequest_Chat( Request )
-	-- The webadmin asks if there are new messages. S
+	-- The webadmin asks if there are new messages.
 	if( Request.PostParams["JustChat"] ~= nil ) then
 		local LastIdx = tonumber(Request.PostParams["LastMessageID"] or 0) or 0
 		local Content = ""
 		
 		-- Go through each message to see if they are older then the last message, and add them to the content
-		for key, value in pairs(ChatLogMessages) do 
-			if( value.id > LastIdx ) then
-				if (not value.webuser or (value.webuser == Request.Username)) then
-					if value.name == nil then
-						Content = Content .. value.timestamp .. CheckForLinks(value.message) .. "<br>"
-					else
-						Content = Content .. value.timestamp .. " [" .. value.name .. "]: " .. CheckForLinks(value.message) .. "<br>"
+		for key, MessageInfo in pairs(ChatLogMessages) do 
+			if( MessageInfo.id > LastIdx ) then
+				if (not MessageInfo.webuser or (MessageInfo.webuser == Request.Username)) then
+					local Message = MessageInfo.timestamp .. ' ' .. CheckForLinks(MessageInfo.message)
+					if (MessageInfo.logtype == ltNormal) then
+						Content = Content .. Message .. "<br />"
+					elseif (MessageInfo.logtype == ltInfo) then
+						Content = Content .. '<span style="color: #FE9A2E;">' .. Message .. '</span><br />'
+					elseif (MessageInfo.logtype == ltWarning) then
+						Content = Content .. '<span style="color: red;">' .. Message .. '</span><br />'
+					elseif (MessageInfo.logtype == ltError) then
+						Content = Content .. '<span style="background-color: red; color: black;">' .. Message .. '</span><br />'
 					end
 				end
 			end
@@ -234,11 +284,11 @@ function HandleRequest_Chat( Request )
 				-- cPluginManager:CallPlugin doesn't support calling yourself, so we have to check if the command is from the Core.
 				if (CommandInfo.PluginName == "Core") then
 					if (not _G[CommandInfo.CallbackName](Request.Username, Request.PostParams["ChatMessage"])) then
-						AddMessage(nil, "Something went wrong while calling \"" .. CommandInfo.CallbackName .. "\" From \"" .. CommandInfo.PluginName .. "\".", Request.Username)
+						WEBLOG("Something went wrong while calling \"" .. CommandInfo.CallbackName .. "\" From \"" .. CommandInfo.PluginName .. "\".", Request.Username)
 					end
 				else
 					if (not cPluginManager:CallPlugin(CommandInfo.PluginName, CommandInfo.CallbackName, Request.Username, Request.PostParams["ChatMessage"])) then
-						AddMessage(nil, "Something went wrong while calling \"" .. CommandInfo.CallbackName .. "\" From \"" .. CommandInfo.PluginName .. "\".", Request.Username)
+						WEBLOG("Something went wrong while calling \"" .. CommandInfo.CallbackName .. "\" From \"" .. CommandInfo.PluginName .. "\".", Request.Username)
 					end
 				end
 				return ""
@@ -247,7 +297,7 @@ function HandleRequest_Chat( Request )
 		
 		-- If the message starts with a '/' then the message is a command, but since it wasn't executed a few lines above the command didn't exist
 		if (Request.PostParams["ChatMessage"]:sub(1, 1) == "/") then
-			AddMessage(nil, 'Unknown Command "' .. Request.PostParams["ChatMessage"] .. '"', nil)
+			WEBLOG('Unknown Command "' .. Request.PostParams["ChatMessage"] .. '"', nil)
 			return ""
 		end
 		
@@ -255,7 +305,7 @@ function HandleRequest_Chat( Request )
 		cRoot:Get():BroadcastChat(cCompositeChat("[Web-" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"]):UnderlineUrls())
 		
 		-- Add the message to the chatlog
-		AddMessage("Web-" .. Request.Username, Request.PostParams["ChatMessage"] )
+		WEBLOG("[Web-" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"])
 		return ""
 	end
 
