@@ -458,7 +458,7 @@ g_PluginInfo =
 		["/unsafegive"] = 
 		{
 			Permission = "core.give.unsafe",
-			Handler = HandleGiveCommand,
+			Handler = HandleUnsafeGiveCommand,
 			HelpString = "Give someone an item, even if it is blacklisted.",
 			ParameterCombinations = 
 			{
@@ -484,7 +484,7 @@ g_PluginInfo =
 		["/unsafeitem"] = 
 		{
 			Permission = "core.item.unsafe",
-			Handler = HandleItemCommand,
+			Handler = HandleUnsafeItemCommand,
 			HelpString = "Give yourself an item, even if it is blacklisted.",
 			ParameterCombinations = 
 			{
@@ -923,7 +923,7 @@ g_PluginInfo =
 		
 		["unsafegive"] =
 		{
-			Handler =  HandleGiveCommand,
+			Handler =  HandleUnsafeGiveCommand,
 			HelpString = "Gives items to the specified player, even if its blacklisted.",
 			ParameterCombinations = 
 			{

@@ -26,7 +26,7 @@ local StartWithBraceFailure = "DataTag must start with a '{'"
 local EndWithBraceFailure = "DataTag must end with a '}'"
 
 local BlackListHeaderComment = "Contains the list of items that cannot be obtained through the give and item commands."
-local BlackListKeyComment = "Change values to false to remove items from blacklist."
+local BlackListHeaderComment2 = "Change values to 0 to remove items from blacklist."
 local BlackListFileName = "itemblacklist.ini"
 local BlackListFileCreationError = ": Could not create the file: " .. BlackListFileName
 local BlackListKeyName = "ItemBlackList"
@@ -378,7 +378,7 @@ end
 --- Handle the `unsafegive` console and in-game command
 --  Usage: unsafegive <PlayerName> <item> [amount] [data] [dataTag]
 --  
-function HandleUnSafeGiveCommand( Split, Player )
+function HandleUnsafeGiveCommand( Split, Player )
 
 	SafeCommand = false
 	if not GiveItemCommand( Split, Player ) then
@@ -436,45 +436,45 @@ function IntializeItemBlacklist( Plugin )
 	-- Technical blocks that should NOT be given to players by default
 	local DefaultBlackList = 
 	{
-		E_BLOCK_PISTON_EXTENSION = true,
-		E_BLOCK_PISTON_MOVED_BLOCK = true,
-		E_BLOCK_FLOWER_POT = true,
-		E_BLOCK_BED = true,
-		E_BLOCK_HEAD = true,
-		E_BLOCK_SIGN_POST = true,
-		E_BLOCK_WALLSIGN = true,
-		E_BLOCK_BREWING_STAND = true,
-		E_BLOCK_CAULDRON = true,
-		E_BLOCK_WOODEN_DOOR = true,
-		E_ITEM_SPRUCE_DOOR = true,
-		E_ITEM_BIRCH_DOOR = true,
-		E_ITEM_JUNGLE_DOOR = true,
-		E_ITEM_ACACIA_DOOR = true,
-		E_ITEM_DARK_OAK_DOOR = true,
-		E_ITEM_IRON_DOOR = true,
-		E_BLOCK_LIT_FURNACE = true,
-		E_BLOCK_REDSTONE_WIRE = true,
-		E_BLOCK_REDSTONE_ORE_GLOWING = true,
-		E_BLOCK_REDSTONE_TORCH_OFF = true,
-		E_BLOCK_REDSTONE_REPEATER_ON = true,
-		E_BLOCK_REDSTONE_LAMP_ON = true,
-		E_BLOCK_ACTIVE_COMPARATOR = true,
-		E_BLOCK_INVERTED_DAYLIGHT_SENSOR = true,
-		E_BLOCK_STATIONARY_WATER = true,
-		E_BLOCK_WATER = true,
-		E_BLOCK_LAVA = true,
-		E_BLOCK_STATIONARY_LAVA = true,
-		E_BLOCK_FARMLAND = true,
-		E_BLOCK_CROPS = true,
-		E_BLOCK_POTATOES = true,
-		E_BLOCK_CARROTS = true,
-		E_BLOCK_PUMPKIN_STEM = true,
-		E_BLOCK_MELON_STEM = true,
-		E_BLOCK_REEDS = true,
-		E_BLOCK_NETHER_WART = true,
-		E_BLOCK_CAKE = true,
-		E_BLOCK_END_PORTAL = true,
-		E_BLOCK_NETHER_PORTAL = true,
+		[34]  = true,  -- E_BLOCK_PISTON_EXTENSION
+		[36]  = true,  -- E_BLOCK_PISTON_MOVED_BLOCK
+		[140] = true,  -- E_BLOCK_FLOWER_POT
+		[26]  = true,  -- E_BLOCK_BED
+		[144] = true,  -- E_BLOCK_HEAD
+		[63]  = true,  -- E_BLOCK_SIGN_POST
+		[68]  = true,  -- E_BLOCK_WALLSIGN
+		[117] = true,  -- E_BLOCK_BREWING_STAND
+		[118] = true,  -- E_BLOCK_CAULDRON
+		[64]  = true,  -- E_BLOCK_WOODEN_DOOR
+		[193] = true,  -- E_ITEM_SPRUCE_DOOR
+		[194] = true,  -- E_ITEM_BIRCH_DOOR
+		[195] = true,  -- E_ITEM_JUNGLE_DOOR
+		[196] = true,  -- E_ITEM_ACACIA_DOOR
+		[197] = true,  -- E_ITEM_DARK_OAK_DOOR
+		[71]  = true,  -- E_ITEM_IRON_DOOR
+		[62]  = true,  -- E_BLOCK_LIT_FURNACE
+		[55]  = true,  -- E_BLOCK_REDSTONE_WIRE
+		[74]  = true,  -- E_BLOCK_REDSTONE_ORE_GLOWING
+		[75]  = true,  -- E_BLOCK_REDSTONE_TORCH_OFF
+		[94]  = true,  -- E_BLOCK_REDSTONE_REPEATER_ON
+		[124] = true,  -- E_BLOCK_REDSTONE_LAMP_ON
+		[150] = true,  -- E_BLOCK_ACTIVE_COMPARATOR
+		[178] = true,  -- E_BLOCK_INVERTED_DAYLIGHT_SENSOR
+		[9]   = true,  -- E_BLOCK_STATIONARY_WATER
+		[8]   = true,  -- E_BLOCK_WATER
+		[10]  = true,  -- E_BLOCK_LAVA
+		[11]  = true,  -- E_BLOCK_STATIONARY_LAVA
+		[60]  = true,  -- E_BLOCK_FARMLAND
+		[59]  = true,  -- E_BLOCK_CROPS
+		[142] = true,  -- E_BLOCK_POTATOES
+		[141] = true,  -- E_BLOCK_CARROTS
+		[104] = true,  -- E_BLOCK_PUMPKIN_STEM
+		[105] = true,  -- E_BLOCK_MELON_STEM
+		[83]  = true,  -- E_BLOCK_REEDS
+		[115] = true,  -- E_BLOCK_NETHER_WART
+		[92]  = true,  -- E_BLOCK_CAKE
+		[119] = true,  -- E_BLOCK_END_PORTAL
+		[90]  = true,  -- E_BLOCK_NETHER_PORTAL,
 	}
 
 	ItemBlackList = cIniFile()
@@ -483,7 +483,7 @@ function IntializeItemBlacklist( Plugin )
 	if not Success then
 		ItemBlackList:AddKeyName( BlackListKeyName )
 		ItemBlackList:AddHeaderComment( BlackListHeaderComment )
-		ItemBlackList:AddKeyComment( BlackListKeyName, BlackListKeyComment )
+		ItemBlackList:AddHeaderComment( BlackListHeaderComment2 )
 		
 		for ValueName, Value in pairs( DefaultBlackList ) do
 			ItemBlackList:AddValueB( BlackListKeyName, ValueName, Value )
