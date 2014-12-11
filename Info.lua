@@ -703,6 +703,24 @@ g_PluginInfo =
 			Handler =  HandleConsoleRank,
 			HelpString = "Set or view a player's rank",
 		},
+		
+		["regen"] =
+		{
+			Handler = HandleConsoleRegen,
+			Alias = "regeneratechunk",
+			HelpString = "Regenerates a chunk",
+			ParameterCombinations =
+			{
+				{
+					Params = "ChunkX ChunkZ",
+					Help = "Regenerates the specified chunk in the default world",
+				},
+				{
+					Params = "ChunkX ChunkZ WorldName",
+					Help = "Regenerates the specified chunk in the specified world",
+				}
+			},
+		},  -- regen
 
 		["save-all"] =
 		{
