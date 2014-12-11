@@ -103,6 +103,8 @@ local WebCommands     = {}
 
 
 
+-- Adds a message to the LogMessages
+-- a_PlayerName can be nothingm and a_WebUser can be nothing
 function AddMessage(a_PlayerName, a_Message, a_WebUser)
 	LastMessageID = LastMessageID + 1
 	table.insert( ChatLogMessages, { timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), name = a_PlayerName, message = a_Message, id = LastMessageID, webuser = a_WebUser } )
@@ -116,17 +118,23 @@ end
 
 
 -- This function allows other plugins to add new commands to the webadmin.
+-- a_CommandString is the the way you call the command 	                                       ("/help")
+-- a_HelpString is the message that tells you what the command does                            ("Shows a list of all the possible commands")
+-- a_PluginName is the name of the plugin binding the command                                  ("Core")
+-- a_CallbackName is the name if the function that will be called when the command is executed ("HandleWebHelpCommand")
 function BindWebCommand(a_CommandString, a_HelpString, a_PluginName, a_CallbackName)
 	assert(type(a_CommandString) == 'string')
 	assert(type(a_PluginName) == 'string')
 	assert(type(a_CallbackName) == 'string')
 	
+	-- Check if the command is already bound. Return false with an error message if.
 	for Idx, CommandInfo in ipairs(WebCommands) do
 		if (CommandInfo.Command == a_CommandString) then
 			return false, "That command is already bound to a plugin called \"" .. CommandInfo.PluginName .. "\"."
 		end
 	end
 	
+	-- Insert the command into the array and return true
 	table.insert(WebCommands, {CommandString = a_CommandString, HelpString = a_HelpString, PluginName = a_PluginName, CallbackName = a_CallbackName})
 	return true
 end
@@ -135,6 +143,7 @@ end
 
 
 
+-- Used by the webadmin to use /help
 function HandleWebHelpCommand(a_User, a_Message)
 	local Content = "Available Commands:"
 	for Idx, CommandInfo in ipairs(WebCommands) do
@@ -151,6 +160,7 @@ end
 
 
 
+-- Used by the webadmin to reload the server
 function HandleWebReloadCommand(a_User, a_Message)
 	cPluginManager:Get():ReloadPlugins()
 	AddMessage(nil, "Reloading Plugins", a_User)
@@ -169,6 +179,7 @@ BindWebCommand("/reload", "Reloads all the plugins", "Core", "HandleWebReloadCom
 
 
 
+-- Add a chatmessage from a player to the chatlog
 function OnChat(a_Player, a_Message)
 	AddMessage(a_Player:GetName(), a_Message)
 end
@@ -191,10 +202,12 @@ end
 
 
 function HandleRequest_Chat( Request )
+	-- The webadmin asks if there are new messages. S
 	if( Request.PostParams["JustChat"] ~= nil ) then
-		local LastIdx = 0
-		if( Request.PostParams["LastMessageID"] ~= nil ) then LastIdx = tonumber( Request.PostParams["LastMessageID"] ) end
+		local LastIdx = tonumber(Request.PostParams["LastMessageID"] or 0) or 0
 		local Content = ""
+		
+		-- Go through each message to see if they are older then the last message, and add them to the content
 		for key, value in pairs(ChatLogMessages) do 
 			if( value.id > LastIdx ) then
 				if (not value.webuser or (value.webuser == Request.Username)) then
@@ -210,9 +223,12 @@ function HandleRequest_Chat( Request )
 		return Content
 	end
 	
+	-- Check if the webuser send a chat message.
 	if( Request.PostParams["ChatMessage"] ~= nil ) then
 		local Split = StringSplit(Request.PostParams["ChatMessage"])
 		local CommandExecuted = false
+		
+		-- Check if the message was actualy a command
 		for Idx, CommandInfo in ipairs(WebCommands) do
 			if (CommandInfo.CommandString == Split[1]) then
 				-- cPluginManager:CallPlugin doesn't support calling yourself, so we have to check if the command is from the Core.
@@ -229,12 +245,16 @@ function HandleRequest_Chat( Request )
 			end
 		end
 		
+		-- If the message starts with a '/' then the message is a command, but since it wasn't executed a few lines above the command didn't exist
 		if (Request.PostParams["ChatMessage"]:sub(1, 1) == "/") then
 			AddMessage(nil, 'Unknown Command "' .. Request.PostParams["ChatMessage"] .. '"', nil)
 			return ""
 		end
 		
+		-- Broadcast the message to the server
 		cRoot:Get():BroadcastChat(cCompositeChat("[Web-" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"]):UnderlineUrls())
+		
+		-- Add the message to the chatlog
 		AddMessage("Web-" .. Request.Username, Request.PostParams["ChatMessage"] )
 		return ""
 	end
