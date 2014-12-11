@@ -118,7 +118,7 @@ end
 
 
 -- This function allows other plugins to add new commands to the webadmin.
--- a_CommandString is the the way you call the command 	                                       ("/help")
+-- a_CommandString is the the way you call the command                                         ("/help")
 -- a_HelpString is the message that tells you what the command does                            ("Shows a list of all the possible commands")
 -- a_PluginName is the name of the plugin binding the command                                  ("Core")
 -- a_CallbackName is the name if the function that will be called when the command is executed ("HandleWebHelpCommand")
