@@ -119,10 +119,10 @@ end
 
 
 -- Adds a plain message to the chat log
--- The a_WebUser parameter can be nil to send it to every web user.
-function WEBLOG(a_Message, a_WebUser)
+-- The a_WebUserName parameter can be either a string(name) to send it to a certain webuser or nil to send it to every webuser.
+function WEBLOG(a_Message, a_WebUserName)
 	LastMessageID = LastMessageID + 1
-	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltNormal})
+	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUserName, message = a_Message, id = LastMessageID, logtype = ltNormal})
 	TrimWebChatIfNeeded()
 end
 
@@ -131,10 +131,10 @@ end
 
 
 -- Adds a yellow-ish message to the chat log.
--- The a_WebUser parameter can be nil to send it to every web user.
-function WEBLOGINFO(a_Message, a_WebUser)
+-- The a_WebUserName parameter can be either a string(name) to send it to a certain webuser or nil to send it to every webuser.
+function WEBLOGINFO(a_Message, a_WebUserName)
 	LastMessageID = LastMessageID + 1
-	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltInfo})
+	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUserName, message = a_Message, id = LastMessageID, logtype = ltInfo})
 	TrimWebChatIfNeeded()
 end
 
@@ -143,10 +143,10 @@ end
 
 
 -- Adds a red message to the chat log
--- The a_WebUser parameter can be nil to send it to every web user.
-function WEBLOGWARN(a_Message, a_WebUser)
+-- The a_WebUserName parameter can be either a string(name) to send it to a certain webuser or nil to send it to every webuser.
+function WEBLOGWARN(a_Message, a_WebUserName)
 	LastMessageID = LastMessageID + 1
-	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltWarning})
+	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUserName, message = a_Message, id = LastMessageID, logtype = ltWarning})
 	TrimWebChatIfNeeded()
 end
 
@@ -155,10 +155,10 @@ end
 
 
 -- Adds a message with a red background to the chat log
--- The a_WebUser parameter can be nil to send it to every web user.
-function WEBLOGERROR(a_Message, a_WebUser)
+-- The a_WebUserName parameter can be either a string(name) to send it to a certain webuser or nil to send it to every webuser.
+function WEBLOGERROR(a_Message, a_WebUserName)
 	LastMessageID = LastMessageID + 1
-	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUser, message = a_Message, id = LastMessageID, logtype = ltError})
+	table.insert(ChatLogMessages, {timestamp = os.date("[%Y-%m-%d %H:%M:%S]", os.time()), webuser = a_WebUserName, message = a_Message, id = LastMessageID, logtype = ltError})
 	TrimWebChatIfNeeded()
 end
 
