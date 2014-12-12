@@ -1,9 +1,9 @@
-function OnPlayerJoined(Player)
+function OnPlayerJoined(a_Player)
 	-- Send the MOTD to the player:
-	ShowMOTDTo(Player)
+	ShowMOTDTo(a_Player)
 	
 	-- Add a message to the webadmin chat:
-	AddMessage(nil, " " .. Player:GetName() .. " has joined the game")
+	WEBLOGINFO(a_Player:GetName() .. " has joined the game")
 	
 	return false
 end
