@@ -475,16 +475,15 @@ function IntializeItemBlacklist( Plugin )
 		-- If it exists, read in the blacklisted items
 		for value in ItemBlackListFile:lines() do
 
-			-- Ignore comment lines
-			if not string.find( value, "#+%s-.*" ) then
-				
-				-- Convert the name into an item to get its item type
-				local TempItem = cItem()
-				local Success = StringToItem( value, TempItem )
+			-- Ignore comments
+			value = string.gsub( value, "#+%s-.*", "" )
 
-				if Success and IsValidItem( TempItem.m_ItemType ) then
-					ItemBlackList[TempItem.m_ItemType] = true
-				end
+			-- Convert the name into an item to get its item type
+			local TempItem = cItem()
+			local Success = StringToItem( value, TempItem )
+
+			if Success and IsValidItem( TempItem.m_ItemType ) then
+				ItemBlackList[TempItem.m_ItemType] = true
 			end
 		end
 
