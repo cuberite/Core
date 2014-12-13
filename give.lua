@@ -23,9 +23,9 @@ local UnbalancedSquareBracketsFailure = "Missing or unexpected '[' or ']' detect
 local StartWithBraceFailure = "DataTag must start with a '{'"
 local EndWithBraceFailure = "DataTag must end with a '}'"
 
-local BlackListHeaderComment = "-- Contains the list of items that cannot be obtained through the give and item commands.\n"
-local BlackListHeaderComment2 = "-- Add items to this file to add them to the blacklist\n"
-local BlackListHeaderComment3 = "-- or remove them from this file to remove them from the blacklist.\n"
+local BlackListHeaderComment = "# Contains the list of items that cannot be obtained through the give and item commands.\n"
+local BlackListHeaderComment2 = "# Add items to this file to add them to the blacklist\n"
+local BlackListHeaderComment3 = "# or remove them from this file to remove them from the blacklist.\n"
 local BlackListFileName = "itemblacklist"
 local BlackListFileCreationError = "%s: Could not create the file: %s\nError Message: %s"
 
@@ -232,15 +232,7 @@ local function GiveItemCommand( Split, Player, SafeCommand )
 			return false
 		end
 
-		-- If the value is on the blacklist and enabled, then don't let the user get the item
-		local ItemType = Item.m_ItemType
-		for _, BlockedItem in ipairs( ItemBlackList ) do
-			if ItemType == BlockedItem then
-				return true
-			end
-		end
-
-		return false
+		return ItemBlackList[ Item.m_ItemType ] 
 	end
 
 
@@ -432,47 +424,47 @@ end
 function IntializeItemBlacklist( Plugin )
 
 	-- Technical blocks that should NOT be given to players by default
-	local DefaultBlackList = 
+	local DefaultBlackList =
 	{
-		E_BLOCK_PISTON_EXTENSION,
-		E_BLOCK_PISTON_MOVED_BLOCK,
-		E_BLOCK_FLOWER_POT,
-		E_BLOCK_BED,
-		E_BLOCK_HEAD,
-		E_BLOCK_SIGN_POST,
-		E_BLOCK_WALLSIGN,
-		E_BLOCK_BREWING_STAND,
-		E_BLOCK_CAULDRON,
-		E_BLOCK_WOODEN_DOOR,
-		E_ITEM_SPRUCE_DOOR,
-		E_ITEM_BIRCH_DOOR,
-		E_ITEM_JUNGLE_DOOR,
-		E_ITEM_ACACIA_DOOR,
-		E_ITEM_DARK_OAK_DOOR,
-		E_ITEM_IRON_DOOR,
-		E_BLOCK_LIT_FURNACE,
-		E_BLOCK_REDSTONE_WIRE,
-		E_BLOCK_REDSTONE_ORE_GLOWING,
-		E_BLOCK_REDSTONE_TORCH_OFF,
-		E_BLOCK_REDSTONE_REPEATER_ON,
-		E_BLOCK_REDSTONE_LAMP_ON,
-		E_BLOCK_ACTIVE_COMPARATOR,
-		E_BLOCK_INVERTED_DAYLIGHT_SENSOR,
-		E_BLOCK_STATIONARY_WATER,
-		E_BLOCK_WATER,
-		E_BLOCK_LAVA,
-		E_BLOCK_STATIONARY_LAVA,
-		E_BLOCK_FARMLAND,
-		E_BLOCK_CROPS,
-		E_BLOCK_POTATOES,
-		E_BLOCK_CARROTS,
-		E_BLOCK_PUMPKIN_STEM,
-		E_BLOCK_MELON_STEM,
-		E_BLOCK_REEDS,
-		E_BLOCK_NETHER_WART,
-		E_BLOCK_CAKE,
-		E_BLOCK_END_PORTAL,
-		E_BLOCK_NETHER_PORTAL,
+		[E_BLOCK_PISTON_EXTENSION]         = true,
+		[E_BLOCK_PISTON_MOVED_BLOCK]       = true,
+		[E_BLOCK_FLOWER_POT]               = true,
+		[E_BLOCK_BED]                      = true,
+		[E_BLOCK_HEAD]                     = true,
+		[E_BLOCK_SIGN_POST]                = true,
+		[E_BLOCK_WALLSIGN]                 = true,
+		[E_BLOCK_BREWING_STAND]            = true,
+		[E_BLOCK_CAULDRON]                 = true,
+		[E_BLOCK_WOODEN_DOOR]              = true,
+		[E_ITEM_SPRUCE_DOOR]               = true,
+		[E_ITEM_BIRCH_DOOR]                = true,
+		[E_ITEM_JUNGLE_DOOR]               = true,
+		[E_ITEM_ACACIA_DOOR]               = true,
+		[E_ITEM_DARK_OAK_DOOR]             = true,
+		[E_ITEM_IRON_DOOR]                 = true,
+		[E_BLOCK_LIT_FURNACE]              = true,
+		[E_BLOCK_REDSTONE_WIRE]            = true,
+		[E_BLOCK_REDSTONE_ORE_GLOWING]     = true,
+		[E_BLOCK_REDSTONE_TORCH_OFF]       = true,
+		[E_BLOCK_REDSTONE_REPEATER_ON]     = true,
+		[E_BLOCK_REDSTONE_LAMP_ON]         = true,
+		[E_BLOCK_ACTIVE_COMPARATOR]        = true,
+		[E_BLOCK_INVERTED_DAYLIGHT_SENSOR] = true,
+		[E_BLOCK_STATIONARY_WATER]         = true,
+		[E_BLOCK_WATER]                    = true,
+		[E_BLOCK_LAVA]                     = true,
+		[E_BLOCK_STATIONARY_LAVA]          = true,
+		[E_BLOCK_FARMLAND]                 = true,
+		[E_BLOCK_CROPS]                    = true,
+		[E_BLOCK_POTATOES]                 = true,
+		[E_BLOCK_CARROTS]                  = true,
+		[E_BLOCK_PUMPKIN_STEM]             = true,
+		[E_BLOCK_MELON_STEM]               = true,
+		[E_BLOCK_REEDS]                    = true,
+		[E_BLOCK_NETHER_WART]              = true,
+		[E_BLOCK_CAKE]                     = true,
+		[E_BLOCK_END_PORTAL]               = true,
+		[E_BLOCK_NETHER_PORTAL]            = true,
 	}
 
 	-- First, try to open the Item BlackList file if it exists
@@ -484,14 +476,14 @@ function IntializeItemBlacklist( Plugin )
 		for value in ItemBlackListFile:lines() do
 
 			-- Ignore comment lines
-			if not string.find( value, "%-%-+%s-.*" ) then
+			if not string.find( value, "#+%s-.*" ) then
 				
 				-- Convert the name into an item to get its item type
 				local TempItem = cItem()
 				local Success = StringToItem( value, TempItem )
 
 				if Success and IsValidItem( TempItem.m_ItemType ) then
-					table.insert( ItemBlackList, TempItem.m_ItemType )
+					ItemBlackList[TempItem.m_ItemType] = true
 				end
 			end
 		end
@@ -507,8 +499,8 @@ function IntializeItemBlacklist( Plugin )
 
 			ItemBlackListFile:write( BlackListHeaderComment, BlackListHeaderComment2, BlackListHeaderComment3, "\n\n" )
 
-			for _, value in ipairs( DefaultBlackList ) do
-				ItemBlackListFile:write( ItemTypeToString( value ), "\n" )
+			for index, _ in pairs( DefaultBlackList ) do
+				ItemBlackListFile:write( ItemTypeToString( index ), "\n" )
 			end
 
 			ItemBlackListFile:flush()
