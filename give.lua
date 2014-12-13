@@ -488,7 +488,7 @@ function IntializeItemBlacklist( Plugin )
 		for value in ItemBlackListFile:lines() do
 
 			-- Ignore comment lines
-			if not string.find( value, "%-" ) then
+			if not string.find( value, "%-%-+%s-.*" ) then
 				
 				-- Convert the name into an item to get its item type
 				local TempItem = cItem()
