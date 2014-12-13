@@ -32,7 +32,6 @@ local BlackListFileCreationError = ": Could not create the file: " .. BlackListF
 local BlackListKeyName = "ItemBlackList"
 
 local MaxNumberOfItems = 64
-local SafeCommand
 
 
 --- Takes the given NBT DataTag and converts it to a table
@@ -176,31 +175,14 @@ local function SplitDataTag( DataTag )
 end
 
 
---- Checks to see if the given item is on the blacklist
---  
---  @param Item The item to check
---  
---  @return False if checking is disabled or if the item is not blacklisted, true otherwise
---  
-local function CheckUnSafeItem( Item )
-
-	-- If using unsafegive or unsafeitem, do not check if item is blacklisted
-	if not SafeCommand then
-		return false
-	end
-
-	-- If the value is on the blacklist and enabled, then don't let the user get the item
-	return ItemBlackList:GetValueB( BlackListKeyName, Item.m_ItemType )
-
-end
-
-
 --- Handles `give` and `item` commands, other then usage strings 
 --  which are taken care of in their registered handlers
 --  
+--  @param SafeCommand If true, then don't give unsafe items, if false then don't filter out items
+--  
 --  @return False if PlayerName or ItemName are missing, or Amount or DataValue are invalid, true otherwise
 --  
-local function GiveItemCommand( Split, Player )
+local function GiveItemCommand( Split, Player, SafeCommand )
 
 	local PlayerName = Split[2]
 	local lcPlayerName = string.lower( PlayerName or "" )
@@ -242,8 +224,26 @@ local function GiveItemCommand( Split, Player )
 		FoundItem = false
 	end
 
+
+	--- Checks to see if the given item is on the blacklist
+	--  
+	--  @return False if checking is disabled or if the item is not blacklisted, true otherwise
+	--  
+	local function CheckUnSafeItem()
+
+		-- If using unsafegive or unsafeitem, do not check if item is blacklisted
+		if not SafeCommand then
+			return false
+		end
+
+		-- If the value is on the blacklist and enabled, then don't let the user get the item
+		return ItemBlackList:GetValueB( BlackListKeyName, Item.m_ItemType )
+
+	end
+
+
 	-- Check to see if the item is blacklisted
-	if CheckUnSafeItem( Item ) then
+	if CheckUnSafeItem() then
 		FoundItem = false
 	end
 
@@ -361,8 +361,7 @@ end
 --  
 function HandleGiveCommand( Split, Player )
 
-	SafeCommand = true
-	if not GiveItemCommand( Split, Player ) then
+	if not GiveItemCommand( Split, Player, true ) then
 		local Message = string.format( CommandUsage, Split[1] , GiveCommandUsageTail )
 		if Player then
 			SendMessage( Player, Message )
@@ -380,8 +379,7 @@ end
 --  
 function HandleUnsafeGiveCommand( Split, Player )
 
-	SafeCommand = false
-	if not GiveItemCommand( Split, Player ) then
+	if not GiveItemCommand( Split, Player, false ) then
 		local Message = string.format( CommandUsage, Split[1] , GiveCommandUsageTail )
 		if Player then
 			SendMessage( Player, Message )
@@ -400,9 +398,8 @@ end
 function HandleItemCommand( Split, Player )
 
 	table.insert( Split, 2, Player:GetName() )
-	SafeCommand = true
 
-	if not GiveItemCommand( Split, Player ) then
+	if not GiveItemCommand( Split, Player, true ) then
 		local Message = string.format( CommandUsage, Split[1] , ItemCommandUsageTail )
 		SendMessage( Player, Message )
 	end
@@ -417,9 +414,8 @@ end
 function HandleUnsafeItemCommand( Split, Player )
 
 	table.insert( Split, 2, Player:GetName() )
-	SafeCommand = false
 
-	if not GiveItemCommand( Split, Player ) then
+	if not GiveItemCommand( Split, Player, false ) then
 		local Message = string.format( CommandUsage, Split[1] , ItemCommandUsageTail )
 		SendMessage( Player, Message )
 	end
