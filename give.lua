@@ -4,8 +4,6 @@
 -- Table to store the blacklist
 local ItemBlackList = {}
 
--- Table to hold the processed data tag
-local DataTagTable = {}
 
 local CommandUsage = "Usage: %s %s"
 local ItemCommandUsageTail = "<ItemName> [Amount] [Data] [DataTag]"
@@ -38,7 +36,7 @@ local MaxNumberOfItems = 64
 -- 
 --  @param DataTag String in the format of a minecraft NBT data tag
 --  
---  @return True if successful, and false with an error message if a problem is encountered
+--  @return Table of the data tag values if successful, and nil with an error message if a problem is encountered
 --  
 local function SplitDataTag( DataTag )
 
@@ -82,16 +80,16 @@ local function SplitDataTag( DataTag )
 
 		-- Verify string starts and ends with expected brace
 		if string.sub( DataTag, 1, 1 ) ~= "{" then
-			return false, StartWithBraceFailure
+			return nil, StartWithBraceFailure
 		end
 		if string.sub( DataTag, -1, -1 ) ~= "}" then
-			return false, EndWithBraceFailure
+			return nil, EndWithBraceFailure
 		end
 
 		-- Check for balanced curly braces and square brackets
 		local FirstLoc, LastLoc = string.find( DataTag, "%b{}" )
 		if FirstLoc ~= 1 or LastLoc ~= string.len( DataTag ) then
-			return false, UnbalancedCurleyBracesFailure
+			return nil, UnbalancedCurleyBracesFailure
 		end
 
 		local DataTagLen = string.len( DataTag )
@@ -115,7 +113,7 @@ local function SplitDataTag( DataTag )
 			end
 
 			if ( FirstLoc > FirstBrace ) or ( LastLoc < LastBrace ) then
-				return false, UnbalancedSquareBracketsFailure
+				return nil, UnbalancedSquareBracketsFailure
 			end
 		end
 
@@ -139,7 +137,7 @@ local function SplitDataTag( DataTag )
 	-- Preliminary sanity checks on DataTag
 	local Success, errMsg = VerifyDataTagFormat()
 	if not Success then
-		return false, errMsg
+		return nil, errMsg
 	end
 
 
@@ -159,18 +157,16 @@ local function SplitDataTag( DataTag )
 	-- Load the DataTag string into lua
 	local DataTagFunc, err = loadstring( "dt = " .. DataTag )
 	if not DataTagFunc then
-		return false, err
+		return nil, err
 	end
 	setfenv(DataTagFunc, Sandbox)
 	-- TODO: Investigate switching to xpcall() for better error handling
 	local Success, errMsg = pcall(DataTagFunc)
 	if not Success then
-		return false, errMsg
+		return nil, errMsg
 	end
 
-	DataTagTable = Sandbox.dt
-
-	return true, nil
+	return Sandbox.dt, nil
 
 end
 
@@ -269,9 +265,9 @@ local function GiveItemCommand( Split, Player, SafeCommand )
 
 		-- The DataTag values may be split across a few different indicies if it contains any spaces,
 		-- so concat the remainder of split together for processing
-		local Success, errMsg = SplitDataTag( table.concat( Split, " ", 6 ) )
+		local DataTagTable, errMsg = SplitDataTag( table.concat( Split, " ", 6 ) )
 
-		if not Success then
+		if not DataTagTable then
 
 			local Message = string.format( "%s%s", MessageDataTagFailure, errMsg or MessageUnknownError )
 			if Player then
