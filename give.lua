@@ -1,8 +1,8 @@
 -- Implements give and item commands and console commands
 
 
--- cIniFile object to store the blacklist
-local ItemBlackList
+-- Table to store the blacklist
+local ItemBlackList = {}
 
 -- Table to hold the processed data tag
 local DataTagTable = {}
@@ -25,11 +25,11 @@ local UnbalancedSquareBracketsFailure = "Missing or unexpected '[' or ']' detect
 local StartWithBraceFailure = "DataTag must start with a '{'"
 local EndWithBraceFailure = "DataTag must end with a '}'"
 
-local BlackListHeaderComment = "Contains the list of items that cannot be obtained through the give and item commands."
-local BlackListHeaderComment2 = "Change values to 0 to remove items from blacklist."
-local BlackListFileName = "itemblacklist.ini"
-local BlackListFileCreationError = ": Could not create the file: " .. BlackListFileName
-local BlackListKeyName = "ItemBlackList"
+local BlackListHeaderComment = "-- Contains the list of items that cannot be obtained through the give and item commands.\n"
+local BlackListHeaderComment2 = "-- Add items to this file to add them to the blacklist\n"
+local BlackListHeaderComment3 = "-- or remove them from this file to remove them from the blacklist.\n"
+local BlackListFileName = "itemblacklist"
+local BlackListFileCreationError = "%s: Could not create the file: %s\nError Message: %s"
 
 local MaxNumberOfItems = 64
 
@@ -237,8 +237,14 @@ local function GiveItemCommand( Split, Player, SafeCommand )
 		end
 
 		-- If the value is on the blacklist and enabled, then don't let the user get the item
-		return ItemBlackList:GetValueB( BlackListKeyName, Item.m_ItemType )
+		local ItemType = Item.m_ItemType
+		for _, BlockedItem in ipairs( ItemBlackList ) do
+			if ItemType == BlockedItem then
+				return true
+			end
+		end
 
+		return false
 	end
 
 
@@ -432,66 +438,92 @@ function IntializeItemBlacklist( Plugin )
 	-- Technical blocks that should NOT be given to players by default
 	local DefaultBlackList = 
 	{
-		[34]  = true,  -- E_BLOCK_PISTON_EXTENSION
-		[36]  = true,  -- E_BLOCK_PISTON_MOVED_BLOCK
-		[140] = true,  -- E_BLOCK_FLOWER_POT
-		[26]  = true,  -- E_BLOCK_BED
-		[144] = true,  -- E_BLOCK_HEAD
-		[63]  = true,  -- E_BLOCK_SIGN_POST
-		[68]  = true,  -- E_BLOCK_WALLSIGN
-		[117] = true,  -- E_BLOCK_BREWING_STAND
-		[118] = true,  -- E_BLOCK_CAULDRON
-		[64]  = true,  -- E_BLOCK_WOODEN_DOOR
-		[193] = true,  -- E_ITEM_SPRUCE_DOOR
-		[194] = true,  -- E_ITEM_BIRCH_DOOR
-		[195] = true,  -- E_ITEM_JUNGLE_DOOR
-		[196] = true,  -- E_ITEM_ACACIA_DOOR
-		[197] = true,  -- E_ITEM_DARK_OAK_DOOR
-		[71]  = true,  -- E_ITEM_IRON_DOOR
-		[62]  = true,  -- E_BLOCK_LIT_FURNACE
-		[55]  = true,  -- E_BLOCK_REDSTONE_WIRE
-		[74]  = true,  -- E_BLOCK_REDSTONE_ORE_GLOWING
-		[75]  = true,  -- E_BLOCK_REDSTONE_TORCH_OFF
-		[94]  = true,  -- E_BLOCK_REDSTONE_REPEATER_ON
-		[124] = true,  -- E_BLOCK_REDSTONE_LAMP_ON
-		[150] = true,  -- E_BLOCK_ACTIVE_COMPARATOR
-		[178] = true,  -- E_BLOCK_INVERTED_DAYLIGHT_SENSOR
-		[9]   = true,  -- E_BLOCK_STATIONARY_WATER
-		[8]   = true,  -- E_BLOCK_WATER
-		[10]  = true,  -- E_BLOCK_LAVA
-		[11]  = true,  -- E_BLOCK_STATIONARY_LAVA
-		[60]  = true,  -- E_BLOCK_FARMLAND
-		[59]  = true,  -- E_BLOCK_CROPS
-		[142] = true,  -- E_BLOCK_POTATOES
-		[141] = true,  -- E_BLOCK_CARROTS
-		[104] = true,  -- E_BLOCK_PUMPKIN_STEM
-		[105] = true,  -- E_BLOCK_MELON_STEM
-		[83]  = true,  -- E_BLOCK_REEDS
-		[115] = true,  -- E_BLOCK_NETHER_WART
-		[92]  = true,  -- E_BLOCK_CAKE
-		[119] = true,  -- E_BLOCK_END_PORTAL
-		[90]  = true,  -- E_BLOCK_NETHER_PORTAL,
+		E_BLOCK_PISTON_EXTENSION,
+		E_BLOCK_PISTON_MOVED_BLOCK,
+		E_BLOCK_FLOWER_POT,
+		E_BLOCK_BED,
+		E_BLOCK_HEAD,
+		E_BLOCK_SIGN_POST,
+		E_BLOCK_WALLSIGN,
+		E_BLOCK_BREWING_STAND,
+		E_BLOCK_CAULDRON,
+		E_BLOCK_WOODEN_DOOR,
+		E_ITEM_SPRUCE_DOOR,
+		E_ITEM_BIRCH_DOOR,
+		E_ITEM_JUNGLE_DOOR,
+		E_ITEM_ACACIA_DOOR,
+		E_ITEM_DARK_OAK_DOOR,
+		E_ITEM_IRON_DOOR,
+		E_BLOCK_LIT_FURNACE,
+		E_BLOCK_REDSTONE_WIRE,
+		E_BLOCK_REDSTONE_ORE_GLOWING,
+		E_BLOCK_REDSTONE_TORCH_OFF,
+		E_BLOCK_REDSTONE_REPEATER_ON,
+		E_BLOCK_REDSTONE_LAMP_ON,
+		E_BLOCK_ACTIVE_COMPARATOR,
+		E_BLOCK_INVERTED_DAYLIGHT_SENSOR,
+		E_BLOCK_STATIONARY_WATER,
+		E_BLOCK_WATER,
+		E_BLOCK_LAVA,
+		E_BLOCK_STATIONARY_LAVA,
+		E_BLOCK_FARMLAND,
+		E_BLOCK_CROPS,
+		E_BLOCK_POTATOES,
+		E_BLOCK_CARROTS,
+		E_BLOCK_PUMPKIN_STEM,
+		E_BLOCK_MELON_STEM,
+		E_BLOCK_REEDS,
+		E_BLOCK_NETHER_WART,
+		E_BLOCK_CAKE,
+		E_BLOCK_END_PORTAL,
+		E_BLOCK_NETHER_PORTAL,
 	}
 
-	-- Check for an existing blacklist, this lets the use customize the list to their needs
-	ItemBlackList = cIniFile()
-	local Success = ItemBlackList:ReadFile( BlackListFileName )
-	
-	-- If the file doesn't exist, then create one with the default blacklist
-	if not Success then
-		ItemBlackList:AddKeyName( BlackListKeyName )
-		ItemBlackList:AddHeaderComment( BlackListHeaderComment )
-		ItemBlackList:AddHeaderComment( BlackListHeaderComment2 )
-		
-		for ValueName, Value in pairs( DefaultBlackList ) do
-			ItemBlackList:AddValueB( BlackListKeyName, ValueName, Value )
+	-- First, try to open the Item BlackList file if it exists
+	local ItemBlackListFile, ErrMsg = io.open( BlackListFileName, "rb" )
+
+	if ItemBlackListFile then
+
+		-- If it exists, read in the blacklisted items
+		for value in ItemBlackListFile:lines() do
+
+			-- Ignore comment lines
+			if not string.find( value, "%-" ) then
+				
+				-- Convert the name into an item to get its item type
+				local TempItem = cItem()
+				local Success = StringToItem( value, TempItem )
+
+				if Success and IsValidItem( TempItem.m_ItemType ) then
+					table.insert( ItemBlackList, TempItem.m_ItemType )
+				end
+			end
 		end
-		
-		Success = ItemBlackList:WriteFile( BlackListFileName )
-		if not Success then
-			LOG( Plugin:GetName() .. BlackListFileCreationError )
+
+		ItemBlackListFile:close()
+
+	else
+
+		-- If we couldn't read the file, then try to create the file with the default blacklist
+		ItemBlackListFile, ErrMsg = io.open( BlackListFileName, "wb" )
+
+		if ItemBlackListFile then
+
+			ItemBlackListFile:write( BlackListHeaderComment, BlackListHeaderComment2, BlackListHeaderComment3, "\n\n" )
+
+			for _, value in ipairs( DefaultBlackList ) do
+				ItemBlackListFile:write( ItemTypeToString( value ), "\n" )
+			end
+
+			ItemBlackListFile:flush()
+			ItemBlackListFile:close()
+
+		else
+			-- If we can't create the file, log it
+			LOG( string.format( BlackListFileCreationError, Plugin:GetName(), BlackListFileName, ( ErrMsg or MessageUnknownError ) ) )
 		end
-		
+
+		ItemBlackList = DefaultBlackList
 	end
 
 	return true
