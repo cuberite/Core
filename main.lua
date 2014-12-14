@@ -80,6 +80,9 @@ function Initialize(Plugin)
 	-- Initialize the whitelist, load its DB, do whatever processing it needs on startup:
 	InitializeWhitelist()
 
+	-- Initialize the Item Blacklist (the list of items that cannot be obtained using the give command)
+	IntializeItemBlacklist( Plugin )
+
 	-- Add webadmin tabs:
 	Plugin:AddWebTab("Manage Server",   HandleRequest_ManageServer)
 	Plugin:AddWebTab("Server Settings", HandleRequest_ServerSettings)

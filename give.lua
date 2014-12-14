@@ -1,8 +1,9 @@
 -- Implements give and item commands and console commands
 
 
--- Table to hold the processed data tag
-local DataTagTable = {}
+-- Table to store the blacklist
+local ItemBlackList = {}
+
 
 local CommandUsage = "Usage: %s %s"
 local ItemCommandUsageTail = "<ItemName> [Amount] [Data] [DataTag]"
@@ -22,6 +23,12 @@ local UnbalancedSquareBracketsFailure = "Missing or unexpected '[' or ']' detect
 local StartWithBraceFailure = "DataTag must start with a '{'"
 local EndWithBraceFailure = "DataTag must end with a '}'"
 
+local BlackListHeaderComment = "# Contains the list of items that cannot be obtained through the give and item commands.\n"
+local BlackListHeaderComment2 = "# Add items to this file to add them to the blacklist\n"
+local BlackListHeaderComment3 = "# or remove them from this file to remove them from the blacklist.\n"
+local BlackListFileName = "itemblacklist"
+local BlackListFileCreationError = "%s: Could not create the file: %s\nError Message: %s"
+
 local MaxNumberOfItems = 64
 
 
@@ -29,11 +36,11 @@ local MaxNumberOfItems = 64
 -- 
 --  @param DataTag String in the format of a minecraft NBT data tag
 --  
---  @return True if successful, and false with an error message if a problem is encountered
+--  @return Table of the data tag values if successful, and nil with an error message if a problem is encountered
 --  
 local function SplitDataTag( DataTag )
 
-	-- Table where the assembled SataTag table is temporarily stored
+	-- Table where the assembled DataTag table is temporarily stored
 	local Sandbox = {}
 
 	-- Table where users strings are stored to protect from processing
@@ -73,16 +80,16 @@ local function SplitDataTag( DataTag )
 
 		-- Verify string starts and ends with expected brace
 		if string.sub( DataTag, 1, 1 ) ~= "{" then
-			return false, StartWithBraceFailure
+			return nil, StartWithBraceFailure
 		end
 		if string.sub( DataTag, -1, -1 ) ~= "}" then
-			return false, EndWithBraceFailure
+			return nil, EndWithBraceFailure
 		end
 
 		-- Check for balanced curly braces and square brackets
 		local FirstLoc, LastLoc = string.find( DataTag, "%b{}" )
 		if FirstLoc ~= 1 or LastLoc ~= string.len( DataTag ) then
-			return false, UnbalancedCurleyBracesFailure
+			return nil, UnbalancedCurleyBracesFailure
 		end
 
 		local DataTagLen = string.len( DataTag )
@@ -106,7 +113,7 @@ local function SplitDataTag( DataTag )
 			end
 
 			if ( FirstLoc > FirstBrace ) or ( LastLoc < LastBrace ) then
-				return false, UnbalancedSquareBracketsFailure
+				return nil, UnbalancedSquareBracketsFailure
 			end
 		end
 
@@ -130,7 +137,7 @@ local function SplitDataTag( DataTag )
 	-- Preliminary sanity checks on DataTag
 	local Success, errMsg = VerifyDataTagFormat()
 	if not Success then
-		return false, errMsg
+		return nil, errMsg
 	end
 
 
@@ -150,18 +157,16 @@ local function SplitDataTag( DataTag )
 	-- Load the DataTag string into lua
 	local DataTagFunc, err = loadstring( "dt = " .. DataTag )
 	if not DataTagFunc then
-		return false, err
+		return nil, err
 	end
 	setfenv(DataTagFunc, Sandbox)
 	-- TODO: Investigate switching to xpcall() for better error handling
 	local Success, errMsg = pcall(DataTagFunc)
 	if not Success then
-		return false, errMsg
+		return nil, errMsg
 	end
 
-	DataTagTable = Sandbox.dt
-
-	return true, nil
+	return Sandbox.dt, nil
 
 end
 
@@ -169,9 +174,11 @@ end
 --- Handles `give` and `item` commands, other then usage strings 
 --  which are taken care of in their registered handlers
 --  
+--  @param SafeCommand If true, then don't give unsafe items, if false then don't filter out items
+--  
 --  @return False if PlayerName or ItemName are missing, or Amount or DataValue are invalid, true otherwise
 --  
-local function GiveItemCommand( Split, Player )
+local function GiveItemCommand( Split, Player, SafeCommand )
 
 	local PlayerName = Split[2]
 	local lcPlayerName = string.lower( PlayerName or "" )
@@ -206,10 +213,31 @@ local function GiveItemCommand( Split, Player )
 
 	-- Get the item from the arguments and check it's valid.
 	local Item = cItem()
-	local FoundItem = StringToItem( ItemName .. ":" .. DataValue, Item)
+	local FoundItem = StringToItem( ItemName .. ( DataValue ~= 0 and ( ":" .. DataValue ) or "" ), Item)
 
 	-- StringToItem does not check if item is valid
 	if not IsValidItem( Item.m_ItemType ) then
+		FoundItem = false
+	end
+
+
+	--- Checks to see if the given item is on the blacklist
+	--  
+	--  @return False if checking is disabled or if the item is not blacklisted, true otherwise
+	--  
+	local function CheckUnSafeItem()
+
+		-- If using unsafegive or unsafeitem, do not check if item is blacklisted
+		if not SafeCommand then
+			return false
+		end
+
+		return ItemBlackList[ Item.m_ItemType ] 
+	end
+
+
+	-- Check to see if the item is blacklisted
+	if CheckUnSafeItem() then
 		FoundItem = false
 	end
 
@@ -229,9 +257,9 @@ local function GiveItemCommand( Split, Player )
 
 		-- The DataTag values may be split across a few different indicies if it contains any spaces,
 		-- so concat the remainder of split together for processing
-		local Success, errMsg = SplitDataTag( table.concat( Split, " ", 6 ) )
+		local DataTagTable, errMsg = SplitDataTag( table.concat( Split, " ", 6 ) )
 
-		if not Success then
+		if not DataTagTable then
 
 			local Message = string.format( "%s%s", MessageDataTagFailure, errMsg or MessageUnknownError )
 			if Player then
@@ -327,7 +355,25 @@ end
 --  
 function HandleGiveCommand( Split, Player )
 
-	if not GiveItemCommand( Split, Player ) then
+	if not GiveItemCommand( Split, Player, true ) then
+		local Message = string.format( CommandUsage, Split[1] , GiveCommandUsageTail )
+		if Player then
+			SendMessage( Player, Message )
+		else
+			LOG( Message )
+		end
+	end
+
+	return true
+end
+
+
+--- Handle the `unsafegive` console and in-game command
+--  Usage: unsafegive <PlayerName> <item> [amount] [data] [dataTag]
+--  
+function HandleUnsafeGiveCommand( Split, Player )
+
+	if not GiveItemCommand( Split, Player, false ) then
 		local Message = string.format( CommandUsage, Split[1] , GiveCommandUsageTail )
 		if Player then
 			SendMessage( Player, Message )
@@ -347,15 +393,125 @@ function HandleItemCommand( Split, Player )
 
 	table.insert( Split, 2, Player:GetName() )
 
-	if not GiveItemCommand( Split, Player ) then
+	if not GiveItemCommand( Split, Player, true ) then
 		local Message = string.format( CommandUsage, Split[1] , ItemCommandUsageTail )
-		if Player then
-			SendMessage( Player, Message )
-		else
-			LOG( Message )
-		end
+		SendMessage( Player, Message )
 	end
 
 	return true
+end
 
+
+--- Handle the `unsafeitem` in-game command
+--  Usage: unsafeitem <item> [amount] [data] [dataTag]
+--  
+function HandleUnsafeItemCommand( Split, Player )
+
+	table.insert( Split, 2, Player:GetName() )
+
+	if not GiveItemCommand( Split, Player, false ) then
+		local Message = string.format( CommandUsage, Split[1] , ItemCommandUsageTail )
+		SendMessage( Player, Message )
+	end
+
+	return true
+end
+
+
+--- Initialize the Item Blacklist
+--  If the blacklist file cannot be found it attempts to create a new one
+--  
+function IntializeItemBlacklist( Plugin )
+
+	-- Technical blocks that should NOT be given to players by default
+	local DefaultBlackList =
+	{
+		[E_BLOCK_PISTON_EXTENSION]         = true,
+		[E_BLOCK_PISTON_MOVED_BLOCK]       = true,
+		[E_BLOCK_FLOWER_POT]               = true,
+		[E_BLOCK_BED]                      = true,
+		[E_BLOCK_HEAD]                     = true,
+		[E_BLOCK_SIGN_POST]                = true,
+		[E_BLOCK_WALLSIGN]                 = true,
+		[E_BLOCK_BREWING_STAND]            = true,
+		[E_BLOCK_CAULDRON]                 = true,
+		[E_BLOCK_WOODEN_DOOR]              = true,
+		[E_ITEM_SPRUCE_DOOR]               = true,
+		[E_ITEM_BIRCH_DOOR]                = true,
+		[E_ITEM_JUNGLE_DOOR]               = true,
+		[E_ITEM_ACACIA_DOOR]               = true,
+		[E_ITEM_DARK_OAK_DOOR]             = true,
+		[E_ITEM_IRON_DOOR]                 = true,
+		[E_BLOCK_LIT_FURNACE]              = true,
+		[E_BLOCK_REDSTONE_WIRE]            = true,
+		[E_BLOCK_REDSTONE_ORE_GLOWING]     = true,
+		[E_BLOCK_REDSTONE_TORCH_OFF]       = true,
+		[E_BLOCK_REDSTONE_REPEATER_ON]     = true,
+		[E_BLOCK_REDSTONE_LAMP_ON]         = true,
+		[E_BLOCK_ACTIVE_COMPARATOR]        = true,
+		[E_BLOCK_INVERTED_DAYLIGHT_SENSOR] = true,
+		[E_BLOCK_STATIONARY_WATER]         = true,
+		[E_BLOCK_WATER]                    = true,
+		[E_BLOCK_LAVA]                     = true,
+		[E_BLOCK_STATIONARY_LAVA]          = true,
+		[E_BLOCK_FARMLAND]                 = true,
+		[E_BLOCK_CROPS]                    = true,
+		[E_BLOCK_POTATOES]                 = true,
+		[E_BLOCK_CARROTS]                  = true,
+		[E_BLOCK_PUMPKIN_STEM]             = true,
+		[E_BLOCK_MELON_STEM]               = true,
+		[E_BLOCK_REEDS]                    = true,
+		[E_BLOCK_NETHER_WART]              = true,
+		[E_BLOCK_CAKE]                     = true,
+		[E_BLOCK_END_PORTAL]               = true,
+		[E_BLOCK_NETHER_PORTAL]            = true,
+	}
+
+	-- First, try to open the Item BlackList file if it exists
+	local ItemBlackListFile, ErrMsg = io.open( BlackListFileName, "rb" )
+
+	if ItemBlackListFile then
+
+		-- If it exists, read in the blacklisted items
+		for value in ItemBlackListFile:lines() do
+
+			-- Ignore comments
+			value = string.gsub( value, "#+%s-.*", "" )
+
+			-- Convert the name into an item to get its item type
+			local TempItem = cItem()
+			local Success = StringToItem( value, TempItem )
+
+			if Success and IsValidItem( TempItem.m_ItemType ) then
+				ItemBlackList[TempItem.m_ItemType] = true
+			end
+		end
+
+		ItemBlackListFile:close()
+
+	else
+
+		-- If we couldn't read the file, then try to create the file with the default blacklist
+		ItemBlackListFile, ErrMsg = io.open( BlackListFileName, "wb" )
+
+		if ItemBlackListFile then
+
+			ItemBlackListFile:write( BlackListHeaderComment, BlackListHeaderComment2, BlackListHeaderComment3, "\n\n" )
+
+			for index, _ in pairs( DefaultBlackList ) do
+				ItemBlackListFile:write( ItemTypeToString( index ), "\n" )
+			end
+
+			ItemBlackListFile:flush()
+			ItemBlackListFile:close()
+
+		else
+			-- If we can't create the file, log it
+			LOG( string.format( BlackListFileCreationError, Plugin:GetName(), BlackListFileName, ( ErrMsg or MessageUnknownError ) ) )
+		end
+
+		ItemBlackList = DefaultBlackList
+	end
+
+	return true
 end

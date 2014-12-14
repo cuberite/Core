@@ -50,6 +50,8 @@ Implements some of the basic commands needed to run a simple server.
 |/tphere | core.tphere |  ~ Teleport player to yourself|
 |/tps | core.tps | Returns the tps (ticks per second) from the server.|
 |/unban | core.unban | Unban a player|
+|/unsafegive | core.give.unsafe | Give someone an item, even if it is blacklisted.|
+|/unsafeitem | core.item.unsafe | Give yourself an item, even if it is blacklisted.|
 |/vanish | core.vanish |  - Vanish|
 |/viewdistance | core.viewdistance | Change your view distance|
 |/weather | core.weather | Change world's weather|
@@ -74,8 +76,10 @@ Implements some of the basic commands needed to run a simple server.
 | core.do |  | `/do` |  |
 | core.fly |  | `/fly` |  |
 | core.give | Allows players to give items to other players | `/give` | admins |
+| core.give.unsafe | Allows players to give items to other players, even if the item is blacklisted | `/unsafegive` | none |
 | core.help |  | `/help` |  |
 | core.item | Allows players to give items to themselves | `/item` | admins |
+| core.item.unsafe | Allows players to give items to themselves, even if the item is blacklisted | `/unsafeitem` | none |
 | core.kick |  | `/kick` |  |
 | core.kill |  | `/kill` |  |
 | core.list |  | `/list` |  |
