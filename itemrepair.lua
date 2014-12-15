@@ -5,15 +5,15 @@ BONUS = 0.1
 function OnCraftingNoRecipe(Player, Grid, Recipe)
 	local _do_fix = false
 	local Items = {}
-    local ItemCoords = {}
+	local ItemCoords = {}
 	for x = 0, Grid:GetWidth() - 1 do
 		for y = 0, Grid:GetHeight() - 1 do
 			local Item = Grid:GetItem(x, y)
 			if (Item.m_ItemType ~= E_ITEM_EMPTY) then
 				table.insert(Items, Item)
-                ItemCoords[#ItemCoords + 1] = {}
-                ItemCoords[#ItemCoords].x = x
-                ItemCoords[#ItemCoords].y = y
+				ItemCoords[#ItemCoords + 1] = {}
+				ItemCoords[#ItemCoords].x = x
+				ItemCoords[#ItemCoords].y = y
 			end
 		end
 	end
@@ -198,7 +198,7 @@ function OnCraftingNoRecipe(Player, Grid, Recipe)
 		local _hp = _most_hp - (_item_hp - _least_hp) - _item_hp * BONUS
 		_hp = math.max(_hp, 0)
 		Recipe:SetResult(_ID, 1, _hp)
-        Recipe:SetIngredient(ItemCoords[1].x, ItemCoords[1].y, Items[1]);
+		Recipe:SetIngredient(ItemCoords[1].x, ItemCoords[1].y, Items[1]);
 		Recipe:SetIngredient(ItemCoords[2].x, ItemCoords[2].y, Items[2]);
 		return true
 	end
