@@ -1,10 +1,713 @@
-function HandleEnchantCommand( Split, Player )
+-- enchant.lua
+
+
+-- Handles enchant console and in-game commands
+
+-- NOTE: The Depth Strider Enchantment is not in MCServer enums as of Dec 2014, remove this when added
+local enchDepthStrider = 8
+
+-- Table containing the properties of the various possible enchantments
+local EnchantmentInformation = {
+
+	[ enchProtection ] = {
+		Name = "Protection",
+		MaxLevel = 4,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_CAP ]        = true,
+			[ E_ITEM_IRON_HELMET ]        = true,
+			[ E_ITEM_CHAIN_HELMET ]       = true,
+			[ E_ITEM_GOLD_HELMET ]        = true,
+			[ E_ITEM_DIAMOND_HELMET ]     = true,
+			[ E_ITEM_LEATHER_TUNIC ]      = true,
+			[ E_ITEM_IRON_CHESTPLATE ]    = true,
+			[ E_ITEM_CHAIN_CHESTPLATE ]   = true,
+			[ E_ITEM_GOLD_CHESTPLATE ]    = true,
+			[ E_ITEM_DIAMOND_CHESTPLATE ] = true,
+			[ E_ITEM_LEATHER_PANTS ]      = true,
+			[ E_ITEM_IRON_LEGGINGS ]      = true,
+			[ E_ITEM_CHAIN_LEGGINGS ]     = true,
+			[ E_ITEM_GOLD_LEGGINGS ]      = true,
+			[ E_ITEM_DIAMOND_LEGGINGS ]   = true,
+			[ E_ITEM_LEATHER_BOOTS ]      = true,
+			[ E_ITEM_IRON_BOOTS ]         = true,
+			[ E_ITEM_CHAIN_BOOTS ]        = true,
+			[ E_ITEM_GOLD_BOOTS ]         = true,
+			[ E_ITEM_DIAMOND_BOOTS ]      = true,
+		},
+		CannotCombineWith = {
+			enchFireProtection,
+			enchBlastProtection,
+			enchProjectileProtection,
+		},
+	},
+
+	[ enchFireProtection ] = {
+		Name = "Fire Protection",
+		MaxLevel = 4,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_CAP ]        = true,
+			[ E_ITEM_IRON_HELMET ]        = true,
+			[ E_ITEM_CHAIN_HELMET ]       = true,
+			[ E_ITEM_GOLD_HELMET ]        = true,
+			[ E_ITEM_DIAMOND_HELMET ]     = true,
+			[ E_ITEM_LEATHER_TUNIC ]      = true,
+			[ E_ITEM_IRON_CHESTPLATE ]    = true,
+			[ E_ITEM_CHAIN_CHESTPLATE ]   = true,
+			[ E_ITEM_GOLD_CHESTPLATE ]    = true,
+			[ E_ITEM_DIAMOND_CHESTPLATE ] = true,
+			[ E_ITEM_LEATHER_PANTS ]      = true,
+			[ E_ITEM_IRON_LEGGINGS ]      = true,
+			[ E_ITEM_CHAIN_LEGGINGS ]     = true,
+			[ E_ITEM_GOLD_LEGGINGS ]      = true,
+			[ E_ITEM_DIAMOND_LEGGINGS ]   = true,
+			[ E_ITEM_LEATHER_BOOTS ]      = true,
+			[ E_ITEM_IRON_BOOTS ]         = true,
+			[ E_ITEM_CHAIN_BOOTS ]        = true,
+			[ E_ITEM_GOLD_BOOTS ]         = true,
+			[ E_ITEM_DIAMOND_BOOTS ]      = true,
+		},
+		CannotCombineWith = {
+			enchProtection,
+			enchBlastProtection,
+			enchProjectileProtection,
+		},
+	},
+
+	[ enchFeatherFalling ] = {
+		Name = "Feather Falling",
+		MaxLevel = 4,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_BOOTS ] = true,
+			[ E_ITEM_IRON_BOOTS ]    = true,
+			[ E_ITEM_CHAIN_BOOTS ]   = true,
+			[ E_ITEM_GOLD_BOOTS ]    = true,
+			[ E_ITEM_DIAMOND_BOOTS ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchBlastProtection ] = {
+		Name = "Blast Protection",
+		MaxLevel = 4,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_CAP ]        = true,
+			[ E_ITEM_IRON_HELMET ]        = true,
+			[ E_ITEM_CHAIN_HELMET ]       = true,
+			[ E_ITEM_GOLD_HELMET ]        = true,
+			[ E_ITEM_DIAMOND_HELMET ]     = true,
+			[ E_ITEM_LEATHER_TUNIC ]      = true,
+			[ E_ITEM_IRON_CHESTPLATE ]    = true,
+			[ E_ITEM_CHAIN_CHESTPLATE ]   = true,
+			[ E_ITEM_GOLD_CHESTPLATE ]    = true,
+			[ E_ITEM_DIAMOND_CHESTPLATE ] = true,
+			[ E_ITEM_LEATHER_PANTS ]      = true,
+			[ E_ITEM_IRON_LEGGINGS ]      = true,
+			[ E_ITEM_CHAIN_LEGGINGS ]     = true,
+			[ E_ITEM_GOLD_LEGGINGS ]      = true,
+			[ E_ITEM_DIAMOND_LEGGINGS ]   = true,
+			[ E_ITEM_LEATHER_BOOTS ]      = true,
+			[ E_ITEM_IRON_BOOTS ]         = true,
+			[ E_ITEM_CHAIN_BOOTS ]        = true,
+			[ E_ITEM_GOLD_BOOTS ]         = true,
+			[ E_ITEM_DIAMOND_BOOTS ]      = true,
+		},
+		CannotCombineWith = {
+			enchFireProtection,
+			enchProtection,
+			enchProjectileProtection,
+		},
+	},
+
+	[ enchProjectileProtection ] = {
+		Name = "Projectile Protection",
+		MaxLevel = 4,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_CAP ]        = true,
+			[ E_ITEM_IRON_HELMET ]        = true,
+			[ E_ITEM_CHAIN_HELMET ]       = true,
+			[ E_ITEM_GOLD_HELMET ]        = true,
+			[ E_ITEM_DIAMOND_HELMET ]     = true,
+			[ E_ITEM_LEATHER_TUNIC ]      = true,
+			[ E_ITEM_IRON_CHESTPLATE ]    = true,
+			[ E_ITEM_CHAIN_CHESTPLATE ]   = true,
+			[ E_ITEM_GOLD_CHESTPLATE ]    = true,
+			[ E_ITEM_DIAMOND_CHESTPLATE ] = true,
+			[ E_ITEM_LEATHER_PANTS ]      = true,
+			[ E_ITEM_IRON_LEGGINGS ]      = true,
+			[ E_ITEM_CHAIN_LEGGINGS ]     = true,
+			[ E_ITEM_GOLD_LEGGINGS ]      = true,
+			[ E_ITEM_DIAMOND_LEGGINGS ]   = true,
+			[ E_ITEM_LEATHER_BOOTS ]      = true,
+			[ E_ITEM_IRON_BOOTS ]         = true,
+			[ E_ITEM_CHAIN_BOOTS ]        = true,
+			[ E_ITEM_GOLD_BOOTS ]         = true,
+			[ E_ITEM_DIAMOND_BOOTS ]      = true,
+		},
+		CannotCombineWith = {
+			enchFireProtection,
+			enchBlastProtection,
+			enchProtection,
+		},
+	},
+
+	[ enchRespiration ] = {
+		Name = "Respiration",
+		MaxLevel = 3,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_CAP ]    = true,
+			[ E_ITEM_IRON_HELMET ]    = true,
+			[ E_ITEM_CHAIN_HELMET ]   = true,
+			[ E_ITEM_GOLD_HELMET ]    = true,
+			[ E_ITEM_DIAMOND_HELMET ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchAquaAffinity ] = {
+		Name = "Aqua Affinity",
+		MaxLevel = 1,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_CAP ]    = true,
+			[ E_ITEM_IRON_HELMET ]    = true,
+			[ E_ITEM_CHAIN_HELMET ]   = true,
+			[ E_ITEM_GOLD_HELMET ]    = true,
+			[ E_ITEM_DIAMOND_HELMET ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchThorns ] = {
+		Name = "Thorns",
+		MaxLevel = 3,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_CAP ]        = true,
+			[ E_ITEM_IRON_HELMET ]        = true,
+			[ E_ITEM_CHAIN_HELMET ]       = true,
+			[ E_ITEM_GOLD_HELMET ]        = true,
+			[ E_ITEM_DIAMOND_HELMET ]     = true,
+			[ E_ITEM_LEATHER_TUNIC ]      = true,
+			[ E_ITEM_IRON_CHESTPLATE ]    = true,
+			[ E_ITEM_CHAIN_CHESTPLATE ]   = true,
+			[ E_ITEM_GOLD_CHESTPLATE ]    = true,
+			[ E_ITEM_DIAMOND_CHESTPLATE ] = true,
+			[ E_ITEM_LEATHER_PANTS ]      = true,
+			[ E_ITEM_IRON_LEGGINGS ]      = true,
+			[ E_ITEM_CHAIN_LEGGINGS ]     = true,
+			[ E_ITEM_GOLD_LEGGINGS ]      = true,
+			[ E_ITEM_DIAMOND_LEGGINGS ]   = true,
+			[ E_ITEM_LEATHER_BOOTS ]      = true,
+			[ E_ITEM_IRON_BOOTS ]         = true,
+			[ E_ITEM_CHAIN_BOOTS ]        = true,
+			[ E_ITEM_GOLD_BOOTS ]         = true,
+			[ E_ITEM_DIAMOND_BOOTS ]      = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchDepthStrider ] = {
+			Name = "Depth Strider",
+		MaxLevel = 3,
+		ApplicableItems = {
+			[ E_ITEM_LEATHER_BOOTS ] = true,
+			[ E_ITEM_IRON_BOOTS ]    = true,
+			[ E_ITEM_CHAIN_BOOTS ]   = true,
+			[ E_ITEM_GOLD_BOOTS ]    = true,
+			[ E_ITEM_DIAMOND_BOOTS ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchSharpness ] = {
+		Name = "Sharpness",
+		MaxLevel = 5,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_SWORD ]  = true,
+			[ E_ITEM_STONE_SWORD ]   = true,
+			[ E_ITEM_IRON_SWORD ]    = true,
+			[ E_ITEM_GOLD_SWORD ]    = true,
+			[ E_ITEM_DIAMOND_SWORD ] = true,
+			[ E_ITEM_WOODEN_AXE ]    = true,
+			[ E_ITEM_STONE_AXE ]     = true,
+			[ E_ITEM_IRON_AXE ]      = true,
+			[ E_ITEM_GOLD_AXE ]      = true,
+			[ E_ITEM_DIAMOND_AXE ]   = true,
+		},
+		CannotCombineWith = {
+			enchSmite,
+			enchBaneOfArthropods,
+		},
+	},
+
+	[ enchSmite ] = {
+		Name = "Smite",
+		MaxLevel = 5,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_SWORD ]  = true,
+			[ E_ITEM_STONE_SWORD ]   = true,
+			[ E_ITEM_IRON_SWORD ]    = true,
+			[ E_ITEM_GOLD_SWORD ]    = true,
+			[ E_ITEM_DIAMOND_SWORD ] = true,
+			[ E_ITEM_WOODEN_AXE ]    = true,
+			[ E_ITEM_STONE_AXE ]     = true,
+			[ E_ITEM_IRON_AXE ]      = true,
+			[ E_ITEM_GOLD_AXE ]      = true,
+			[ E_ITEM_DIAMOND_AXE ]   = true,
+		},
+		CannotCombineWith = {
+			enchSharpness,
+			enchBaneOfArthropods,
+		},
+	},
+
+	[ enchBaneOfArthropods ] = {
+		Name = "Bane of Arthropods",
+		MaxLevel = 5,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_SWORD ]  = true,
+			[ E_ITEM_STONE_SWORD ]   = true,
+			[ E_ITEM_IRON_SWORD ]    = true,
+			[ E_ITEM_GOLD_SWORD ]    = true,
+			[ E_ITEM_DIAMOND_SWORD ] = true,
+			[ E_ITEM_WOODEN_AXE ]    = true,
+			[ E_ITEM_STONE_AXE ]     = true,
+			[ E_ITEM_IRON_AXE ]      = true,
+			[ E_ITEM_GOLD_AXE ]      = true,
+			[ E_ITEM_DIAMOND_AXE ]   = true,
+		},
+		CannotCombineWith = {
+			enchSharpness,
+			enchSmite,
+		},
+	},
+
+	[ enchKnockback ] = {
+		Name = "Knockback",
+		MaxLevel = 2,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_SWORD ]  = true,
+			[ E_ITEM_STONE_SWORD ]   = true,
+			[ E_ITEM_IRON_SWORD ]    = true,
+			[ E_ITEM_GOLD_SWORD ]    = true,
+			[ E_ITEM_DIAMOND_SWORD ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchFireAspect ] = {
+		Name = "Fire Aspect",
+		MaxLevel = 2,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_SWORD ]  = true,
+			[ E_ITEM_STONE_SWORD ]   = true,
+			[ E_ITEM_IRON_SWORD ]    = true,
+			[ E_ITEM_GOLD_SWORD ]    = true,
+			[ E_ITEM_DIAMOND_SWORD ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchLooting ] = {
+		Name = "Looting",
+		MaxLevel = 3,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_SWORD ]  = true,
+			[ E_ITEM_STONE_SWORD ]   = true,
+			[ E_ITEM_IRON_SWORD ]    = true,
+			[ E_ITEM_GOLD_SWORD ]    = true,
+			[ E_ITEM_DIAMOND_SWORD ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchEfficiency ] = {
+		Name = "Efficiency",
+		MaxLevel = 5,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_PICKAXE ]  = true,
+			[ E_ITEM_STONE_PICKAXE ]   = true,
+			[ E_ITEM_IRON_PICKAXE ]    = true,
+			[ E_ITEM_GOLD_PICKAXE ]    = true,
+			[ E_ITEM_DIAMOND_PICKAXE ] = true,
+			[ E_ITEM_WOODEN_SHOVEL ]   = true,
+			[ E_ITEM_STONE_SHOVEL ]    = true,
+			[ E_ITEM_IRON_SHOVEL ]     = true,
+			[ E_ITEM_GOLD_SHOVEL ]     = true,
+			[ E_ITEM_DIAMOND_SHOVEL ]  = true,
+			[ E_ITEM_WOODEN_AXE ]      = true,
+			[ E_ITEM_STONE_AXE ]       = true,
+			[ E_ITEM_IRON_AXE ]        = true,
+			[ E_ITEM_GOLD_AXE ]        = true,
+			[ E_ITEM_DIAMOND_AXE ]     = true,
+			[ E_ITEM_SHEARS ]          = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchSilkTouch ] = {
+		Name = "Silk Touch",
+		MaxLevel = 1,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_PICKAXE ]  = true,
+			[ E_ITEM_STONE_PICKAXE ]   = true,
+			[ E_ITEM_IRON_PICKAXE ]    = true,
+			[ E_ITEM_GOLD_PICKAXE ]    = true,
+			[ E_ITEM_DIAMOND_PICKAXE ] = true,
+			[ E_ITEM_WOODEN_SHOVEL ]   = true,
+			[ E_ITEM_STONE_SHOVEL ]    = true,
+			[ E_ITEM_IRON_SHOVEL ]     = true,
+			[ E_ITEM_GOLD_SHOVEL ]     = true,
+			[ E_ITEM_DIAMOND_SHOVEL ]  = true,
+			[ E_ITEM_WOODEN_AXE ]      = true,
+			[ E_ITEM_STONE_AXE ]       = true,
+			[ E_ITEM_IRON_AXE ]        = true,
+			[ E_ITEM_GOLD_AXE ]        = true,
+			[ E_ITEM_DIAMOND_AXE ]     = true,
+			[ E_ITEM_SHEARS ]          = true,
+		},
+		CannotCombineWith = {
+			enchFortune,
+		},
+	},
+
+	[ enchUnbreaking ] = {
+		Name = "Unbreaking",
+		MaxLevel = 3,
+		ApplicableItems = {
+			-- Tools
+			[ E_ITEM_WOODEN_PICKAXE ]  = true,
+			[ E_ITEM_STONE_PICKAXE ]   = true,
+			[ E_ITEM_IRON_PICKAXE ]    = true,
+			[ E_ITEM_GOLD_PICKAXE ]    = true,
+			[ E_ITEM_DIAMOND_PICKAXE ] = true,
+			[ E_ITEM_WOODEN_SHOVEL ]   = true,
+			[ E_ITEM_STONE_SHOVEL ]    = true,
+			[ E_ITEM_IRON_SHOVEL ]     = true,
+			[ E_ITEM_GOLD_SHOVEL ]     = true,
+			[ E_ITEM_DIAMOND_SHOVEL ]  = true,
+			[ E_ITEM_WOODEN_AXE ]      = true,
+			[ E_ITEM_STONE_AXE ]       = true,
+			[ E_ITEM_IRON_AXE ]        = true,
+			[ E_ITEM_GOLD_AXE ]        = true,
+			[ E_ITEM_DIAMOND_AXE ]     = true,
+			[ E_ITEM_FISHING_ROD ]     = true,
+			
+			-- Armor
+			[ E_ITEM_LEATHER_CAP ]        = true,
+			[ E_ITEM_IRON_HELMET ]        = true,
+			[ E_ITEM_CHAIN_HELMET ]       = true,
+			[ E_ITEM_GOLD_HELMET ]        = true,
+			[ E_ITEM_DIAMOND_HELMET ]     = true,
+			[ E_ITEM_LEATHER_TUNIC ]      = true,
+			[ E_ITEM_IRON_CHESTPLATE ]    = true,
+			[ E_ITEM_CHAIN_CHESTPLATE ]   = true,
+			[ E_ITEM_GOLD_CHESTPLATE ]    = true,
+			[ E_ITEM_DIAMOND_CHESTPLATE ] = true,
+			[ E_ITEM_LEATHER_PANTS ]      = true,
+			[ E_ITEM_IRON_LEGGINGS ]      = true,
+			[ E_ITEM_CHAIN_LEGGINGS ]     = true,
+			[ E_ITEM_GOLD_LEGGINGS ]      = true,
+			[ E_ITEM_DIAMOND_LEGGINGS ]   = true,
+			[ E_ITEM_LEATHER_BOOTS ]      = true,
+			[ E_ITEM_IRON_BOOTS ]         = true,
+			[ E_ITEM_CHAIN_BOOTS ]        = true,
+			[ E_ITEM_GOLD_BOOTS ]         = true,
+			[ E_ITEM_DIAMOND_BOOTS ]      = true,
+			
+			-- Weapons
+			[ E_ITEM_WOODEN_SWORD ]  = true,
+			[ E_ITEM_STONE_SWORD ]   = true,
+			[ E_ITEM_IRON_SWORD ]    = true,
+			[ E_ITEM_GOLD_SWORD ]    = true,
+			[ E_ITEM_DIAMOND_SWORD ] = true,
+			[ E_ITEM_BOW ]           = true,
+			
+			-- Secondary Items
+			[ E_ITEM_WOODEN_HOE ]      = true,
+			[ E_ITEM_STONE_HOE ]       = true,
+			[ E_ITEM_IRON_HOE ]        = true,
+			[ E_ITEM_GOLD_HOE ]        = true,
+			[ E_ITEM_DIAMOND_HOE ]     = true,
+			[ E_ITEM_SHEARS ]          = true,
+			[ E_ITEM_FLINT_AND_STEEL ] = true,
+			[ E_ITEM_CARROT_ON_STICK ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchFortune ] = {
+		Name = "Fortune",
+		MaxLevel = 3,
+		ApplicableItems = {
+			[ E_ITEM_WOODEN_PICKAXE ]  = true,
+			[ E_ITEM_STONE_PICKAXE ]   = true,
+			[ E_ITEM_IRON_PICKAXE ]    = true,
+			[ E_ITEM_GOLD_PICKAXE ]    = true,
+			[ E_ITEM_DIAMOND_PICKAXE ] = true,
+			[ E_ITEM_WOODEN_SHOVEL ]   = true,
+			[ E_ITEM_STONE_SHOVEL ]    = true,
+			[ E_ITEM_IRON_SHOVEL ]     = true,
+			[ E_ITEM_GOLD_SHOVEL ]     = true,
+			[ E_ITEM_DIAMOND_SHOVEL ]  = true,
+			[ E_ITEM_WOODEN_AXE ]      = true,
+			[ E_ITEM_STONE_AXE ]       = true,
+			[ E_ITEM_IRON_AXE ]        = true,
+			[ E_ITEM_GOLD_AXE ]        = true,
+			[ E_ITEM_DIAMOND_AXE ]     = true,
+		},
+		CannotCombineWith = {
+			enchSilkTouch
+		},
+	},
+
+	[ enchPower ] = {
+		Name = "Power",
+		MaxLevel = 5,
+		ApplicableItems = {
+			[ E_ITEM_BOW ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchPunch ] = {
+		Name = "Punch",
+		MaxLevel = 2,
+		ApplicableItems = {
+			[ E_ITEM_BOW ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchFlame ] = {
+		Name = "Flame",
+		MaxLevel = 1,
+		ApplicableItems = {
+			[ E_ITEM_BOW ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchInfinity ] = {
+		Name = "Infinity",
+		MaxLevel = 1,
+		ApplicableItems = {
+			[ E_ITEM_BOW ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchLuckOfTheSea ] = {
+		Name = "Luck of the Sea",
+		MaxLevel = 3,
+		ApplicableItems = {
+			[ E_ITEM_FISHING_ROD ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+	[ enchLure ] = {
+		Name = "Lure",
+		MaxLevel = 3,
+		ApplicableItems = {
+			[ E_ITEM_FISHING_ROD ] = true,
+		},
+		CannotCombineWith = {
+		},
+	},
+
+}
+
+local EnchantCommandUsage = "Usage: %s <PlayerName> <Enchantment ID> [Level]"
+local IEnchantCommandUsage = "Usage: %s <Enchantment ID> [Level]"
+local UnknownEnchantment = "There is no known enchantment: %s"
+--local UnknownEnchantmentID = "There is no known enchantment with ID: %d"
+local LevelNAN = "%s is not a number, level must be a number"
+local LevelIsZero = "Level must be greater than 0"
+local LevelTooHigh = "The level you have entered: %d is too high, it must be at most: %d"
+local ItemNotEnchantable = "The enchantment: %s cannot be used with the selected item"
+local IncompatableEnchantments = "%s cannot be combined with %s"
+local NoItemPresent = "The player: %s doesn't have an item selected"
+local ConsoleMessage = "%s: %s"
+local MessagePlayerFailure = "Player \"%s\" not found"
+local MessageSuccess = "Enchantment Successful"
+local LogMessageSuccess = "Applied the enchantment: %s to a %s held by player: %s"
+
+
+--- Converts the given enchantment ID to a string
+--  
+--  @param EnchantmentID The Enchantment ID to convert to a string
+--  @param Level the level of the enchantment
+--  
+--  @return A string in the format of <EnchantmentName> <Level> or,
+--  @return if the name is not known, ID: <EnchantmentID> <Level>
+--  
+local function EnchantmentIDToString( EnchantmentID, Level )
+
+	local EnchantmentName
+
+	if EnchantmentInformation[EnchantmentID] then
+		EnchantmentName = EnchantmentInformation[EnchantmentID].Name
+	else
+		EnchantmentName = "ID: " .. tostring( EnchantmentID )
+	end
+
+	return format.string( "%s %d", EnchantmentName, Level )
+end
+
+
+--- Processes the Enchant command, checks the given options, 
+--  and enchants the selected players item if successful
+--  
+--  @return False with an error message if a probem occurs, 
+--  @return true with the name of the item enchanted and the enchantment name if successful
+--  
+local function EnchantItem( Split, Player )
+
+	local PlayerName = Split[2]
+	local lcPlayerName = string.lower(PlayerName)
+	local EnchantmentID = cEnchantments.StringToEnchantmentID( Split[3] )
+	local EnchantmentName
+	local Level = tonumber( Split[4] or 1 )
+	local EnforcedRestrictions = true
 	
-	if #Split ~= 3 then
-		SendMessage( Player, "Usage: '/enchant [Enchantment] [Level]'" )
+	if not Level then
+		return false, string.format( LevelNAN, Split[4] )
+	elseif Level == 0 then
+		return false, LevelIsZero
+	end
+	
+	-- Check if the enchantment was given as a string, and the string contained an unknown value
+	if EnchantmentID == -1 then
+		return false, string.format( UnknownEnchantment, Split[3] )
+	end
+	
+	EnchantmentName = EnchantmentIDToString( EnchantmentID, Level )
+	
+	-- If the enchantment was given as a number and its not known, process it, but let the user know that
+	if not EnchantmentInformation[ EnchantmentID ] then
+		-- Inform the caller and log that an unknown enchantment has been used, but continue
+		local Message = string.format( UnknownEnchantment, EnchantmentName )
+		if Player then
+			SendMessage( Player, Message )
+		end
+		LOG( string.format( ConsoleMessage, ( Player and Player:GetName() or "Console" ), Message ) )
+		EnforcedRestrictions = false
+	end
+
+	-- Place to hold any error messages generated by the DoEnchantment function
+	local ErrorMessage
+
+	--- Attempt to apply the selected enchantment to the targeted player's item
+	--  
+	--  @param NewPlayer The player targeted by the command
+	--  
+	--  @return true if successful, false otherwise
+	--  
+	local function DoEnchantment( NewPlayer )
+
+		-- Make sure that the names match
+		if string.lower( NewPlayer:GetName() ) ~= lcPlayerName then
+			return false
+		end
+
+		-- Make sure that the targeted player has an item selected
+		local Item = NewPlayer:GetEquippedItem()
+		if Item:IsEmpty() then
+			ErrorMessage = string.format( NoItemPresent, NewPlayer:GetName() )
+			return false
+		end
+
+		local ItemEnchantments = Item.m_Enchantments
+		local ItemType = Item.m_ItemType
+
+		-- At a minimum, make sure that the item is enchantable
+		if not cItem.IsEnchantable( ItemType, true ) then
+			ErrorMessage = string.format( ItemNotEnchantable, EnchantmentName )
+			return false
+		end
+
+		-- If the enchantment has known restrictions, then enforce them
+		if EnforcedRestrictions then
+
+			local EnchantInfo = EnchantmentInformation[ EnchantmentID ]
+
+			-- The selected item is not enchantable using the selected enchantment
+			if not EnchantInfo.ApplicableItems[ ItemType ] then
+				ErrorMessage = string.format( ItemNotEnchantable, EnchantmentName )
+				return false
+			end
+
+			-- If the chosen level is greater then the max enchant level, return false
+			local MaxLvl = EnchantInfo.MaxLevel
+			if Level > MaxLvl then
+				ErrorMessage = string.format( LevelTooHigh, Level, MaxLvl)
+				return false
+			end
+
+			-- Check if the selected item carries an incompatible enchantment
+			for _, IncoEnch in ipairs( EnchantInfo.CannotCombineWith ) do
+				local IncoEnchLvl = ItemEnchantments:GetLevel( IncoEnch )
+				if IncoEnchLvl ~= 0 then
+					ErrorMessage = string.format( IncompatableEnchantments, EnchantmentName, EnchantmentIDToString( IncoEnch, IncoEnchLvl ) )
+					return false
+				end
+			end
+			
+		end
+
+		ErrorMessage = ItemToString( Item )
+
+		-- Now, actually enchant the item
+		ItemEnchantments:SetLevel( EnchantmentID, Level )
+
 		return true
 	end
 	
+	-- Try to enchant the item
+	local Success = cRoot:Get():FindAndDoWithPlayer( PlayerName, DoEnchantment )
+	
+	if not Success and not ErrorMessage then
+		ErrorMessage = string.format( MessagePlayerFailure, PlayerName )
+	end
+
+	return Success, ErrorMessage, EnchantmentName
+end
+
+
+--- Handles the enchant in-game command
+--  Usage: /enchant <PlayerName> <EnchantmentID> [level]
+function HandleEnchantCommand( Split, Player )
+	
+	if #Split ~= 3 or #Split ~= 4 then
+		SendMessage( Player, string.format( EnchantCommandUsage, Split[1] ) )
+		return true
+	end
+	
+	local Result, ErrorMessage, Enchantment = EnchantItem( Split, Player )
+	
+	if not Result then
+		SendMessage( Player, ErrorMessage )
+	else
+		SendMessage( Player, MessageSuccess )
+		local MsgString = string.format( LogMessageSuccess, Enchantment, ErrorMessage, Split[2] )
+		LOG( string.format( ConsoleMessage, Player:GetName(), MsgString ) )
+	end
+
+--[[
 	local Item = Player:GetEquippedItem()
 	if Item:IsEmpty() then
 		SendMessageFailure(Player, "You haven't a item in the hand!")
@@ -31,7 +734,53 @@ function HandleEnchantCommand( Split, Player )
 	Inventory:SetHotbarSlot(SlotNumber, Item)
 	
 	SendMessageSuccess(Player, "Item successfully enchanted")
+-]]
 	
 	return true
 	
+end
+
+
+--- Handles the ienchant in-game command
+--  Usage: /ienchant <EnchantmentID> [level]
+function HandleIEnchantCommand( Split, Player )
+
+	if #Split ~= 2 or #Split ~= 3 then
+		SendMessage( Player, string.format( IEnchantCommandUsage, Split[1] ) )
+		return true
+	end
+	
+	table.insert( Split, 2, Player:GetName() )
+	
+	local Result, ErrorMessage, Enchantment = EnchantItem( Split, Player )
+	
+	if not Result then
+		SendMessage( Player, ErrorMessage )
+	else
+		SendMessage( Player, MessageSuccess )
+		local MsgString = string.format( LogMessageSuccess, Enchantment, ErrorMessage, Split[2] )
+		LOG( string.format( ConsoleMessage, Player:GetName(), MsgString ) )
+	end
+
+end
+
+
+--- Handles the enchant console command
+--  Usage: enchant <PlayerName> <EnchantmentID> [level]
+function HandleConsoleEnchant( Split )
+
+	if #Split ~= 3 or #Split ~= 4 then
+		LOG( string.format( EnchantCommandUsage, Split[1] ) )
+		return true
+	end
+	
+	local Result, ErrorMessage, Enchantment = EnchantItem( Split )
+	
+	if not Result then
+		LOG( ErrorMessage )
+	else
+		local MsgString = string.format( LogMessageSuccess, Enchantment, ErrorMessage, Split[2] )
+		LOG( string.format( ConsoleMessage, "Console", MsgString ) )
+	end
+
 end
