@@ -9,7 +9,7 @@ local enchDepthStrider = 8
 -- Table containing the properties of the various possible enchantments
 local EnchantmentInformation = {
 
-	[ enchProtection ] = {
+	[ cEnchantments.enchProtection ] = {
 		Name = "Protection",
 		MaxLevel = 4,
 		ApplicableItems = {
@@ -35,13 +35,13 @@ local EnchantmentInformation = {
 			[ E_ITEM_DIAMOND_BOOTS ]      = true,
 		},
 		CannotCombineWith = {
-			enchFireProtection,
-			enchBlastProtection,
-			enchProjectileProtection,
+			cEnchantments.enchFireProtection,
+			cEnchantments.enchBlastProtection,
+			cEnchantments.enchProjectileProtection,
 		},
 	},
 
-	[ enchFireProtection ] = {
+	[ cEnchantments.enchFireProtection ] = {
 		Name = "Fire Protection",
 		MaxLevel = 4,
 		ApplicableItems = {
@@ -67,13 +67,13 @@ local EnchantmentInformation = {
 			[ E_ITEM_DIAMOND_BOOTS ]      = true,
 		},
 		CannotCombineWith = {
-			enchProtection,
-			enchBlastProtection,
-			enchProjectileProtection,
+			cEnchantments.enchProtection,
+			cEnchantments.enchBlastProtection,
+			cEnchantments.enchProjectileProtection,
 		},
 	},
 
-	[ enchFeatherFalling ] = {
+	[ cEnchantments.enchFeatherFalling ] = {
 		Name = "Feather Falling",
 		MaxLevel = 4,
 		ApplicableItems = {
@@ -87,7 +87,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchBlastProtection ] = {
+	[ cEnchantments.enchBlastProtection ] = {
 		Name = "Blast Protection",
 		MaxLevel = 4,
 		ApplicableItems = {
@@ -113,13 +113,13 @@ local EnchantmentInformation = {
 			[ E_ITEM_DIAMOND_BOOTS ]      = true,
 		},
 		CannotCombineWith = {
-			enchFireProtection,
-			enchProtection,
-			enchProjectileProtection,
+			cEnchantments.enchFireProtection,
+			cEnchantments.enchProtection,
+			cEnchantments.enchProjectileProtection,
 		},
 	},
 
-	[ enchProjectileProtection ] = {
+	[ cEnchantments.enchProjectileProtection ] = {
 		Name = "Projectile Protection",
 		MaxLevel = 4,
 		ApplicableItems = {
@@ -145,13 +145,13 @@ local EnchantmentInformation = {
 			[ E_ITEM_DIAMOND_BOOTS ]      = true,
 		},
 		CannotCombineWith = {
-			enchFireProtection,
-			enchBlastProtection,
-			enchProtection,
+			cEnchantments.enchFireProtection,
+			cEnchantments.enchBlastProtection,
+			cEnchantments.enchProtection,
 		},
 	},
 
-	[ enchRespiration ] = {
+	[ cEnchantments.enchRespiration ] = {
 		Name = "Respiration",
 		MaxLevel = 3,
 		ApplicableItems = {
@@ -165,7 +165,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchAquaAffinity ] = {
+	[ cEnchantments.enchAquaAffinity ] = {
 		Name = "Aqua Affinity",
 		MaxLevel = 1,
 		ApplicableItems = {
@@ -179,7 +179,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchThorns ] = {
+	[ cEnchantments.enchThorns ] = {
 		Name = "Thorns",
 		MaxLevel = 3,
 		ApplicableItems = {
@@ -222,7 +222,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchSharpness ] = {
+	[ cEnchantments.enchSharpness ] = {
 		Name = "Sharpness",
 		MaxLevel = 5,
 		ApplicableItems = {
@@ -238,12 +238,12 @@ local EnchantmentInformation = {
 			[ E_ITEM_DIAMOND_AXE ]   = true,
 		},
 		CannotCombineWith = {
-			enchSmite,
-			enchBaneOfArthropods,
+			cEnchantments.enchSmite,
+			cEnchantments.enchBaneOfArthropods,
 		},
 	},
 
-	[ enchSmite ] = {
+	[ cEnchantments.enchSmite ] = {
 		Name = "Smite",
 		MaxLevel = 5,
 		ApplicableItems = {
@@ -259,12 +259,12 @@ local EnchantmentInformation = {
 			[ E_ITEM_DIAMOND_AXE ]   = true,
 		},
 		CannotCombineWith = {
-			enchSharpness,
-			enchBaneOfArthropods,
+			cEnchantments.enchSharpness,
+			cEnchantments.enchBaneOfArthropods,
 		},
 	},
 
-	[ enchBaneOfArthropods ] = {
+	[ cEnchantments.enchBaneOfArthropods ] = {
 		Name = "Bane of Arthropods",
 		MaxLevel = 5,
 		ApplicableItems = {
@@ -280,12 +280,12 @@ local EnchantmentInformation = {
 			[ E_ITEM_DIAMOND_AXE ]   = true,
 		},
 		CannotCombineWith = {
-			enchSharpness,
-			enchSmite,
+			cEnchantments.enchSharpness,
+			cEnchantments.enchSmite,
 		},
 	},
 
-	[ enchKnockback ] = {
+	[ cEnchantments.enchKnockback ] = {
 		Name = "Knockback",
 		MaxLevel = 2,
 		ApplicableItems = {
@@ -299,7 +299,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchFireAspect ] = {
+	[ cEnchantments.enchFireAspect ] = {
 		Name = "Fire Aspect",
 		MaxLevel = 2,
 		ApplicableItems = {
@@ -313,7 +313,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchLooting ] = {
+	[ cEnchantments.enchLooting ] = {
 		Name = "Looting",
 		MaxLevel = 3,
 		ApplicableItems = {
@@ -327,7 +327,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchEfficiency ] = {
+	[ cEnchantments.enchEfficiency ] = {
 		Name = "Efficiency",
 		MaxLevel = 5,
 		ApplicableItems = {
@@ -352,7 +352,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchSilkTouch ] = {
+	[ cEnchantments.enchSilkTouch ] = {
 		Name = "Silk Touch",
 		MaxLevel = 1,
 		ApplicableItems = {
@@ -374,11 +374,11 @@ local EnchantmentInformation = {
 			[ E_ITEM_SHEARS ]          = true,
 		},
 		CannotCombineWith = {
-			enchFortune,
+			cEnchantments.enchFortune,
 		},
 	},
 
-	[ enchUnbreaking ] = {
+	[ cEnchantments.enchUnbreaking ] = {
 		Name = "Unbreaking",
 		MaxLevel = 3,
 		ApplicableItems = {
@@ -444,7 +444,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchFortune ] = {
+	[ cEnchantments.enchFortune ] = {
 		Name = "Fortune",
 		MaxLevel = 3,
 		ApplicableItems = {
@@ -465,11 +465,11 @@ local EnchantmentInformation = {
 			[ E_ITEM_DIAMOND_AXE ]     = true,
 		},
 		CannotCombineWith = {
-			enchSilkTouch
+			cEnchantments.enchSilkTouch
 		},
 	},
 
-	[ enchPower ] = {
+	[ cEnchantments.enchPower ] = {
 		Name = "Power",
 		MaxLevel = 5,
 		ApplicableItems = {
@@ -479,7 +479,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchPunch ] = {
+	[ cEnchantments.enchPunch ] = {
 		Name = "Punch",
 		MaxLevel = 2,
 		ApplicableItems = {
@@ -489,7 +489,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchFlame ] = {
+	[ cEnchantments.enchFlame ] = {
 		Name = "Flame",
 		MaxLevel = 1,
 		ApplicableItems = {
@@ -499,7 +499,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchInfinity ] = {
+	[ cEnchantments.enchInfinity ] = {
 		Name = "Infinity",
 		MaxLevel = 1,
 		ApplicableItems = {
@@ -509,7 +509,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchLuckOfTheSea ] = {
+	[ cEnchantments.enchLuckOfTheSea ] = {
 		Name = "Luck of the Sea",
 		MaxLevel = 3,
 		ApplicableItems = {
@@ -519,7 +519,7 @@ local EnchantmentInformation = {
 		},
 	},
 
-	[ enchLure ] = {
+	[ cEnchantments.enchLure ] = {
 		Name = "Lure",
 		MaxLevel = 3,
 		ApplicableItems = {
@@ -543,6 +543,7 @@ local IncompatableEnchantments = "%s cannot be combined with %s"
 local NoItemPresent = "The player: %s doesn't have an item selected"
 local ConsoleMessage = "%s: %s"
 local MessagePlayerFailure = "Player \"%s\" not found"
+local MismatchedItemsError = "Player's currently selected item (%s) no longer matches previously selected item (%s)"
 local MessageSuccess = "Enchantment Successful"
 local LogMessageSuccess = "Applied the enchantment: %s to a %s held by player: %s"
 
@@ -565,7 +566,7 @@ local function EnchantmentIDToString( EnchantmentID, Level )
 		EnchantmentName = "ID: " .. tostring( EnchantmentID )
 	end
 
-	return format.string( "%s %d", EnchantmentName, Level )
+	return string.format( "%s %d", EnchantmentName, Level )
 end
 
 
@@ -579,7 +580,7 @@ local function EnchantItem( Split, Player )
 
 	local PlayerName = Split[2]
 	local lcPlayerName = string.lower(PlayerName)
-	local EnchantmentID = cEnchantments.StringToEnchantmentID( Split[3] )
+	local EnchantmentID = cEnchantments:StringToEnchantmentID( Split[3] )
 	local EnchantmentName
 	local Level = tonumber( Split[4] or 1 )
 	local EnforcedRestrictions = true
@@ -635,7 +636,7 @@ local function EnchantItem( Split, Player )
 		local ItemType = Item.m_ItemType
 
 		-- At a minimum, make sure that the item is enchantable
-		if not cItem.IsEnchantable( ItemType, true ) then
+		if not cItem:IsEnchantable( ItemType, true ) then
 			ErrorMessage = string.format( ItemNotEnchantable, EnchantmentName )
 			return false
 		end
@@ -669,10 +670,20 @@ local function EnchantItem( Split, Player )
 			
 		end
 
-		ErrorMessage = ItemToString( Item )
-
 		-- Now, actually enchant the item
 		ItemEnchantments:SetLevel( EnchantmentID, Level )
+		local Inventory = Player:GetInventory()
+		local SlotNumber = Inventory:GetEquippedSlotNum()
+		local CurrentSelItem = Inventory:GetHotbarSlot( SlotNumber )
+
+		-- Make sure that the item we give back is the same item is selected
+		if not CurrentSelItem:IsSameType( Item ) then
+			ErrorMessage = string.format( MismatchedItemsError, ItemToString( CurrentSelItem ), ItemToString( Item ) )
+			return false
+		end
+
+		ErrorMessage = ItemToString( Item )
+		Inventory:SetHotbarSlot( SlotNumber, Item )
 
 		return true
 	end
@@ -692,7 +703,7 @@ end
 --  Usage: /enchant <PlayerName> <EnchantmentID> [level]
 function HandleEnchantCommand( Split, Player )
 	
-	if #Split ~= 3 or #Split ~= 4 then
+	if not Split[3] then
 		SendMessage( Player, string.format( EnchantCommandUsage, Split[1] ) )
 		return true
 	end
@@ -745,7 +756,7 @@ end
 --  Usage: /ienchant <EnchantmentID> [level]
 function HandleIEnchantCommand( Split, Player )
 
-	if #Split ~= 2 or #Split ~= 3 then
+	if not Split[2] then
 		SendMessage( Player, string.format( IEnchantCommandUsage, Split[1] ) )
 		return true
 	end
@@ -762,6 +773,7 @@ function HandleIEnchantCommand( Split, Player )
 		LOG( string.format( ConsoleMessage, Player:GetName(), MsgString ) )
 	end
 
+	return true
 end
 
 
@@ -769,7 +781,7 @@ end
 --  Usage: enchant <PlayerName> <EnchantmentID> [level]
 function HandleConsoleEnchant( Split )
 
-	if #Split ~= 3 or #Split ~= 4 then
+	if not Split[3] then
 		LOG( string.format( EnchantCommandUsage, Split[1] ) )
 		return true
 	end
@@ -783,4 +795,5 @@ function HandleConsoleEnchant( Split )
 		LOG( string.format( ConsoleMessage, "Console", MsgString ) )
 	end
 
+	return true
 end
