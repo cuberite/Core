@@ -9,6 +9,8 @@ function OnCraftingNoRecipe(Player, Grid, Recipe)
 		for y = 0, Grid:GetHeight() - 1 do
 			local Item = Grid:GetItem(x, y)
 			if (Item.m_ItemType ~= E_ITEM_EMPTY) then
+				Item.x = x
+				Item.y = y
 				table.insert(Items, Item)
 			end
 		end
