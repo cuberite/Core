@@ -253,7 +253,7 @@ function HandleConsoleRank(a_Split)
 	cRoot:Get():ForEachPlayer(
 		function(a_CBPlayer)
 			if (a_CBPlayer:GetName() == PlayerName) then
-				a_CBPlayer:SendMessage("You were assigned the rank " .. NewRank .. " by the server console admin.")
+				a_CBPlayer:SendMessageInfo("You were assigned the rank " .. NewRank .. " by the server console")
 				a_CBPlayer:LoadRank()
 			end
 		end
@@ -379,7 +379,7 @@ function HandleConsoleUnrank(a_Split)
 	cRoot:Get():ForEachPlayer(
 		function(a_CBPlayer)
 			if (a_CBPlayer:GetName() == PlayerName) then
-				a_CBPlayer:SendMessage("You were unranked by the server console admin.")
+				a_CBPlayer:SendMessageInfo("You were unranked by the server console")
 				a_CBPlayer:LoadRank()
 			end
 		end
