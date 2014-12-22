@@ -53,6 +53,17 @@ g_PluginInfo =
 			Permission = "core.enchant",
 			Handler = HandleEnchantCommand,
 			HelpString = "Adds an enchantment to the specified player's held item",
+			ParameterCombinations =
+			{
+				{
+					Params = "PlayerName EnchantmentID",
+					Help = "Adds the specified enchantment to the specified player's currently held item",
+				},
+				{
+					Params = "PlayerName EnchantmentID level",
+					Help = "Adds the specified enchantment of the given level to the specified player's currently held item",
+				},
+			},
 		},
 
 		["/fly"] = 
@@ -118,7 +129,18 @@ g_PluginInfo =
 		{
 			Permission = "core.enchant.self",
 			Handler = HandleIEnchantCommand,
-			HelpString = "Adds an enchantment to the player's held item",
+			HelpString = "Add an enchantment to an item",
+			ParameterCombinations =
+			{
+				{
+					Params = "EnchantmentID",
+					Help = "Adds the specified enchantment to the currently held item",
+				},
+				{
+					Params = "EnchantmentID level",
+					Help = "Adds the specified enchantment of the given level to the currently held item",
+				},
+			},
 		},
 
 		["/item"] = 
@@ -669,6 +691,17 @@ g_PluginInfo =
 		{
 			Handler = HandleConsoleEnchant,
 			HelpString = "Adds an enchantment to the specified player's held item",
+			ParameterCombinations =
+			{
+				{
+					Params = "PlayerName EnchantmentID",
+					Help = "Adds the specified enchantment to the specified player's currently held item",
+				},
+				{
+					Params = "PlayerName EnchantmentID level",
+					Help = "Adds the specified enchantment of the given level to the specified player's currently held item",
+				},
+			},
 		},
 
 		["gamemode"] =
@@ -1072,7 +1105,7 @@ g_PluginInfo =
 
 		["core.enchant.self"] =
 		{
-			Description = "Allows players to add an enchantment to a their own held item",
+			Description = "Allows players to add an enchantment to their own held item",
 			RecommendedGroups = "admins",
 		},
 
