@@ -532,18 +532,18 @@ local EnchantmentInformation = {
 
 local EnchantCommandUsage = "Usage: %s <PlayerName> <Enchantment ID> [Level]"
 local IEnchantCommandUsage = "Usage: %s <Enchantment ID> [Level]"
-local UnknownEnchantment = "There is no known enchantment: %s"
+local UnknownEnchantment = "There is no known enchantment %s"
 local LevelNAN = "%s is not a number, level must be a number"
 local LevelIsZero = "Level must be greater than 0"
 local LevelTooHigh = "The level you have entered: %d is too high, it must be at most: %d"
-local ItemNotEnchantable = "The enchantment: %s cannot be used with the selected item"
+local ItemNotEnchantable = "The enchantment %s cannot be used with the selected item"
 local IncompatableEnchantments = "%s cannot be combined with %s"
-local NoItemPresent = "The player: %s doesn't have an item selected"
+local NoItemPresent = "The player %s doesn't have an item selected"
 local ConsoleMessage = "%s: %s"
-local MessagePlayerFailure = "Player \"%s\" not found"
+local MessagePlayerFailure = "Player %s not found"
 local MismatchedItemsError = "Player's currently selected item (%s) no longer matches previously selected item (%s)"
 local MessageSuccess = "Enchantment Successful"
-local LogMessageSuccess = "Applied the enchantment: %s to a %s held by player: %s"
+local LogMessageSuccess = "Applied the enchantment %s to a %s held by player %s"
 
 
 --- Converts the given enchantment ID to a string
