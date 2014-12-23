@@ -10,10 +10,12 @@ Implements some of the basic commands needed to run a simple server.
 |/clear | core.clear | Clear the inventory of a player|
 |/difficulty | core.difficulty | Change world's difficulty.|
 |/do | core.do | Runs a command as a player.|
+|/enchant | core.enchant | Adds an enchantment to the specified player's held item|
 |/fly | core.fly |  ~ Toggle fly|
 |/gamemode | core.changegm | Change your gamemode|
 |/give | core.give | Give someone an item|
 |/help | core.help | Show available commands|
+|/ienchant | core.enchant.self | Add an enchantment to an item|
 |/item | core.item | Give yourself an item.|
 |/kick | core.kick | Kick a player|
 |/kill | core.kill | Kill a player|
@@ -74,6 +76,8 @@ Implements some of the basic commands needed to run a simple server.
 | core.clear |  | `/clear` |  |
 | core.difficulty |  | `/difficulty` |  |
 | core.do |  | `/do` |  |
+| core.enchant | Allows players to add an enchantment to a player's held item | `/enchant` | admins |
+| core.enchant.self | Allows players to add an enchantment to their own held item | `/ienchant` | admins |
 | core.fly |  | `/fly` |  |
 | core.give | Allows players to give items to other players | `/give` | admins |
 | core.give.unsafe | Allows players to give items to other players, even if the item is blacklisted | `/unsafegive` | none |
