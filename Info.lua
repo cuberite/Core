@@ -47,7 +47,25 @@ g_PluginInfo =
 			Handler = HandleDifficultyCommand,
 			HelpString = "Change world's difficulty.",
 		},
-		
+
+		["/enchant"] = 
+		{
+			Permission = "core.enchant",
+			Handler = HandleEnchantCommand,
+			HelpString = "Adds an enchantment to the specified player's held item",
+			ParameterCombinations =
+			{
+				{
+					Params = "PlayerName EnchantmentID",
+					Help = "Adds the specified enchantment to the specified player's currently held item",
+				},
+				{
+					Params = "PlayerName EnchantmentID level",
+					Help = "Adds the specified enchantment of the given level to the specified player's currently held item",
+				},
+			},
+		},
+
 		["/fly"] = 
 		{
 			Permission = "core.fly",
@@ -105,6 +123,24 @@ g_PluginInfo =
 			Permission = "core.help",
 			Handler = HandleHelpCommand,
 			HelpString = "Show available commands",
+		},
+
+		["/ienchant"] = 
+		{
+			Permission = "core.enchant.self",
+			Handler = HandleIEnchantCommand,
+			HelpString = "Add an enchantment to an item",
+			ParameterCombinations =
+			{
+				{
+					Params = "EnchantmentID",
+					Help = "Adds the specified enchantment to the currently held item",
+				},
+				{
+					Params = "EnchantmentID level",
+					Help = "Adds the specified enchantment of the given level to the currently held item",
+				},
+			},
 		},
 
 		["/item"] = 
@@ -651,6 +687,23 @@ g_PluginInfo =
 			HelpString = "Clear a player's inventory",
 		},
 
+		["enchant"] = 
+		{
+			Handler = HandleConsoleEnchant,
+			HelpString = "Adds an enchantment to the specified player's held item",
+			ParameterCombinations =
+			{
+				{
+					Params = "PlayerName EnchantmentID",
+					Help = "Adds the specified enchantment to the specified player's currently held item",
+				},
+				{
+					Params = "PlayerName EnchantmentID level",
+					Help = "Adds the specified enchantment of the given level to the specified player's currently held item",
+				},
+			},
+		},
+
 		["gamemode"] =
 		{
 			Handler =  HandleConsoleGamemode,
@@ -1041,6 +1094,18 @@ g_PluginInfo =
 		["core.changegm"] =
 		{
 			Description = "Allows players to change gamemodes",
+			RecommendedGroups = "admins",
+		},
+
+		["core.enchant"] =
+		{
+			Description = "Allows players to add an enchantment to a player's held item",
+			RecommendedGroups = "admins",
+		},
+
+		["core.enchant.self"] =
+		{
+			Description = "Allows players to add an enchantment to their own held item",
 			RecommendedGroups = "admins",
 		},
 
