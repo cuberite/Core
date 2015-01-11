@@ -233,7 +233,14 @@ g_PluginInfo =
 			Handler = HandlePortalCommand,
 			HelpString = "Move to a different world",
 		},
-
+		
+        ["/r"] =
+        {
+            Permission =  "core.tell",
+            HelpString =  "Answer quickly to latest private message you recieved.",
+            Handler =  HandleRCommand,
+        },
+        
 		["/rank"] =
 		{
 			Permission = "core.rank",

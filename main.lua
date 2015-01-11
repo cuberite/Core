@@ -22,7 +22,7 @@ WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 WorldsWorldDifficulty = {}
 TpRequestTimeLimit = 0
-
+lastsender = {}
 
 
 
