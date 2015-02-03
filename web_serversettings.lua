@@ -388,6 +388,7 @@ function GetEasyWorldSettings(Request)
 		WorldIni:SetValueI("SpawnPosition", "Z", tonumber(Request.PostParams["Spawn_Z"]))
 		WorldIni:SetValueI("SpawnPosition", "MaxViewDistance", tonumber(Request.PostParams["Spawn_MaxViewDistance"]))
 		WorldIni:SetValueI("SpawnPosition", "PregenerateDistance", tonumber(Request.PostParams["Spawn_PregenerateDistance"]))
+		WorldIni:SetValueI("SpawnProtect", "ProtectRadius", tonumber(Request.PostParams["Spawn_ProtectionRadius"]))
 
 		WorldIni:SetValue("Storage", "Schema", Request.PostParams["Storage_Schema"])
 		WorldIni:SetValueI("Storage", "CompressionFactor", tonumber(Request.PostParams["Storage_CompressionFactor"]))
@@ -465,6 +466,8 @@ function GetEasyWorldSettings(Request)
 	<td>]] .. HTML_Select_Number("Spawn_MaxViewDistance", cClientHandle.MIN_VIEW_DISTANCE, cClientHandle.MAX_VIEW_DISTANCE, WorldIni:GetValueI("SpawnPosition", "MaxViewDistance")) .. [[</td></tr>
 	<tr><td>Pregenerate Distance:</td>
 	<td><input type="text" name="Spawn_PregenerateDistance" value="]] .. WorldIni:GetValue("SpawnPosition", "PregenerateDistance") .. [["></td></tr>
+	<tr><td>Protection Radius:</td>
+	<td><input type="text" name="Spawn_ProtectionRadius" value="]] .. WorldIni:GetValue("SpawnProtect", "ProtectRadius") .. [["></td></tr>
 
 	<th colspan="2">Storage</th>
 	<tr><td>Schema:</td>
