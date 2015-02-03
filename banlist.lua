@@ -248,7 +248,7 @@ function HandleBanCommand(a_Split, a_Player)
 
 	-- If the player supplied a reason, use that, else use a default reason.
 	if (a_Split[3] ~= nil) then
-		local Reason = table.concat(Split, " ", 3)
+		local Reason = table.concat(a_Split, " ", 3)
 	else
 		local Reason = "No reason."
 	end
@@ -257,10 +257,10 @@ function HandleBanCommand(a_Split, a_Player)
 	AddPlayerToBanlist(a_Split[2], Reason, a_Player:GetName());
 	
 	-- Try akd kick the banned player, and send an appropriated response to the banner.
-	if (KickPlayer(Split[2], Reason)) then
-		SendMessageSuccess(a_Player, "Successfully kicked and banned " .. Split[2])
+	if (KickPlayer(a_Split[2], Reason)) then
+		SendMessageSuccess(a_Player, "Successfully kicked and banned " .. a_Split[2])
 	else
-		SendMessageFailure(a_Player, "Successfully Banned " .. Split[2])
+		SendMessageFailure(a_Player, "Successfully Banned " .. a_Split[2])
 	end
 	
 	return true
