@@ -109,32 +109,26 @@ local ltError         = 4
 -- by further callbacks
 -- OnWebChat(Username, Message)
 function AddWebChatCallback(PluginName, FunctionName) 
-	
 	for k, v in pairs(OnWebChatCallbacks) do
 		if v[1] == PluginName and v[2] == FunctionName then
 			return false
 		end
 	end
-	
 	table.insert(OnWebChatCallbacks, {PluginName, FunctionName})
 	return true
 end
 
 -- Removes webchat callback
 function RemoveWebChatCallback(PluginName, FunctionName) 
-	
-	local i=1
-	while i <= #OnWebChatCallbacks do
+	local i = #OnWebChatCallbacks
+	while i > 0  do
 		if OnWebChatCallbacks[i][1] == PluginName and OnWebChatCallbacks[i][2] == FunctionName then
 			table.remove(OnWebChatCallbacks, i)
 			return true
-		else
-			i = i + 1
 		end
+		i = i - 1
 	end
-	
 	return false
-	
 end
 
 
