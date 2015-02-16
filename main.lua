@@ -30,7 +30,7 @@ lastsender = {}
 -- Called by MCServer on plugin start to initialize the plugin
 function Initialize(Plugin)
 	Plugin:SetName( "Core" )
-	Plugin:SetVersion( 14 )
+	Plugin:SetVersion( 15 )
 
 	-- Register for all hooks needed
 	cPluginManager:AddHook(cPluginManager.HOOK_CHAT,                  OnChat)
