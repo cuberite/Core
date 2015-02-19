@@ -120,13 +120,11 @@ end
 
 -- Removes webchat callback
 function RemoveWebChatCallback(PluginName, FunctionName) 
-	local i = #OnWebChatCallbacks
-	while i > 0  do
+	for i = #OnWebChatCallbacks, 0, -1 do
 		if OnWebChatCallbacks[i][1] == PluginName and OnWebChatCallbacks[i][2] == FunctionName then
 			table.remove(OnWebChatCallbacks, i)
 			return true
 		end
-		i = i - 1
 	end
 	return false
 end
