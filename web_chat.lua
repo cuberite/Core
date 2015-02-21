@@ -95,7 +95,7 @@ local JavaScript = [[
 		
 	</script>
 ]]
--- Plugin name, function name --
+-- Array of {PluginName, FunctionName} tables
 local OnWebChatCallbacks = {}
 local ChatLogMessages = {}
 local WebCommands     = {}
