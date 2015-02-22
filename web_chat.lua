@@ -95,7 +95,8 @@ local JavaScript = [[
 		
 	</script>
 ]]
-
+-- Array of {PluginName, FunctionName} tables
+local OnWebChatCallbacks = {}
 local ChatLogMessages = {}
 local WebCommands     = {}
 local ltNormal        = 1
@@ -103,8 +104,30 @@ local ltInfo          = 2
 local ltWarning       = 3
 local ltError         = 4
 
+-- Adds Webchat callback, plugins can return true to 
+-- prevent message from appearing / being processed
+-- by further callbacks
+-- OnWebChat(Username, Message)
+function AddWebChatCallback(PluginName, FunctionName) 
+	for k, v in pairs(OnWebChatCallbacks) do
+		if v[1] == PluginName and v[2] == FunctionName then
+			return false
+		end
+	end
+	table.insert(OnWebChatCallbacks, {PluginName, FunctionName})
+	return true
+end
 
-
+-- Removes webchat callback
+function RemoveWebChatCallback(PluginName, FunctionName) 
+	for i = #OnWebChatCallbacks, 0, -1 do
+		if OnWebChatCallbacks[i][1] == PluginName and OnWebChatCallbacks[i][2] == FunctionName then
+			table.remove(OnWebChatCallbacks, i)
+			return true
+		end
+	end
+	return false
+end
 
 
 -- Checks the chatlogs to see if the size gets too big.
@@ -306,10 +329,15 @@ function HandleRequest_Chat( Request )
 		end
 		
 		-- Broadcast the message to the server
-		cRoot:Get():BroadcastChat(cCompositeChat("[Web-" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"]):UnderlineUrls())
+		for k, v in pairs(OnWebChatCallbacks) do
+			if cPluginManager:CallPlugin(v[1], v[2], Request.Username, Request.PostParams["ChatMessage"]) then
+				return ""
+			end
+		end
+		cRoot:Get():BroadcastChat(cCompositeChat("[WEB] <" .. Request.Username .. "> " .. Request.PostParams["ChatMessage"]):UnderlineUrls())
 		
 		-- Add the message to the chatlog
-		WEBLOG("[Web-" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"])
+		WEBLOG("[WEB] [" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"])
 		return ""
 	end
 
