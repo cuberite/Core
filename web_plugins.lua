@@ -131,7 +131,7 @@ local function ListCurrentPlugins(EnabledPlugins)
 				ins(res, name)
 				ins(res, '"><input type="submit" name="MoveUp" value="Move Up"></form></td>')
 			end
-			ins(res, [[</td><td>]])
+			ins(res, [[<td>]])
 			if (idx == Num) then
 				ins(res, '<button type="button" disabled>Move Down</button></td>')
 			else
@@ -218,6 +218,7 @@ local function EnablePlugin(SettingsIni, PluginName, EnabledPlugins)
 	-- Add the plugin to the end of the list, save:
 	table.insert(EnabledPlugins, PluginName)
 	SaveEnabledPlugins(SettingsIni, EnabledPlugins)
+	return true
 end
 
 
@@ -261,11 +262,11 @@ local function ProcessRequestActions(SettingsIni, Request, EnabledPlugins)
 	
 	if (Request.PostParams["DisablePlugin"] ~= nil) then
 		if (DisablePlugin(SettingsIni, PluginName, EnabledPlugins)) then
-			return '<td><p style="color: green;"><b>You disabled plugin: "' .. PluginName .. '"</b></p>'
+			return '<p style="color: green;"><b>You disabled plugin: "' .. PluginName .. '"</b></p>'
 		end
 	elseif (Request.PostParams["EnablePlugin"] ~= nil) then
 		if (EnablePlugin(SettingsIni, PluginName, EnabledPlugins)) then
-			return '<td><p style="color: green;"><b>You enabled plugin: "' .. PluginName .. '"</b></p>'
+			return '<p style="color: green;"><b>You enabled plugin: "' .. PluginName .. '"</b></p>'
 		end
 	elseif (Request.PostParams["MoveUp"] ~= nil) then
 		MovePlugin(SettingsIni, PluginName, -1, EnabledPlugins)
