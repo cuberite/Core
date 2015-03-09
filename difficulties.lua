@@ -80,6 +80,7 @@ local IsEntityBlockedInPeaceful =
 	["cZombie"]       = true,
 	["cZombiePigman"] = true,
 	["cSpider"]       = true,
+	["cCaveSpider"]       = true,
 	["cEnderman"]     = true,
 	["cEnderDragon"]  = true,
 	["cSkeleton"]     = true,
@@ -94,8 +95,9 @@ local IsEntityBlockedInPeaceful =
 }
 
 function OnSpawningEntity(World, Entity)
-	if (GetWorldDifficulty(World) == 0) then
-		return IsEntityBlockedInPeaceful[Entity:GetClass()]
+	local Ent = tolua.cast(Entity, "cEntity")
+	if (GetWorldDifficulty(World) == 0 and Ent:IsMob() == true) then
+		return IsEntityBlockedInPeaceful[Ent:GetClass()]
 	end
 	return false
 end
