@@ -662,7 +662,7 @@ g_PluginInfo =
 		
 		["tps"] =
 		{
-			Handler =  HandleTpsCommand,
+			Handler =  HandleConsoleTps,
 			HelpString =  " - Returns the tps (ticks per second) from the server.",
 		},
 
@@ -739,7 +739,7 @@ g_PluginInfo =
 
 		["give"] =
 		{
-			Handler =  HandleGiveCommand,
+			Handler =  HandleConsoleGive,
 			HelpString = "Gives items to the specified player.",
 			ParameterCombinations = 
 			{
@@ -958,7 +958,7 @@ g_PluginInfo =
 
 		["toggledownfall"] =
 		{
-			Handler = HandleDownfallCommand,
+			Handler = HandleConsoleDownfall,
 			HelpString = "Toggles the weather between clear skies and rain",
 			ParameterCombinations =
 			{
@@ -1001,7 +1001,7 @@ g_PluginInfo =
 		
 		["unsafegive"] =
 		{
-			Handler =  HandleUnsafeGiveCommand,
+			Handler =  HandleConsoleUnsafeGive,
 			HelpString = "Gives items to the specified player, even if its blacklisted.",
 			ParameterCombinations = 
 			{
@@ -1026,7 +1026,7 @@ g_PluginInfo =
 		
 		["weather"] =
 		{
-			Handler =  HandleWeatherCommand,
+			Handler =  HandleConsoleWeather,
 			HelpString = "Change world's weather",
 			ParameterCombinations =
 			{

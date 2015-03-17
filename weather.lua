@@ -31,6 +31,14 @@ local WeatherUsage        = "Usage: /weather <clear|rain|thunder> [duration in s
 local WeatherConsoleUsage = "Usage: weather <clear|rain|thunder> [duration in seconds] [WorldName]"
 
 
+--- Handle the weather console command, wrapper for HandleWeatherCommand
+--  Necessary due to MCServer now supplying additional parameters
+--  
+function HandleConsoleWeather( Split )
+	return HandleWeatherCommand( Split )
+end
+
+
 --- Handles In-game and Console `weather` commands
 -- 
 --  @param Player is nil when called by console command
@@ -79,6 +87,14 @@ function HandleWeatherCommand( Split, Player )
 	LOG( Message .. " by: " .. Byline )
 
 	return true
+end
+
+
+--- Handle the downfall console command, wrapper for HandleGiveCommand
+--  Necessary due to MCServer now supplying additional parameters
+--  
+function HandleConsoleDownfall( Split )
+	return HandleDownfallCommand( Split )
 end
 
 
