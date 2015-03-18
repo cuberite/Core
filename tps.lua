@@ -5,7 +5,7 @@ GlobalTps = {}
 --- Handles console tps command, wrapper to HandleTpsCommand function
 --  Necessary due to MCServer now supplying additional parameters
 --  
-function HandleConsoleTps(Split)
+function HandleConsoleTps(Split, FullCmd)
 	return HandleTpsCommand(Split)
 end
 

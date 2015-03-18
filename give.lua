@@ -353,7 +353,7 @@ end
 --- Handle the give console command, wrapper for HandleGiveCommand
 --  Necessary due to MCServer now supplying additional parameters
 --  
-function HandleConsoleGive( Split )
+function HandleConsoleGive( Split, FullCmd )
 	return HandleGiveCommand( Split )
 end
 
@@ -379,7 +379,7 @@ end
 --- Handle the unsafegive console command, wrapper for HandleUnsafeGiveCommand
 --  Necessary due to MCServer now supplying additional parameters
 --  
-function HandleConsoleUnsafeGive( Split )
+function HandleConsoleUnsafeGive( Split, FullCmd )
 	return HandleUnsafeGiveCommand( Split )
 end
 
