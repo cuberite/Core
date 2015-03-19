@@ -350,6 +350,14 @@ local function GiveItemCommand( Split, Player, SafeCommand )
 end
 
 
+--- Handle the give console command, wrapper for HandleGiveCommand
+--  Necessary due to MCServer now supplying additional parameters
+--  
+function HandleConsoleGive( Split, FullCmd )
+	return HandleGiveCommand( Split )
+end
+
+
 --- Handle the `give` console and in-game command
 --  Usage: give <PlayerName> <item> [amount] [data] [dataTag]
 --  
@@ -365,6 +373,14 @@ function HandleGiveCommand( Split, Player )
 	end
 
 	return true
+end
+
+
+--- Handle the unsafegive console command, wrapper for HandleUnsafeGiveCommand
+--  Necessary due to MCServer now supplying additional parameters
+--  
+function HandleConsoleUnsafeGive( Split, FullCmd )
+	return HandleUnsafeGiveCommand( Split )
 end
 
 
