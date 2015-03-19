@@ -95,9 +95,8 @@ local IsEntityBlockedInPeaceful =
 }
 
 function OnSpawningEntity(World, Entity)
-	local Ent = tolua.cast(Entity, "cEntity")
-	if (GetWorldDifficulty(World) == 0 and Ent:IsMob() == true) then
-		return IsEntityBlockedInPeaceful[Ent:GetClass()]
+	if GetWorldDifficulty(World) == 0 then
+		return IsEntityBlockedInPeaceful[Entity:GetClass()]
 	end
 	return false
 end
