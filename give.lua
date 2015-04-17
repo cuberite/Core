@@ -483,12 +483,12 @@ function IntializeItemBlacklist( Plugin )
 		[E_BLOCK_CAKE]                     = true,
 		[E_BLOCK_END_PORTAL]               = true,
 		[E_BLOCK_NETHER_PORTAL]            = true,
+		[E_BLOCK_FIRE]                     = true,
 		[E_BLOCK_DOUBLE_NEW_STONE_SLAB]    = true,
 		[E_BLOCK_DOUBLE_WOODEN_SLAB]       = true,
 		[E_BLOCK_DOUBLE_STONE_SLAB]        = true,
 		[E_BLOCK_WALL_BANNER]              = true,
 		[E_BLOCK_STANDING_BANNER]          = true,
-		[E_BLOCK_FIRE]                     = true,
 	}
 
 	-- First, try to open the Item BlackList file if it exists
