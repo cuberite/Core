@@ -74,92 +74,126 @@ end
 
 
 
---- Builds an HTML table containing the list of plugins
--- First the loaded plugins are listed in their load order
--- Then any plugins that are enabled but failed to load are listed alphabetically
--- Finally an alpha-sorted list of the disabled plugins
-local function ListCurrentPlugins(EnabledPlugins)
+--- Returns the lists of Enabled and Disabled plugins
+-- Each list's item is a table describing the plugin - has Name, Folder, Status and LoadError
+-- a_EnabledPluginFolders is an array of strings read from settings.ini listing the enabled plugins in their load order
+local function GetPluginLists(a_EnabledPluginFolders)
+	-- Convert a_EnabledPluginFolders into a map {Folder -> true}:
+	local EnabledPluginFolderMap = {}
+	for _, folder in ipairs(a_EnabledPluginFolders) do
+		EnabledPluginFolderMap[folder] = true
+	end
+	
 	-- Retrieve a map of all known plugins:
 	local PM = cPluginManager:Get()
-	PM:FindPlugins()
-	local PluginMap = PM:GetAllPlugins()
-	
-	-- Separate all enabled but not loaded plugins into ErrorPlugins array
-	-- Put all successfully loaded plugins to LoadedPlugins array
-	-- Also remove the enabled plugins from PluginList
-	local ErrorPlugins = {}
-	local LoadedPlugins = {}
-	for idx, name in ipairs(EnabledPlugins) do
-		if not(PluginMap[name]) then
-			table.insert(ErrorPlugins, name)
-		else
-			table.insert(LoadedPlugins, name)
+	PM:RefreshPluginList()
+	local Plugins = {}  -- map {PluginFolder -> plugin}
+	PM:ForEachPlugin(
+		function (a_CBPlugin)
+			local plugin =
+			{
+				Name = a_CBPlugin:GetName(),
+				Folder = a_CBPlugin:GetFolderName(),
+				Status = a_CBPlugin:GetStatus(),
+				LoadError = a_CBPlugin:GetLoadError()
+			}
+			Plugins[plugin.Folder] = plugin
 		end
-		PluginMap[name] = nil
+	)
+	
+	-- Process the information about enabled plugins:
+	local EnabledPlugins = {}
+	for _, plgFolder in ipairs(a_EnabledPluginFolders) do
+		table.insert(EnabledPlugins, Plugins[plgFolder])
 	end
 	
-	-- Put all known but not enabled plugins into DisabledPlugins array
+	-- Pick up all the disabled plugins:
 	local DisabledPlugins = {}
-	for name, plugin in pairs(PluginMap) do
-		table.insert(DisabledPlugins, name)
+	for folder, plugin in pairs(Plugins) do
+		if not(EnabledPluginFolderMap[folder]) then
+			table.insert(DisabledPlugins, plugin)
+		end
 	end
 	
-	-- Sort the plugin arrays:
-	table.sort(ErrorPlugins)
-	table.sort(DisabledPlugins)
-	-- Do NOT sort LoadedPlugins - we want them listed in their load order instead!
+	-- Sort the disabled plugin array:
+	table.sort(DisabledPlugins,
+		function (a_Plugin1, a_Plugin2)
+			return (string.lower(a_Plugin1.Folder) < string.lower(a_Plugin2.Folder))
+		end
+	)
+	-- Do NOT sort EnabledPlugins - we want them listed in their load order instead!
 	
-	-- Output the LoadedPlugins table:
+	return EnabledPlugins, DisabledPlugins
+end
+
+
+
+
+
+--- Builds an HTML table containing the list of plugins
+-- First the enabled plugins are listed in their load order. If any is manually unloaded or errored, it is marked as such.
+-- Then an alpha-sorted list of the disabled plugins
+local function ListCurrentPlugins(a_EnabledPluginFolders)
+	local EnabledPlugins, DisabledPlugins = GetPluginLists(a_EnabledPluginFolders)
+	
+	-- Output the EnabledPlugins table:
 	local res = {}
 	local ins = table.insert
-	if (#LoadedPlugins > 0) then
+	if (#EnabledPlugins > 0) then
 		ins(res, [[
-			<h4>Loaded plugins</h4>
-			<p>These plugins have been successfully initialized and are currently running.</p>
+			<h4>Enabled plugins</h4>
+			<p>These plugins are enabled in the server settings:</p>
 			<table>
 			]]
 		);
-		local Num = #LoadedPlugins
-		for idx, name in pairs(LoadedPlugins) do
-			ins(res, [[<tr><td width="100%">]])
-			ins(res, name)
-			ins(res, [[</td><td>]])
+		local Num = #EnabledPlugins
+		for idx, plugin in pairs(EnabledPlugins) do
+			-- Move and Disable buttons:
+			ins(res, "<tr><td>")
 			if (idx == 1) then
 				ins(res, [[<button type="button" disabled>Move Up</button> </td>]])
 			else
-				ins(res, '<form method="POST"><input type="hidden" name="PluginName" value="')
-				ins(res, name)
+				ins(res, '<form method="POST"><input type="hidden" name="PluginFolder" value="')
+				ins(res, plugin.Folder)
 				ins(res, '"><input type="submit" name="MoveUp" value="Move Up"></form></td>')
 			end
 			ins(res, [[<td>]])
 			if (idx == Num) then
 				ins(res, '<button type="button" disabled>Move Down</button></td>')
 			else
-				ins(res, '<form method="POST"><input type="hidden" name="PluginName" value="')
-				ins(res, name)
+				ins(res, '<form method="POST"><input type="hidden" name="PluginFolder" value="')
+				ins(res, plugin.Folder)
 				ins(res, '"><input type="submit" name="MoveDown" value="Move Down"></form></td>')
 			end
-			ins(res, '<td><form method="POST"><input type="hidden" name="PluginName" value="')
-			ins(res, name)
-			ins(res, '"><input type="submit" name="DisablePlugin" value="Disable"></form></td></tr>')
-		end
-		ins(res, "</table><br />")
-	end
-	
-	-- Output ErrorPlugins table:
-	if (#ErrorPlugins > 0) then
-		ins(res, [[
-			<hr /><h4>Errors</h4>
-			<p>These plugins are configured to run, but encountered a problem during their initialization.
-			MCServer disabled them temporarily and will try reloading them next time.</p>
-			<table>]]
-		)
-		for idx, name in ipairs(ErrorPlugins) do
-			ins(res, "<tr><td width=\"100%\">")
-			ins(res, name)
-			ins(res, "</td><td><form method='POST'><input type='hidden' name='PluginName' value='")
-			ins(res, name)
-			ins(res, "'><input type='submit' name='DisablePlugin' value='Disable'></form></td></tr>")
+			ins(res, '<td><form method="POST"><input type="hidden" name="PluginFolder" value="')
+			ins(res, plugin.Folder)
+			ins(res, '"><input type="submit" name="DisablePlugin" value="Disable"></form></td>')
+
+			-- Plugin name and, if different, folder:
+			ins(res, "<td nowrap>")
+			ins(res, plugin.Folder)
+			if (plugin.Folder ~= plugin.Name) then
+				ins(res, " (API name ")
+				ins(res, plugin.Name)
+				ins(res, ")")
+			end
+			
+			-- Plugin status, if not psLoaded:
+			ins(res, "</td><td width='100%'>")
+			if (plugin.Status == cPluginManager.psUnloaded) then
+				ins(res, "<i>(currently unloaded)</i>")
+			elseif (plugin.Status == cPluginManager.psNotFound) then
+				ins(res, "<i>(files missing on disk)</i>")
+			elseif (plugin.Status == cPluginManager.psError) then
+				ins(res, "<b style='color: red'>")
+				if ((plugin.LoadError == nil) or (plugin.LoadError == "")) then
+					ins(res, "Unknown load error")
+				else
+					ins(res, plugin.LoadError)
+				end
+				ins(res, "</b>")
+			end
+			ins(res, "</td></tr>")
 		end
 		ins(res, "</table><br />")
 	end
@@ -170,12 +204,12 @@ local function ListCurrentPlugins(EnabledPlugins)
 			<p>These plugins are installed, but are disabled in the configuration.</p>
 			<table>]]
 		)
-		for idx, name in ipairs(DisabledPlugins) do
-			ins(res, "<tr><td width=\"100%\">")
-			ins(res, name)
-			ins(res, '</td><td><form method="POST"><input type="hidden" name="PluginName" value="')
-			ins(res, name)
-			ins(res, '"><input type="submit" name="EnablePlugin" value="Enable"></form></td></tr>')
+		for idx, plugin in ipairs(DisabledPlugins) do
+			ins(res, '<tr><td><form method="POST"><input type="hidden" name="PluginFolder" value="')
+			ins(res, plugin.Folder)
+			ins(res, '"><input type="submit" name="EnablePlugin" value="Enable"></form></td><td width=\"100%\">')
+			ins(res, plugin.Name)
+			ins(res, "</td></tr>")
 		end
 		ins(res, "</table><br />")
 	end
@@ -188,13 +222,13 @@ end
 
 
 --- Disables the specified plugin
--- Saves the new set of enabled plugins into SettingsIni
+-- Saves the new set of enabled plugins into a_SettingsIni
 -- Returns true if the plugin was disabled
-local function DisablePlugin(SettingsIni, PluginName, EnabledPlugins)
-	for idx, name in ipairs(EnabledPlugins) do
-		if (name == PluginName) then
-			table.remove(EnabledPlugins, idx)
-			SaveEnabledPlugins(SettingsIni, EnabledPlugins)
+local function DisablePlugin(a_SettingsIni, a_PluginFolder, a_EnabledPlugins)
+	for idx, name in ipairs(a_EnabledPlugins) do
+		if (name == a_PluginFolder) then
+			table.remove(a_EnabledPlugins, idx)
+			SaveEnabledPlugins(a_SettingsIni, a_EnabledPlugins)
 			return true
 		end
 	end
@@ -254,24 +288,24 @@ end
 -- Modifies EnabledPlugins directly to reflect the action
 -- Returns the notification text to be displayed at the top of the page
 local function ProcessRequestActions(SettingsIni, Request, EnabledPlugins)
-	local PluginName = Request.PostParams["PluginName"];
-	if (PluginName == nil) then
-		-- No PluginName was provided, so there's no action to perform
+	local PluginFolder = Request.PostParams["PluginFolder"]
+	if (PluginFolder == nil) then
+		-- PluginFolder was not provided, so there's no action to perform
 		return
 	end
 	
 	if (Request.PostParams["DisablePlugin"] ~= nil) then
-		if (DisablePlugin(SettingsIni, PluginName, EnabledPlugins)) then
-			return '<p style="color: green;"><b>You disabled plugin: "' .. PluginName .. '"</b></p>'
+		if (DisablePlugin(SettingsIni, PluginFolder, EnabledPlugins)) then
+			return '<p style="color: green;"><b>You disabled plugin: "' .. PluginFolder .. '"</b></p>'
 		end
 	elseif (Request.PostParams["EnablePlugin"] ~= nil) then
-		if (EnablePlugin(SettingsIni, PluginName, EnabledPlugins)) then
-			return '<p style="color: green;"><b>You enabled plugin: "' .. PluginName .. '"</b></p>'
+		if (EnablePlugin(SettingsIni, PluginFolder, EnabledPlugins)) then
+			return '<p style="color: green;"><b>You enabled plugin: "' .. PluginFolder .. '"</b></p>'
 		end
 	elseif (Request.PostParams["MoveUp"] ~= nil) then
-		MovePlugin(SettingsIni, PluginName, -1, EnabledPlugins)
+		MovePlugin(SettingsIni, PluginFolder, -1, EnabledPlugins)
 	elseif (Request.PostParams["MoveDown"] ~= nil) then
-		MovePlugin(SettingsIni, PluginName,  1, EnabledPlugins)
+		MovePlugin(SettingsIni, PluginFolder,  1, EnabledPlugins)
 	end
 end
 
