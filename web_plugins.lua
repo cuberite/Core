@@ -118,7 +118,7 @@ local function GetPluginLists(a_EnabledPluginFolders)
 	-- Sort the disabled plugin array:
 	table.sort(DisabledPlugins,
 		function (a_Plugin1, a_Plugin2)
-			return (a_Plugin1.Name < a_Plugin2.Name)
+			return (string.lower(a_Plugin1.Folder) < string.lower(a_Plugin2.Folder))
 		end
 	)
 	-- Do NOT sort EnabledPlugins - we want them listed in their load order instead!

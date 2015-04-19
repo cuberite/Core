@@ -207,7 +207,7 @@ function HandleConsolePlugins(Split)
 	)
 	table.sort(PluginTable,
 		function (a_Plugin1, a_Plugin2)
-			return (a_Plugin1.Name < a_Plugin2.Name)
+			return (string.lower(a_Plugin1.Folder) < string.lower(a_Plugin2.Folder))
 		end
 	)
 	
