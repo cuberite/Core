@@ -191,19 +191,60 @@ end
 
 
 function HandleConsolePlugins(Split)
-	local PluginManager = cRoot:Get():GetPluginManager()
-	local PluginList = PluginManager:GetAllPlugins()
-
+	-- Enumerate the plugins:
 	local PluginTable = {}
-	for k, Plugin in pairs(PluginList) do
-		if Plugin then
-			table.insert(PluginTable, Plugin:GetName())
+	cPluginManager:Get():ForEachPlugin(
+		function (a_CBPlugin)
+			table.insert(PluginTable,
+				{
+					Name = a_CBPlugin:GetName(),
+					Folder = a_CBPlugin:GetFolderName(),
+					Status = a_CBPlugin:GetStatus(),
+					LoadError = a_CBPlugin:GetLoadError()
+				}
+			)
 		end
+	)
+	table.sort(PluginTable,
+		function (a_Plugin1, a_Plugin2)
+			return (a_Plugin1.Name < a_Plugin2.Name)
+		end
+	)
+	
+	-- Prepare a translation table for the status:
+	local StatusName =
+	{
+		[cPluginManager.psLoaded]   = "Loaded  ",
+		[cPluginManager.psUnloaded] = "Unloaded",
+		[cPluginManager.psError]    = "Error   ",
+		[cPluginManager.psNotFound] = "NotFound",
+		[cPluginManager.psDisabled] = "Disabled",
+	}
+	
+	-- Generate the output:
+	local Out = {}
+	table.insert(Out, "There are ")
+	table.insert(Out, #PluginTable)
+	table.insert(Out, " plugins, ")
+	table.insert(Out, cPluginManager:Get():GetNumLoadedPlugins())
+	table.insert(Out, " loaded:\n")
+	for _, plg in ipairs(PluginTable) do
+		table.insert(Out, "  ")
+		table.insert(Out, StatusName[plg.Status] or "        ")
+		table.insert(Out, " ")
+		table.insert(Out, plg.Folder)
+		if (plg.Name ~= plg.Folder) then
+			table.insert(Out, " (API name ")
+			table.insert(Out, plg.Name)
+			table.insert(Out, ")")
+		end
+		if (plg.Status == cPluginManager.psError) then
+			table.insert(Out, " ERROR: ")
+			table.insert(Out, plg.LoadError or "<unknown>")
+		end
+		table.insert(Out, "\n")
 	end
-	table.sort(PluginTable)
-
-	local Out = "There are " .. #PluginTable .. " loaded plugins: " .. table.concat(PluginTable, ", ")
-	return true, Out
+	return true, table.concat(Out, "")
 end
 
 
