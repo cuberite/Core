@@ -205,7 +205,7 @@ local function ShowMainRanksPage(a_Request)
 	--ins(Page, "</td><td><input type='submit' name='EditDefaultRank' value='Edit' /></td></tr></table>")
 	ins(Page, "<form method='POST'><b>Default rank:</b> ")
 	ins(Page, GetRankList(cRankManager:GetDefaultRank()))
-	ins(Page, "<input type='submit' name='EditDefaultRank' value='Edit' />")
+	ins(Page, "<input type='submit' name='EditDefaultRank' value='Set' />")
 	ins(Page, "<input type='hidden' name='subpage' value='editdefaultrank' /></form>")
 	
 	-- Return the entire concatenated string:
