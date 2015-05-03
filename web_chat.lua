@@ -268,7 +268,7 @@ local function ParseMessage(a_Message)
 		return '<a href="' .. a_Url .. '" target="_blank">' .. a_Url .. '</a>'
 	end
 	
-	a_Message = a_Message:gsub("<", "&lt;"):gsub(">", "&gt;")
+	a_Message = a_Message:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("=", "&#61;"):gsub('"', 	"&#34;"):gsub("'", "&#39;"):gsub("&", "&amp;")
 	a_Message = a_Message:gsub('http://[^%s]+', PlaceString):gsub('https://[^%s]+', PlaceString)
 	return a_Message
 end
