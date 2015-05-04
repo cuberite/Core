@@ -260,13 +260,17 @@ end
 
 
 
---- Replaces http and https links with HTML links
+--- Removes html tags
+--- Creates a tag when http(s) links are send.
 --- It does this by selecting all the characters between "http(s)://" and a space, and puts an anker tag around it.
-local function CheckForLinks(a_Message)
+local function ParseMessage(a_Message)
 	local function PlaceString(a_Url)
 		return '<a href="' .. a_Url .. '" target="_blank">' .. a_Url .. '</a>'
 	end
-	return a_Message:gsub('http://[^%s]+', PlaceString):gsub('https://[^%s]+', PlaceString)
+	
+	a_Message = a_Message:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("=", "&#61;"):gsub('"', 	"&#34;"):gsub("'", "&#39;"):gsub("&", "&amp;")
+	a_Message = a_Message:gsub('http://[^%s]+', PlaceString):gsub('https://[^%s]+', PlaceString)
+	return a_Message
 end
 
 
@@ -283,7 +287,7 @@ function HandleRequest_Chat( Request )
 		for key, MessageInfo in pairs(ChatLogMessages) do 
 			if( MessageInfo.id > LastIdx ) then
 				if (not MessageInfo.webuser or (MessageInfo.webuser == Request.Username)) then
-					local Message = MessageInfo.timestamp .. ' ' .. CheckForLinks(MessageInfo.message)
+					local Message = MessageInfo.timestamp .. ' ' .. ParseMessage(MessageInfo.message)
 					if (MessageInfo.logtype == ltNormal) then
 						Content = Content .. Message .. "<br />"
 					elseif (MessageInfo.logtype == ltInfo) then
