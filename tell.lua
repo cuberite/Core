@@ -8,16 +8,14 @@ function HandleTellCommand(Split, Player)
 	
 	local SendMessage = function(OtherPlayer)
 	
-		if (OtherPlayer:GetName() == Split[2]) then
-			local newSplit = table.concat( Split, " ", 3 )
-    
-			SendMessageSuccess( Player, "Message to player " .. Split[2] .. " sent!" )
-			OtherPlayer:SendMessagePrivateMsg(newSplit, Player:GetName())
-			
-			lastsender[OtherPlayer:GetName()] = Player:GetName()
-			
-			FoundPlayer = true
-		end
+		local newSplit = table.concat( Split, " ", 3 )
+   
+		SendMessageSuccess( Player, "Message to player " .. Split[2] .. " sent!" )
+		OtherPlayer:SendMessagePrivateMsg(newSplit, Player:GetName())
+		
+		lastsender[OtherPlayer:GetName()] = Player:GetName()
+		
+		FoundPlayer = true
 	end
 
 	cRoot:Get():ForEachPlayer(SendMessage)
