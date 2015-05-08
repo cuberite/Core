@@ -7,10 +7,8 @@ function HandleKillCommand( Split, Player )
 
 	local HasKilled = false;
 	local KillPlayer = function(OtherPlayer)
-		if (OtherPlayer:GetName() == Split[2]) then
-				OtherPlayer:TakeDamage(dtPlugin, nil, 1000, 1000, 0)
-				HasKilled = true
-		end
+		OtherPlayer:TakeDamage(dtPlugin, nil, 1000, 1000, 0)
+		HasKilled = true
 	end
 
 	cRoot:Get():FindAndDoWithPlayer(Split[2], KillPlayer);
