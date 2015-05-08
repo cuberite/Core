@@ -11,10 +11,8 @@ function HandleKickCommand( Split, Player )
 	end
 	local IsPlayerKicked = false
 	local Kick = function(OtherPlayer)
-		if (OtherPlayer:GetName() == Split[2]) then
-			IsPlayerKicked = true
-			KickPlayer(Split[2], Reason)
-		end
+		IsPlayerKicked = true
+		KickPlayer(Split[2], Reason)
 	end
 
 	cRoot:Get():FindAndDoWithPlayer(Split[2], Kick)
