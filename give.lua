@@ -318,10 +318,6 @@ local function GiveItemCommand( Split, Player, SafeCommand )
 	--  
 	local function giveItems( NewPlayer )
 
-		if string.lower( NewPlayer:GetName() ) ~= lcPlayerName then
-			return false
-		end
-
 		Item:AddCount(Amount - 1)
 		NewPlayer:GetInventory():AddItem( Item )
 
