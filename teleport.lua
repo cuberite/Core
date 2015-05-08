@@ -90,26 +90,23 @@ function HandleTPACommand( Split, Player )
 	end
 
 	local loopPlayer = function( OtherPlayer )
-		if OtherPlayer:GetName() == Split[2] then
-		
-			if Split[1] == "/tpa" then
-				SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested to teleport to you." )
-			else
-				SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them." )
-			end
-			
-			if TpRequestTimeLimit > 0 then
-				OtherPlayer:SendMessage("This request will timeout after " .. TpRequestTimeLimit .. " seconds" )
-			end
-			
-			OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
-			OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
-			SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
-			
-			TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = Split[1], Requester = Player:GetUniqueID(), Time = GetTime() }
-			
-			flag = 1
+		if Split[1] == "/tpa" then
+			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested to teleport to you." )
+		else
+			SendMessage(OtherPlayer, Player:GetName() .. cChatColor.Plain .. " has requested you to teleport to them." )
 		end
+		
+		if TpRequestTimeLimit > 0 then
+			OtherPlayer:SendMessage("This request will timeout after " .. TpRequestTimeLimit .. " seconds" )
+		end
+		
+		OtherPlayer:SendMessage("To teleport, type " .. cChatColor.LightGreen .. "/tpaccept" )
+		OtherPlayer:SendMessage("To deny this request, type " .. cChatColor.Rose .. "/tpdeny" )
+		SendMessageSuccess( Player, "Request sent to " .. OtherPlayer:GetName() )
+		
+		TeleportRequests[OtherPlayer:GetUniqueID()] = {Type = Split[1], Requester = Player:GetUniqueID(), Time = GetTime() }
+		
+		flag = 1
 	end
 
 	cRoot:Get():ForEachPlayer(loopPlayer)
