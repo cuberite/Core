@@ -609,7 +609,12 @@ local function EnchantItem( Split )
 	--  
 	--  @return true if successful, false otherwise
 	--  
-	local function DoEnchantment(NewPlayer)
+	local function DoEnchantment( NewPlayer )
+
+		-- Make sure that the names match
+		if string.lower( NewPlayer:GetName() ) ~= lcPlayerName then
+			return false
+		end
 
 		-- Make sure that the targeted player has an item selected
 		local Item = NewPlayer:GetEquippedItem()
