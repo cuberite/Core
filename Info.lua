@@ -225,6 +225,13 @@ g_PluginInfo =
 			Permission = "core.plugins",
 			Handler = HandlePluginsCommand,
 			HelpString = "Show list of plugins",
+			ParameterCombinations =
+			{
+				{
+					Params = "[<status>] [<status>] ...",
+					Help = "Filters the plugin list to show only the plugins with the specified status (default: loaded)",
+				},
+			},
 		},
 
 		["/portal"] =

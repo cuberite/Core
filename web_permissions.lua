@@ -24,9 +24,9 @@ local function GetGroupRow(a_GroupName)
 	assert(type(a_GroupName) == "string")
 	
 	-- First column: group name:
-	local Row = {"<tr><td>"}
+	local Row = {"<tr><td valign='top'>"}
 	ins(Row, cWebAdmin:GetHTMLEscapedString(a_GroupName))
-	ins(Row, "</td><td>")
+	ins(Row, "</td><td valign='top'>")
 	
 	-- Second column: permissions:
 	local Permissions = cRankManager:GetGroupPermissions(a_GroupName)
@@ -38,13 +38,25 @@ local function GetGroupRow(a_GroupName)
 		ins(Row, con(Permissions, "<br/>", 1, MAX_PERMISSIONS))
 		ins(Row, "<br/>...")
 	end
-	ins(Row, "</td><td>")
+	ins(Row, "</td><td valign='top'>")
 	
-	-- Third column: operations:
+	-- Third column: restrictions:
+	local Restrictions = cRankManager:GetGroupRestrictions(a_GroupName)
+	table.sort(Restrictions)
+	local NumRestrictions = #Restrictions
+	if (NumRestrictions <= MAX_PERMISSIONS) then
+		ins(Row, con(Restrictions, "<br/>"))
+	else
+		ins(Row, con(Restrictions, "<br/>", 1, MAX_PERMISSIONS))
+		ins(Row, "<br/>...")
+	end
+	ins(Row, "</td><td width='1px' valign='top'>")
+	
+	-- Fourth column: operations:
 	ins(Row, "<form>")
-	ins(Row, GetFormButton("editpermissions", "Edit permissions", {GroupName = a_GroupName}))
-	ins(Row, "</form><form>")
-	ins(Row, GetFormButton("confirmdelgroup", "Delete group", {GroupName = a_GroupName}))
+	ins(Row, GetFormButton("edit", "Edit", {GroupName = a_GroupName}))
+	ins(Row, "</form></td><td width='1px' valign='top'><form>")
+	ins(Row, GetFormButton("confirmdelgroup", "Delete", {GroupName = a_GroupName}))
 	ins(Row, "</form></td></tr>")
 
 	return con(Row)
@@ -59,12 +71,12 @@ local function ShowMainPermissionsPage(a_Request)
 	local Page = {"<h4>Create a new group</h4>"}
 	
 	-- Add the header for adding a new group:
-	ins(Page, "<form method='POST'><table><tr><th>Group name:</th><td><input type='text' name='GroupName'/></td></tr><tr><th/><td>")
+	ins(Page, "<form method='POST'><table><tr><td>Group name:</td><td width='1px'><input type='text' name='GroupName'/></td><td width='1px'>")
 	ins(Page, GetFormButton("addgroup", "Create a new group", {}))
-	ins(Page, "</td></tr></table></form>")
+	ins(Page, "</td><td width='50%'></td></tr></table></form><br/><br/>")
 	
 	-- Display a table showing all groups currently known:
-	ins(Page, "<h4>Groups</h4><table><tr><th>Group name</th><th>Permissions</th><th>Actions</th></tr>")
+	ins(Page, "<h4>Groups</h4><table><tr><th>Group name</th><th>Permissions</th><th>Restrictions</th><th colspan=2>Actions</th></tr>")
 	local AllGroups = cRankManager:GetAllGroups()
 	table.sort(AllGroups)
 	for _, group in ipairs(AllGroups) do
@@ -99,7 +111,7 @@ end
 
 
 
---- Handles the AddPermission form in the Edit permissions page
+--- Handles the AddPermission form in the Edit group page
 -- Adds the permission to the group and redirects the user back to the permission list
 local function ShowAddPermissionPage(a_Request)
 	-- Check params:
@@ -116,9 +128,35 @@ local function ShowAddPermissionPage(a_Request)
 	return
 		"<p>Permission added. <a href='/" ..
 		a_Request.Path ..
-		"?subpage=editpermissions&GroupName=" ..
+		"?subpage=edit&GroupName=" ..
 		cWebAdmin:GetHTMLEscapedString(GroupName) ..
 		"'>Return to group list</a>.</p>"
+end
+
+
+
+
+
+--- Handles the AddRestriction form in the Edit group page
+-- Adds the restriction to the group and redirects the user back to the permission list
+local function ShowAddRestrictionPage(a_Request)
+	-- Check params:
+	local GroupName = a_Request.PostParams["GroupName"]
+	local Restriction = a_Request.PostParams["Restriction"]
+	if ((GroupName == nil) or (Restriction == nil)) then
+		return HTMLError("Bad request, missing parameters.")
+	end
+	
+	-- Add the permission:
+	cRankManager:AddRestrictionToGroup(Restriction, GroupName)
+	
+	-- Redirect the user:
+	return
+		"<p>Restriction added. <a href='/" ..
+		a_Request.Path ..
+		"?subpage=edit&GroupName=" ..
+		cWebAdmin:GetHTMLEscapedString(GroupName) ..
+		"'>Return to group details</a>.</p>"
 end
 
 
@@ -192,7 +230,7 @@ local function ShowDelPermissionPage(a_Request)
 	return
 		"<p>Permission removed. <a href='/" ..
 		a_Request.Path ..
-		"?subpage=editpermissions&GroupName=" ..
+		"?subpage=edit&GroupName=" ..
 		cWebAdmin:GetHTMLEscapedString(GroupName) ..
 		"'>Return to group list</a>.</p>"
 end
@@ -201,8 +239,34 @@ end
 
 
 
---- Displays the Edit Permissions page for a single group
-local function ShowEditPermissionsPage(a_Request)
+-- Handles the DelRestriction form in the Edit group page
+-- Removes the restriction from the group and redirects the user back to the Edit group page
+local function ShowDelRestrictionPage(a_Request)
+	-- Check params:
+	local GroupName = a_Request.PostParams["GroupName"]
+	local Restriction = a_Request.PostParams["Restriction"]
+	if ((GroupName == nil) or (Restriction == nil)) then
+		return HTMLError("Bad request, missing parameters.")
+	end
+	
+	-- Add the permission:
+	cRankManager:RemoveRestrictionFromGroup(Restriction, GroupName)
+	
+	-- Redirect the user:
+	return
+		"<p>Restriction removed. <a href='/" ..
+		a_Request.Path ..
+		"?subpage=edit&GroupName=" ..
+		cWebAdmin:GetHTMLEscapedString(GroupName) ..
+		"'>Return to group</a>.</p>"
+end
+
+
+
+
+
+--- Displays the Edit Group page for a single group, allowing the admin to edit permissions and restrictions
+local function ShowEditGroupPage(a_Request)
 	-- Check params:
 	local GroupName = a_Request.PostParams["GroupName"]
 	if (GroupName == nil) then
@@ -212,12 +276,12 @@ local function ShowEditPermissionsPage(a_Request)
 	-- Add the header for adding permissions:
 	local Page = {[[
 		<p><a href='/]] .. a_Request.Path .. [['>Return to the group list</a>.</p>
+		<table><tr><td width='50%' valign='top'>
 		<h4>Add a permission</h4>
-		<form method='POST'><table><tr><th>Permission</th><td><input type='text' name='Permission'/></td></tr>
-		<tr><th/><td>
+		<form method='POST'><table><tr><td>Permission</td><td width='1px'><input type='text' size='40' name='Permission'/></td><td width='1px'>
 	]]}
 	ins(Page, GetFormButton("addpermission", "Add permission", {GroupName = GroupName}))
-	ins(Page, "</td></tr></table></form>")
+	ins(Page, "</td></tr></table></form><br/><br/>")
 	
 	-- Add the permission list:
 	local Permissions = cRankManager:GetGroupPermissions(GroupName)
@@ -230,8 +294,28 @@ local function ShowEditPermissionsPage(a_Request)
 		ins(Page, GetFormButton("delpermission", "Remove permission", {GroupName = GroupName, Permission = permission}))
 		ins(Page, "</form></td></tr>")
 	end
-	ins(Page, "</table>")
+	ins(Page, "</table></td><td width='50%' valign='top'>")
 	
+	-- Add the header for adding restrictions:
+	ins(Page, [[
+		<h4>Add a restriction</h4>
+		<form method='POST'><table><tr><td>Restriction</td><td width='1px'><input type='text' size='40' name='Restriction'/></td><td width='1px'>
+	]])
+	ins(Page, GetFormButton("addrestriction", "Add restriction", {GroupName = GroupName}))
+	ins(Page, "</td></tr></table></form><br/><br/>")
+	
+	-- Add the restriction list:
+	local Restrictions = cRankManager:GetGroupRestrictions(GroupName)
+	table.sort(Restrictions)
+	ins(Page, "<h4>Group restrictions</h4><table>")
+	for _, restriction in ipairs(Restrictions) do
+		ins(Page, "<tr><td>")
+		ins(Page, cWebAdmin:GetHTMLEscapedString(restriction))
+		ins(Page, "</td><td><form method='POST'>")
+		ins(Page, GetFormButton("delrestriction", "Remove restriction", {GroupName = GroupName, Restriction = restriction}))
+		ins(Page, "</form></td></tr>")
+	end
+	ins(Page, "</table></td></tr></table>")
 	return con(Page)
 end
 
@@ -246,10 +330,12 @@ local g_SubpageHandlers =
 	[""]                = ShowMainPermissionsPage,
 	["addgroup"]        = ShowAddGroupPage,
 	["addpermission"]   = ShowAddPermissionPage,
+	["addrestriction"]  = ShowAddRestrictionPage,
 	["confirmdelgroup"] = ShowConfirmDelGroupPage,
 	["delgroup"]        = ShowDelGroupPage,
 	["delpermission"]   = ShowDelPermissionPage,
-	["editpermissions"] = ShowEditPermissionsPage,
+	["delrestriction"]  = ShowDelRestrictionPage,
+	["edit"]            = ShowEditGroupPage,
 }
 
 

@@ -96,7 +96,8 @@ function Initialize(Plugin)
 	Plugin:AddWebTab("Player Ranks",    HandleRequest_PlayerRanks)
 
 	LoadMotd()
-
+	
+	WEBLOGINFO("Core is initialized")
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
 
 	return true
