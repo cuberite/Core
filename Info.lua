@@ -38,7 +38,7 @@ g_PluginInfo =
 		{
 			Permission = "core.do",
 			Handler = HandleDoCommand,
-			HelpString = "Runs a command as a player",
+			HelpString = "Run a command as a player",
 		},
 
 		["/difficulty"] = 
@@ -52,16 +52,16 @@ g_PluginInfo =
 		{
 			Permission = "core.enchant",
 			Handler = HandleEnchantCommand,
-			HelpString = "Adds an enchantment to the specified player's held item",
+			HelpString = "Add an enchantment to the specified player's held item",
 			ParameterCombinations =
 			{
 				{
 					Params = "PlayerName EnchantmentID",
-					Help = "Adds the specified enchantment to the specified player's currently held item",
+					Help = "Add the specified enchantment to the specified player's currently held item",
 				},
 				{
 					Params = "PlayerName EnchantmentID level",
-					Help = "Adds the specified enchantment of the given level to the specified player's currently held item",
+					Help = "Add the specified enchantment of the given level to the specified player's currently held item",
 				},
 			},
 		},
@@ -82,19 +82,19 @@ g_PluginInfo =
 			{
 				{
 					Params = "PlayerName ItemName",
-					Help = "Gives the player one of the specified item",
+					Help = "Give the player one of the specified item",
 				},
 				{
 					Params = "PlayerName ItemName Amount",
-					Help = "Gives the player the given amount of the specified item",
+					Help = "Give the player the given amount of the specified item",
 				},
 				{
 					Params = "PlayerName ItemName Amount Data",
-					Help = "Gives the player the given amount of the specified item with the given data value",
+					Help = "Give the player the given amount of the specified item with the given data value",
 				},
 				{
 					Params = "PlayerName ItemName Amount Data DataTag",
-					Help = "Gives the player the given amount of the specified item with the given data value and DataTag",
+					Help = "Give the player the given amount of the specified item with the given data value and DataTag",
 				},
 			},
 		},
@@ -134,11 +134,11 @@ g_PluginInfo =
 			{
 				{
 					Params = "EnchantmentID",
-					Help = "Adds the specified enchantment to the currently held item",
+					Help = "Add the specified enchantment to the currently held item",
 				},
 				{
 					Params = "EnchantmentID level",
-					Help = "Adds the specified enchantment of the given level to the currently held item",
+					Help = "Add the specified enchantment of the given level to the currently held item",
 				},
 			},
 		},
@@ -153,19 +153,19 @@ g_PluginInfo =
 			{
 				{
 					Params = "ItemName",
-					Help = "Gives the caller one of the specified item",
+					Help = "Give the caller one of the specified item",
 				},
 				{
 					Params = "ItemName Amount",
-					Help = "Gives the caller the given amount of the specified item",
+					Help = "Give the caller the given amount of the specified item",
 				},
 				{
 					Params = "ItemName Amount Data",
-					Help = "Gives the caller the given amount of the specified item with the given data value",
+					Help = "Give the caller the given amount of the specified item with the given data value",
 				},
 				{
 					Params = "ItemName Amount Data DataTag",
-					Help = "Gives the caller the given amount of the specified item with the given data value and DataTag",
+					Help = "Give the caller the given amount of the specified item with the given data value and DataTag",
 				},
 			},
 		},
@@ -188,7 +188,7 @@ g_PluginInfo =
 		{
 			Permission = "core.list",
 			Handler = HandleListCommand,
-			HelpString = "Lists all connected players",
+			HelpString = "List all connected players",
 		},
 
 		["/listranks"] =
@@ -229,7 +229,7 @@ g_PluginInfo =
 			{
 				{
 					Params = "[<status>] [<status>] ...",
-					Help = "Filters the plugin list to show only the plugins with the specified status (default: loaded)",
+					Help = "Filter the plugin list to show only the plugins with the specified status (default: loaded)",
 				},
 			},
 		},
