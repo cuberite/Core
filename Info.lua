@@ -220,6 +220,13 @@ g_PluginInfo =
 			HelpString = "Show message of the day",
 		},
 
+		["/msg"] = 
+		{
+			Permission = "core.tell",
+			Handler = HandleMsgCommand,
+			HelpString = "Send a private message",
+		},
+
 		["/plugins"] = 
 		{
 			Permission = "core.plugins",
@@ -307,7 +314,6 @@ g_PluginInfo =
 		["/tell"] = 
 		{
 			Permission = "core.tell",
-			Alias = "/msg",
 			Handler = HandleTellCommand,
 			HelpString = "Send a private message",
 		},
