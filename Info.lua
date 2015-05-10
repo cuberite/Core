@@ -1168,6 +1168,7 @@ g_PluginInfo =
 		["core.time.query.gametime"] =
 		{
 			Description = "Allow players to display how long the world has existed",
+			RecommendedGroups = "everyone",
 		},
 		
 		["core.toggledownfall"] =
