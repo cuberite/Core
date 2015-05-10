@@ -38,14 +38,14 @@ g_PluginInfo =
 		{
 			Permission = "core.do",
 			Handler = HandleDoCommand,
-			HelpString = "Runs a command as a player.",
+			HelpString = "Runs a command as a player",
 		},
 
 		["/difficulty"] = 
 		{
 			Permission = "core.difficulty",
 			Handler = HandleDifficultyCommand,
-			HelpString = "Change world's difficulty.",
+			HelpString = "Change world's difficulty",
 		},
 
 		["/enchant"] = 
@@ -70,7 +70,7 @@ g_PluginInfo =
 		{
 			Permission = "core.fly",
 			Handler = HandleFlyCommand,
-			HelpString = " ~ Toggle fly",
+			HelpString = "Toggle flight",
 		},
 
 		["/give"] = 
@@ -109,7 +109,7 @@ g_PluginInfo =
 			{
 				{
 					Params = "gamemode",
-					Help = "Change your own gamemode.",
+					Help = "Change your own gamemode",
 				},
 				{
 					Params = "gamemode PlayerName",
@@ -148,7 +148,7 @@ g_PluginInfo =
 			Alias = "/i",
 			Permission = "core.item",
 			Handler = HandleItemCommand,
-			HelpString = "Give yourself an item.",
+			HelpString = "Give yourself an item",
 			ParameterCombinations = 
 			{
 				{
@@ -244,7 +244,7 @@ g_PluginInfo =
         ["/r"] =
         {
             Permission =  "core.tell",
-            HelpString =  "Answer quickly to latest private message you recieved.",
+            HelpString =  "Reply to last private message you recieved",
             Handler =  HandleRCommand,
         },
         
@@ -259,7 +259,7 @@ g_PluginInfo =
 		{
 			Permission = "core.regen",
 			Handler = HandleRegenCommand,
-			HelpString = "Regenerates a chunk",
+			HelpString = "Regenerate a chunk",
 		},
 
 		["/reload"] = 
@@ -294,14 +294,14 @@ g_PluginInfo =
 		{
 			Permission = "core.stop",
 			Handler = HandleStopCommand,
-			HelpString = "Stops the server",
+			HelpString = "Stop the server",
 		},
 
 		["/sudo"] = 
 		{
 			Permission = "core.sudo",
 			Handler = HandleSudoCommand,
-			HelpString = "Runs a command as a player",
+			HelpString = "Run a command as a player",
 		},
 
 		["/tell"] = 
@@ -326,7 +326,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather than the current world",
+							Help = "Set the time to day in the given world, rather than the current world",
 						},
 					},
 				},
@@ -339,7 +339,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather than the current world",
+							Help = "Set the time to night in the given world, rather than the current world",
 						},
 					},
 				},
@@ -419,7 +419,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather than the current world",
+									Help = "Display the time elapsed since start in the given world, rather than the current world",
 								},
 							},
 						},
@@ -432,7 +432,7 @@ g_PluginInfo =
 		{
 			Permission = "core.toggledownfall",
 			Handler = HandleDownfallCommand,
-			HelpString = "Toggles the weather between clear skies and rain",
+			HelpString = "Toggle the weather between clear skies and rain",
 			ParameterCombinations =
 			{
 				{
@@ -467,35 +467,35 @@ g_PluginInfo =
 		{
 			Permission = "core.tpaccept",
 			Handler = HandleTPAcceptCommand,
-			HelpString = "Accept a teleportation request",
+			HelpString = "Accept a teleportation request from another player",
 		},
 		
 		["/tpahere"] = 
 		{
 			Permission = "core.tpahere",
 			Handler = HandleTPACommand,
-			HelpString = " ~ Ask to teleport player to yourself",
+			HelpString = "Ask another player to teleport to your location",
 		},
 		
 		["/tpdeny"] = 
 		{
 			Permission = "core.tpdeny",
 			Handler = HandleTPDenyCommand,
-			HelpString = " ~ Deny a teleportation request",
+			HelpString = "Deny a teleportation request from another player",
 		},
 		
 		["/tphere"] = 
 		{
 			Permission = "core.tphere",
 			Handler = HandleTPHereCommand,
-			HelpString = " ~ Teleport player to yourself",
+			HelpString = "Teleport player to your location",
 		},
 
 		["/tps"] = 
 		{
 			Permission = "core.tps",
 			Handler = HandleTpsCommand,
-			HelpString = "Returns the tps (ticks per second) from the server.",
+			HelpString = "Return the ticks per second from the server",
 		},
 
 		["/unban"] = 
@@ -509,24 +509,24 @@ g_PluginInfo =
 		{
 			Permission = "core.give.unsafe",
 			Handler = HandleUnsafeGiveCommand,
-			HelpString = "Give someone an item, even if it is blacklisted.",
+			HelpString = "Give someone an item, even if it is blacklisted",
 			ParameterCombinations = 
 			{
 				{
 					Params = "PlayerName ItemName",
-					Help = "Gives the player one of the specified item",
+					Help = "Give the player one of the specified item, even if it is blacklisted",
 				},
 				{
 					Params = "PlayerName ItemName Amount",
-					Help = "Gives the player the given amount of the specified item",
+					Help = "Give the player the given amount of the specified item, even if it is blacklisted",
 				},
 				{
 					Params = "PlayerName ItemName Amount Data",
-					Help = "Gives the player the given amount of the specified item with the given data value",
+					Help = "Give the player the given amount of the specified item with the given data value, even if it is blacklisted",
 				},
 				{
 					Params = "PlayerName ItemName Amount Data DataTag",
-					Help = "Gives the player the given amount of the specified item with the given data value and DataTag",
+					Help = "Give the player the given amount of the specified item with the given data value and DataTag, even if it is blacklisted",
 				},
 			},
 		},
@@ -540,19 +540,19 @@ g_PluginInfo =
 			{
 				{
 					Params = "ItemName",
-					Help = "Gives the caller one of the specified item",
+					Help = "Give the caller one of the specified item, even if it is blacklisted",
 				},
 				{
 					Params = "ItemName Amount",
-					Help = "Gives the caller the given amount of the specified item",
+					Help = "Give the caller the given amount of the specified item, even if it is blacklisted",
 				},
 				{
 					Params = "ItemName Amount Data",
-					Help = "Gives the caller the given amount of the specified item with the given data value",
+					Help = "Give the caller the given amount of the specified item with the given data value, even if it is blacklisted",
 				},
 				{
 					Params = "ItemName Amount Data DataTag",
-					Help = "Gives the caller the given amount of the specified item with the given data value and DataTag",
+					Help = "Give the caller the given amount of the specified item with the given data value and DataTag, even if it is blacklisted",
 				},
 			},
 		},
@@ -561,7 +561,7 @@ g_PluginInfo =
 		{
 			Permission = "core.vanish",
 			Handler = HandleVanishCommand,
-			HelpString = " - Vanish",
+			HelpString = "Disappear from view of other players",
 		},
 		
 		["/viewdistance"] = 
@@ -584,7 +584,7 @@ g_PluginInfo =
 				},
 				{
 					Params = "Weather DurationInSeconds",
-					Help = "Set the weather to the given condition, for the specified duration",
+					Help = "Set the weather to the given condition for the specified duration",
 				},
 				{
 					Params = "Weather WorldName",
@@ -592,57 +592,57 @@ g_PluginInfo =
 				},
 				{
 					Params = "Weather DurationInSeconds WorldName",
-					Help = "Set the weather to the given condition, have it last for the specified duration, in the given world",
+					Help = "Set the weather to the given condition for the specified duration in the given world, rather than the default world",
 				},
 			},
 		},
 
 		["/whitelist"] =
 		{
-			HelpString= "Manages the whitelist",
+			HelpString= "Manage the whitelist",
 			Subcommands =
 			{
 				add =
 				{
-					HelpString = "Adds a player to the whitelist",
+					HelpString = "Add a player to the whitelist",
 					Permission = "core.whitelist",
 					Handler = HandleWhitelistAddCommand,
 					ParameterCombinations =
 					{
 						{
 							Params = "PlayerName",
-							Help = "Adds the specified player to the whitelist",
+							Help = "Add the specified player to the whitelist",
 						},
 					},
 				},
 				list =
 				{
-					HelpString = "Shows the players on the whitelist",
+					HelpString = "Show all players on the whitelist",
 					Permission = "core.whitelist",
 					Handler = HandleWhitelistListCommand,
 				},
 				off =
 				{
-					HelpString = "Turns whitelist processing off",
+					HelpString = "Disable whitelist processing",
 					Permission = "core.whitelist",
 					Handler = HandleWhitelistOffCommand,
 				},
 				on =
 				{
-					HelpString= "Turns whitelist processing on",
+					HelpString= "Enable whitelist processing",
 					Permission = "core.whitelist",
 					Handler = HandleWhitelistOnCommand,
 				},
 				remove =
 				{
-					HelpString = "Removes a player from the whitelist",
+					HelpString = "Remove a player from the whitelist",
 					Permission = "core.whitelist",
 					Handler = HandleWhitelistRemoveCommand,
 					ParameterCombinations =
 					{
 						{
 							Params = "PlayerName",
-							Help = "Removes the specified player from the whitelist",
+							Help = "Remove the specified player from the whitelist",
 						},
 					},
 				},
@@ -653,7 +653,7 @@ g_PluginInfo =
 		{
 			Permission = "core.worlds",
 			Handler = HandleWorldsCommand,
-			HelpString = "Shows a list of all the worlds",
+			HelpString = "Show a list of all the worlds",
 		},
 	},  -- Commands
 
@@ -664,27 +664,27 @@ g_PluginInfo =
 		["ban"] =
 		{
 			Handler =  HandleConsoleBan,
-			HelpString = "Bans a player by name",
+			HelpString = "Ban a player by name",
 		},
 		
 		["tps"] =
 		{
 			Handler =  HandleConsoleTps,
-			HelpString =  " - Returns the tps (ticks per second) from the server.",
+			HelpString =  "Return the ticks per second from the server",
 		},
 
 
 		["banip"] =
 		{
 			Handler =  HandleConsoleBanIP,
-			HelpString = "Bans a player by IP",
+			HelpString = "Ban a player by IP address",
 			Alias = "ipban",
 		},
 
 		["banlist"] =
 		{
 			Handler = HandleConsoleBanList,
-			HelpString = "Lists all players banned by name",
+			HelpString = "List all players banned by name",
 		},
 
 		["banlist ips"] =
@@ -692,7 +692,7 @@ g_PluginInfo =
 			-- This is a dummy entry only to generate the documentation
 			-- the real processing is done by the "banlist" command
 			Handler =  HandleConsoleBanList,
-			HelpString = "Lists all players banned by IP",
+			HelpString = "List all players banned by IP address",
 		},
 
 		["clear"] =
@@ -704,16 +704,16 @@ g_PluginInfo =
 		["enchant"] = 
 		{
 			Handler = HandleConsoleEnchant,
-			HelpString = "Adds an enchantment to the specified player's held item",
+			HelpString = "Add an enchantment to the specified player's held item",
 			ParameterCombinations =
 			{
 				{
 					Params = "PlayerName EnchantmentID",
-					Help = "Adds the specified enchantment to the specified player's currently held item",
+					Help = "Add the specified enchantment to the specified player's currently held item",
 				},
 				{
 					Params = "PlayerName EnchantmentID level",
-					Help = "Adds the specified enchantment of the given level to the specified player's currently held item",
+					Help = "Add the specified enchantment of the given level to the specified player's currently held item",
 				},
 			},
 		},
@@ -747,24 +747,24 @@ g_PluginInfo =
 		["give"] =
 		{
 			Handler =  HandleConsoleGive,
-			HelpString = "Gives items to the specified player.",
+			HelpString = "Give an item to the specified player",
 			ParameterCombinations = 
 			{
 				{
 					Params = "PlayerName ItemName",
-					Help = "Gives the player one of the specified item",
+					Help = "Give the player one of the specified item",
 				},
 				{
 					Params = "PlayerName ItemName Amount",
-					Help = "Gives the player the given amount of the specified item",
+					Help = "Give the player the given amount of the specified item",
 				},
 				{
 					Params = "PlayerName ItemName Amount Data",
-					Help = "Gives the player the given amount of the specified item with the given data value",
+					Help = "Give the player the given amount of the specified item with the given data value",
 				},
 				{
 					Params = "PlayerName ItemName Amount Data DataTag",
-					Help = "Gives the player the given amount of the specified item with the given data value and DataTag",
+					Help = "Give the player the given amount of the specified item with the given data value and DataTag",
 				},
 			},
 		},
@@ -772,43 +772,43 @@ g_PluginInfo =
 		["kick"] =
 		{
 			Handler =  HandleConsoleKick,
-			HelpString = "Kicks a player by name",
+			HelpString = "Kick a player by name",
 		},
 
 		["kill"] =
 		{
 			Handler =  HandleConsoleKill,
-			HelpString = "Kill a player",
+			HelpString = "Kill a player by name",
 		},
 
 		["list"] =
 		{
 			Handler =  HandleConsoleList,
-			HelpString = "Lists all players in a machine-readable format",
+			HelpString = "List all players in a machine-readable format",
 		},
 
 		["listgroups"] =
 		{
 			Handler =  HandleConsoleListGroups,
-			HelpString = "Shows a list of all the groups",
+			HelpString = "Show a list of all the groups",
 		},
 
 		["listranks"] =
 		{
 			Handler =  HandleConsoleListRanks,
-			HelpString = "Shows a list of all the ranks",
+			HelpString = "Show a list of all the ranks",
 		},
 
 		["numchunks"] =
 		{
 			Handler =  HandleConsoleNumChunks,
-			HelpString = "Shows number of chunks currently loaded",
+			HelpString = "Show the number of chunks currently loaded",
 		},
 
 		["players"] =
 		{
 			Handler =  HandleConsolePlayers,
-			HelpString = "Lists all connected players",
+			HelpString = "List all connected players",
 		},
 
 		["plugins"] =
@@ -827,16 +827,16 @@ g_PluginInfo =
 		{
 			Handler = HandleConsoleRegen,
 			Alias = "regeneratechunk",
-			HelpString = "Regenerates a chunk",
+			HelpString = "Regenerate a chunk",
 			ParameterCombinations =
 			{
 				{
 					Params = "ChunkX ChunkZ",
-					Help = "Regenerates the specified chunk in the default world",
+					Help = "Regenerate the specified chunk",
 				},
 				{
 					Params = "ChunkX ChunkZ WorldName",
-					Help = "Regenerates the specified chunk in the specified world",
+					Help = "Regenerate the specified chunk in the specified world",
 				}
 			},
 		},  -- regen
@@ -844,13 +844,13 @@ g_PluginInfo =
 		["save-all"] =
 		{
 			Handler =  HandleConsoleSaveAll,
-			HelpString = "Saves all chunks",
+			HelpString = "Save all chunk data to the filesystem",
 		},
 
 		["say"] =
 		{
 			Handler =  HandleConsoleSay,
-			HelpString = "Sends a chat message to all players",
+			HelpString = "Send a chat message to all players",
 		},
 
 		["time"] = 
@@ -866,7 +866,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather than the default world",
+							Help = "Set the time to day in the given world, rather than the default world",
 						},
 					},
 				},
@@ -878,7 +878,7 @@ g_PluginInfo =
 					{
 						{
 							Params = "WorldName",
-							Help = "Set the time in the given world, rather than the default world",
+							Help = "Set the time to night in the given world, rather than the default world",
 						},
 					},
 				},
@@ -954,7 +954,7 @@ g_PluginInfo =
 							{
 								{
 									Params = "WorldName",
-									Help = "Display the time in the given world, rather than the default world",
+									Help = "Display the time elapsed since start in the given world, rather than the default world",
 								},
 							},
 						},
@@ -966,12 +966,12 @@ g_PluginInfo =
 		["toggledownfall"] =
 		{
 			Handler = HandleConsoleDownfall,
-			HelpString = "Toggles the weather between clear skies and rain",
+			HelpString = "Toggle the weather between clear skies and rain",
 			ParameterCombinations =
 			{
 				{
 					Params = "WorldName",
-					Help = "Change the weather in the given world, rather than the default world",
+					Help = "Toggle the weather between clear skies and rain in the given world, rather than the default world",
 				},
 			},
 		},
@@ -979,54 +979,54 @@ g_PluginInfo =
 		["tp"] =
 		{
 			Handler =  HandleConsoleTeleport,
-			HelpString = "Teleports a player",
+			HelpString = "Teleport a player",
 		},
 
 		["unban"] =
 		{
 			Handler =  HandleConsoleUnban,
-			HelpString = "Unbans a player by name",
+			HelpString = "Unban a player by name",
 		},
 
 		["unbanip"] =
 		{
 			Handler =  HandleConsoleUnbanIP,
-			HelpString = "Unbans a player by IP",
+			HelpString = "Unban a player by IP address",
 		},
 
 		["unloadchunks"] =
 		{
 			Handler = HandleConsoleUnload,
-			HelpString = "Unloads all unused chunks",
+			HelpString = "Unload all unused chunks",
 		},
 		
 		["unrank"] =
 		{
 			Handler = HandleConsoleUnrank,
-			HelpString = "Resets the player's rank to default",
+			HelpString = "Reset the player's rank to default",
 		},
 		
 		["unsafegive"] =
 		{
 			Handler =  HandleConsoleUnsafeGive,
-			HelpString = "Gives items to the specified player, even if its blacklisted.",
+			HelpString = "Give items to the specified player, even if its blacklisted",
 			ParameterCombinations = 
 			{
 				{
 					Params = "PlayerName ItemName",
-					Help = "Gives the player one of the specified item",
+					Help = "Give the player one of the specified item, even if its blacklisted",
 				},
 				{
 					Params = "PlayerName ItemName Amount",
-					Help = "Gives the player the given amount of the specified item",
+					Help = "Give the player the given amount of the specified item, even if its blacklisted",
 				},
 				{
 					Params = "PlayerName ItemName Amount Data",
-					Help = "Gives the player the given amount of the specified item with the given data value",
+					Help = "Give the player the given amount of the specified item with the given data value, even if its blacklisted",
 				},
 				{
 					Params = "PlayerName ItemName Amount Data DataTag",
-					Help = "Gives the player the given amount of the specified item with the given data value and DataTag",
+					Help = "Give the player the given amount of the specified item with the given data value and DataTag, even if its blacklisted",
 				},
 			},
 		},
@@ -1043,7 +1043,7 @@ g_PluginInfo =
 				},
 				{
 					Params = "Weather DurationInSeconds",
-					Help = "Set the weather to the given condition, for the specified duration",
+					Help = "Set the weather to the given condition and have it last for the specified duration",
 				},
 				{
 					Params = "Weather WorldName",
@@ -1051,52 +1051,52 @@ g_PluginInfo =
 				},
 				{
 					Params = "Weather DurationInSeconds WorldName",
-					Help = "Set the weather to the given condition, have it last for the specified duration, in the given world",
+					Help = "Set the weather to the given condition and have it last for the specified duration in the given world, rather than the default world",
 				},
 			},
 		},
 
 		["whitelist"] =
 		{
-			HelpString= "Manages the whitelist",
+			HelpString= "Manage the whitelist",
 			Subcommands =
 			{
 				add =
 				{
-					HelpString = "Adds a player to the whitelist",
+					HelpString = "Add a player to the whitelist",
 					Handler = HandleConsoleWhitelistAdd,
 					ParameterCombinations =
 					{
 						{
 							Params = "PlayerName",
-							Help = "Adds the specified player to the whitelist",
+							Help = "Add the specified player to the whitelist by name",
 						},
 					},
 				},
 				list =
 				{
-					HelpString = "Lists all the players on the whitelist",
+					HelpString = "List all the players on the whitelist",
 					Handler = HandleConsoleWhitelistList,
 				},
 				off =
 				{
-					HelpString = "Turns off whitelist processing",
+					HelpString = "Disable whitelist processing",
 					Handler = HandleConsoleWhitelistOff,
 				},
 				on =
 				{
-					HelpString = "Turns on whitelist processing",
+					HelpString = "Enable whitelist processing",
 					Handler = HandleConsoleWhitelistOn,
 				},
 				remove =
 				{
-					HelpString = "Removes a player from the whitelist",
+					HelpString = "Remove a player from the whitelist",
 					Handler = HandleConsoleWhitelistRemove,
 					ParameterCombinations =
 					{
 						{
 							Params = "PlayerName",
-							Help = "Removes the specified player from the whitelist",
+							Help = "Remove the specified player from the whitelist by name",
 						},
 					},
 				},
@@ -1107,79 +1107,79 @@ g_PluginInfo =
 	{
 		["core.changegm"] =
 		{
-			Description = "Allows players to change gamemodes",
+			Description = "Allow players to change the gamemode",
 			RecommendedGroups = "admins",
 		},
 
 		["core.enchant"] =
 		{
-			Description = "Allows players to add an enchantment to a player's held item",
+			Description = "Allow players to add enchantments to a currently held item",
 			RecommendedGroups = "admins",
 		},
 
 		["core.enchant.self"] =
 		{
-			Description = "Allows players to add an enchantment to their own held item",
+			Description = "Allow players to add enchantments to their own currently held item",
 			RecommendedGroups = "admins",
 		},
 
 		["core.give"] =
 		{
-			Description = "Allows players to give items to other players",
+			Description = "Allow players to give items to other players",
 			RecommendedGroups = "admins",
 		},
 
 		["core.give.unsafe"] =
 		{
-			Description = "Allows players to give items to other players, even if the item is blacklisted",
+			Description = "Allow players to give items to other players, even if the item is blacklisted",
 			RecommendedGroups = "none",
 		},
 
 		["core.item"] =
 		{
-			Description = "Allows players to give items to themselves",
+			Description = "Allow players to give items to themselves",
 			RecommendedGroups = "admins",
 		},
 
 		["core.item.unsafe"] =
 		{
-			Description = "Allows players to give items to themselves, even if the item is blacklisted",
+			Description = "Allow players to give items to themselves, even if the item is blacklisted",
 			RecommendedGroups = "none",
 		},
 
 		["core.time.set"] = 
 		{
-			Description = "Allows players to set the time of day",
+			Description = "Allow players to set the time of day",
 			RecommendedGroups = "admins",
 		},
 
 		["core.time.query.daytime"] =
 		{
-			Description = "Allows players to display the time of day",
+			Description = "Allow players to display the time of day",
 			RecommendedGroups = "everyone",
 		},
 
 		["core.time.query.gametime"] =
 		{
-			Description = "Allows players to display how long the world has existed",
+			Description = "Allow players to display how long the world has existed",
 		},
 		
 		["core.toggledownfall"] =
 		{
-			Description = "Allows players to toggle the weather between clear skies and rain",
+			Description = "Allow players to toggle the weather between clear skies and rain",
 			RecommendedGroups = "admins",
 		},
 		
 		["core.weather"] =
 		{
-			Description = "Allows players to change the weather",
+			Description = "Allow players to change the weather",
 			RecommendedGroups = "admins",
 		},
 		
 
 		["core.whitelist"] =
 		{
-			Description = "Allows players to manage the whitelist",
+			Description = "Allow players to manage the whitelist",
 			RecommendedGroups = "admins",
 		},
 	},  -- Permissions
