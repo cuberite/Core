@@ -37,7 +37,7 @@ function KickPlayer( PlayerName, Reason )
 end
 
 
-function ReturnColorFromChar( Split, char )
+function ReturnColorFromChar(char)
 
 	-- Check if the char represents a color. Else return nil.
 	if char == "0" then
