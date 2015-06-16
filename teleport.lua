@@ -17,20 +17,44 @@ function HandleTPCommand(a_Split, a_Player)
 		
 		-- For relative coordinates
 		local Function;
-		local X = a_Split[2];
+		local X = tonumber(a_Split[2]);
 		Function = loadstring(a_Split[2]:gsub("~", "return " .. a_Player:GetPosX() .. "+0"));
 		if Function then
-			X = Function();
+			-- Execute the function in a save environment, and get the second return value. 
+			-- The first return value is a boolean.
+			X = select(2, pcall(setfenv(Function, {})));
 		end
-		local Y = a_Split[3];
+		
+		local Y = tonumber(a_Split[3]);
 		Function = loadstring(a_Split[3]:gsub("~", "return " .. a_Player:GetPosY() .. "+0"));
 		if Function then
-			Y = Function();
+			-- Execute the function in a save environment, and get the second return value. 
+			-- The first return value is a boolean.
+			Y = select(2, pcall(setfenv(Function, {})));
 		end
+		
 		local Z = a_Split[4];
 		Function = loadstring(a_Split[4]:gsub("~", "return " .. a_Player:GetPosZ() .. "+0"));
 		if Function then
-			Z = Function();
+			-- Execute the function in a save environment, and get the second return value. 
+			-- The first return value is a boolean.
+			Z = select(2, pcall(setfenv(Function, {})));
+		end
+		
+		-- Check the given coordinates for errors.
+		if (type(X) ~= 'number') then
+			SendMessageFailure(a_Player, "'" .. a_Split[2] .. "' is not a valid number")
+			return true
+		end
+		
+		if (type(Y) ~= 'number') then
+			SendMessageFailure(a_Player, "'" .. a_Split[3] .. "' is not a valid number")
+			return true
+		end
+		
+		if (type(Z) ~= 'number') then
+			SendMessageFailure(a_Player, "'" .. a_Split[4] .. "' is not a valid number")
+			return true
 		end
 		
 		a_Player:TeleportToCoords( X, Y, Z )
