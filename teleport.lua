@@ -33,7 +33,7 @@ function HandleTPCommand(a_Split, a_Player)
 			Y = select(2, pcall(setfenv(Function, {})));
 		end
 		
-		local Z = a_Split[4];
+		local Z = tonumber(a_Split[4]);
 		Function = loadstring(a_Split[4]:gsub("~", "return " .. a_Player:GetPosZ() .. "+0"));
 		if Function then
 			-- Execute the function in a save environment, and get the second return value. 
