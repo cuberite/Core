@@ -16,13 +16,10 @@ g_UsePrefixes = true
 
 
 -- Global variables
-BackCoords = {}
 Messages = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 WorldsWorldDifficulty = {}
-TpRequestTimeLimit = 0
-lastsender = {}
 
 
 
