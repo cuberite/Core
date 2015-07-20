@@ -13,7 +13,6 @@ function HandleTPCommand(a_Split, a_Player)
 	elseif #a_Split == 4 then
 
 		-- Teleport to XYZ coords specified in a_Split[2, 3, 4]:
-		SetBackCoordinates(a_Player)
 		
 		-- For relative coordinates
 		local Function;
