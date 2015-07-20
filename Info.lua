@@ -185,13 +185,6 @@ g_PluginInfo =
 			Alias = "/ranks",
 		},
 
-		["/locate"] = 
-		{
-			Permission = "core.locate",
-			Handler = HandleLocateCommand,
-			HelpString = "Show your current server coordinates",
-		},
-
 		["/me"] = 
 		{
 			Permission = "core.me",
