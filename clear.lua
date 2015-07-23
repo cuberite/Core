@@ -9,10 +9,8 @@ function HandleClearCommand(Split, Player)
     if Player:HasPermission("core.admin.clear") then
         local InventoryCleared = false;
         local ClearInventory = function(OtherPlayer)
-            if (OtherPlayer:GetName() == Split[2]) then
-                OtherPlayer:GetInventory():Clear()
-                InventoryCleared = true
-            end
+            OtherPlayer:GetInventory():Clear()
+            InventoryCleared = true
         end
 
         cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory);

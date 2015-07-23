@@ -51,11 +51,9 @@ local function ChangeGameMode( GameMode, PlayerName )
 	-- the given PlayerName then change their gamemode
 	cRoot:Get():FindAndDoWithPlayer(PlayerName, 
 		function(PlayerMatch)
-			if string.lower(PlayerMatch:GetName()) == lcPlayerName then
-				PlayerMatch:SetGameMode(GameMode)
-				SendMessage(PlayerMatch, "Gamemode set to " .. GameModeNameTable[GameMode] )
-				GMChanged = true
-			end
+			PlayerMatch:SetGameMode(GameMode)
+			SendMessage(PlayerMatch, "Gamemode set to " .. GameModeNameTable[GameMode] )
+			GMChanged = true
 			return true
 		end
 	)
