@@ -13,13 +13,6 @@ g_PluginInfo =
 	
 	Commands =
 	{
-		["/back"] = 
-		{
-			Permission = "core.back",
-			Handler = HandleBackCommand,
-			HelpString = "Return to your last position",
-		},
-
 		["/ban"] = 
 		{
 			Permission = "core.ban",
@@ -64,13 +57,6 @@ g_PluginInfo =
 					Help = "Adds the specified enchantment of the given level to the specified player's currently held item",
 				},
 			},
-		},
-
-		["/fly"] = 
-		{
-			Permission = "core.fly",
-			Handler = HandleFlyCommand,
-			HelpString = " ~ Toggle fly",
 		},
 
 		["/give"] = 
@@ -197,13 +183,6 @@ g_PluginInfo =
 			Handler = HandleListRanksCommand,
 			HelpString = "List all the available ranks",
 			Alias = "/ranks",
-		},
-
-		["/locate"] = 
-		{
-			Permission = "core.locate",
-			Handler = HandleLocateCommand,
-			HelpString = "Show your current server coordinates",
 		},
 
 		["/me"] = 
@@ -442,60 +421,11 @@ g_PluginInfo =
 			},
 		},
 
-		["/top"] = 
-		{
-			Permission = "core.top",
-			Handler = HandleTopCommand,
-			HelpString = "Teleport yourself to the topmost block",
-		},
-
 		["/tp"] = 
 		{
 			Permission = "core.teleport",
 			Handler = HandleTPCommand,
 			HelpString = "Teleport yourself to a player",
-		},
-
-		["/tpa"] = 
-		{
-			Permission = "core.tpa",
-			Handler = HandleTPACommand,
-			HelpString = "Ask to teleport yourself to a player",
-		},
-
-		["/tpaccept"] = 
-		{
-			Permission = "core.tpaccept",
-			Handler = HandleTPAcceptCommand,
-			HelpString = "Accept a teleportation request",
-		},
-		
-		["/tpahere"] = 
-		{
-			Permission = "core.tpahere",
-			Handler = HandleTPACommand,
-			HelpString = " ~ Ask to teleport player to yourself",
-		},
-		
-		["/tpdeny"] = 
-		{
-			Permission = "core.tpdeny",
-			Handler = HandleTPDenyCommand,
-			HelpString = " ~ Deny a teleportation request",
-		},
-		
-		["/tphere"] = 
-		{
-			Permission = "core.tphere",
-			Handler = HandleTPHereCommand,
-			HelpString = " ~ Teleport player to yourself",
-		},
-
-		["/tps"] = 
-		{
-			Permission = "core.tps",
-			Handler = HandleTpsCommand,
-			HelpString = "Returns the tps (ticks per second) from the server.",
 		},
 
 		["/unban"] = 
@@ -555,13 +485,6 @@ g_PluginInfo =
 					Help = "Gives the caller the given amount of the specified item with the given data value and DataTag",
 				},
 			},
-		},
-
-		["/vanish"] =
-		{
-			Permission = "core.vanish",
-			Handler = HandleVanishCommand,
-			HelpString = " - Vanish",
 		},
 		
 		["/viewdistance"] = 
@@ -666,13 +589,6 @@ g_PluginInfo =
 			Handler =  HandleConsoleBan,
 			HelpString = "Bans a player by name",
 		},
-		
-		["tps"] =
-		{
-			Handler =  HandleConsoleTps,
-			HelpString =  " - Returns the tps (ticks per second) from the server.",
-		},
-
 
 		["banip"] =
 		{

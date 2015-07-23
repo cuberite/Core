@@ -5,13 +5,11 @@ Implements some of the basic commands needed to run a simple server.
 ### General
 | Command | Permission | Description |
 | ------- | ---------- | ----------- |
-|/back | core.back | Return to your last position|
 |/ban | core.ban | Ban a player|
 |/clear | core.clear | Clear the inventory of a player|
 |/difficulty | core.difficulty | Change world's difficulty.|
 |/do | core.do | Runs a command as a player.|
 |/enchant | core.enchant | Adds an enchantment to the specified player's held item|
-|/fly | core.fly |  ~ Toggle fly|
 |/gamemode | core.changegm | Change your gamemode|
 |/give | core.give | Give someone an item|
 |/help | core.help | Show available commands|
@@ -21,7 +19,6 @@ Implements some of the basic commands needed to run a simple server.
 |/kill | core.kill | Kill a player|
 |/list | core.list | Lists all connected players|
 |/listranks | core.listranks | List all the available ranks|
-|/locate | core.locate | Show your current server coordinates|
 |/me | core.me | Broadcast what you are doing|
 |/motd | core.motd | Show message of the day|
 |/plugins | core.plugins | Show list of plugins|
@@ -45,16 +42,9 @@ Implements some of the basic commands needed to run a simple server.
 |/toggledownfall | core.toggledownfall | Toggles the weather between clear skies and rain|
 |/top | core.top | Teleport yourself to the topmost block|
 |/tp | core.teleport | Teleport yourself to a player|
-|/tpa | core.tpa | Ask to teleport yourself to a player|
-|/tpaccept | core.tpaccept | Accept a teleportation request|
-|/tpahere | core.tpahere |  ~ Ask to teleport player to yourself|
-|/tpdeny | core.tpdeny |  ~ Deny a teleportation request|
-|/tphere | core.tphere |  ~ Teleport player to yourself|
-|/tps | core.tps | Returns the tps (ticks per second) from the server.|
 |/unban | core.unban | Unban a player|
 |/unsafegive | core.give.unsafe | Give someone an item, even if it is blacklisted.|
 |/unsafeitem | core.item.unsafe | Give yourself an item, even if it is blacklisted.|
-|/vanish | core.vanish |  - Vanish|
 |/viewdistance | core.viewdistance | Change your view distance|
 |/weather | core.weather | Change world's weather|
 |/whitelist |  | Manages the whitelist|
