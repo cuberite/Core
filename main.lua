@@ -16,7 +16,7 @@ g_UsePrefixes = true
 
 
 -- Global variables
-BackCoords = {}
+PlayerCoords = {}
 Messages = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
