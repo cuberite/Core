@@ -20,6 +20,7 @@ Messages = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 WorldsWorldDifficulty = {}
+lastsender = {}
 
 
 
