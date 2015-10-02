@@ -22,6 +22,7 @@ g_PluginInfo =
 
 		["/clear"] = 
 		{
+			Alias = { "/clearinventory", "/ci", "/clean", "/clearinvent", },
 			Permission = "core.clear",
 			Handler = HandleClearCommand,
 			HelpString = "Clear the inventory of a player",
@@ -43,6 +44,7 @@ g_PluginInfo =
 
 		["/enchant"] = 
 		{
+			Alias = "/enchantment",
 			Permission = "core.enchant",
 			Handler = HandleEnchantCommand,
 			HelpString = "Adds an enchantment to the specified player's held item",
@@ -106,6 +108,7 @@ g_PluginInfo =
 
 		["/help"] = 
 		{
+			Alias = "/?",
 			Permission = "core.help",
 			Handler = HandleHelpCommand,
 			HelpString = "Show available commands",
@@ -113,6 +116,7 @@ g_PluginInfo =
 
 		["/ienchant"] = 
 		{
+			Alias = "/ienchantment",
 			Permission = "core.enchant.self",
 			Handler = HandleIEnchantCommand,
 			HelpString = "Add an enchantment to an item",
@@ -172,6 +176,7 @@ g_PluginInfo =
 
 		["/list"] = 
 		{
+			Alias = { "/who", "/playerlist", "/online", "/plist", },
 			Permission = "core.list",
 			Handler = HandleListCommand,
 			HelpString = "Lists all connected players",
@@ -187,6 +192,7 @@ g_PluginInfo =
 
 		["/me"] = 
 		{
+			Alias = { "/action", "/describe", },
 			Permission = "core.me",
 			Handler = HandleMeCommand,
 			HelpString = "Broadcast what you are doing",
@@ -201,6 +207,7 @@ g_PluginInfo =
 
 		["/plugins"] = 
 		{
+			Alias = "/pl",
 			Permission = "core.plugins",
 			Handler = HandlePluginsCommand,
 			HelpString = "Show list of plugins",
@@ -215,17 +222,19 @@ g_PluginInfo =
 
 		["/portal"] =
 		{
+			Alias = "/world",
 			Permission = "core.portal",
 			Handler = HandlePortalCommand,
 			HelpString = "Move to a different world",
 		},
 		
-        ["/r"] =
-        {
-            Permission =  "core.tell",
-            HelpString =  "Answer quickly to latest private message you recieved.",
-            Handler =  HandleRCommand,
-        },
+		["/r"] =
+		{
+			Alias = "/reply",
+			Permission =  "core.tell",
+			HelpString =  "Answer quickly to latest private message you recieved.",
+			Handler =  HandleRCommand,
+		},
         
 		["/rank"] =
 		{
@@ -285,8 +294,8 @@ g_PluginInfo =
 
 		["/tell"] = 
 		{
+			Alias = { "/msg", "/m", "/t", },
 			Permission = "core.tell",
-			Alias = "/msg",
 			Handler = HandleTellCommand,
 			HelpString = "Send a private message",
 		},
@@ -423,6 +432,7 @@ g_PluginInfo =
 
 		["/tp"] = 
 		{
+			Alias = { "/tele", "/tp2p", "/teleport", },
 			Permission = "core.teleport",
 			Handler = HandleTPCommand,
 			HelpString = "Teleport yourself to a player",
@@ -430,6 +440,7 @@ g_PluginInfo =
 
 		["/unban"] = 
 		{
+			Alias = "/pardon",
 			Permission = "core.unban",
 			Handler = HandleUnbanCommand,
 			HelpString = "Unban a player",
@@ -621,6 +632,7 @@ g_PluginInfo =
 		{
 			Handler = HandleConsoleEnchant,
 			HelpString = "Adds an enchantment to the specified player's held item",
+			Alias = "enchantment",
 			ParameterCombinations =
 			{
 				{
