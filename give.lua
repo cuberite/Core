@@ -6,8 +6,8 @@ local ItemBlackList = {}
 
 
 local CommandUsage = "Usage: %s %s"
-local ItemCommandUsageTail = "<ItemName> [Amount] [Data] [DataTag]"
-local GiveCommandUsageTail = "<PlayerName> " .. ItemCommandUsageTail
+local ItemCommandUsageTail = "<item> [amount] [data] [dataTag]"
+local GiveCommandUsageTail = "<player> " .. ItemCommandUsageTail
 
 local MessagePlayerFailure = "Player not found"
 local MessageAmountFailure = "The number you have entered ( %d ) is too big, it must be at most 64"
@@ -359,7 +359,7 @@ end
 
 
 --- Handle the `give` console and in-game command
---  Usage: give <PlayerName> <item> [amount] [data] [dataTag]
+--  Usage: give <player> <item> [amount] [data] [dataTag]
 --  
 function HandleGiveCommand( Split, Player )
 
@@ -385,7 +385,7 @@ end
 
 
 --- Handle the `unsafegive` console and in-game command
---  Usage: unsafegive <PlayerName> <item> [amount] [data] [dataTag]
+--  Usage: unsafegive <player> <item> [amount] [data] [dataTag]
 --  
 function HandleUnsafeGiveCommand( Split, Player )
 

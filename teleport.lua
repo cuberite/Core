@@ -61,7 +61,7 @@ function HandleTPCommand(a_Split, a_Player)
 		return true
 
 	else
-		SendMessage( a_Player, "Usage: /tp [PlayerName] (-h) or /tp [X Y Z]" )
+		SendMessage( a_Player, "Usage: '" .. a_Split[1] .. " <player> [-h]' or '" .. a_Split[1] .. " <x> <y> <z>'" )
 		return true
 	end
 
