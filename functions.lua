@@ -84,14 +84,9 @@ function ReturnColorFromChar(char)
 
 end
 
-function CheckHardcore(Victim)
-	if cRoot:Get():GetServer():IsHardcore() then
-		if Victim:IsPlayer() == true then
-			BannedPlayersIni:SetValueB( "Banned", tolua.cast(Victim, "cPlayer"):GetName(), true )
-			BannedPlayersIni:WriteFile( "banned.ini" )
-		end
-	end
-end
+
+
+
 
 -- Teleports a_SrcPlayer to a player named a_DstPlayerName; if a_TellDst is true, will send a notice to the destination player
 function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
