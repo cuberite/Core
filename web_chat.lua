@@ -342,6 +342,8 @@ function HandleRequest_Chat( Request )
 		
 		-- Add the message to the chatlog
 		WEBLOG("[WEB] [" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"])
+		-- Add the message to the server log.
+		LOGINFO("[WEB] [" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"])
 		return ""
 	end
 
