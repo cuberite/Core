@@ -12,13 +12,9 @@ function HandleSpawnCommand(Split, Player)
 		if Player:HasPermission("core.spawn.others") then
 			local FoundPlayerCallback = function(OtherPlayer)
 				if (OtherPlayer:GetName() == Split[2]) then
-					World = OtherPlayer:GetWorld()
-					local OnAllChunksAvaliable = function()
-						OtherPlayer:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
-						SendMessageSuccess( Player, "Returned " .. OtherPlayer:GetName() .. " to world spawn" )
-						flag=1
-					end
-					World:ChunkStay({{SpawnX/16, SpawnZ/16}}, OnChunkAvailable, OnAllChunksAvaliable)		
+					OtherPlayer:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
+					SendMessageSuccess( Player, "Returned " .. OtherPlayer:GetName() .. " to world spawn" )
+					flag=1
 				end
 			end
 			cRoot:Get():FindAndDoWithPlayer(Split[2], FoundPlayerCallback)
@@ -30,12 +26,8 @@ function HandleSpawnCommand(Split, Player)
 			SendMessageFailure( Player, "You need core.spawn.others permission to do that!" )
 		end
 	else
-		World = Player:GetWorld()
-		local OnAllChunksAvaliable = function()
-			Player:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
-			SendMessageSuccess( Player, "Returned to world spawn" )
-		end
-		World:ChunkStay({{SpawnX/16, SpawnZ/16}}, OnChunkAvailable, OnAllChunksAvaliable)
+		Player:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
+		SendMessageSuccess( Player, "Returned to world spawn" )
 	end
 	
 	return true
