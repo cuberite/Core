@@ -1,41 +1,52 @@
+local Messages = {
+	SpawnBeingSend = "You are being sent to %s's spawn",
+	SpawnSentOther = "You are sending %s to %s's spawn",
+	PlayerNotFound = "Player %s not found!",
+	PermissionMissingSpecific = "You need %s permission to do that!",
+	SpawnReached = "Returned to %s's spawn",
+	SpawnSet = "Changed spawn position of %s to [X:%i Y:%i Z:%i]",
+	SpawnSetFailure = "Couldn't change spawn position of %s to [X:%i Y:%i Z:%i]"
+}
+
+local function SendToWorldSpawn( Player )
+
+	local World = Player:GetWorld()
+	local PlayerName = Player:GetName()
+	local OnAllChunksAvailable = function()
+		World:DoWithPlayer(PlayerName, function (a_FreshPlayer)
+			a_FreshPlayer:TeleportToCoords(World:GetSpawnX(), World:GetSpawnY(), World:GetSpawnZ())
+		end)
+	end -- OnAllChunksAvailable
+	World:ChunkStay({{ math.floor(World:GetSpawnX() / 16), math.floor(World:GetSpawnZ() / 16) }}, nil, OnAllChunksAvailable)
+
+end
+
 function HandleSpawnCommand(Split, Player)
-	
-	local WorldIni = cIniFile()
-	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
-	
-	local SpawnX = WorldIni:GetValue("SpawnPosition", "X")
-	local SpawnY = WorldIni:GetValue("SpawnPosition", "Y")
-	local SpawnZ = WorldIni:GetValue("SpawnPosition", "Z")
-	local flag = 0
-	
-	if (#Split == 2 and Split[2] ~= Player:GetName()) then
+
+	if ( (#Split == 2) and (Split[2] ~= Player:GetName()) ) then
 		if Player:HasPermission("core.spawn.others") then
+			local IsPlayerFound
 			local FoundPlayerCallback = function(OtherPlayer)
 				if (OtherPlayer:GetName() == Split[2]) then
-					World = OtherPlayer:GetWorld()
-					local OnAllChunksAvaliable = function()
-						OtherPlayer:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
-						SendMessageSuccess( Player, "Returned " .. OtherPlayer:GetName() .. " to world spawn" )
-						flag=1
-					end
-					World:ChunkStay({{SpawnX/16, SpawnZ/16}}, OnChunkAvailable, OnAllChunksAvaliable)		
+					local OtherPlayerName = OtherPlayer:GetName()
+					local OtherPlayerWorldName = OtherPlayer:GetWorld():GetName()
+					Player:SendMessageSuccess( string.format( Messages.SpawnSentOther, OtherPlayerName, OtherPlayerWorldName ) )
+					OtherPlayer:SendMessage( string.format( Messages.SpawnBeingSend, OtherPlayerWorldName ) )
+					SendToWorldSpawn( OtherPlayer )
+					IsPlayerFound = true
 				end
 			end
 			cRoot:Get():FindAndDoWithPlayer(Split[2], FoundPlayerCallback)
 			
-			if flag == 0 then
-				SendMessageFailure( Player, "Player " .. Split[2] .. " not found!" )
+			if not(IsPlayerFound) then
+				Player:SendMessageFailure( string.format( Messages.PlayerNotFound, Split[2]) )
 			end
 		else
-			SendMessageFailure( Player, "You need core.spawn.others permission to do that!" )
+			Player:SendMessageFailure( string.format( Messages.PermissionMissingSpecific, "core.spawn.others" ) )
 		end
 	else
-		World = Player:GetWorld()
-		local OnAllChunksAvaliable = function()
-			Player:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
-			SendMessageSuccess( Player, "Returned to world spawn" )
-		end
-		World:ChunkStay({{SpawnX/16, SpawnZ/16}}, OnChunkAvailable, OnAllChunksAvaliable)
+		Player:SendMessageInfo( string.format( Messages.SpawnReached, Player:GetWorld():GetName() ) )
+		SendToWorldSpawn( Player )
 	end
 	
 	return true
@@ -43,24 +54,15 @@ function HandleSpawnCommand(Split, Player)
 end
 
 function HandleSetSpawnCommand(Split, Player)
-	
-	local WorldIni = cIniFile()
-	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
-	
-	local PlayerX = Player:GetPosX()
-	local PlayerY = Player:GetPosY()
-	local PlayerZ = Player:GetPosZ()
-	
-	WorldIni:DeleteValue("SpawnPosition", "X")
-	WorldIni:DeleteValue("SpawnPosition", "Y")
-	WorldIni:DeleteValue("SpawnPosition", "Z")
-	
-	WorldIni:SetValue("SpawnPosition", "X", PlayerX)
-	WorldIni:SetValue("SpawnPosition", "Y", PlayerY)
-	WorldIni:SetValue("SpawnPosition", "Z", PlayerZ)
-	WorldIni:WriteFile(Player:GetWorld():GetIniFileName())
-	
-	SendMessageSuccess( Player, string.format("Changed spawn position to [X:%i Y:%i Z:%i]", PlayerX, PlayerY, PlayerZ) )
-	return true
-	
+
+	local World = Player:GetWorld()
+
+	if ( World:SetSpawn(math.floor(Player:GetPosX()) + 0.5, math.floor(Player:GetPosY()), math.floor(Player:GetPosZ()) + 0.5) ) then
+		Player:SendMessageSuccess( string.format( Messages.SpawnSet, World:GetName(), World:GetSpawnX(), World:GetSpawnY(), World:GetSpawnZ() ) )
+		return true
+	else
+		Player:SendMessageFailure( string.format( Messages.SpawnSetFailure, World:GetName(), World:GetSpawnX(), World:GetSpawnY(), World:GetSpawnZ() ) )
+		return false
+	end
+
 end
