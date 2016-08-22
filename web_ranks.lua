@@ -455,6 +455,9 @@ local function ShowSaveVisualsPage(a_Request)
 		return HTMLError("Invalid request received, missing values.")
 	end
 	
+	if (not g_ColorCodeDef[MsgNameColorCode]) then
+		return HTMLError("Invalid color code.")
+	end
 	-- Save the visuals:
 	cRankManager:SetRankVisuals(RankName, MsgPrefix, MsgSuffix, MsgNameColorCode)
 	
