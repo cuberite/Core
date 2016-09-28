@@ -255,6 +255,13 @@ g_PluginInfo =
 			HelpString = "Saves all worlds.",
 		},
 
+		["/seed"] =
+		{
+			Permission = "core.seed",
+			Handler = HandleSeedCommand,
+			HelpString = "Shows the seed of the given world name or current world, if not given.",
+		},
+
 		["/setspawn"] = 
 		{
 			Permission = "core.setspawn",
@@ -761,6 +768,12 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsoleSaveAll,
 			HelpString = "Saves all worlds.",
+		},
+
+		["seed"] =
+		{
+			Handler = HandleConsoleSeed,
+			HelpString = "Shows the seed of the given world name or default world, if not given.",
 		},
 
 		["say"] =
