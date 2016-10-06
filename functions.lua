@@ -97,9 +97,9 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 			-- Asked to teleport to self?
 			SendMessageFailure( a_SrcPlayer, "Y' can't teleport to yerself" )
 		else
-			-- If destination player is not in the same world, move to the correct world                                                                    
-			if a_SrcPlayer:GetWorld():GetName() ~= a_DstPlayerName:GetWorld():GetName() then                                                                
-				a_SrcPlayer:MoveToWorld( a_DstPlayerName:GetWorld():GetName() )                                                                         
+			-- If destination player is not in the same world, move to the correct world
+			if a_SrcPlayer:GetWorld():GetName() ~= a_DstPlayerName:GetWorld():GetName() then
+				a_SrcPlayer:MoveToWorld( a_DstPlayerName:GetWorld():GetName() )
 			end
 
 			a_SrcPlayer:TeleportToEntity( a_DstPlayerName )
@@ -137,7 +137,7 @@ function SetWorldDifficulty(a_World, a_Difficulty)
 	-- Update world.ini
 	local WorldIni = cIniFile()
 	WorldIni:ReadFile(a_World:GetIniFileName())
-	WorldIni:SetValue("Difficulty", "WorldDifficulty", Difficulty)
+	WorldIni:SetValueI("Difficulty", "WorldDifficulty", Difficulty)
 	WorldIni:WriteFile(a_World:GetIniFileName())
 end
 
@@ -155,13 +155,13 @@ end
 --  if no world of the given name is found, returns nil and informs the Player, if given, otherwise logs to console.
 --  If no WorldName was given, returns the default world if called without a Player,
 --  or the current world that the player is in if called with a Player.
---  
+--
 --  @param WorldName String containing the name of the world to find
 --  @param Player cPlayer object representing the player calling the command
---  
+--
 --  @return cWorld object representing the requested world, or nil if not found
 --
---  Called from: time.lua, weather.lua, 
+--  Called from: time.lua, weather.lua,
 --
 function GetWorld( WorldName, Player )
 
@@ -178,7 +178,7 @@ function GetWorld( WorldName, Player )
 				LOG( Message )
 			end
 		end
-		
+
 		return World
 	end
 end

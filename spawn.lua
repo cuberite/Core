@@ -1,13 +1,13 @@
 function HandleSpawnCommand(Split, Player)
-	
+
 	local WorldIni = cIniFile()
 	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
-	
-	local SpawnX = WorldIni:GetValue("SpawnPosition", "X")
-	local SpawnY = WorldIni:GetValue("SpawnPosition", "Y")
-	local SpawnZ = WorldIni:GetValue("SpawnPosition", "Z")
+
+	local SpawnX = WorldIni:GetValueI("SpawnPosition", "X")
+	local SpawnY = WorldIni:GetValueI("SpawnPosition", "Y")
+	local SpawnZ = WorldIni:GetValueI("SpawnPosition", "Z")
 	local flag = 0
-	
+
 	if (#Split == 2 and Split[2] ~= Player:GetName()) then
 		if Player:HasPermission("core.spawn.others") then
 			local FoundPlayerCallback = function(OtherPlayer)
@@ -18,11 +18,11 @@ function HandleSpawnCommand(Split, Player)
 						SendMessageSuccess( Player, "Returned " .. OtherPlayer:GetName() .. " to world spawn" )
 						flag=1
 					end
-					World:ChunkStay({{SpawnX/16, SpawnZ/16}}, OnChunkAvailable, OnAllChunksAvaliable)		
+					World:ChunkStay({{SpawnX / 16, SpawnZ / 16}}, OnChunkAvailable, OnAllChunksAvaliable)
 				end
 			end
 			cRoot:Get():FindAndDoWithPlayer(Split[2], FoundPlayerCallback)
-			
+
 			if flag == 0 then
 				SendMessageFailure( Player, "Player " .. Split[2] .. " not found!" )
 			end
@@ -35,32 +35,32 @@ function HandleSpawnCommand(Split, Player)
 			Player:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
 			SendMessageSuccess( Player, "Returned to world spawn" )
 		end
-		World:ChunkStay({{SpawnX/16, SpawnZ/16}}, OnChunkAvailable, OnAllChunksAvaliable)
+		World:ChunkStay({{SpawnX / 16, SpawnZ / 16}}, OnChunkAvailable, OnAllChunksAvaliable)
 	end
-	
+
 	return true
 
 end
 
 function HandleSetSpawnCommand(Split, Player)
-	
+
 	local WorldIni = cIniFile()
 	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
-	
+
 	local PlayerX = Player:GetPosX()
 	local PlayerY = Player:GetPosY()
 	local PlayerZ = Player:GetPosZ()
-	
+
 	WorldIni:DeleteValue("SpawnPosition", "X")
 	WorldIni:DeleteValue("SpawnPosition", "Y")
 	WorldIni:DeleteValue("SpawnPosition", "Z")
-	
-	WorldIni:SetValue("SpawnPosition", "X", PlayerX)
-	WorldIni:SetValue("SpawnPosition", "Y", PlayerY)
-	WorldIni:SetValue("SpawnPosition", "Z", PlayerZ)
+
+	WorldIni:SetValueI("SpawnPosition", "X", PlayerX)
+	WorldIni:SetValueI("SpawnPosition", "Y", PlayerY)
+	WorldIni:SetValueI("SpawnPosition", "Z", PlayerZ)
 	WorldIni:WriteFile(Player:GetWorld():GetIniFileName())
-	
+
 	SendMessageSuccess( Player, string.format("Changed spawn position to [X:%i Y:%i Z:%i]", PlayerX, PlayerY, PlayerZ) )
 	return true
-	
+
 end
