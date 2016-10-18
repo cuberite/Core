@@ -1,46 +1,69 @@
-function HandleSpawnCommand(Split, Player)
 
+--- Teleports the specified player to the spawn of the world they're in
+local function SendPlayerToWorldSpawn(a_Player)
+	-- Get the spawn coords:
+	local World = a_Player:GetWorld()
 	local WorldIni = cIniFile()
-	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
-
+	WorldIni:ReadFile(World:GetIniFileName())
 	local SpawnX = WorldIni:GetValueI("SpawnPosition", "X")
 	local SpawnY = WorldIni:GetValueI("SpawnPosition", "Y")
 	local SpawnZ = WorldIni:GetValueI("SpawnPosition", "Z")
-	local flag = 0
 
-	if (#Split == 2 and Split[2] ~= Player:GetName()) then
-		if Player:HasPermission("core.spawn.others") then
-			local FoundPlayerCallback = function(OtherPlayer)
-				if (OtherPlayer:GetName() == Split[2]) then
-					World = OtherPlayer:GetWorld()
-					local OnAllChunksAvaliable = function()
-						OtherPlayer:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
-						SendMessageSuccess( Player, "Returned " .. OtherPlayer:GetName() .. " to world spawn" )
-						flag=1
-					end
-					World:ChunkStay({{SpawnX / 16, SpawnZ / 16}}, OnChunkAvailable, OnAllChunksAvaliable)
+	-- Teleport to spawn (with ChunkStay):
+	local PlayerUUID = a_Player:GetUUID()
+	World:ChunkStay(
+		{{SpawnX / 16, SpawnZ / 16}},
+		nil,  -- OnChunkAvailable
+		function()  -- OnAllChunksAvailable
+			World:DoWithPlayerByUUID(PlayerUUID,
+				function(a_CBPlayer)
+					a_CBPlayer:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
 				end
-			end
-			cRoot:Get():FindAndDoWithPlayer(Split[2], FoundPlayerCallback)
-
-			if flag == 0 then
-				SendMessageFailure( Player, "Player " .. Split[2] .. " not found!" )
-			end
-		else
-			SendMessageFailure( Player, "You need core.spawn.others permission to do that!" )
+			)
 		end
-	else
-		World = Player:GetWorld()
-		local OnAllChunksAvaliable = function()
-			Player:TeleportToCoords(SpawnX, SpawnY, SpawnZ)
-			SendMessageSuccess( Player, "Returned to world spawn" )
-		end
-		World:ChunkStay({{SpawnX / 16, SpawnZ / 16}}, OnChunkAvailable, OnAllChunksAvaliable)
-	end
-
-	return true
-
+	)
 end
+
+
+
+
+
+function HandleSpawnCommand(a_Split, a_Player)
+	--[[
+	Command signatures:
+	/spawn  --> returns the player to the world's spawn
+	/spawn <playername>  --> returns the specified player to the spawn of the world they're in
+	--]]
+
+	if ((#a_Split == 2) and (a_Split[2] ~= a_Player:GetName())) then
+		if not(a_Player:HasPermission("core.spawn.others")) then
+			SendMessageFailure(a_Player, "You don't have the permission to do that!")
+			LOG(string.format(
+				"Player \"%s\" tried to send \"%s\" to spawn, for which they don't have the required permission, core.spawn.others",
+				a_Player:GetName(), a_Split[2]
+			))
+			return true
+		end
+
+		cRoot:Get():FindAndDoWithPlayer(a_Split[2],
+			function(OtherPlayer)
+				if (OtherPlayer:GetName() ~= a_Split[2]) then
+					SendMessageFailure(a_Player, "Player " .. a_Split[2] .. " not found!" )
+					return
+				end
+				SendMessageSuccess(a_Player, "Returned " .. OtherPlayer:GetName() .. " to world spawn")
+				SendPlayerToWorldSpawn(OtherPlayer)
+			end
+		)
+	else
+		SendPlayerToWorldSpawn(a_Player)
+	end
+	return true
+end
+
+
+
+
 
 function HandleSetSpawnCommand(Split, Player)
 
@@ -60,7 +83,7 @@ function HandleSetSpawnCommand(Split, Player)
 	WorldIni:SetValueI("SpawnPosition", "Z", PlayerZ)
 	WorldIni:WriteFile(Player:GetWorld():GetIniFileName())
 
-	SendMessageSuccess( Player, string.format("Changed spawn position to [X:%i Y:%i Z:%i]", PlayerX, PlayerY, PlayerZ) )
+	SendMessageSuccess(Player, string.format("Changed spawn position to [X:%i Y:%i Z:%i]", PlayerX, PlayerY, PlayerZ))
 	return true
 
 end
