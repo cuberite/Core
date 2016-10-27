@@ -52,12 +52,6 @@ function Initialize(Plugin)
 	
 	-- Bind all the console commands:
 	RegisterPluginInfoConsoleCommands();
-
-	-- Load settings:
-	IniFile = cIniFile()
-	IniFile:ReadFile("settings.ini")
-	HardCore = IniFile:GetValueSet("GameMode", "Hardcore", "false")
-	IniFile:WriteFile("settings.ini")
 	
 	-- Load SpawnProtection and WorldLimit settings for individual worlds:
 	cRoot:Get():ForEachWorld(
