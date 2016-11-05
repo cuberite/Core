@@ -41,6 +41,13 @@ g_PluginInfo =
 			HelpString = "Changes the difficulty level of the world you're located in.",
 		},
 
+		["/effect"] = 
+		{
+			Permission = "core.effect",
+			Handler = HandleEffectCommand,
+			HelpString = "Adds an effect to a player.",
+		},
+
 		["/enchant"] = 
 		{
 			Permission = "core.enchant",
@@ -220,12 +227,12 @@ g_PluginInfo =
 			HelpString = "Moves your player to a different world.",
 		},
 		
-        ["/r"] =
-        {
-            Permission =  "core.tell",
-            HelpString =  "Replies to the latest private message you recieved.",
-            Handler =  HandleRCommand,
-        },
+		["/r"] =
+		{
+			Permission = "core.tell",
+			Handler = HandleRCommand,
+			HelpString = "Replies to the latest private message you received.",
+		},
         
 		["/rank"] =
 		{

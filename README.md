@@ -9,6 +9,7 @@ Implements some of the basic commands needed to run a simple server.
 |/clear | core.clear | Clears the inventory of a player.|
 |/difficulty | core.difficulty | Changes the difficulty level of the world you're located in.|
 |/do | core.do | Runs a command as a player.|
+|/effect | core.effect | Adds an effect to a player.|
 |/enchant | core.enchant | Adds an enchantment to a specified player's held item.|
 |/gamemode | core.changegm | Changes a player's gamemode.|
 |/give | core.give | Gives an item to a player.|
