@@ -7,8 +7,8 @@ dependencies:
   - sudo apt-get install lua5.1 luarocks libssl-dev
   - sudo luarocks install luafilesystem
   - sudo luarocks install lsqlite3
-  - sudo luarocks install luasocket
   - sudo luarocks install luasec OPENSSL_LIBDIR=/usr/lib/x86_64-linux-gnu
+  - sudo luarocks install luasocket
   - git clone https://github.com/madmaxoft/CuberitePluginChecker ~/Checker
   - wget -O ~/InfoReg.lua https://raw.githubusercontent.com/cuberite/cuberite/master/Server/Plugins/InfoReg.lua
   - mkdir ~/AutoAPI
