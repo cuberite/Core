@@ -489,6 +489,10 @@ function IntializeItemBlacklist( Plugin )
 		[E_BLOCK_DOUBLE_STONE_SLAB]         = true,
 		[E_BLOCK_WALL_BANNER]               = true,
 		[E_BLOCK_STANDING_BANNER]           = true,
+		[E_BLOCK_PURPUR_DOUBLE_SLAB]        = true,
+		[E_BLOCK_BEETROOTS]                 = true,
+		[E_BLOCK_END_GATEWAY]               = true,
+		[E_BLOCK_FROSTED_ICE]               = true,
 	}
 
 	-- First, try to open the Item BlackList file if it exists
