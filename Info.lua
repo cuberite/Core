@@ -113,6 +113,7 @@ g_PluginInfo =
 
 		["/help"] = 
 		{
+			Alias = "/?",
 			Permission = "core.help",
 			Handler = HandleHelpCommand,
 			HelpString = "Shows available commands.",
@@ -208,6 +209,7 @@ g_PluginInfo =
 
 		["/plugins"] = 
 		{
+			Alias = "/pl",
 			Permission = "core.plugins",
 			Handler = HandlePluginsCommand,
 			HelpString = "Shows a list of the plugins.",
