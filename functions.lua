@@ -98,11 +98,11 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 			SendMessageFailure( a_SrcPlayer, "Y' can't teleport to yerself" )
 		else
 			-- If destination player is not in the same world, move to the correct world
-			if a_SrcPlayer:GetWorld():GetName() ~= a_DstPlayerName:GetWorld():GetName() then
-				a_SrcPlayer:MoveToWorld( a_DstPlayerName:GetWorld():GetName() )
+			if a_SrcPlayer:GetWorld() ~= a_DstPlayerName:GetWorld() then
+				a_SrcPlayer:MoveToWorld( a_DstPlayerName:GetWorld(), true, Vector3d( a_DstPlayerName:GetPosX() + 0.5, a_DstPlayerName:GetPosY(), a_DstPlayerName:GetPosZ() + 0.5 ) )
+			else
+				a_SrcPlayer:TeleportToEntity( a_DstPlayerName )
 			end
-
-			a_SrcPlayer:TeleportToEntity( a_DstPlayerName )
 			SendMessageSuccess( a_SrcPlayer, "You teleported to " .. a_DstPlayerName:GetName() )
 			if (a_TellDst) then
 				SendMessage( a_DstPlayerName, a_SrcPlayer:GetName().." teleported to you" )
