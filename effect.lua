@@ -27,10 +27,18 @@ function HandleEffectCommand(Split, Player)
 			Player:SendMessageFailure("Invalid effect ID \"" .. Split[3] .. "\"")
 		elseif tonumber(Split[4]) == nil then
 			Player:SendMessageFailure("Invalid duration \"" .. Split[4] .. "\"")
+		elseif tonumber(Split[4]) < 0 then
+			Player:SendMessageFailure("The duration in seconds must be at least 0")
 		elseif tonumber(Split[4]) > 1000000 then
 			Player:SendMessageFailure("The duration in seconds must be at most 1000000")
 		elseif Amplifier == nil then
 			Player:SendMessageFailure("Invalid amplification amount \"" .. Split[5] .. "\"")
+		elseif Amplifier < 0 then
+			Player:SendMessageFailure("The amplification amount must be at least 0")
+		elseif Amplifier > 24 and EffectID == 19 or Amplifier > 24 and EffectID == 20 then
+			Player:SendMessageFailure("The amplification amount must be at most 24")
+		elseif Amplifier > 49 and EffectID == 10 then
+			Player:SendMessageFailure("The amplification amount must be at most 49")
 		elseif Amplifier > 255 then
 			Player:SendMessageFailure("The amplification amount must be at most 255")
 		elseif Split[2] == "@a" then
