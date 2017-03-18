@@ -29,6 +29,7 @@ Implements some of the basic commands needed to run a simple server.
 |/regen | core.regen | Regenerates a chunk.|
 |/reload | core.reload | Reloads all plugins.|
 |/save-all | core.save-all | Saves all worlds.|
+|/say | | Sends a message in the chat to other players.|
 |/seed | core.seed | Shows the seed of the given world name or current world, if not given.|
 |/setspawn | core.setspawn | Changes the world's spawn point.|
 |/spawn | core.spawn | Returns a player to the spawn point.|

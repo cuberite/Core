@@ -264,6 +264,12 @@ g_PluginInfo =
 			HelpString = "Saves all worlds.",
 		},
 
+		["/say"] = 
+		{
+			Handler = HandleSayCommand,
+			HelpString = "Sends a message in the chat to other players.",
+		},
+
 		["/seed"] =
 		{
 			Permission = "core.seed",
