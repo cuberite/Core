@@ -10,6 +10,25 @@ local MobDamages =
 	["cBlaze"]        = { 4, 6, 9  }
 }
 
+local IsEntityBlockedInPeaceful =
+{
+	["cZombie"]       = true,
+	["cZombiePigman"] = true,
+	["cSpider"]       = true,
+	["cCaveSpider"]   = true,
+	["cEnderman"]     = true,
+	["cEnderDragon"]  = true,
+	["cSkeleton"]     = true,
+	["cGhast"]        = true,
+	["cCreeper"]      = true,
+	["cSilverfish"]   = true,
+	["cBlaze"]        = true,
+	["cSlime"]        = true,
+	["cWitch"]        = true,
+	["cWither"]       = true,
+	["cSilverfish"]   = true,
+}
+
 function HandleDifficultyCommand ( Split, Player )
 	if (Split[2] == nil) then
 		if (#Split == 1) then
@@ -24,6 +43,19 @@ function HandleDifficultyCommand ( Split, Player )
 	if (Split[2] == "peaceful") or (Split[2] == "0") or (Split[2] == "p") then
 		SetWorldDifficulty(Player:GetWorld(), 0)
 		SendMessage( Player, "World difficulty set to peaceful" )
+		
+		--Remove mobs which are not allowed in peaceful
+		Player:GetWorld():ForEachEntity(
+		function (a_Entity)
+			if not(a_Entity:IsMob()) then
+			return;
+			end
+			local Monster = tolua.cast(a_Entity, "cMonster");
+			if (IsEntityBlockedInPeaceful[Monster:GetClass()]) then
+			Monster:Destroy();
+			end
+		end
+		);
 	elseif (Split[2] == "easy") or (Split[2] == "1") or (Split[2] == "e") then
 		SetWorldDifficulty(Player:GetWorld(), 1)
 		SendMessage( Player, "World difficulty set to easy" )
@@ -74,25 +106,6 @@ function OnTakeDamage(Receiver, TDI)
 		TDI.FinalDamage = Damages[WorldDifficulty]
 	end
 end
-
-local IsEntityBlockedInPeaceful =
-{
-	["cZombie"]       = true,
-	["cZombiePigman"] = true,
-	["cSpider"]       = true,
-	["cCaveSpider"]   = true,
-	["cEnderman"]     = true,
-	["cEnderDragon"]  = true,
-	["cSkeleton"]     = true,
-	["cGhast"]        = true,
-	["cCreeper"]      = true,
-	["cSilverfish"]   = true,
-	["cBlaze"]        = true,
-	["cSlime"]        = true,
-	["cWitch"]        = true,
-	["cWither"]       = true,
-	["cSilverfish"]   = true,
-}
 
 function OnSpawningEntity(World, Entity)
 	if GetWorldDifficulty(World) == 0 then
