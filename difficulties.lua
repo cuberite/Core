@@ -46,16 +46,16 @@ function HandleDifficultyCommand ( Split, Player )
 		
 		--Remove mobs which are not allowed in peaceful
 		Player:GetWorld():ForEachEntity(
-		function (a_Entity)
-			if not(a_Entity:IsMob()) then
-			return
+			function (a_Entity)
+				if not(a_Entity:IsMob()) then
+					return
+				end
+				local Monster = tolua.cast(a_Entity, "cMonster")
+				if (Monster:GetMobFamily() == cMonster.mfHostile) then
+					Monster:Destroy()
+				end
 			end
-			local Monster = tolua.cast(a_Entity, "cMonster")
-			if (Monster:GetMobFamily() == cMonster.mfHostile) then
-				Monster:Destroy()
-			end
-		end
-		)
+			)
 	elseif (Split[2] == "easy") or (Split[2] == "1") or (Split[2] == "e") then
 		SetWorldDifficulty(Player:GetWorld(), 1)
 		SendMessage( Player, "World difficulty set to easy" )
