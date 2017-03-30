@@ -48,14 +48,14 @@ function HandleDifficultyCommand ( Split, Player )
 		Player:GetWorld():ForEachEntity(
 		function (a_Entity)
 			if not(a_Entity:IsMob()) then
-			return;
+			return
 			end
-			local Monster = tolua.cast(a_Entity, "cMonster");
-			if (IsEntityBlockedInPeaceful[Monster:GetClass()]) then
-			Monster:Destroy();
+			local Monster = tolua.cast(a_Entity, "cMonster")
+			if (Monster:GetMobFamily() == cMonster.mfHostile) then
+				Monster:Destroy()
 			end
 		end
-		);
+		)
 	elseif (Split[2] == "easy") or (Split[2] == "1") or (Split[2] == "e") then
 		SetWorldDifficulty(Player:GetWorld(), 1)
 		SendMessage( Player, "World difficulty set to easy" )
