@@ -55,7 +55,7 @@ function HandleDifficultyCommand ( Split, Player )
 					Monster:Destroy()
 				end
 			end
-			)
+		)
 	elseif (Split[2] == "easy") or (Split[2] == "1") or (Split[2] == "e") then
 		SetWorldDifficulty(Player:GetWorld(), 1)
 		SendMessage( Player, "World difficulty set to easy" )
