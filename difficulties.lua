@@ -50,9 +50,8 @@ function HandleDifficultyCommand ( Split, Player )
 				if not(a_Entity:IsMob()) then
 					return
 				end
-				local Monster = tolua.cast(a_Entity, "cMonster")
-				if (Monster:GetMobFamily() == cMonster.mfHostile) then
-					Monster:Destroy()
+				if (a_Entity:GetMobFamily() == cMonster.mfHostile) then
+					a_Entity:Destroy()
 				end
 			end
 		)
