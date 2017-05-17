@@ -27,6 +27,7 @@ local IsEntityBlockedInPeaceful =
 	["cWitch"]        = true,
 	["cWither"]       = true,
 	["cSilverfish"]   = true,
+	["cGuardian"]     = true,
 }
 
 function HandleDifficultyCommand ( Split, Player )

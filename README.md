@@ -34,6 +34,7 @@ Implements some of the basic commands needed to run a simple server.
 |/spawn | core.spawn | Returns a player to the spawn point.|
 |/stop | core.stop | Stops the server.|
 |/sudo | core.sudo | Runs a command as a player, ignoring permissions.|
+|/summon | core.summon | Summons an entity in the world.|
 |/tell | core.tell | Sends a private message to a player.|
 |/time |  | Sets or displays the time.|
 |/time add | core.time.set | Adds a given value to the current time.|
@@ -91,6 +92,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.spawn |  | `/spawn` |  |
 | core.stop |  | `/stop` |  |
 | core.sudo |  | `/sudo` |  |
+| core.summon |  | `/summon` |  |
 | core.teleport |  | `/tp` |  |
 | core.tell |  | `/r`, `/tell` |  |
 | core.time.query.daytime | Allows players to display the time of day. | `/time query daytime` | everyone |
