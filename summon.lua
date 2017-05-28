@@ -163,7 +163,7 @@ function HandleSummonCommand(Split, Player)
 		end
 
 		if Split[2] == "boat" or Split[2] == "Boat" then
-			World:SpawnBoat(X, Y, Z)
+			World:SpawnBoat(X, Y, Z, 0)
 			Success()
 		elseif Split[2] == "falling_block" or Split[2] == "FallingSand" then
 			World:SpawnFallingBlock(X, Y, Z, 12, 0)
