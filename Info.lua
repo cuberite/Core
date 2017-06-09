@@ -266,6 +266,7 @@ g_PluginInfo =
 
 		["/say"] = 
 		{
+			Permission = "core.say",
 			Handler = HandleSayCommand,
 			HelpString = "Sends a message in the chat to other players.",
 		},
