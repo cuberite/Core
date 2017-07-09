@@ -75,3 +75,33 @@ end
 
 
 
+function HandleOpCommand(a_Split, a_Player)
+	-- Check the params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Too many or too few parameters, print the usage:
+		SendMessage(a_Player, "Usage: " .. a_Split[1] .. " <player>")
+		return true
+	end
+
+	local PlayerName = a_Split[2]
+
+	return HandleRankCommand({"rank", PlayerName, "Admin"}, a_Player)
+end
+
+
+
+
+
+function HandleDeOpCommand(a_Split, a_Player)
+	-- Check the params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Too many or too few parameters, print the usage:
+		SendMessage(a_Player, "Usage: " .. a_Split[1] .. " <player>")
+		return true
+	end
+
+	local PlayerName = a_Split[2]
+
+	return HandleRankCommand({"rank", PlayerName, "Default"}, a_Player)
+end
+

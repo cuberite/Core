@@ -306,6 +306,38 @@ end
 
 
 
+function HandleConsoleOp(a_Split)
+	-- Check the params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Not enough or too many parameters
+		return true, "Usage: " .. a_Split[1] .. " <player>"
+	end
+
+	local PlayerName = a_Split[2]
+
+	return HandleConsoleRank({"rank", PlayerName, "Admin"})
+end
+
+
+
+
+
+function HandleConsoleDeOp(a_Split)
+	-- Check the params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Not enough or too many parameters
+		return true, "Usage: " .. a_Split[1] .. " <player>"
+	end
+
+	local PlayerName = a_Split[2]
+
+	return HandleConsoleRank({"rank", PlayerName, "Default"})
+end
+
+
+
+
+
 function HandleConsoleSaveAll(Split)
 	cRoot:Get():SaveAllChunks()
 	return true

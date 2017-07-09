@@ -243,6 +243,20 @@ g_PluginInfo =
 			HelpString = "Shows or sets a player's rank.",
 		},
 
+		["/op"] =
+		{
+			Permission = "core.rank",
+			Handler = HandleOpCommand,
+			HelpString = "Add a player to the Admin rank.",
+		},
+
+		["/deop"] =
+		{
+			Permission = "core.rank",
+			Handler = HandleDeOpCommand,
+			HelpString = "Add a player to the Default rank.",
+		},
+
 		["/regen"] =
 		{
 			Permission = "core.regen",
@@ -753,6 +767,20 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsoleRank,
 			HelpString = "Shows or sets a player's rank.",
+		},
+
+		["op"] =
+		{
+			Permission = "core.rank",
+			Handler = HandleConsoleOp,
+			HelpString = "Add a player to the Admin rank.",
+		},
+
+		["deop"] =
+		{
+			Permission = "core.rank",
+			Handler = HandleConsoleDeOp,
+			HelpString = "Add a player to the Default rank.",
 		},
 		
 		["regen"] =

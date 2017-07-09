@@ -7,6 +7,7 @@ Implements some of the basic commands needed to run a simple server.
 | ------- | ---------- | ----------- |
 |/ban | core.ban | Bans a player.|
 |/clear | core.clear | Clears the inventory of a player.|
+|/deop | core.rank | Add a player to the Default rank.|
 |/difficulty | core.difficulty | Changes the difficulty level of the world you're located in.|
 |/do | core.do | Runs a command as a player.|
 |/effect | core.effect | Adds an effect to a player.|
@@ -22,6 +23,7 @@ Implements some of the basic commands needed to run a simple server.
 |/listranks | core.listranks | Shows a list of the available ranks.|
 |/me | core.me | Broadcasts what you are doing.|
 |/motd | core.motd | Shows the message of the day.|
+|/op | core.rank | Add a player to the Operator rank. |
 |/plugins | core.plugins | Shows a list of the plugins.|
 |/portal | core.portal | Moves your player to a different world.|
 |/r | core.tell | Replies to the latest private message you recieved.|
@@ -82,7 +84,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.motd |  | `/motd` |  |
 | core.plugins |  | `/plugins` |  |
 | core.portal |  | `/portal` |  |
-| core.rank |  | `/rank` |  |
+| core.rank |  | `/rank`, `/op`, `/deop` |  |
 | core.regen |  | `/regen` |  |
 | core.reload |  | `/reload` |  |
 | core.save-all |  | `/save-all` |  |
