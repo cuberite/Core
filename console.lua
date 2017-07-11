@@ -306,6 +306,45 @@ end
 
 
 
+function HandleConsoleOp(a_Split)
+	-- Check the params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Not enough or too many parameters
+		return true, "Usage: " .. a_Split[1] .. " <player>"
+	end
+
+	local PlayerName = a_Split[2]
+	local AdminRank = GetAdminRank()
+
+	if not AdminRank then
+		SendMessage(a_Player, "No admin rank found, missing * permission")
+		return true
+	end
+
+	return HandleConsoleRank({"rank", PlayerName, AdminRank})
+end
+
+
+
+
+
+function HandleConsoleDeOp(a_Split)
+	-- Check the params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Not enough or too many parameters
+		return true, "Usage: " .. a_Split[1] .. " <player>"
+	end
+
+	local PlayerName = a_Split[2]
+	local DefaultRank = cRankManager:GetDefaultRank()
+
+	return HandleConsoleRank({"rank", PlayerName, DefaultRank})
+end
+
+
+
+
+
 function HandleConsoleSaveAll(Split)
 	cRoot:Get():SaveAllChunks()
 	return true

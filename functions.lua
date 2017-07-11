@@ -182,3 +182,17 @@ function GetWorld( WorldName, Player )
 		return World
 	end
 end
+
+
+function GetAdminRank()
+	local AdminRank
+	local Ranks = cRankManager:GetAllRanks()
+	for _, Rank in ipairs(Ranks) do
+		local Permissions = cRankManager:GetRankPermissions(Rank)
+		for _, Permission in ipairs(Permissions) do
+			if Permission == "*" then
+				return Rank
+			end
+		end
+	end
+end

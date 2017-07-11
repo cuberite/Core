@@ -75,3 +75,40 @@ end
 
 
 
+function HandleOpCommand(a_Split, a_Player)
+	-- Check the params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Too many or too few parameters, print the usage:
+		SendMessage(a_Player, "Usage: " .. a_Split[1] .. " <player>")
+		return true
+	end
+
+	local PlayerName = a_Split[2]
+	local AdminRank = GetAdminRank()
+
+	if not AdminRank then
+		SendMessage(a_Player, "No admin rank found, missing * permission")
+		return true
+	end
+
+	return HandleRankCommand({"rank", PlayerName, AdminRank}, a_Player)
+end
+
+
+
+
+
+function HandleDeOpCommand(a_Split, a_Player)
+	-- Check the params:
+	if ((a_Split[2] == nil) or (a_Split[3] ~= nil)) then
+		-- Too many or too few parameters, print the usage:
+		SendMessage(a_Player, "Usage: " .. a_Split[1] .. " <player>")
+		return true
+	end
+
+	local PlayerName = a_Split[2]
+	local DefaultRank = cRankManager:GetDefaultRank()
+
+	return HandleRankCommand({"rank", PlayerName, DefaultRank}, a_Player)
+end
+
