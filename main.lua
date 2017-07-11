@@ -27,8 +27,8 @@ lastsender = {}
 
 -- Called by Cuberite on plugin start to initialize the plugin
 function Initialize(Plugin)
-	Plugin:SetName( "Core" )
-	Plugin:SetVersion( g_PluginInfo["Version"] )
+	Plugin:SetName("Core")
+	Plugin:SetVersion(tonumber(g_PluginInfo["Version"]))
 
 	-- Register for all hooks needed
 	cPluginManager:AddHook(cPluginManager.HOOK_CHAT,                  OnChat)
