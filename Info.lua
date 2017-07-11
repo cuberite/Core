@@ -247,14 +247,14 @@ g_PluginInfo =
 		{
 			Permission = "core.rank",
 			Handler = HandleOpCommand,
-			HelpString = "Add a player to the Admin rank.",
+			HelpString = "Add a player to the administrator rank.",
 		},
 
 		["/deop"] =
 		{
 			Permission = "core.rank",
 			Handler = HandleDeOpCommand,
-			HelpString = "Add a player to the Default rank.",
+			HelpString = "Add a player to the default rank.",
 		},
 
 		["/regen"] =
