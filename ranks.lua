@@ -85,7 +85,28 @@ function HandleOpCommand(a_Split, a_Player)
 
 	local PlayerName = a_Split[2]
 
-	return HandleRankCommand({"rank", PlayerName, "Admin"}, a_Player)
+	local AdminRank
+	local Ranks = cRankManager:GetAllRanks()
+	for _, Rank in ipairs(Ranks) do
+		local Permissions = cRankManager:GetRankPermissions(Rank)
+		for _, Permission in ipairs(Permissions) do
+			if Permission == "*" then
+				AdminRank = Rank
+				break
+			end
+		end
+		if AdminRank then
+			break
+		end
+	end
+
+	if not AdminRank then
+		SendMessage(a_Player, "No admin rank found, missing * permission")
+		return true
+	end
+
+
+	return HandleRankCommand({"rank", PlayerName, AdminRank}, a_Player)
 end
 
 
