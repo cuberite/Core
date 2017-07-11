@@ -330,8 +330,9 @@ function HandleConsoleDeOp(a_Split)
 	end
 
 	local PlayerName = a_Split[2]
+	local DefaultRank = cRankManager:GetDefaultRank()
 
-	return HandleConsoleRank({"rank", PlayerName, "Default"})
+	return HandleConsoleRank({"rank", PlayerName, DefaultRank})
 end
 
 

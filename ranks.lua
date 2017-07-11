@@ -101,7 +101,8 @@ function HandleDeOpCommand(a_Split, a_Player)
 	end
 
 	local PlayerName = a_Split[2]
+	local DefaultRank = cRankManager:GetDefaultRank()
 
-	return HandleRankCommand({"rank", PlayerName, "Default"}, a_Player)
+	return HandleRankCommand({"rank", PlayerName, DefaultRank}, a_Player)
 end
 
