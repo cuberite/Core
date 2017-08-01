@@ -185,7 +185,6 @@ local function GiveItemCommand( Split, Player, SafeCommand )
 	local ItemName = Split[3]
 	local Amount = tonumber( Split[4] ) or 1
 	local DataValue = tonumber( Split[5] ) or 0
-	local Name
 
 	if not PlayerName or not ItemName or Amount < 1 or DataValue < 0 then
 		return false
@@ -275,17 +274,12 @@ local function GiveItemCommand( Split, Player, SafeCommand )
 
 			-- Set a custom name if given
 			if DataTagTable.display.Name then
-				Name = DataTagTable.display.Name
-				Item.m_CustomName = Name
+				Item.m_CustomName = DataTagTable.display.Name
 			end
 
 			-- Set Lore if given
 			if DataTagTable.display.Lore then
-				local Lore = ""
-				for _, value in ipairs(DataTagTable.display.Lore) do
-					Lore = Lore .. value .. "`"  -- Newline is '`' character rather than "\n"
-				end
-				Item.m_Lore = Lore
+				Item.m_LoreTable = DataTagTable.display.Lore
 			end
 			
 		end
@@ -325,7 +319,7 @@ local function GiveItemCommand( Split, Player, SafeCommand )
 		Item:AddCount(Amount - 1)
 		NewPlayer:GetInventory():AddItem( Item )
 
-		local MessageHead = string.format( MessageGiveSuccessful, ( Name or ItemToString( Item ) ), Amount )
+		local MessageHead = string.format( MessageGiveSuccessful, ( ( Item.m_CustomName ~= "" ) and Item.m_CustomName or ItemToString( Item ) ), Amount )
 		local MessageTail = " to " .. NewPlayer:GetName()
 		SendMessageSuccess( NewPlayer, MessageHead )
 		if Player and NewPlayer:GetName() ~= Player:GetName() then
