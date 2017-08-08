@@ -74,7 +74,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.effect |  | `/effect` |  |
 | core.enchant | Allows players to add an enchantment to a player's held item. | `/enchant` | admins |
 | core.enchant.self | Allows players to add an enchantment to their own held item. | `/ienchant` | admins |
-| core.gamerule |  | `/gamerule` |  |
+| core.gamerule | Allows players to set and query game rule values | `/gamerule` | admins |
 | core.give | Allows players to give items to other players. | `/give` | admins |
 | core.give.unsafe | Allows players to give items to other players, even if the item is blacklisted. | `/unsafegive` | none |
 | core.help |  | `/help` |  |
