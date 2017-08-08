@@ -6,7 +6,7 @@
 g_PluginInfo = 
 {
 	Name = "Core",
-	Version = "15",
+	Version = "16",
 	Date = "2014-06-11",
 	SourceLocation = "https://github.com/cuberite/Core",
 	Description = [[Implements some of the basic commands needed to run a simple server.]],
@@ -107,6 +107,24 @@ g_PluginInfo =
 				{
 					Params = "gamemode player",
 					Help = "Changes the gamemode of the specified player, rather then your own.",
+				},
+			},
+		},
+
+		["/gamerule"] =
+		{
+			Permission = "core.gamerule",
+			Handler = HandleGameRuleCommand,
+			HelpString = "Sets or queries a game rule value.",
+			ParameterCombinations =
+			{
+				{
+					Params = "rule",
+					Help = "Queries a game rule value",
+				},
+				{
+					Params = "rule value",
+					Help = "Sets a game rule value",
 				},
 			},
 		},
