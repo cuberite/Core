@@ -715,6 +715,24 @@ g_PluginInfo =
 			},
 		},
 
+		
+		["gamerule"]=
+		{
+			Handler = HandleConsoleGameRule,
+			HelpString = "Sets or queries a game rule value.",
+			ParameterCombinations =
+			{
+				{
+					Params = "rule",
+					Help = "Queries a game rule value",
+				},
+				{
+					Params = "rule value",
+					Help = "Sets a game rule value",
+				},
+			},
+		},
+
 		["give"] =
 		{
 			Handler =  HandleConsoleGive,
@@ -1111,6 +1129,12 @@ g_PluginInfo =
 		["core.enchant.self"] =
 		{
 			Description = "Allows players to add an enchantment to their own held item.",
+			RecommendedGroups = "admins",
+		},
+
+		["core.gamerule"] =
+		{
+			Description = "Allows players to set and query game rule values",
 			RecommendedGroups = "admins",
 		},
 
