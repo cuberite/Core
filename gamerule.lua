@@ -43,8 +43,8 @@ end
 local function HandleSplit(split)
 	local ret = ""
 	if #split == 1 then -- List currently set game rules
-		for rule, value in pairs(GameRules) do
-			ret = ret .. rule .. "="..tostring(value).. ", "
+		for rule in pairs(GameRules) do
+			ret = ret .. rule .. ", "
 		end
 		ret = ret:sub(1, -3)
 		return ret
