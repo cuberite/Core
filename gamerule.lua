@@ -118,7 +118,7 @@ local function InitalizeIni()
 	ini:CaseSensitive()
 	local function CopyIni()
 		LOGINFO("Game Rule Settings not found or corrupt! Resetting to default game rules! (This may mess up your game)")
-		cFile:Copy(cPluginManager:GetPluginsPath().."/"..cPluginManager:GetCurrentPlugin():GetFolderName().."/gamerules.ini", "gamerules.ini")
+		cFile:Copy("Plugins/Core/gamerules.ini", "gamerules.ini")
 	end
 	
 	if not(ini:ReadFile("gamerules.ini")) then -- gamerules.ini doesn't exist
