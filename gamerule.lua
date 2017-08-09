@@ -28,7 +28,7 @@ end
 local function SaveValue(rule, value)
 	if type(value) == boolean then
 		ini:SetValueB("Game Rules", rule, value)
-		ini:SetValue("Types", rule, number)
+		ini:SetValue("Types", rule, boolean)
 	elseif type(value) == number then
 		ini:SetValueI("Game Rules", rule, value)
 		ini:SetValue("Types", rule, number)
@@ -102,6 +102,7 @@ end
 -- Handle Commands
 function HandleGameRuleCommand(split, player)
 	player:SendMessage(HandleSplit(split))
+	return true
 end
 
 function HandleConsoleGameRule(split)
