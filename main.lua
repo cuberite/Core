@@ -21,7 +21,7 @@ WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 WorldsWorldDifficulty = {}
 lastsender = {}
-
+GameRules = {}
 
 
 
@@ -68,6 +68,9 @@ function Initialize(Plugin)
 
 	-- Initialize the Item Blacklist (the list of items that cannot be obtained using the give command)
 	IntializeItemBlacklist( Plugin )
+	
+	-- Initialize Game Rules
+	IntializeGameRule()
 
 	-- Add webadmin tabs:
 	Plugin:AddWebTab("Manage Server",   HandleRequest_ManageServer)

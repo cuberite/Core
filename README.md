@@ -3,7 +3,6 @@ Implements some of the basic commands needed to run a simple server.
 # Commands
 
 ### General
-
 | Command | Permission | Description |
 | ------- | ---------- | ----------- |
 |/ban | core.ban | Bans a player.|
@@ -14,6 +13,7 @@ Implements some of the basic commands needed to run a simple server.
 |/effect | core.effect | Adds an effect to a player.|
 |/enchant | core.enchant | Adds an enchantment to a specified player's held item.|
 |/gamemode | core.changegm | Changes a player's gamemode.|
+|/gamerule | core.gamerule | Sets or queries a game rule value.|
 |/give | core.give | Gives an item to a player.|
 |/help | core.help | Shows available commands.|
 |/ienchant | core.enchant.self | Adds an enchantment to an item.|
@@ -24,10 +24,10 @@ Implements some of the basic commands needed to run a simple server.
 |/listranks | core.listranks | Shows a list of the available ranks.|
 |/me | core.me | Broadcasts what you are doing.|
 |/motd | core.motd | Shows the message of the day.|
-|/op | core.rank | Add a player to the administrator rank. |
+|/op | core.rank | Add a player to the administrator rank.|
 |/plugins | core.plugins | Shows a list of the plugins.|
 |/portal | core.portal | Moves your player to a different world.|
-|/r | core.tell | Replies to the latest private message you recieved.|
+|/r | core.tell | Replies to the latest private message you received.|
 |/rank | core.rank | Shows or sets a player's rank.|
 |/regen | core.regen | Regenerates a chunk.|
 |/reload | core.reload | Reloads all plugins.|
@@ -64,7 +64,6 @@ Implements some of the basic commands needed to run a simple server.
 
 
 # Permissions
-
 | Permissions | Description | Commands | Recommended groups |
 | ----------- | ----------- | -------- | ------------------ |
 | core.ban |  | `/ban` |  |
@@ -72,8 +71,10 @@ Implements some of the basic commands needed to run a simple server.
 | core.clear |  | `/clear` |  |
 | core.difficulty |  | `/difficulty` |  |
 | core.do |  | `/do` |  |
+| core.effect |  | `/effect` |  |
 | core.enchant | Allows players to add an enchantment to a player's held item. | `/enchant` | admins |
 | core.enchant.self | Allows players to add an enchantment to their own held item. | `/ienchant` | admins |
+| core.gamerule | Allows players to set and query game rule values | `/gamerule` | admins |
 | core.give | Allows players to give items to other players. | `/give` | admins |
 | core.give.unsafe | Allows players to give items to other players, even if the item is blacklisted. | `/unsafegive` | none |
 | core.help |  | `/help` |  |
@@ -87,7 +88,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.motd |  | `/motd` |  |
 | core.plugins |  | `/plugins` |  |
 | core.portal |  | `/portal` |  |
-| core.rank |  | `/rank`, `/op`, `/deop` |  |
+| core.rank |  | `/rank`, `/deop`, `/op` |  |
 | core.regen |  | `/regen` |  |
 | core.reload |  | `/reload` |  |
 | core.save-all |  | `/save-all` |  |
