@@ -88,7 +88,3 @@ function Initialize(Plugin)
 
 	return true
 end
-
-function OnDisable()
-	LOG( "Disabled Core!" )
-end
