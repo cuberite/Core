@@ -5,93 +5,93 @@ local JavaScript = [[
 	<script type="text/javascript">
 		function createXHR()
 		{
-			var request = false
+			var request = false;
 			try {
-				request = new ActiveXObject('Msxml2.XMLHTTP')
+				request = new ActiveXObject('Msxml2.XMLHTTP');
 			}
 			catch (err2) {
 				try {
-					request = new ActiveXObject('Microsoft.XMLHTTP')
+					request = new ActiveXObject('Microsoft.XMLHTTP');
 				}
 				catch (err3) {
 					try {
-						request = new XMLHttpRequest()
+						request = new XMLHttpRequest();
 					}
 					catch (err1) {
-						request = false
+						request = false;
 					}
 				}
 			}
-			return request
+			return request;
 		}
 
 		function OpenPage( url, postParams, callback )
 		{
-			var xhr = createXHR()
+			var xhr = createXHR();
 			xhr.onreadystatechange=function()
 			{
 				if (xhr.readyState == 4)
 				{
-					callback( xhr )
+					callback( xhr );
 				}
 			}
-			xhr.open( (postParams!=null)?"POST":"GET", url , true)
+			xhr.open( (postParams!=null)?"POST":"GET", url , true);
 			if( postParams != null )
 			{
-				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			}
-			xhr.send(postParams)
+			xhr.send(postParams);
 		}
 
 		function LoadPageInto( url, postParams, storage )
 		{
 			OpenPage( url, postParams, function( xhr )
 			{
-				var ScrollBottom = storage.scrollTop + storage.offsetHeight
-				var bAutoScroll = (ScrollBottom >= storage.scrollHeight) // Detect whether we scrolled to the bottom of the div
+				var ScrollBottom = storage.scrollTop + storage.offsetHeight;
+				var bAutoScroll = (ScrollBottom >= storage.scrollHeight); // Detect whether we scrolled to the bottom of the div
 
-				results = xhr.responseText.split("<<divider>>")
-				if( results[2] != LastMessageID ) return // Check if this message was meant for us
+				results = xhr.responseText.split("<<divider>>");
+				if( results[2] != LastMessageID ) return; // Check if this message was meant for us
 
-				LastMessageID = results[1]
+				LastMessageID = results[1];
 				if( results[0] != "" )
 				{
-					storage.innerHTML += results[0]
+					storage.innerHTML += results[0];
 
 					if( bAutoScroll == true )
 					{
-						storage.scrollTop = storage.scrollHeight
+						storage.scrollTop = storage.scrollHeight;
 					}
 				}
-			} )
+			} );
 
 
-			return false
+			return false;
 		}
 
 		function SendChatMessage()
 		{
-			var MessageContainer = document.getElementById('ChatMessage')
-			if( MessageContainer.value == "" ) return
+			var MessageContainer = document.getElementById('ChatMessage');
+			if( MessageContainer.value == "" ) return;
 
-			var postParams = "ChatMessage=" + MessageContainer.value
+			var postParams = "ChatMessage=" + MessageContainer.value;
 			OpenPage( "/~webadmin/Core/Chat/", postParams, function( xhr )
 			{
-				RefreshChat()
-			} )
-			MessageContainer.value = ""
+				RefreshChat();
+			} );
+			MessageContainer.value = "";
 		}
 
 		function RefreshChat()
 		{
-			var postParams = "JustChat=true&LastMessageID=" + LastMessageID
-			LoadPageInto("/~webadmin/Core/Chat/", postParams, document.getElementById('ChatDiv'))
+			var postParams = "JustChat=true&LastMessageID=" + LastMessageID;
+			LoadPageInto("/~webadmin/Core/Chat/", postParams, document.getElementById('ChatDiv'));
 		}
 
-		setInterval(RefreshChat, 1000)
-		window.onload = RefreshChat
+		setInterval(RefreshChat, 1000);
+		window.onload = RefreshChat;
 
-		var LastMessageID = 0
+		var LastMessageID = 0;
 
 	</script>
 ]]
