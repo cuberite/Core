@@ -67,11 +67,11 @@ function HandleSetSpawnCommand(Split, Player)
 
 	local World = Player:GetWorld()
 
-	local PlayerX = math.floor(Player:GetPosX())
-	local PlayerY = math.floor(Player:GetPosY())
-	local PlayerZ = math.floor(Player:GetPosZ())
+	local PlayerX = Player:GetPosX()
+	local PlayerY = Player:GetPosY()
+	local PlayerZ = Player:GetPosZ()
 
-	if ( World:SetSpawn(PlayerX + 0.5, PlayerY, PlayerZ + 0.5) ) then
+	if ( World:SetSpawn(PlayerX, PlayerY, PlayerZ) ) then
 		SendMessageSuccess(Player, string.format("Changed spawn position to [X:%i Y:%i Z:%i]", PlayerX, PlayerY, PlayerZ))
 		return true
 	else
