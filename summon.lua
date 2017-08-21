@@ -14,7 +14,7 @@ local Minecarts =
 	["MinecartTNT"] = E_ITEM_MINECART_WITH_TNT
 }
 
-local Mobs = 
+local Mobs =
 {
 	["bat"] = mtBat,
 	["blaze"] = mtBlaze,
@@ -110,6 +110,17 @@ local Projectiles =
 	["WitherSkull"] = cProjectileEntity.pkWitherSkull
 }
 
+function RelativeCommandCoord(a_Split, a_Relative)
+	if string.sub(a_Split, 1, 1) == "~" then
+		local rel = tonumber(string.sub(a_Split, 2, -1))
+		if rel then
+			return a_Relative + rel
+		end
+		return nil
+	end
+	return tonumber(a_Split)
+end
+
 function HandleSummonCommand(Split, Player)
 	if Split[2] == nil then
 		Player:SendMessageInfo("Usage: " .. Split[1] .. " <entityname> [x] [y] [z]")
@@ -120,27 +131,15 @@ function HandleSummonCommand(Split, Player)
 		local World = Player:GetWorld()
 
 		if Split[3] ~= nil then
-			X = tonumber(Split[3])
-			local RelativeX = loadstring(Split[3]:gsub("~", "return " .. Player:GetPosX() .. "+0"))
-			if RelativeX then
-				X = select(2, pcall(setfenv(RelativeX, {})))
-			end
+			X = RelativeCommandCoord(Split[3], X)
 		end
 
 		if Split[4] ~= nil then
-			Y = tonumber(Split[4])
-			local RelativeY = loadstring(Split[4]:gsub("~", "return " .. Player:GetPosY() .. "+0"))
-			if RelativeY then
-				Y = select(2, pcall(setfenv(RelativeY, {})))
-			end
+			Y = RelativeCommandCoord(Split[4], Y)
 		end
 
 		if Split[5] ~= nil then
-			Z = tonumber(Split[5])
-			local RelativeZ = loadstring(Split[5]:gsub("~", "return " .. Player:GetPosZ() .. "+0"))
-			if RelativeZ then
-				Z = select(2, pcall(setfenv(RelativeZ, {})))
-			end
+			Z = RelativeCommandCoord(Split[5], Z)
 		end
 
 		if X == nil then
@@ -192,4 +191,3 @@ function HandleSummonCommand(Split, Player)
 	end
 	return true
 end
-
