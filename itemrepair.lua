@@ -37,7 +37,7 @@ function OnCraftingNoRecipe(Player, Grid, Recipe)
 	NewDamage = math.max(0, NewDamage)  -- Not lower than zero
 
 	Recipe:SetResult(Items[1].m_ItemType, 1, NewDamage)
-	Recipe:SetIngredient(Items[1].x, Items[1].y, Items[1]);
-	Recipe:SetIngredient(Items[2].x, Items[2].y, Items[2]);
+	Recipe:SetIngredient(Items[1].x, Items[1].y, Items[1])
+	Recipe:SetIngredient(Items[2].x, Items[2].y, Items[2])
 	return true
 end
