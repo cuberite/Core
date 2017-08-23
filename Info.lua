@@ -7,7 +7,7 @@ g_PluginInfo =
 {
 	Name = "Core",
 	Version = "16",
-	Date = "2014-06-11",
+	Date = "2017-08-23",
 	SourceLocation = "https://github.com/cuberite/Core",
 	Description = [[Implements some of the basic commands needed to run a simple server.]],
 	
@@ -120,11 +120,19 @@ g_PluginInfo =
 			{
 				{
 					Params = "rule",
-					Help = "Queries a game rule value",
+					Help = "Queries a game rule value in current world",
+				},
+				{
+					Params = "rule world",
+					Help = "Queries a game rule value in specified world",
 				},
 				{
 					Params = "rule value",
-					Help = "Sets a game rule value",
+					Help = "Sets a game rule value in current world",
+				},
+				{
+					Params = "rule value world",
+					Hep = "Sets a game rule value in specified world"
 				},
 			},
 		},
@@ -541,7 +549,6 @@ g_PluginInfo =
 				},
 			},
 		},
-		
 		["/viewdistance"] = 
 		{
 			Permission = "core.viewdistance",
@@ -724,11 +731,37 @@ g_PluginInfo =
 			{
 				{
 					Params = "rule",
-					Help = "Queries a game rule value",
+					Help = "Queries a game rule value in current world context",
+				},
+				{
+					Params = "rule world",
+					Help = "Queries a game rule value in specified world"
 				},
 				{
 					Params = "rule value",
-					Help = "Sets a game rule value",
+					Help = "Sets a game rule value in current world context",
+				},
+				{
+					Params = "rule value world",
+					Help = "Sets a game rule in specified world",
+				},
+			},
+			Subcommands =
+			{
+				world = {
+					HelpString = "Sets or queries the gamerule world context",
+					Handler = HandleConsoleGameRuleWorld,
+					ParameterCombinations =
+					{
+						{
+							Params = "",
+							Help = "Queries current world context",
+						},
+						{
+							Params = "WorldName",
+							Help = "Sets the current world context for setting/quering game rules",
+						},
+					},
 				},
 			},
 		},
@@ -1199,5 +1232,4 @@ g_PluginInfo =
 		},
 	},  -- Permissions
 }  -- g_PluginInfo
-
 
