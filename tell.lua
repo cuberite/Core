@@ -3,30 +3,30 @@ function HandleTellCommand(Split, Player)
 		SendMessage( Player, "Usage: "..Split[1].." <player> <message ...>")
 		return true
 	end
-	
+
 	local FoundPlayer = false
-	
+
 	local SendMessage = function(OtherPlayer)
-	
+
 		if (OtherPlayer:GetName() == Split[2]) then
 			local newSplit = table.concat( Split, " ", 3 )
-    
+
 			SendMessageSuccess( Player, "Message to player " .. Split[2] .. " sent!" )
 			OtherPlayer:SendMessagePrivateMsg(newSplit, Player:GetName())
-			
+
 			lastsender[OtherPlayer:GetName()] = Player:GetName()
-			
+
 			FoundPlayer = true
 		end
 	end
 
 	cRoot:Get():ForEachPlayer(SendMessage)
-	
+
 	if not FoundPlayer then
 		SendMessageFailure( Player, 'Player "' ..Split[2].. '" not found')
 	end
-	
-	return true;
+
+	return true
 end
 
 

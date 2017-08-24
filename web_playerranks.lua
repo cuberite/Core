@@ -357,7 +357,7 @@ end
 
 --- Processes the clear of all player ranks
 local function ShowClearPlayersPage(a_Request)
-	cRankManager:ClearPlayerRanks();
+	cRankManager:ClearPlayerRanks()
 	LOGINFO("WebAdmin: A user cleared all player ranks")
 
 	-- Update ingame players:
@@ -416,7 +416,7 @@ function HandleRequest_PlayerRanks(a_Request)
 	if (Handler == nil) then
 		return HTMLError("An internal error has occurred, no handler for subpage " .. Subpage .. ".")
 	end
-	
+
 	local PageContent = Handler(a_Request)
 	return PageContent
 end

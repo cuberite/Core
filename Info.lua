@@ -346,7 +346,14 @@ g_PluginInfo =
 			HelpString = "Runs a command as a player, ignoring permissions.",
 		},
 
-		["/tell"] =
+		["/summon"] = 
+		{
+			Permission = "core.summon",
+			Handler = HandleSummonCommand,
+			HelpString = "Summons an entity in the world.",
+		},
+
+		["/tell"] = 
 		{
 			Permission = "core.tell",
 			Alias = "/msg",

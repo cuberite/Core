@@ -1,13 +1,13 @@
 function HandleRequest_ManageServer( Request )
-	local Content = "" 
+	local Content = ""
 	if (Request.PostParams["RestartServer"] ~= nil) then
-		cRoot:Get():QueueExecuteConsoleCommand("restart");
+		cRoot:Get():QueueExecuteConsoleCommand("restart")
 	elseif (Request.PostParams["ReloadServer"] ~= nil) then
-		cRoot:Get():GetPluginManager():ReloadPlugins();
+		cRoot:Get():GetPluginManager():ReloadPlugins()
 	elseif (Request.PostParams["StopServer"] ~= nil) then
-		cRoot:Get():QueueExecuteConsoleCommand("stop");
+		cRoot:Get():QueueExecuteConsoleCommand("stop")
 	elseif (Request.PostParams["WorldSaveAllChunks"] ~= nil) then
-		cRoot:Get():GetWorld(Request.PostParams["WorldSaveAllChunks"]):QueueSaveAllChunks();
+		cRoot:Get():GetWorld(Request.PostParams["WorldSaveAllChunks"]):QueueSaveAllChunks()
 	end
 	Content = Content .. [[
 	<form method="POST">
@@ -25,12 +25,11 @@ function HandleRequest_ManageServer( Request )
 	local LoopWorlds = function( World )
 		Content = Content .. [[
 		<tr><td><input type="submit" value="]] .. World:GetName() .. [[" name="WorldSaveAllChunks"> Save all the chunks of world ]] .. World:GetName() .. [[</td></tr>
-		
+
 		]]
 	end
 	cRoot:Get():ForEachWorld( LoopWorlds )
 	Content = Content .. "</th></table>"
-	
+
 	return Content
 end
-

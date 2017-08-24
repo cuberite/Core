@@ -33,7 +33,7 @@ function Initialize(Plugin)
 	-- Register for all hooks needed
 	cPluginManager:AddHook(cPluginManager.HOOK_CHAT,                  OnChat)
 	cPluginManager:AddHook(cPluginManager.HOOK_CRAFTING_NO_RECIPE,    OnCraftingNoRecipe)
-	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_DESTROYED,      OnDisconnect);
+	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_DESTROYED,      OnDisconnect)
 	cPluginManager:AddHook(cPluginManager.HOOK_KILLING,               OnKilling)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_BREAKING_BLOCK, OnPlayerBreakingBlock)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_JOINED,         OnPlayerJoined)
@@ -43,16 +43,16 @@ function Initialize(Plugin)
 	cPluginManager:AddHook(cPluginManager.HOOK_TAKE_DAMAGE,           OnTakeDamage)
 
 	-- Bind ingame commands:
-	
+
 	-- Load the InfoReg shared library:
 	dofile(cPluginManager:GetPluginsPath() .. "/InfoReg.lua")
-	
+
 	-- Bind all the commands:
-	RegisterPluginInfoCommands();
-	
+	RegisterPluginInfoCommands()
+
 	-- Bind all the console commands:
-	RegisterPluginInfoConsoleCommands();
-	
+	RegisterPluginInfoConsoleCommands()
+
 	-- Load SpawnProtection and WorldLimit settings for individual worlds:
 	cRoot:Get():ForEachWorld(
 		function (a_World)
@@ -62,7 +62,7 @@ function Initialize(Plugin)
 
 	-- Initialize the banlist, load its DB, do whatever processing it needs on startup:
 	InitializeBanlist()
-	
+
 	-- Initialize the whitelist, load its DB, do whatever processing it needs on startup:
 	InitializeWhitelist()
 
@@ -85,7 +85,7 @@ function Initialize(Plugin)
 	Plugin:AddWebTab("Player Ranks",    HandleRequest_PlayerRanks)
 
 	LoadMotd()
-	
+
 	WEBLOGINFO("Core is initialized")
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
 

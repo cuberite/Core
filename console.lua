@@ -11,8 +11,8 @@ function HandleConsoleClear(Split)
 	if (#Split == 1) then
 		return true, "Usage: " .. Split[1] .. " <player>"
     end
-    
-    local InventoryCleared = false;
+
+    local InventoryCleared = false
     local ClearInventory = function(Player)
         if (Player:GetName() == Split[2]) then
             Player:GetInventory():Clear()
@@ -20,11 +20,11 @@ function HandleConsoleClear(Split)
         end
     end
 
-    cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory);
+    cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory)
     if (InventoryCleared) then
         return true, "You cleared the inventory of " .. Split[2]
     else
-        return true, "Player not found" 
+        return true, "Player not found"
     end
 end
 
@@ -60,7 +60,7 @@ function HandleConsoleKill(Split)
 	end
 
 	-- Kill the player:
-	local HasKilled = false;
+	local HasKilled = false
 	cRoot:Get():FindAndDoWithPlayer(Split[2],
 		function(Player)
 			if (Player:GetName() == Split[2]) then
@@ -68,13 +68,13 @@ function HandleConsoleKill(Split)
 				HasKilled = true
 			end
 		end
-	);
-	
+	)
+
 	-- Report success or failure:
 	if (HasKilled) then
-		return true, "Player " .. Split[2] .. " is killed" 
+		return true, "Player " .. Split[2] .. " is killed"
 	else
-		return true, "Player not found" 
+		return true, "Player not found"
 	end
 end
 
@@ -106,7 +106,7 @@ function HandleConsoleListGroups(a_Split)
 		-- Too many params:
 		return true, "Too many parameters. Usage: listgroups [rank]"
 	end
-	
+
 	-- If no params are given, list all groups that the manager knows:
 	local RankName = a_Split[2]
 	if (RankName == nil) then
@@ -118,7 +118,7 @@ function HandleConsoleListGroups(a_Split)
 		Out = Out .. table.concat(Groups, ", ")
 		return true, Out
 	end
-	
+
 	-- A rank name is given, list the groups in that rank:
 	local Groups = cRankManager:GetRankGroups(RankName)
 	local Out = "Groups in rank " .. RankName .. ":\n" .. table.concat(Groups, ", ")
@@ -210,7 +210,7 @@ function HandleConsolePlugins(Split)
 			return (string.lower(a_Plugin1.Folder) < string.lower(a_Plugin2.Folder))
 		end
 	)
-	
+
 	-- Prepare a translation table for the status:
 	local StatusName =
 	{
@@ -220,7 +220,7 @@ function HandleConsolePlugins(Split)
 		[cPluginManager.psNotFound] = "NotFound",
 		[cPluginManager.psDisabled] = "Disabled",
 	}
-	
+
 	-- Generate the output:
 	local Out = {}
 	table.insert(Out, "There are ")
@@ -257,7 +257,7 @@ function HandleConsoleRank(a_Split)
 		-- Not enough or too many parameters
 		return true, "Usage: " .. a_Split[1] .. " <player> [rank]"
 	end
-	
+
 	-- Translate the PlayerName to a UUID:
 	local PlayerName = a_Split[2]
 	local PlayerUUID
@@ -271,7 +271,7 @@ function HandleConsoleRank(a_Split)
 		-- The server is in offline mode, generate an offline-mode UUID, no validity check is possible:
 		PlayerUUID = cClientHandle:GenerateOfflineUUID(PlayerName)
 	end
-	
+
 	-- View the player's rank, if requested:
 	if (a_Split[3] == nil) then
 		-- "/rank <PlayerName>" usage, display the rank:
@@ -371,9 +371,9 @@ function HandleConsoleTeleport(Split)
 			Player:TeleportToCoords(Split[3], Split[4], Split[5])
 		end
 	end
-	
-	local IsPlayerOnline = false;
-	local FirstPlayerOnline = false;
+
+	local IsPlayerOnline = false
+	local FirstPlayerOnline = false
 	local GetPlayerCoords = function(Player)
 		if (Player:GetName() == Split[3]) then
 			PosX = Player:GetPosX()
@@ -382,7 +382,7 @@ function HandleConsoleTeleport(Split)
 			FirstPlayerOnline = true
 		end
 	end
-	
+
 	local TeleportToPlayer = function(Player)
 		if (Player:GetName() == Split[2]) then
 		    Player:TeleportToCoords(PosX, PosY, PosZ)
@@ -391,9 +391,9 @@ function HandleConsoleTeleport(Split)
 	end
 
 	if (#Split == 3) then
-		cRoot:Get():FindAndDoWithPlayer(Split[3], GetPlayerCoords);
+		cRoot:Get():FindAndDoWithPlayer(Split[3], GetPlayerCoords)
 		if (FirstPlayerOnline) then
-			cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToPlayer);
+			cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToPlayer)
 			if (IsPlayerOnline) then
 				return true, "Teleported " .. Split[2] .." to " .. Split[3]
 			end
@@ -401,7 +401,7 @@ function HandleConsoleTeleport(Split)
 				return true, "Player " .. Split[3] .." not found"
 		end
 	elseif (#Split == 5) then
-		cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToCoords);
+		cRoot:Get():FindAndDoWithPlayer(Split[2], TeleportToCoords)
 		if (IsPlayerOnline) then
 			return true, "You teleported " .. Split[2] .. " to [X:" .. Split[3] .. " Y:" .. Split[4] .. " Z:" .. Split[5] .. "]"
 		else
@@ -451,7 +451,7 @@ function HandleConsoleUnrank(a_Split)
 		-- The server is in offline mode, generate an offline-mode UUID, no validity check is possible:
 		PlayerUUID = cClientHandle:GenerateOfflineUUID(PlayerName)
 	end
-	
+
 	-- Unrank the player:
 	cRankManager:RemovePlayerRank(PlayerUUID)
 
