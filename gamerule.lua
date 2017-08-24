@@ -8,6 +8,7 @@
 -- SQLite DB handler
 local grDB
 local ValidationCallbacks = {}
+WorldContext = cRoot:Get():GetDefaultWorld()
 
 -- Helper Validation functions
 function ValidateBoolean(a_Value)

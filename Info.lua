@@ -346,14 +346,14 @@ g_PluginInfo =
 			HelpString = "Runs a command as a player, ignoring permissions.",
 		},
 
-		["/summon"] = 
+		["/summon"] =
 		{
 			Permission = "core.summon",
 			Handler = HandleSummonCommand,
 			HelpString = "Summons an entity in the world.",
 		},
 
-		["/tell"] = 
+		["/tell"] =
 		{
 			Permission = "core.tell",
 			Alias = "/msg",
@@ -753,26 +753,22 @@ g_PluginInfo =
 					Help = "Sets a game rule in specified world",
 				},
 			},
-			Subcommands =
+		},
+		["gamerule-world"] = {
+			HelpString = "Sets or queries the gamerule world context",
+			Handler = HandleConsoleGameRuleWorld,
+			ParameterCombinations =
 			{
-				world = {
-					HelpString = "Sets or queries the gamerule world context",
-					Handler = HandleConsoleGameRuleWorld,
-					ParameterCombinations =
-					{
-						{
-							Params = "",
-							Help = "Queries current world context",
-						},
-						{
-							Params = "WorldName",
-							Help = "Sets the current world context for setting/quering game rules",
-						},
-					},
+				{
+					Params = "",
+					Help = "Queries current world context",
+				},
+				{
+					Params = "WorldName",
+					Help = "Sets the current world context for setting/quering game rules",
 				},
 			},
 		},
-
 		["give"] =
 		{
 			Handler =  HandleConsoleGive,

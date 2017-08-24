@@ -42,6 +42,14 @@ function HandleConsoleGameRule(a_Split)
 end
 
 function HandleConsoleGameRuleWorld(a_Split)
-	LOG("Not Yet")
+	if (#a_Split == 2) then
+		local newWorld = cRoot:Get():GetWorld(a_Split[2])
+		if not newWorld then
+			LOGWARNING(a_Split[2] .. " not a valid world!")
+		else
+			WorldContext = newWorld
+		end
+	end
+	LOG("Current World Context: " .. WorldContext:GetName())
 	return true
 end
