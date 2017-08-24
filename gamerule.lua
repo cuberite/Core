@@ -7,143 +7,120 @@
 
 -- SQLite DB handler
 local grDB
-local ini = cIniFile()
-local boolean = "boolean"
-local number = "number"
+local ValidationCallbacks = {}
 
-
-local function CheckType(rule, a_Type)
-	local trueType = type(GameRules[rule])
-	if trueType == "nil" then
-		return true
-	elseif trueType == a_Type then
-		return true
+-- Helper Validation functions
+function ValidateBoolean(a_Value)
+	a_Value = a_Value:lower()
+	if (a_Value == "0" or a_Value == "false") then
+		return true, false
+	elseif (a_Value == "1" or a_Value == "true") then
+		return true, true
 	else
-		return false
+		return false, "is not true or false"
+	end
+end
+
+function ValidateNumber(a_Value)
+	if tonumber(a_Value) then
+		return true, tonumber(a_Value)
+	else
+		return false, "is not a valid number"
 	end
 end
 
 
 -- Saves value to ini file
-local function SaveValue(rule, value)
-	if type(value) == boolean then
-		ini:SetValueB("Game Rules", rule, value)
-		ini:SetValue("Types", rule, boolean)
-	elseif type(value) == number then
-		ini:SetValueI("Game Rules", rule, value)
-		ini:SetValue("Types", rule, number)
+function SaveValue(a_Rule, a_Value, a_World)
+	local WorldIni = cIniFile()
+	if (type(a_World) == "string") then -- File path
+		WorldIni:ReadFile(a_World)
+	elseif (type(a_World) == "nil") then -- Idiot
+		return false
+	else -- cIniFile
+		WorldIni = a_World
+	end
+	WorldIni:CaseSensitive()
+	if type(a_Value) == "boolean" then
+		WorldIni:SetValueB("Game Rules", a_Rule, a_Value)
+	elseif type(a_Value) == "number" then
+		WorldIni:SetValueI("Game Rules", a_Rule, a_Value)
 	else
-		ini:SetValue("Game Rules", rule, value)
-		ini:SetValue("Types", rule, "string")
+		WorldIni:SetValue("Game Rules", a_Rule, a_Value)
 	end
-	ini:WriteFile("gamerules.ini")
-end
-	
-
-local function HandleSplit(split)
-	local ret = ""
-	if #split == 1 then -- List currently set game rules
-		for rule in pairs(GameRules) do
-			ret = ret .. rule .. ", "
-		end
-		ret = ret:sub(1, -3)
-		return ret
-	elseif #split == 2 then -- Show game rule value
-		if not(GameRules[split[2]]) then -- that game rule does not exist!
-			return cCompositeChat("No game rule called '" .. split[2] .. "' is available", mtWarning)
-		else
-			return split[2] .. " = " .. tostring(GameRules[split[2]])
-		end
-	elseif #split >= 3 then -- Set game rule
-		local rule = split[2]
-		local lowerThird = split[3]:lower()
-		local canSet = true
-		if lowerThird == "true" then
-			if CheckType(rule, boolean) then
-				GameRules[rule] = true
-				SaveValue(rule, true)
-			else
-				canSet = false
-			end
-		elseif lowerThird == "false" then
-			if CheckType(rule, boolean) then
-				GameRules[rule] = false
-				SaveValue(rule, false)
-			else
-				canSet = false
-			end
-		elseif tonumber(lowerThird) ~= nil then
-			if CheckType(rule, number) then
-				GameRules[rule] = tonumber(lowerThird)
-				SaveValue(rule, tonumber(lowerThird))
-			else
-				canSet = false
-			end
-		elseif CheckType(rule, "string") then
-			split[3] = table.concat(split, " ", 3)
-			GameRules[rule] = split[3]
-			SaveValue(rule, split[3])
-		else
-			canSet = false
-		end
-		
-		
-		if canSet then
-			return "Game rule " .. rule .. " has been updated to " .. split[3]
-		elseif type(GameRules[rule]) == boolean then
-			return cCompositeChat("'" .. split[3] .. "' is not true or false", mtWarning)
-		elseif type(GameRules[rule]) == number then
-			return cCompositeChat("'" .. split[3] .. "' is not a valid number", mtWarning)
-		end
-	end
+	WorldIni:Flush()
 end
 
-
--- Handle Commands
-function HandleGameRuleCommand(split, player)
-	player:SendMessage(HandleSplit(split))
+-- Register for validation
+-- a_Rule is a string
+-- a_Callback is a function
+-- Returns boolean on success or failure
+-- a_Callback should return true, value if value is valid, or false, reason if value is invalid
+ -- Ex: AddGameRuleValidation('keepInventory', ValidateBoolean)
+function AddGameRuleValidation(a_Rule, a_Callback)
+	if (
+		(type(a_Rule) ~= "string" or a_Rule == "") or
+		(type(a_Callback) ~= "function")
+	) then
+		LOGWARNING("Cannot register validation for rule '" .. tostring(a_Rule or "<nil>") .."'")
+		return false
+	end
+	if ValidationCallbacks[a_Rule] then
+		LOGWARNING("Overriding validation function for " .. a_Rule .. " (" .. tostring(ValidationCallbacks[a_Rule]) .. " > " .. tostring(a_Callback) .. ")")
+	end
+	ValidationCallbacks[a_Rule] = a_Callback
 	return true
 end
 
-function HandleConsoleGameRule(split)
-	LOG(HandleSplit(split))
-	return true
+-- Called when loading and saving values
+-- Returns true, value if rule/value is valid, false, reason otherwise
+function Validate(a_Rule, a_Value)
+	local f = ValidationCallbacks[a_Rule]
+	if f then
+		return f(a_Value)
+	end
+	-- If no callback registered, just return a_Value as is
+	return true, a_Value
 end
 
+local function LoadGameRules()
+	cRoot:Get():ForEachWorld(function (a_World)
+		local name = a_World:GetName()
+		local WorldIni = cIniFile()
+		WorldIni:CaseSensitive()
+		WorldIni:ReadFile(a_World:GetIniFileName())
+		GameRules[name] = {}
+		local key = WorldIni:FindKey("Game Rules")
+		if key == -1 then
+			-- Cannot find Game Rules section
+			LOGINFO("Game rules for world " .. name .. " not found, resetting to default game rules!")
+			WorldIni:AddKeyName("Game Rules")
+			local defaultIni = cIniFile()
+			defaultIni:CaseSensitive()
+			defaultIni:ReadFile("Plugins/Core/gamerules.ini")
+			local key = defaultIni:FindKey("Game Rules")
+			for v = 0, defaultIni:GetNumValues(key) -1 do
+				local rule = defaultIni:GetValueName(key, v)
+				local isValid, value = Validate(rule, defaultIni:GetValue(key, v))
+				if isValid then
+					SaveValue(rule, value, WorldIni)
+					GameRules[name][rule] = value
+				end
+			end
+			WorldIni:Flush()
+		else
+			for k = 0, WorldIni:GetNumValues(key)-1 do
+				local rule = WorldIni:GetValueName(key, k)
+				local isValid, value = Validate(rule, WorldIni:GetValue(key, k))
+				if isValid then
+					GameRules[name][rule] = value
+				end
+			end
+		end
+	end)
+end
 
 -- Initialization functions
-local function InitalizeIni()
-	-- Try to open gamerules.ini and load [Game Rules] and [Types] keys
-	-- Or copy default ini file to server root
-	ini:CaseSensitive()
-	local function CopyIni()
-		LOGINFO("Game Rule Settings not found or corrupt! Resetting to default game rules! (This may mess up your game)")
-		cFile:Copy("Plugins/Core/gamerules.ini", "gamerules.ini")
-	end
-	
-	if not(ini:ReadFile("gamerules.ini")) then -- gamerules.ini doesn't exist
-		CopyIni()
-	else
-		numKeys = ini:GetNumValues("Game Rules")
-		if (numKeys ~= ini:GetNumValues("Types")) then
-			-- gamerules.ini is corrupt!
-			CopyIni()
-		end
-		-- Load game rules into GameRules table
-		for rule = 0, numKeys -1 do
-			local name = ini:GetValueName("Game Rules", rule)
-			local valueType = ini:GetValue("Types", name)
-			if valueType == boolean then
-				GameRules[name] = ini:GetValueB("Game Rules", name)
-			elseif valueType == number then
-				GameRules[name] = ini:GetValueI("Game Rules", name)
-			else -- assume string
-				GameRules[name] = ini:GetValue("Game Rules", name)
-			end			
-		end
-	end
-end
-
 local function InitalizeDB()
 	-- Validate GameRule.sqlite or create a new DB
 	local ErrMsg
@@ -180,9 +157,10 @@ end
 
 --- Init function to be called upon plugin setup
 function IntializeGameRule()
+	AddGameRuleValidation("keepInventory", ValidateBoolean)
+	LoadGameRules()
 	-- Loads gamerules.ini values into GaeRule table, or creates the ini file
-	InitalizeIni()
 	InitalizeDB()
 	-- Register hooks for various game rules
-	
+
 end
