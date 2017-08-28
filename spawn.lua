@@ -3,9 +3,9 @@
 local function SendPlayerToWorldSpawn(a_Player)
 	-- Get the spawn coords:
 	local World = a_Player:GetWorld()
-	local SpawnX = World:SpawnX()
-	local SpawnY = World:SpawnY()
-	local SpawnZ = World:SpawnZ()
+	local SpawnX = World:GetSpawnX()
+	local SpawnY = World:GetSpawnY()
+	local SpawnZ = World:GetSpawnZ()
 
 	-- Teleport to spawn (with ChunkStay):
 	local PlayerUUID = a_Player:GetUUID()
