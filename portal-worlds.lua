@@ -14,7 +14,7 @@ function HandlePortalCommand(Split, Player)
 	elseif( World == nil ) then
 		SendMessageFailure( Player, "Could not find world " .. Split[2] .. "!" )
 		return true
-	elseif( Player:ScheduleMoveToWorld(World, Vector3d(World:GetSpawnX(), World:GetSpawnY(), World:GetSpawnZ())) == false ) then
+	elseif( Player:ScheduleMoveToWorld(World, Vector3d(World:GetSpawnX(), World:GetSpawnY(), World:GetSpawnZ()), false, true) == false ) then
 		SendMessageFailure( Player, "Could not move to world " .. Split[2] .. "!" )
 		return true
 	end
