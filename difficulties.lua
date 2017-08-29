@@ -27,6 +27,7 @@ local IsEntityBlockedInPeaceful =
 	["cWitch"]        = true,
 	["cWither"]       = true,
 	["cSilverfish"]   = true,
+	["cGuardian"]     = true,
 }
 
 function HandleDifficultyCommand ( Split, Player )
@@ -43,7 +44,7 @@ function HandleDifficultyCommand ( Split, Player )
 	if (Split[2] == "peaceful") or (Split[2] == "0") or (Split[2] == "p") then
 		SetWorldDifficulty(Player:GetWorld(), 0)
 		SendMessage( Player, "World difficulty set to peaceful" )
-		
+
 		--Remove mobs which are not allowed in peaceful
 		Player:GetWorld():ForEachEntity(
 			function (a_Entity)
@@ -82,20 +83,20 @@ function OnTakeDamage(Receiver, TDI)
 	if Attacker:IsA("cZombie") then
 		-- The damage value from the zombie is computed from the zombie health. See http://minecraft.gamepedia.com/Zombie
 		if (WorldDifficulty == 1) then
-			if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 2;
-			elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 3;
-			elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 3;
-			else TDI.FinalDamage = 4; end
+			if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 2
+			elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 3
+			elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 3
+			else TDI.FinalDamage = 4 end
 		elseif (WorldDifficulty == 2) then
-			if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 3;
-			elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 4;
-			elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 5;
-			else TDI.FinalDamage = 6; end
+			if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 3
+			elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 4
+			elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 5
+			else TDI.FinalDamage = 6 end
 		elseif (WorldDifficulty == 3) then
-			if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 4;
-			elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 6;
-			elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 7;
-			else TDI.FinalDamage = 9; end
+			if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 4
+			elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 6
+			elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 7
+			else TDI.FinalDamage = 9 end
 		end
 		return false
 	end

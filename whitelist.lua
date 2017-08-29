@@ -40,7 +40,7 @@ local function SaveConfig()
 	WhitelistDB:ExecuteStatement(
 		"DELETE FROM WhitelistConfig WHERE Name='isEnabled'", {}
 	)
-	
+
 	-- Insert the current value:
 	WhitelistDB:ExecuteStatement(
 		"INSERT INTO WhitelistConfig(Name, Value) VALUES ('isEnabled', ?)",
@@ -59,7 +59,7 @@ function AddPlayerToWhitelist(a_PlayerName, a_WhitelistedBy)
 	-- Check params:
 	assert(type(a_PlayerName) == "string")
 	assert(type(a_WhitelistedBy) == "string")
-	
+
 	-- Resolve the player name to OfflineUUID and possibly OnlineUUID (if server is in online mode):
 	local UUID = ""
 	if (cRoot:Get():GetServer():ShouldAuthenticate()) then
@@ -67,7 +67,7 @@ function AddPlayerToWhitelist(a_PlayerName, a_WhitelistedBy)
 		-- If the UUID cannot be resolved, leave it as an empty string, it will be resolved on next startup / eventually
 	end
 	local OfflineUUID = cClientHandle:GenerateOfflineUUID(a_PlayerName)
-	
+
 	-- Insert into DB:
 	return WhitelistDB:ExecuteStatement(
 		"INSERT INTO WhitelistNames (Name, UUID, OfflineUUID, Timestamp, WhitelistedBy) VALUES (?, ?, ?, ?, ?)",
@@ -94,7 +94,7 @@ function IsPlayerWhitelisted(a_PlayerUUID, a_PlayerName)
 		-- There is no UUID supplied for the player, do not search by the UUID by using a dummy impossible value:
 		UUID = "DummyImpossibleValue"
 	end
-	
+
 	-- Query the DB:
 	local offlineUUID = cClientHandle:GenerateOfflineUUID(a_PlayerName)
 	local isWhitelisted
@@ -165,7 +165,7 @@ end
 function RemovePlayerFromWhitelist(a_PlayerName)
 	-- Check params:
 	assert(type(a_PlayerName) == "string")
-	
+
 	-- Remove from the DB:
 	return WhitelistDB:ExecuteStatement(
 		"DELETE FROM WhitelistNames WHERE Name = ?",
@@ -206,7 +206,7 @@ local function ResolveUUIDs()
 	if not(cRoot:Get():GetServer():ShouldAuthenticate()) then
 		return
 	end
-	
+
 	-- Collect the names of players without their UUIDs:
 	local NamesToResolve = {}
 	WhitelistDB:ExecuteStatement(
@@ -216,14 +216,14 @@ local function ResolveUUIDs()
 		end
 	)
 	if (#NamesToResolve == 0) then
-		return;
+		return
 	end
-	
+
 	-- Resolve the names:
 	LOGINFO("Core: Resolving player UUIDs in the whitelist from Mojang servers. This may take a while...")
 	local ResolvedNames = cMojangAPI:GetUUIDsFromPlayerNames(NamesToResolve)
 	LOGINFO("Core: Resolving finished.")
-	
+
 	-- Update the names in the DB:
 	for name, uuid in pairs(ResolvedNames) do
 		WhitelistDB:ExecuteStatement(
@@ -243,7 +243,7 @@ local function NotifyWhitelistStatus(a_Player)
 	if (g_IsWhitelistEnabled) then
 		return
 	end
-	
+
 	-- Send the notification msg to player / console:
 	if (a_Player == nil) then
 		LOG("Note: Whitelist is disabled. Use the \"whitelist on\" command to enable.")
@@ -271,7 +271,7 @@ local function NotifyWhitelistEmpty(a_Player)
 	if (not (isSuccess) or (type(numWhitelisted) ~= "number") or (numWhitelisted > 0)) then
 		return
 	end
-	
+
 	-- Send the notification msg to player / console:
 	if (a_Player == nil) then
 		LOGINFO("Note: Whitelist is empty. No player can connect to the server now. Use the \"whitelist add\" command to add players to whitelist.")
@@ -293,7 +293,7 @@ function HandleWhitelistAddCommand(a_Split, a_Player)
 	local playerName = a_Split[3]
 
 	-- Add the player to the whitelist:
-	local isSuccess, msg = AddPlayerToWhitelist(playerName, a_Player:GetName());
+	local isSuccess, msg = AddPlayerToWhitelist(playerName, a_Player:GetName())
 	if not(isSuccess) then
 		SendMessageFailure(a_Player, "Cannot whitelist " .. playerName .. ": " .. (msg or "<unknown error>"))
 		return true
@@ -387,7 +387,7 @@ function HandleConsoleWhitelistAdd(a_Split)
 	if not(isSuccess) then
 		return true, "Cannot whitelist " .. playerName .. ": " .. (msg or "<unknown error>")
 	end
-	
+
 	-- Notify success:
 	NotifyWhitelistStatus()
 	return true, "You added " .. playerName .. " to whitelist."
@@ -447,7 +447,7 @@ function HandleConsoleWhitelistRemove(a_Split)
 	if not(isSuccess) then
 		return true, "Cannot unwhitelist " .. playerName .. ": " .. (msg or "<unknown error>")
 	end
-	
+
 	-- Notify success:
 	NotifyWhitelistStatus()
 	return true, "You removed " .. playerName .. " from whitelist."
@@ -466,7 +466,7 @@ local function InitializeDB()
 		LOGWARNING("Cannot open the whitelist database, whitelist not available. SQLite: " .. (ErrMsg or "<no details>"))
 		error(ErrMsg)
 	end
-	
+
 	-- Define the needed structure:
 	local nameListColumns =
 	{
@@ -481,7 +481,7 @@ local function InitializeDB()
 		"Name TEXT PRIMARY KEY",
 		"Value"
 	}
-	
+
 	-- Check structure:
 	if (
 		not(WhitelistDB:CreateDBTable("WhitelistNames", nameListColumns)) or
@@ -490,7 +490,7 @@ local function InitializeDB()
 		LOGWARNING("Cannot initialize the whitelist database, whitelist not available.")
 		error("Whitelist DB failure")
 	end
-	
+
 	-- Load the config:
 	LoadConfig()
 end
@@ -506,13 +506,13 @@ end
 local function OnPlayerJoined(a_Player)
 	local UUID = a_Player:GetUUID()
 	local Name = a_Player:GetName()
-	
+
 	-- Update the UUID in the DB, if empty:
 	assert(WhitelistDB:ExecuteStatement(
 		"UPDATE WhitelistNames SET UUID = ? WHERE ((UUID = '') AND (Name = ?))",
 		{ UUID, Name }
 	))
-	
+
 	-- If whitelist is not enabled, bail out:
 	if not(g_IsWhitelistEnabled) then
 		return false
@@ -536,7 +536,7 @@ function InitializeWhitelist()
 	-- Initialize the Whitelist DB:
 	InitializeDB()
 	ResolveUUIDs()
-	
+
 	-- Make a note in the console if the whitelist is enabled and empty:
 	if (g_IsWhitelistEnabled) then
 		NotifyWhitelistEmpty()
@@ -545,7 +545,3 @@ function InitializeWhitelist()
 	-- Add a hook to filter out non-whitelisted players:
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_JOINED, OnPlayerJoined)
 end
-
-
-
-

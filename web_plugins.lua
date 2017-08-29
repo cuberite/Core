@@ -7,7 +7,7 @@
 General info: The web handler loads the settings.ini file in its start, and reads the list of enabled
 plugins out of it. Then it processes any changes requested by the user through the buttons; it carries out
 those changes on the list of enabled plugins itself. Then it saves that list back to the settings.ini. The
-changes aren't applied until the user expliticly clicks on "reload", since some changes require more than
+changes aren't applied until the user explicitly clicks on "reload", since some changes require more than
 single reloads of the page (such as enabling a plugin and moving it into place using the up / down buttons).
 --]]
 
@@ -25,13 +25,13 @@ local g_NeedsReload = false
 
 --- Returns an array of plugin names that are enabled, in their load order
 local function LoadEnabledPlugins(SettingsIni)
-	local res = {};
+	local res = {}
 	local IniKeyPlugins = SettingsIni:FindKey("Plugins")
 	if (IniKeyPlugins == cIniFile.noID) then
 		-- No [Plugins] key in the INI file
 		return {}
 	end
-	
+
 	-- Scan each value, remember each that is named "plugin"
 	for idx = 0, SettingsIni:GetNumValues(IniKeyPlugins) - 1 do
 		if (string.lower(SettingsIni:GetValueName(IniKeyPlugins, idx)) == "plugin") then
@@ -57,15 +57,15 @@ local function SaveEnabledPlugins(SettingsIni, EnabledPlugins)
 			end
 		end
 	end
-	
+
 	-- Now add back the entire list of enabled plugins, in our order:
 	for idx, name in ipairs(EnabledPlugins) do
 		SettingsIni:AddValue("Plugins", "Plugin", name)
 	end
-	
+
 	-- Save to file:
 	SettingsIni:WriteFile("settings.ini")
-	
+
 	-- Mark the settings as changed:
 	g_NeedsReload = true
 end
@@ -83,7 +83,7 @@ local function GetPluginLists(a_EnabledPluginFolders)
 	for _, folder in ipairs(a_EnabledPluginFolders) do
 		EnabledPluginFolderMap[folder] = true
 	end
-	
+
 	-- Retrieve a map of all known plugins:
 	local PM = cPluginManager:Get()
 	PM:RefreshPluginList()
@@ -100,13 +100,13 @@ local function GetPluginLists(a_EnabledPluginFolders)
 			Plugins[plugin.Folder] = plugin
 		end
 	)
-	
+
 	-- Process the information about enabled plugins:
 	local EnabledPlugins = {}
 	for _, plgFolder in ipairs(a_EnabledPluginFolders) do
 		table.insert(EnabledPlugins, Plugins[plgFolder])
 	end
-	
+
 	-- Pick up all the disabled plugins:
 	local DisabledPlugins = {}
 	for folder, plugin in pairs(Plugins) do
@@ -114,7 +114,7 @@ local function GetPluginLists(a_EnabledPluginFolders)
 			table.insert(DisabledPlugins, plugin)
 		end
 	end
-	
+
 	-- Sort the disabled plugin array:
 	table.sort(DisabledPlugins,
 		function (a_Plugin1, a_Plugin2)
@@ -122,7 +122,7 @@ local function GetPluginLists(a_EnabledPluginFolders)
 		end
 	)
 	-- Do NOT sort EnabledPlugins - we want them listed in their load order instead!
-	
+
 	return EnabledPlugins, DisabledPlugins
 end
 
@@ -135,7 +135,7 @@ end
 -- Then an alpha-sorted list of the disabled plugins
 local function ListCurrentPlugins(a_EnabledPluginFolders)
 	local EnabledPlugins, DisabledPlugins = GetPluginLists(a_EnabledPluginFolders)
-	
+
 	-- Output the EnabledPlugins table:
 	local res = {}
 	local ins = table.insert
@@ -145,7 +145,7 @@ local function ListCurrentPlugins(a_EnabledPluginFolders)
 			<p>These plugins are enabled in the server settings:</p>
 			<table>
 			]]
-		);
+		)
 		local Num = #EnabledPlugins
 		for idx, plugin in pairs(EnabledPlugins) do
 			-- Move and Disable buttons:
@@ -177,7 +177,7 @@ local function ListCurrentPlugins(a_EnabledPluginFolders)
 				ins(res, plugin.Name)
 				ins(res, ")")
 			end
-			
+
 			-- Plugin status, if not psLoaded:
 			ins(res, "</td><td width='100%'>")
 			if (plugin.Status == cPluginManager.psUnloaded) then
@@ -197,7 +197,7 @@ local function ListCurrentPlugins(a_EnabledPluginFolders)
 		end
 		ins(res, "</table><br />")
 	end
-	
+
 	-- Output DisabledPlugins table:
 	if (#DisabledPlugins > 0) then
 		ins(res, [[<hr /><h4>Disabled plugins</h4>
@@ -213,7 +213,7 @@ local function ListCurrentPlugins(a_EnabledPluginFolders)
 		end
 		ins(res, "</table><br />")
 	end
-	
+
 	return table.concat(res, "")
 end
 
@@ -275,7 +275,7 @@ local function MovePlugin(SettingsIni, PluginName, IndexDelta, EnabledPlugins)
 			return true
 		end
 	end
-	
+
 	-- Plugin not found:
 	return false
 end
@@ -293,7 +293,7 @@ local function ProcessRequestActions(SettingsIni, Request, EnabledPlugins)
 		-- PluginFolder was not provided, so there's no action to perform
 		return
 	end
-	
+
 	if (Request.PostParams["DisablePlugin"] ~= nil) then
 		if (DisablePlugin(SettingsIni, PluginFolder, EnabledPlugins)) then
 			return '<p style="color: green;"><b>You disabled plugin: "' .. PluginFolder .. '"</b></p>'
@@ -315,7 +315,7 @@ end
 
 function HandleRequest_ManagePlugins(Request)
 	local Content = ""
-		
+
 	if (Request.PostParams["reload"] ~= nil) then
 		Content = Content .. "<head><meta http-equiv=\"refresh\" content=\"5;\"></head>"
 		Content = Content .. "<p>Reloading plugins... This can take a while depending on the plugins you're using.</p>"
@@ -327,10 +327,10 @@ function HandleRequest_ManagePlugins(Request)
 	SettingsIni:ReadFile("settings.ini")
 
 	local EnabledPlugins = LoadEnabledPlugins(SettingsIni)
-	
+
 	local NotificationText = ProcessRequestActions(SettingsIni, Request, EnabledPlugins)
 	Content = Content .. (NotificationText or "")
-	
+
 	if (g_NeedsReload) then
 		Content = Content .. [[
 			<form method='POST'>
@@ -340,9 +340,9 @@ function HandleRequest_ManagePlugins(Request)
 			</b></p></form>
 		]]
 	end
-	
+
 	Content = Content .. ListCurrentPlugins(EnabledPlugins)
-	
+
 	Content = Content .. [[<hr />
 	<h4>Reload</h4>
 	<form method='POST'>
@@ -351,7 +351,3 @@ function HandleRequest_ManagePlugins(Request)
 	</form>]]
 	return Content
 end
-
-
-
-

@@ -3,11 +3,9 @@
 local function SendPlayerToWorldSpawn(a_Player)
 	-- Get the spawn coords:
 	local World = a_Player:GetWorld()
-	local WorldIni = cIniFile()
-	WorldIni:ReadFile(World:GetIniFileName())
-	local SpawnX = WorldIni:GetValueI("SpawnPosition", "X")
-	local SpawnY = WorldIni:GetValueI("SpawnPosition", "Y")
-	local SpawnZ = WorldIni:GetValueI("SpawnPosition", "Z")
+	local SpawnX = World:GetSpawnX()
+	local SpawnY = World:GetSpawnY()
+	local SpawnZ = World:GetSpawnZ()
 
 	-- Teleport to spawn (with ChunkStay):
 	local PlayerUUID = a_Player:GetUUID()
@@ -67,23 +65,18 @@ end
 
 function HandleSetSpawnCommand(Split, Player)
 
-	local WorldIni = cIniFile()
-	WorldIni:ReadFile(Player:GetWorld():GetIniFileName())
+	local World = Player:GetWorld()
 
 	local PlayerX = Player:GetPosX()
 	local PlayerY = Player:GetPosY()
 	local PlayerZ = Player:GetPosZ()
 
-	WorldIni:DeleteValue("SpawnPosition", "X")
-	WorldIni:DeleteValue("SpawnPosition", "Y")
-	WorldIni:DeleteValue("SpawnPosition", "Z")
-
-	WorldIni:SetValueI("SpawnPosition", "X", PlayerX)
-	WorldIni:SetValueI("SpawnPosition", "Y", PlayerY)
-	WorldIni:SetValueI("SpawnPosition", "Z", PlayerZ)
-	WorldIni:WriteFile(Player:GetWorld():GetIniFileName())
-
-	SendMessageSuccess(Player, string.format("Changed spawn position to [X:%i Y:%i Z:%i]", PlayerX, PlayerY, PlayerZ))
-	return true
+	if ( World:SetSpawn(PlayerX, PlayerY, PlayerZ) ) then
+		SendMessageSuccess(Player, string.format("Changed spawn position to [X:%i Y:%i Z:%i]", PlayerX, PlayerY, PlayerZ))
+		return true
+	else
+		SendMessageFailure(Player, "Spawn setting failed.")
+		return false
+	end
 
 end

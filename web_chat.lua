@@ -3,7 +3,7 @@ local LastMessageID = 0
 
 local JavaScript = [[
 	<script type="text/javascript">
-		function createXHR() 
+		function createXHR()
 		{
 			var request = false;
 			try {
@@ -24,75 +24,75 @@ local JavaScript = [[
 			}
 			return request;
 		}
-		
-		function OpenPage( url, postParams, callback ) 
+
+		function OpenPage( url, postParams, callback )
 		{
 			var xhr = createXHR();
 			xhr.onreadystatechange=function()
-			{ 
+			{
 				if (xhr.readyState == 4)
 				{
-					callback( xhr )
-				} 
-			}; 
+					callback( xhr );
+				}
+			}
 			xhr.open( (postParams!=null)?"POST":"GET", url , true);
 			if( postParams != null )
 			{
 				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			}
-			xhr.send(postParams); 
+			xhr.send(postParams);
 		}
 
-		function LoadPageInto( url, postParams, storage ) 
+		function LoadPageInto( url, postParams, storage )
 		{
-			OpenPage( url, postParams, function( xhr ) 
+			OpenPage( url, postParams, function( xhr )
 			{
 				var ScrollBottom = storage.scrollTop + storage.offsetHeight;
 				var bAutoScroll = (ScrollBottom >= storage.scrollHeight); // Detect whether we scrolled to the bottom of the div
-				
+
 				results = xhr.responseText.split("<<divider>>");
 				if( results[2] != LastMessageID ) return; // Check if this message was meant for us
-				
+
 				LastMessageID = results[1];
 				if( results[0] != "" )
 				{
 					storage.innerHTML += results[0];
-					
+
 					if( bAutoScroll == true )
 					{
 						storage.scrollTop = storage.scrollHeight;
 					}
 				}
 			} );
-			
-			
+
+
 			return false;
 		}
-		
-		function SendChatMessage() 
+
+		function SendChatMessage()
 		{
 			var MessageContainer = document.getElementById('ChatMessage');
 			if( MessageContainer.value == "" ) return;
-			
+
 			var postParams = "ChatMessage=" + MessageContainer.value;
-			OpenPage( "/~webadmin/Core/Chat/", postParams, function( xhr ) 
+			OpenPage( "/~webadmin/Core/Chat/", postParams, function( xhr )
 			{
 				RefreshChat();
 			} );
 			MessageContainer.value = "";
 		}
-		
-		function RefreshChat() 
+
+		function RefreshChat()
 		{
 			var postParams = "JustChat=true&LastMessageID=" + LastMessageID;
 			LoadPageInto("/~webadmin/Core/Chat/", postParams, document.getElementById('ChatDiv'));
 		}
-		
+
 		setInterval(RefreshChat, 1000);
 		window.onload = RefreshChat;
-		
+
 		var LastMessageID = 0;
-		
+
 	</script>
 ]]
 -- Array of {PluginName, FunctionName} tables
@@ -104,11 +104,11 @@ local ltInfo          = 2
 local ltWarning       = 3
 local ltError         = 4
 
--- Adds Webchat callback, plugins can return true to 
+-- Adds Webchat callback, plugins can return true to
 -- prevent message from appearing / being processed
 -- by further callbacks
 -- OnWebChat(Username, Message)
-function AddWebChatCallback(PluginName, FunctionName) 
+function AddWebChatCallback(PluginName, FunctionName)
 	for k, v in pairs(OnWebChatCallbacks) do
 		if v[1] == PluginName and v[2] == FunctionName then
 			return false
@@ -119,7 +119,7 @@ function AddWebChatCallback(PluginName, FunctionName)
 end
 
 -- Removes webchat callback
-function RemoveWebChatCallback(PluginName, FunctionName) 
+function RemoveWebChatCallback(PluginName, FunctionName)
 	for i = #OnWebChatCallbacks, 0, -1 do
 		if OnWebChatCallbacks[i][1] == PluginName and OnWebChatCallbacks[i][2] == FunctionName then
 			table.remove(OnWebChatCallbacks, i)
@@ -198,14 +198,14 @@ function BindWebCommand(a_CommandString, a_HelpString, a_PluginName, a_CallbackN
 	assert(type(a_CommandString) == 'string')
 	assert(type(a_PluginName) == 'string')
 	assert(type(a_CallbackName) == 'string')
-	
+
 	-- Check if the command is already bound. Return false with an error message if.
 	for Idx, CommandInfo in ipairs(WebCommands) do
 		if (CommandInfo.Command == a_CommandString) then
 			return false, "That command is already bound to a plugin called \"" .. CommandInfo.PluginName .. "\"."
 		end
 	end
-	
+
 	-- Insert the command into the array and return true
 	table.insert(WebCommands, {CommandString = a_CommandString, HelpString = a_HelpString, PluginName = a_PluginName, CallbackName = a_CallbackName})
 	return true
@@ -223,7 +223,7 @@ function HandleWebHelpCommand(a_User, a_Message)
 			Content = Content .. '<br />' .. CommandInfo.CommandString .. '&ensp; - &ensp;' .. CommandInfo.HelpString
 		end
 	end
-	
+
 	WEBLOG(Content, a_User)
 	return true
 end
@@ -267,7 +267,7 @@ local function ParseMessage(a_Message)
 	local function PlaceString(a_Url)
 		return '<a href="' .. a_Url .. '" target="_blank">' .. a_Url .. '</a>'
 	end
-	
+
 	a_Message = a_Message:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("=", "&#61;"):gsub('"', 	"&#34;"):gsub("'", "&#39;"):gsub("&", "&amp;")
 	a_Message = a_Message:gsub('http://[^%s]+', PlaceString):gsub('https://[^%s]+', PlaceString)
 	return a_Message
@@ -282,9 +282,9 @@ function HandleRequest_Chat( Request )
 	if( Request.PostParams["JustChat"] ~= nil ) then
 		local LastIdx = tonumber(Request.PostParams["LastMessageID"] or 0) or 0
 		local Content = ""
-		
+
 		-- Go through each message to see if they are older then the last message, and add them to the content
-		for key, MessageInfo in pairs(ChatLogMessages) do 
+		for key, MessageInfo in pairs(ChatLogMessages) do
 			if( MessageInfo.id > LastIdx ) then
 				if (not MessageInfo.webuser or (MessageInfo.webuser == Request.Username)) then
 					local Message = MessageInfo.timestamp .. ' ' .. ParseMessage(MessageInfo.message)
@@ -303,12 +303,12 @@ function HandleRequest_Chat( Request )
 		Content = Content .. "<<divider>>" .. LastMessageID .. "<<divider>>" .. LastIdx
 		return Content
 	end
-	
+
 	-- Check if the webuser send a chat message.
 	if( Request.PostParams["ChatMessage"] ~= nil ) then
 		local Split = StringSplit(Request.PostParams["ChatMessage"])
 		local CommandExecuted = false
-		
+
 		-- Check if the message was actualy a command
 		for Idx, CommandInfo in ipairs(WebCommands) do
 			if (CommandInfo.CommandString == Split[1]) then
@@ -325,13 +325,13 @@ function HandleRequest_Chat( Request )
 				return ""
 			end
 		end
-		
+
 		-- If the message starts with a '/' then the message is a command, but since it wasn't executed a few lines above the command didn't exist
 		if (Request.PostParams["ChatMessage"]:sub(1, 1) == "/") then
 			WEBLOG('Unknown Command "' .. Request.PostParams["ChatMessage"] .. '"', nil)
 			return ""
 		end
-		
+
 		-- Broadcast the message to the server
 		for k, v in pairs(OnWebChatCallbacks) do
 			if cPluginManager:CallPlugin(v[1], v[2], Request.Username, Request.PostParams["ChatMessage"]) then
@@ -339,7 +339,7 @@ function HandleRequest_Chat( Request )
 			end
 		end
 		cRoot:Get():BroadcastChat(cCompositeChat("[WEB] <" .. Request.Username .. "> " .. Request.PostParams["ChatMessage"]):UnderlineUrls())
-		
+
 		-- Add the message to the chatlog
 		WEBLOG("[WEB] [" .. Request.Username .. "]: " .. Request.PostParams["ChatMessage"])
 		return ""

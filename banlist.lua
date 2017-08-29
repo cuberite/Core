@@ -19,7 +19,7 @@ local function AddIPToBanlist(a_IP, a_Reason, a_BannedBy)
 	assert(type(a_IP) == "string")
 	assert(type(a_BannedBy) == "string")
 	a_Reason = a_Reason or "banned"
-	
+
 	-- Insert into DB:
 	return BanlistDB:ExecuteStatement(
 		"INSERT INTO BannedIPs (IP, Reason, Timestamp, BannedBy) VALUES (?, ?, ?, ?)",
@@ -38,7 +38,7 @@ function AddPlayerToBanlist(a_PlayerName, a_Reason, a_BannedBy)
 	assert(type(a_PlayerName) == "string")
 	assert(type(a_BannedBy) == "string")
 	a_Reason = a_Reason or "banned"
-	
+
 	-- Resolve the player name to OfflineUUID and possibly OnlineUUID (if server is in online mode):
 	local UUID = ""
 	if (cRoot:Get():GetServer():ShouldAuthenticate()) then
@@ -46,7 +46,7 @@ function AddPlayerToBanlist(a_PlayerName, a_Reason, a_BannedBy)
 		-- If the UUID cannot be resolved, leave it as an empty string, it will be resolved on next startup / eventually
 	end
 	local OfflineUUID = cClientHandle:GenerateOfflineUUID(a_PlayerName)
-	
+
 	-- Insert into DB:
 	return BanlistDB:ExecuteStatement(
 		"INSERT INTO BannedNames (Name, UUID, OfflineUUID, Reason, Timestamp, BannedBy) VALUES (?, ?, ?, ?, ?, ?)",
@@ -67,7 +67,7 @@ local function IsIPBanned(a_IP)
 	-- Check params:
 	assert(type(a_IP) == "string")
 	assert(a_IP ~= "")
-	
+
 	-- Query the DB:
 	local Reason
 	assert(BanlistDB:ExecuteStatement(
@@ -77,7 +77,7 @@ local function IsIPBanned(a_IP)
 			Reason = a_Row["Reason"]
 		end
 	))
-	
+
 	-- Process the DB results:
 	if (Reason == nil) then
 		-- Not banned
@@ -104,7 +104,7 @@ local function IsPlayerBanned(a_PlayerUUID, a_PlayerName)
 		-- There is no UUID supplied for the player, do not search by the UUID by using a dummy impossible value:
 		UUID = "DummyImpossibleValue"
 	end
-	
+
 	-- Query the DB:
 	local OfflineUUID = cClientHandle:GenerateOfflineUUID(a_PlayerName)
 	local Reason
@@ -120,7 +120,7 @@ local function IsPlayerBanned(a_PlayerUUID, a_PlayerName)
 			Reason = a_Row["Reason"]
 		end
 	))
-	
+
 	-- Process the DB results:
 	if (Reason == nil) then
 		-- Not banned
@@ -172,7 +172,7 @@ end
 local function RemoveIPFromBanlist(a_IP)
 	-- Check params:
 	assert(type(a_IP) == "string")
-	
+
 	-- Remove from the DB:
 	assert(BanlistDB:ExecuteStatement(
 		"DELETE FROM BannedIPs WHERE IP = ?",
@@ -189,7 +189,7 @@ end
 local function RemovePlayerFromBanlist(a_PlayerName)
 	-- Check params:
 	assert(type(a_PlayerName) == "string")
-	
+
 	-- Remove from the DB:
 	assert(BanlistDB:ExecuteStatement(
 		"DELETE FROM BannedNames WHERE Name = ?",
@@ -208,7 +208,7 @@ local function ResolveUUIDs()
 	if not(cRoot:Get():GetServer():ShouldAuthenticate()) then
 		return
 	end
-	
+
 	-- Collect the names of players without their UUIDs:
 	local NamesToResolve = {}
 	BanlistDB:ExecuteStatement(
@@ -220,12 +220,12 @@ local function ResolveUUIDs()
 	if (#NamesToResolve == 0) then
 		return;
 	end
-	
+
 	-- Resolve the names:
 	LOGINFO("Core: Resolving player UUIDs in the banlist from Mojang servers. This may take a while...")
 	local ResolvedNames = cMojangAPI:GetUUIDsFromPlayerNames(NamesToResolve)
 	LOGINFO("Core: Resolving finished.")
-	
+
 	-- Update the names in the DB:
 	for name, uuid in pairs(ResolvedNames) do
 		BanlistDB:ExecuteStatement(
@@ -255,14 +255,14 @@ function HandleBanCommand(a_Split, a_Player)
 
 	-- Add the player to the banlist:
 	AddPlayerToBanlist(a_Split[2], Reason, a_Player:GetName());
-	
+
 	-- Try akd kick the banned player, and send an appropriated response to the banner.
 	if (KickPlayer(a_Split[2], Reason)) then
 		SendMessageSuccess(a_Player, "Successfully kicked and banned " .. a_Split[2])
 	else
 		SendMessageFailure(a_Player, "Successfully banned " .. a_Split[2])
 	end
-	
+
 	return true
 
 end
@@ -306,7 +306,7 @@ function HandleConsoleBan(a_Split)
 
 	-- Ban the player:
 	AddPlayerToBanlist(PlayerName, Reason, "<console>")
-	
+
 	-- Kick the player, if they're online:
 	if not(KickPlayer(PlayerName, Reason)) then
 		LOGINFO("Could not find player " .. PlayerName .. ", but banned them anyway.")
@@ -336,7 +336,7 @@ function HandleConsoleBanIP(a_Split)
 
 	-- Ban the player:
 	AddIPToBanlist(BanIP, Reason, "<console>")
-	
+
 	-- Kick the player, if they're online:
 	cRoot:Get():ForEachPlayer(
 		function (a_Player)
@@ -346,7 +346,7 @@ function HandleConsoleBanIP(a_Split)
 			end
 		end
 	)
-	
+
 	-- Report:
 	LOGINFO("Successfully banned IP " .. BanIP)
 	return true
@@ -380,7 +380,7 @@ function HandleConsoleUnban(a_Split)
 
 	-- Unban the player:
 	RemovePlayerFromBanlist(a_Split[2])
-	
+
 	-- Inform the admin:
 	LOGINFO("Unbanned " .. a_Split[2])
 	return true
@@ -398,7 +398,7 @@ function HandleConsoleUnbanIP(a_Split)
 
 	-- Unban the player:
 	RemoveIPFromBanlist(a_Split[2])
-	
+
 	-- Inform the admin:
 	LOGINFO("Unbanned " .. a_Split[2])
 	return true
@@ -417,7 +417,7 @@ local function InitializeDB()
 		LOGWARNING("Cannot open the banlist database, banlist not available. SQLite: " .. (ErrMsg or "<no details>"))
 		error(ErrMsg)
 	end
-	
+
 	-- Define the needed structure:
 	local NameListColumns =
 	{
@@ -435,7 +435,7 @@ local function InitializeDB()
 		"Timestamp",
 		"BannedBy",
 	}
-	
+
 	-- Check structure:
 	if (
 		not(BanlistDB:CreateDBTable("BannedNames", NameListColumns)) or
@@ -457,13 +457,13 @@ end
 local function OnPlayerJoined(a_Player)
 	local UUID = a_Player:GetUUID()
 	local Name = a_Player:GetName()
-	
+
 	-- Update the UUID in the DB, if empty:
 	assert(BanlistDB:ExecuteStatement(
 		"UPDATE BannedNames SET UUID = ? WHERE ((UUID = '') AND (Name = ?))",
 		{ UUID, Name }
 	))
-	
+
 	-- Kick if banned:
 	local IsBanned, Reason = IsPlayerBanned(UUID, Name)
 	if (IsBanned) then
@@ -496,11 +496,7 @@ function InitializeBanlist()
 	-- Initialize the Banlist DB:
 	InitializeDB()
 	ResolveUUIDs()
-	
+
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_JOINED, OnPlayerJoined)
 	cPluginManager:AddHook(cPluginManager.HOOK_LOGIN, OnLogin)
 end
-
-
-
-

@@ -37,7 +37,7 @@ local g_ColorCodeDef =
 	["d"] = { FgColor = "#000", BgColor = "#f5f", Name = "Light purple" },
 	["e"] = { FgColor = "#000", BgColor = "#ff5", Name = "Yellow" },
 	["f"] = { FgColor = "#000", BgColor = "#fff", Name = "White" },
-	
+
 	[""] = { SpecialHTML = "<i>(None)</i>" }
 }
 
@@ -50,17 +50,17 @@ local g_ColorCodeDef =
 --   - writes out the color name
 local function ColorCodeToHTML(a_ColorCode)
 	local ColorCodeDef = g_ColorCodeDef[a_ColorCode]
-	
+
 	-- Check if the color code is valid:
 	if (ColorCodeDef == nil) then
 		return "<b><i>Unknown color code</i></b>"
 	end
-	
+
 	-- If the code has special HTML, use that instead:
 	if (ColorCodeDef.SpecialHTML ~= nil) then
 		return ColorCodeDef.SpecialHTML
 	end
-	
+
 	-- Compose the default color:
 	local Code = {"<span style='color: "}
 	ins(Code, ColorCodeDef.FgColor)
@@ -69,7 +69,7 @@ local function ColorCodeToHTML(a_ColorCode)
 	ins(Code, "; padding: 3px'/>")
 	ins(Code, ColorCodeDef.Name)
 	ins(Code, "</span>")
-	
+
 	-- Concat the result together:
 	return con(Code)
 end
@@ -142,7 +142,7 @@ local function GetRankRow(a_RankName)
 	local Row = {"<tr><td>"}
 	ins(Row, cWebAdmin:GetHTMLEscapedString(a_RankName))
 	ins(Row, "</td><td>")
-	
+
 	-- List all groups in the rank:
 	local Groups = cRankManager:GetRankGroups(a_RankName)
 	table.sort(Groups)
@@ -155,7 +155,7 @@ local function GetRankRow(a_RankName)
 		ins(Row, "<br/>...")
 	end
 	ins(Row, "</td><td>")
-	
+
 	-- Display the visuals:
 	local MsgPrefix, MsgSuffix, MsgNameColorCode = cRankManager:GetRankVisuals(a_RankName)
 	ins(Row, "Message prefix: ")
@@ -164,7 +164,7 @@ local function GetRankRow(a_RankName)
 	ins(Row, MsgSuffix)
 	ins(Row, "<br/>Name color: ")
 	ins(Row, ColorCodeToHTML(MsgNameColorCode))
-	
+
 	-- Display actions for this rank:
 	ins(Row, "</td><td><form>")
 	ins(Row, GetFormButton("editgroups", "Edit groups", {RankName = a_RankName}))
@@ -172,7 +172,7 @@ local function GetRankRow(a_RankName)
 	ins(Row, GetFormButton("editvisuals", "Edit visuals", {RankName = a_RankName}))
 	ins(Row, "</form><form>")
 	ins(Row, GetFormButton("confirmdel", "Delete rank", {RankName = a_RankName}))
-	
+
 	-- Terminate the row and return the entire concatenated string:
 	ins(Row, "</form></td></tr>")
 	return con(Row)
@@ -186,10 +186,10 @@ end
 local function ShowMainRanksPage(a_Request)
 	-- Accumulator for the page data
 	local Page = {}
-	
+
 	-- Add the rank control header:
 	ins(Page, "<p><a href='?subpage=addrank'>Add a new rank</a></p>")
-	
+
 	-- Add a table describing each rank:
 	ins(Page, "<table><tr><th>Rank</th><th>Groups</th><th>Visuals</th><th>Action</th></tr>\n")
 	local AllRanks = cRankManager:GetAllRanks()
@@ -207,7 +207,7 @@ local function ShowMainRanksPage(a_Request)
 	ins(Page, GetRankList(cRankManager:GetDefaultRank()))
 	ins(Page, "<input type='submit' name='EditDefaultRank' value='Set' />")
 	ins(Page, "<input type='hidden' name='subpage' value='editdefaultrank' /></form>")
-	
+
 	-- Return the entire concatenated string:
 	return con(Page)
 end
@@ -224,10 +224,10 @@ local function ShowAddGroupPage(a_Request)
 	if ((RankName == nil) or (NewGroupName == nil)) then
 		return HTMLError("Bad request, missing parameters.")
 	end
-	
+
 	-- Add the group:
-	cRankManager:AddGroupToRank(NewGroupName, RankName);
-	
+	cRankManager:AddGroupToRank(NewGroupName, RankName)
+
 	-- Redirect the player:
 	return
 		"<p>Group added. <a href='/" ..
@@ -284,7 +284,7 @@ local function ShowAddRankProcessPage(a_Request)
 	if ((RankName == nil) or (MsgPrefix == nil) or (MsgSuffix == nil) or (MsgNameColorCode == nil)) then
 		return HTMLError("Invalid request received, missing values.")
 	end
-	
+
 	-- Add the new rank:
 	cRankManager:AddRank(RankName, MsgPrefix, MsgSuffix, MsgNameColorCode)
 	return "<p>Rank created. <a href='/" .. a_Request.Path .. "'>Return</a>.</p>"
@@ -301,7 +301,7 @@ local function ShowConfirmDelPage(a_Request)
 	if (RankName == nil) then
 		return HTMLError("Bad request")
 	end
-	
+
 	-- Show confirmation:
 	return [[
 		<h4>Delete rank</h4>
@@ -322,10 +322,10 @@ local function ShowDelPage(a_Request)
 	if (RankName == nil) then
 		return HTMLError("Bad request")
 	end
-	
+
 	-- Delete the rank:
 	cRankManager:RemoveRank(RankName)
-	
+
 	-- Redirect back to list:
 	return "<p>Rank deleted. <a href='/" .. a_Request.Path .. "'>Return to list</a>."
 end
@@ -362,7 +362,7 @@ local function ShowEditGroupsPage(a_Request)
 	if (RankName == nil) then
 		return HTMLError("Bad request")
 	end
-	
+
 	-- Add header:
 	local Page = {[[
 		<p><a href='/]] .. a_Request.Path .. [['/>Back to rank list.</a></p>
@@ -383,7 +383,7 @@ local function ShowEditGroupsPage(a_Request)
 	}
 	ins(Page, cWebAdmin:GetHTMLEscapedString(RankName))
 	ins(Page, "'/></form>")
-	
+
 	-- List all the groups in the rank:
 	local Groups = cRankManager:GetRankGroups(RankName)
 	table.sort(Groups)
@@ -402,7 +402,7 @@ local function ShowEditGroupsPage(a_Request)
 		ins(Page, "<input type='hidden' name='subpage' value='removegroup'/></form></td></tr>")
 	end
 	ins(Page, "</table>")
-	
+
 	return con(Page)
 end
 
@@ -417,13 +417,13 @@ local function ShowEditVisualsPage(a_Request)
 	if (RankName == nil) then
 		return HTMLError("Bad request, missing parameters.")
 	end
-	
+
 	-- Get the current visuals to fill in:
 	local MsgPrefix, MsgSuffix, MsgNameColorCode = cRankManager:GetRankVisuals(RankName)
 	if (MsgPrefix == nil) then
 		return HTMLError("Bad request, no such rank.")
 	end
-	
+
 	-- Insert the form for changing the values:
 	local Page = {"<h4>Edit rank visuals - "}
 	ins(Page, cWebAdmin:GetHTMLEscapedString(RankName))
@@ -436,7 +436,7 @@ local function ShowEditVisualsPage(a_Request)
 	ins(Page, "'/></td></tr><tr><th/><td>")
 	ins(Page, GetFormButton("savevisuals", "Save visuals", {RankName = RankName}))
 	ins(Page, "</td></tr></table></form>")
-	
+
 	return con(Page)
 end
 
@@ -454,13 +454,13 @@ local function ShowSaveVisualsPage(a_Request)
 	if ((RankName == nil) or (MsgPrefix == nil) or (MsgSuffix == nil) or (MsgNameColorCode == nil)) then
 		return HTMLError("Invalid request received, missing values.")
 	end
-	
+
 	if (not g_ColorCodeDef[MsgNameColorCode]) then
 		return HTMLError("Invalid color code.")
 	end
 	-- Save the visuals:
 	cRankManager:SetRankVisuals(RankName, MsgPrefix, MsgSuffix, MsgNameColorCode)
-	
+
 	return "<p>Rank visuals saved. <a href='/" .. a_Request.Path .. "'>Return to rank list</a>."
 end
 
@@ -496,9 +496,9 @@ function HandleRequest_Ranks(a_Request)
 	if (Handler == nil) then
 		return HTMLError("An internal error has occurred, no handler for subpage " .. Subpage .. ".")
 	end
-	
+
 	local PageContent = Handler(a_Request)
-	
+
 	--[[
 	-- DEBUG: Save content to a file for debugging purposes:
 	local f = io.open("ranks.html", "wb")
@@ -507,10 +507,6 @@ function HandleRequest_Ranks(a_Request)
 		f:close()
 	end
 	--]]
-	
+
 	return PageContent
 end
-
-
-
-
