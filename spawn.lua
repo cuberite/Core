@@ -8,7 +8,7 @@ local function SendPlayerToWorldSpawn(a_Player)
 	local SpawnZ = World:GetSpawnZ()
 
 	-- Teleport to spawn (with ChunkStay):
-	local PlayerUUID = a_Player:GetUUID()
+	local PlayerUUID = cUUID:FromString(a_Player:GetUUID())
 	World:ChunkStay(
 		{{SpawnX / 16, SpawnZ / 16}},
 		nil,  -- OnChunkAvailable

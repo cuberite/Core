@@ -44,7 +44,7 @@ function OnPlayerMoving(Player)
 				Player:SendMessageInfo("You have reached the world border")
 			end
 
-			local UUID = Player:GetUUID()
+			local UUID = cUUID:FromString(Player:GetUUID())
 			World:ScheduleTask(3, function(World)
 				World:DoWithPlayerByUUID(UUID, function(Player)
 					Player:TeleportToCoords(NewX, Player:GetPosY(), NewZ)
