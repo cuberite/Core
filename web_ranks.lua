@@ -241,6 +241,31 @@ end
 
 
 
+--- Processes the RemoveGroup page, removing a group from the specified rank and redirecting back to rank's group list
+local function ShowRemoveGroupPage(a_Request)
+	-- Check params:
+	local RankName = a_Request.PostParams["RankName"]
+	local GroupName = a_Request.PostParams["GroupName"]
+	if ((RankName == nil) or (GroupName == nil)) then
+		return HTMLError("Bad request, missing parameters.")
+	end
+
+	-- Remove the group:
+	cRankManager:RemoveGroupFromRank(GroupName, RankName)
+
+	-- Redirect the user:
+	return
+		"<p>Group removed. <a href='/" ..
+		a_Request.Path ..
+		"?subpage=editgroups&RankName=" ..
+		cUrlParser:UrlEncode(RankName) ..
+		"'>Return to list</a>."
+end
+
+
+
+
+
 --- Handles the AddRank subpage.
 -- Displays the HTML form for adding a new rank, processes the input
 local function ShowAddRankPage(a_Request)
@@ -474,6 +499,7 @@ local g_SubpageHandlers =
 {
 	[""]                = ShowMainRanksPage,
 	["addgroup"]        = ShowAddGroupPage,
+	["removegroup"]     = ShowRemoveGroupPage,
 	["addrank"]         = ShowAddRankPage,
 	["addrankproc"]     = ShowAddRankProcessPage,
 	["confirmdel"]      = ShowConfirmDelPage,
