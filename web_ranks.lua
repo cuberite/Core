@@ -233,7 +233,7 @@ local function ShowAddGroupPage(a_Request)
 		"<p>Group added. <a href='/" ..
 		a_Request.Path ..
 		"?subpage=editgroups&RankName=" ..
-		cWebAdmin:GetURLEncodedString(RankName) ..
+		cUrlParser:UrlEncode(RankName) ..
 		"'>Return to list</a>."
 end
 
