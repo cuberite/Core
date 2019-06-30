@@ -499,7 +499,6 @@ local g_SubpageHandlers =
 {
 	[""]                = ShowMainRanksPage,
 	["addgroup"]        = ShowAddGroupPage,
-	["removegroup"]     = ShowRemoveGroupPage,
 	["addrank"]         = ShowAddRankPage,
 	["addrankproc"]     = ShowAddRankProcessPage,
 	["confirmdel"]      = ShowConfirmDelPage,
@@ -507,6 +506,7 @@ local g_SubpageHandlers =
 	["editdefaultrank"] = ShowEditDefaultRankPage,
 	["editgroups"]      = ShowEditGroupsPage,
 	["editvisuals"]     = ShowEditVisualsPage,
+	["removegroup"]     = ShowRemoveGroupPage,
 	["savevisuals"]     = ShowSaveVisualsPage,
 }
 
