@@ -580,6 +580,7 @@ local function EnchantItem( Split )
 	local lcPlayerName = string.lower(PlayerName)
 	local EnchantmentID = cEnchantments:StringToEnchantmentID( Split[3] )
 	local EnchantmentName
+	local ItemName
 	local Level = tonumber( Split[4] or 1 )
 
 	if not Level then
@@ -690,7 +691,7 @@ function HandleEnchantCommand( Split, Player )
 	local ReturnMessage, ItemName, EnchantmentName, PlayerName = EnchantItem( Split )
 
 	SendMessage( Player, ReturnMessage )
-	if ItemName and ReturnMessage == MessageSuccess then
+	if ReturnMessage == MessageSuccess then
 		local MsgString = string.format( LogMessageSuccess, EnchantmentName, ItemName, PlayerName )
 		LOG( string.format( ConsoleMessage, Player:GetName(), MsgString ) )
 	end
@@ -713,7 +714,7 @@ function HandleIEnchantCommand( Split, Player )
 	local ReturnMessage, ItemName, EnchantmentName, PlayerName = EnchantItem( Split )
 
 	SendMessage( Player, ReturnMessage )
-	if ItemName and ReturnMessage == MessageSuccess then
+	if ReturnMessage == MessageSuccess then
 		local MsgString = string.format( LogMessageSuccess, EnchantmentName, ItemName, PlayerName )
 		LOG( string.format( ConsoleMessage, Player:GetName(), MsgString ) )
 	end
@@ -734,7 +735,7 @@ function HandleConsoleEnchant( Split )
 	local ReturnMessage, ItemName, EnchantmentName, PlayerName = EnchantItem( Split )
 
 	LOG( ReturnMessage )
-	if ItemName and ReturnMessage == MessageSuccess then
+	if ReturnMessage == MessageSuccess then
 		local MsgString = string.format( LogMessageSuccess, EnchantmentName, ItemName, PlayerName )
 		LOG( string.format( ConsoleMessage, "Console", MsgString ) )
 	end
