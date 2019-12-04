@@ -536,6 +536,7 @@ local UnknownEnchantment = "There is no known enchantment %s"
 local LevelNAN = "%s is not a number, level must be a number"
 local LevelIsZero = "Level must be greater than 0"
 local LevelTooHigh = "The level you have entered: %d is too high, it must be at most: %d"
+local LevelTooLow = "The level you have entered: %d is too low, it must be at least: %d"
 local ItemNotEnchantable = "The enchantment %s cannot be used with the selected item"
 local IncompatableEnchantments = "%s cannot be combined with %s"
 local NoItemPresent = "The player %s doesn't have an item selected"
@@ -574,24 +575,23 @@ end
 --  @return False with an error message if a probem occurs, 
 --  @return true with the name of the item enchanted and the enchantment name if successful
 --  
-local function EnchantItem( Split )
+local function EnchantItem( PlayerName, EnchantmentIDString, LevelString )
 
-	local PlayerName = Split[2]
-	local lcPlayerName = string.lower(PlayerName)
-	local EnchantmentID = cEnchantments:StringToEnchantmentID( Split[3] )
+	local EnchantmentID = cEnchantments:StringToEnchantmentID( EnchantmentIDString )
 	local EnchantmentName
 	local ItemName
-	local Level = tonumber( Split[4] or 1 )
+	local Level = tonumber( LevelString )
+	local IsSuccess = false
 
 	if not Level then
-		return string.format( LevelNAN, Split[4] )
-	elseif Level == 0 then
+		return string.format( LevelNAN, LevelString )
+	elseif Level <= 0 then
 		return LevelIsZero
 	end
 
 	-- Check if the enchantment was given as a string, and the string contained an unknown value
 	if EnchantmentID == -1 then
-		return string.format( UnknownEnchantment, Split[3] )
+		return string.format( UnknownEnchantment, EnchantmentIDString )
 	end
 
 	EnchantmentName = EnchantmentIDToString( EnchantmentID, Level )
@@ -668,6 +668,7 @@ local function EnchantItem( Split )
 		end
 
 		ReturnMessage = MessageSuccess
+		IsSuccess = true
 		ItemName = ItemToString( Item )
 		Inventory:SetHotbarSlot( SlotNumber, Item )
 	end
@@ -675,47 +676,43 @@ local function EnchantItem( Split )
 	-- Try to enchant the item
 	cRoot:Get():FindAndDoWithPlayer( PlayerName, DoEnchantment )
 
-	return ReturnMessage, ItemName, EnchantmentName, PlayerName
+	return ReturnMessage, ItemName, EnchantmentName, PlayerName, IsSuccess
 end
 
 
---- Handles the enchant in-game command
+--- Handles the enchant and ienchant in-game commands
 --  Usage: /enchant <player> <enchantment ID> [level]
+--  Usage: /ienchant <enchantment ID> [level]
 function HandleEnchantCommand( Split, Player )
 
-	if not Split[3] then
+	local Command = Split[1]
+
+	if Command == "/ienchant" then
+		if not Split[2] then
+			SendMessage( Player, string.format( IEnchantCommandUsage, Split[1] ) )
+			return true
+		end
+
+		table.insert( Split, 2, Player:GetName() )
+	elseif not Split[3] then
 		SendMessage( Player, string.format( EnchantCommandUsage, Split[1] ) )
 		return true
 	end
 
-	local ReturnMessage, ItemName, EnchantmentName, PlayerName = EnchantItem( Split )
+	local PlayerName = Split[2]
+	local EnchantmentIDString = Split[3]
+	local LevelString = Split[4] or 1
+
+	local ReturnMessage, ItemName, EnchantmentName, CompletePlayerName, IsSuccess =
+	EnchantItem(
+		PlayerName,
+		EnchantmentIDString,
+		LevelString
+	)
 
 	SendMessage( Player, ReturnMessage )
-	if ReturnMessage == MessageSuccess then
-		local MsgString = string.format( LogMessageSuccess, EnchantmentName, ItemName, PlayerName )
-		LOG( string.format( ConsoleMessage, Player:GetName(), MsgString ) )
-	end
-
-	return true
-end
-
-
---- Handles the ienchant in-game command
---  Usage: /ienchant <enchantment ID> [level]
-function HandleIEnchantCommand( Split, Player )
-
-	if not Split[2] then
-		SendMessage( Player, string.format( IEnchantCommandUsage, Split[1] ) )
-		return true
-	end
-
-	table.insert( Split, 2, Player:GetName() )
-
-	local ReturnMessage, ItemName, EnchantmentName, PlayerName = EnchantItem( Split )
-
-	SendMessage( Player, ReturnMessage )
-	if ReturnMessage == MessageSuccess then
-		local MsgString = string.format( LogMessageSuccess, EnchantmentName, ItemName, PlayerName )
+	if IsSuccess then
+		local MsgString = string.format( LogMessageSuccess, EnchantmentName, ItemName, CompletePlayerName )
 		LOG( string.format( ConsoleMessage, Player:GetName(), MsgString ) )
 	end
 
@@ -732,11 +729,20 @@ function HandleConsoleEnchant( Split )
 		return true
 	end
 
-	local ReturnMessage, ItemName, EnchantmentName, PlayerName = EnchantItem( Split )
+	local PlayerName = Split[2]
+	local EnchantmentIDString = Split[3]
+	local LevelString = Split[4] or 1
+
+	local ReturnMessage, ItemName, EnchantmentName, CompletePlayerName, IsSuccess =
+	EnchantItem(
+		PlayerName,
+		EnchantmentIDString,
+		LevelString
+	)
 
 	LOG( ReturnMessage )
-	if ReturnMessage == MessageSuccess then
-		local MsgString = string.format( LogMessageSuccess, EnchantmentName, ItemName, PlayerName )
+	if IsSuccess then
+		local MsgString = string.format( LogMessageSuccess, EnchantmentName, ItemName, CompletePlayerName )
 		LOG( string.format( ConsoleMessage, "Console", MsgString ) )
 	end
 
