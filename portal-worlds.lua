@@ -7,10 +7,14 @@ function HandlePortalCommand(Split, Player)
 		SendMessage(Player, "Usage: " .. Split[1] .. " [world]")
 		return true
 	end
+	local World = cRoot:Get():GetWorld(Split[2])
 	if (Player:GetWorld():GetName() == Split[2]) then
 		SendMessageFailure( Player, "You are in " .. Split[2] .. "!" )
 		return true
-	elseif( Player:MoveToWorld(Split[2]) == false ) then
+	elseif( World == nil ) then
+		SendMessageFailure( Player, "Could not find world " .. Split[2] .. "!" )
+		return true
+	elseif( Player:ScheduleMoveToWorld(World, Vector3d(World:GetSpawnX(), World:GetSpawnY(), World:GetSpawnZ()), false, true) == false ) then
 		SendMessageFailure( Player, "Could not move to world " .. Split[2] .. "!" )
 		return true
 	end
