@@ -572,8 +572,9 @@ end
 --- Processes the Enchant command, checks the given options, 
 --  and enchants the selected players item if successful
 --  
---  @return False with an error message if a probem occurs, 
---  @return true with the name of the item enchanted and the enchantment name if successful
+--  @return An error message if a problem occurs, 
+--  @return Success message, the name of the item enchanted, the enchantment name,
+--  the full player name, and true if successful
 --  
 local function EnchantItem( PlayerName, EnchantmentIDString, LevelString )
 
@@ -601,7 +602,7 @@ local function EnchantItem( PlayerName, EnchantmentIDString, LevelString )
 		return string.format( UnknownEnchantment, EnchantmentName )
 	end
 
-	-- Default return message to player not found
+	-- Set default return message to player not found
 	-- DoEnchantment function may replace the message
 	local ReturnMessage = string.format( MessagePlayerFailure, PlayerName )
 
@@ -609,7 +610,7 @@ local function EnchantItem( PlayerName, EnchantmentIDString, LevelString )
 	--  
 	--  @param NewPlayer The player targeted by the command
 	--  
-	--  @return true if successful, false otherwise
+	--  @return None if unsuccessful
 	--  
 	local function DoEnchantment( NewPlayer )
 
@@ -668,14 +669,14 @@ local function EnchantItem( PlayerName, EnchantmentIDString, LevelString )
 		end
 
 		ReturnMessage = MessageSuccess
-		IsSuccess = true
 		ItemName = ItemToString( Item )
+		IsSuccess = true
 		Inventory:SetHotbarSlot( SlotNumber, Item )
 	end
 
 	-- Try to enchant the item
 	cRoot:Get():FindAndDoWithPlayer( PlayerName, DoEnchantment )
-
+	
 	return ReturnMessage, ItemName, EnchantmentName, PlayerName, IsSuccess
 end
 
