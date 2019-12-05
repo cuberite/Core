@@ -86,6 +86,7 @@ local function showList(a_Request)
 			ins(res, getPlayerRow(player))
 		end
 	end
+	ins(res, "</table>")
 	
 	return con(res)
 end
