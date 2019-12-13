@@ -110,15 +110,45 @@ local Projectiles =
 	["WitherSkull"] = cProjectileEntity.pkWitherSkull
 }
 
-function RelativeCommandCoord(a_Split, a_Relative)
+local function RelativeCommandCoord(a_Split, a_Relative)
 	if string.sub(a_Split, 1, 1) == "~" then
 		local rel = tonumber(string.sub(a_Split, 2, -1))
 		if rel then
 			return a_Relative + rel
 		end
-		return nil
+		return a_Relative
 	end
 	return tonumber(a_Split)
+end
+
+local function SpawnEntity(EntityName, World, X, Y, Z)
+	if EntityName == "boat" or EntityName == "Boat" then
+		local Material = cBoat.bmOak
+
+		World:SpawnBoat(Vector3d(X, Y, Z), Material)
+	elseif EntityName == "falling_block" or EntityName == "FallingSand" then
+		local BlockType = E_BLOCK_SAND
+		local BlockMeta = 0
+
+		World:SpawnFallingBlock(Vector3i(X, Y, Z), BlockType, BlockMeta)
+	elseif EntityName == "lightning_bolt" or EntityName == "LightningBolt" then
+		World:CastThunderbolt(Vector3i(X, Y, Z))
+	elseif Minecarts[EntityName] then
+		World:SpawnMinecart(Vector3d(X, Y, Z), Minecarts[EntityName])
+	elseif Mobs[EntityName] then
+		World:SpawnMob(X, Y, Z, Mobs[EntityName])
+	elseif Projectiles[EntityName] then
+		World:CreateProjectile(Vector3d(X, Y, Z), Projectiles[EntityName], Player, Player:GetEquippedItem(), Player:GetLookVector() * 20)
+	elseif EntityName == "tnt" or EntityName == "PrimedTnt" then
+		World:SpawnPrimedTNT(Vector3d(X, Y, Z))
+	elseif EntityName == "xp_orb" or EntityName == "XPOrb" then
+		local Reward = 1
+
+		World:SpawnExperienceOrb(Vector3d(X, Y, Z), Reward)
+	else
+		return false
+	end
+	return true
 end
 
 function HandleSummonCommand(Split, Player)
@@ -157,34 +187,8 @@ function HandleSummonCommand(Split, Player)
 			return true
 		end
 
-		local function Success()
+		if SpawnEntity(Split[2], World, X, Y, Z) then
 			Player:SendMessageSuccess("Successfully summoned entity at [X:" .. math.floor(X) .. " Y:" .. math.floor(Y) .. " Z:" .. math.floor(Z) .. "]")
-		end
-
-		if Split[2] == "boat" or Split[2] == "Boat" then
-			World:SpawnBoat(X, Y, Z, 0)
-			Success()
-		elseif Split[2] == "falling_block" or Split[2] == "FallingSand" then
-			World:SpawnFallingBlock(X, Y, Z, 12, 0)
-			Success()
-		elseif Split[2] == "lightning_bolt" or Split[2] == "LightningBolt" then
-			World:CastThunderbolt(X, Y, Z)
-			Success()
-		elseif Minecarts[Split[2]] then
-			World:SpawnMinecart(X, Y, Z, Minecarts[Split[2]])
-			Success()
-		elseif Mobs[Split[2]] then
-			World:SpawnMob(X, Y, Z, Mobs[Split[2]])
-			Success()
-		elseif Projectiles[Split[2]] then
-			World:CreateProjectile(X, Y, Z, Projectiles[Split[2]], Player, Player:GetEquippedItem(), Player:GetLookVector() * 20)
-			Success()
-		elseif Split[2] == "tnt" or Split[2] == "PrimedTnt" then
-			World:SpawnPrimedTNT(X, Y, Z)
-			Success()
-		elseif Split[2] == "xp_orb" or Split[2] == "XPOrb" then
-			World:SpawnExperienceOrb(X, Y, Z, 1)
-			Success()
 		else
 			Player:SendMessageFailure("Unknown entity '" .. Split[2] .. "'")
 		end
