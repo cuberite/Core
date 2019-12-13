@@ -152,7 +152,7 @@ local function SpawnEntity(EntityName, World, X, Y, Z)
 end
 
 function HandleSummonCommand(Split, Player)
-	if Split[2] == nil then
+	if not Split[2] then
 		Player:SendMessageInfo("Usage: " .. Split[1] .. " <entityname> [x] [y] [z]")
 	else
 		local X = Player:GetPosX()
@@ -160,29 +160,29 @@ function HandleSummonCommand(Split, Player)
 		local Z = Player:GetPosZ()
 		local World = Player:GetWorld()
 
-		if Split[3] ~= nil then
+		if Split[3] then
 			X = RelativeCommandCoord(Split[3], X)
 		end
 
-		if Split[4] ~= nil then
+		if Split[4] then
 			Y = RelativeCommandCoord(Split[4], Y)
 		end
 
-		if Split[5] ~= nil then
+		if Split[5] then
 			Z = RelativeCommandCoord(Split[5], Z)
 		end
 
-		if X == nil then
+		if not X then
 			Player:SendMessageFailure("'" .. Split[3] .. "' is not a valid number")
 			return true
 		end
 
-		if Y == nil then
+		if not Y then
 			Player:SendMessageFailure("'" .. Split[4] .. "' is not a valid number")
 			return true
 		end
 
-		if Z == nil then
+		if not Z then
 			Player:SendMessageFailure("'" .. Split[5] .. "' is not a valid number")
 			return true
 		end
