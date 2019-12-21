@@ -6,8 +6,8 @@
 g_PluginInfo = 
 {
 	Name = "Core",
-	Version = "15",
-	Date = "2014-06-11",
+	Version = "16",
+	Date = "2019-12-04",
 	SourceLocation = "https://github.com/cuberite/Core",
 	Description = [[Implements some of the basic commands needed to run a simple server.]],
 	
@@ -122,7 +122,7 @@ g_PluginInfo =
 		["/ienchant"] = 
 		{
 			Permission = "core.enchant.self",
-			Handler = HandleIEnchantCommand,
+			Handler = HandleEnchantCommand,
 			HelpString = "Adds an enchantment to an item.",
 			ParameterCombinations =
 			{
