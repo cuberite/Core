@@ -27,7 +27,7 @@ local function ShowGeneralSettings(Request)
 	if (Request.PostParams["general_submit"] ~= nil) then
 		local ServerDescription = Request.PostParams["Server_Description"]
 		local MaxPlayers = tonumber(Request.PostParams["Server_MaxPlayers"])
-		local Ports = Request.PostParams["Server_Port"]
+		local Ports = Request.PostParams["Server_Ports"]
 		local PortsIPv6 = Request.PostParams["Server_PortsIPv6"]
 		local DefaultViewDistance = tonumber(Request.PostParams["Server_ViewDistance"])
 		local HardcoreEnabled = (Request.PostParams["Server_Hardcore"] == "1")
@@ -36,7 +36,7 @@ local function ShowGeneralSettings(Request)
 		if (MaxPlayers ~= nil) then
 			SettingsIni:SetValueI("Server", "MaxPlayers", MaxPlayers)
 		end
-		SettingsIni:SetValue("Server", "Port", Ports)
+		SettingsIni:SetValue("Server", "Ports", Ports)
 		SettingsIni:SetValue("Server", "PortsIPv6", PortsIPv6)
 		if (DefaultViewDistance ~= nil) then
 			SettingsIni:SetValueI("Server", "DefaultViewDistance", DefaultViewDistance)
@@ -76,7 +76,7 @@ local function ShowGeneralSettings(Request)
 	<tr><td>Max Players:</td>
 	<td><input type="text" name="Server_MaxPlayers" value="]] .. SettingsIni:GetValue("Server", "MaxPlayers") .. [["></td></tr>
 	<tr><td>IPv4 Ports:</td>
-	<td><input type="text" name="Server_Port" value="]] .. SettingsIni:GetValue("Server", "Port") .. [["></td></tr>
+	<td><input type="text" name="Server_Ports" value="]] .. SettingsIni:GetValue("Server", "Ports") .. [["></td></tr>
 	<tr><td>IPv6 Ports:</td>
 	<td><input type="text" name="Server_PortsIPv6" value="]] .. SettingsIni:GetValue("Server", "PortsIPv6") .. [["></td></tr>
 	<tr><td>Default ViewDistance:</td>
