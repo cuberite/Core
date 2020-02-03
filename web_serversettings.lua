@@ -409,9 +409,6 @@ function GetEasyWorldSettings(Request)
 		WorldIni:SetValueB("Monsters", "AnimalsOn", Request.PostParams["Monsters_AnimalsOn"] == "1")
 		WorldIni:SetValue("Monsters", "Types", Request.PostParams["Monsters_Types"])
 
-		WorldIni:SetValue("LinkedWorlds", "NetherWorldName", Request.PostParams["LinkedWorlds_Nether"])
-		WorldIni:SetValue("LinkedWorlds", "EndWorldName", Request.PostParams["LinkedWorlds_End"])
-
 		WorldIni:SetValueI("Seed", "Seed", tonumber(Request.PostParams["Seed"]))
 
 		WorldIni:SetValue("Generator", "Generator", Request.PostParams["Generator"])
@@ -506,12 +503,6 @@ function GetEasyWorldSettings(Request)
 	<td>]] .. HTML_Select_On_Off("Monsters_AnimalsOn", WorldIni:GetValueI("Monsters", "AnimalsOn")) .. [[</td></tr>
 	<tr><td>Types (Only this types will spawn):</td>
 	<td><input type="text" name="Monsters_Types" value="]] .. WorldIni:GetValue("Monsters", "Types") .. [["></td></tr>
-
-	<th colspan="2">Linked worlds</th>
-	<tr><td>Nether:</td>
-	<td><input type="text" name="LinkedWorlds_Nether" value="]] .. WorldIni:GetValue("LinkedWorlds", "NetherWorldName") .. [["></td></tr>
-	<tr><td>The End:</td>
-	<td><input type="text" name="LinkedWorlds_End" value="]] .. WorldIni:GetValue("LinkedWorlds", "EndWorldName") .. [["></td></tr>
 
 	<th colspan="2">Seed</th>
 	<tr><td>Seed:</td>
