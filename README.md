@@ -49,6 +49,7 @@ Implements some of the basic commands needed to run a simple server.
 |/time set | core.time.set | Sets the time to a given value.|
 |/toggledownfall | core.toggledownfall | Toggles the weather between clear skies and rain.|
 |/tp | core.teleport | Teleports your player to another player.|
+|/tps | core.tps | Returns the tps (ticks per second) from the server.|
 |/unban | core.unban | Unbans a player.|
 |/unsafegive | core.give.unsafe | Gives an item to a player, even if the item is blacklisted.|
 |/unsafeitem | core.item.unsafe | Gives your player an item, even if the item is blacklisted.|
@@ -105,6 +106,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.time.query.gametime | Allows players to display how long the world has existed. | `/time query gametime` |  |
 | core.time.set | Allows players to set the time of day. | `/time night`, `/time day`, `/time set`, `/time add` | admins |
 | core.toggledownfall | Allows players to toggle the weather between clear skies and rain. | `/toggledownfall` | admins |
+| core.tps |  | `/tps` |  |
 | core.unban |  | `/unban` |  |
 | core.viewdistance |  | `/viewdistance` |  |
 | core.weather | Allows players to change the weather. | `/weather` | admins |

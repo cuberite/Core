@@ -472,6 +472,13 @@ g_PluginInfo =
 			HelpString = "Teleports your player to another player.",
 		},
 
+		["/tps"] = 
+		{
+			Permission = "core.tps",
+			Handler = HandleTpsCommand,
+			HelpString = "Returns the tps (ticks per second) from the server.",
+		},
+
 		["/unban"] = 
 		{
 			Permission = "core.unban",
@@ -960,6 +967,12 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsoleTeleport,
 			HelpString = "Teleports a player.",
+		},
+
+		["tps"] =
+		{
+			Handler =  HandleConsoleTps,
+			HelpString =  " - Returns the tps (ticks per second) from the server.",
 		},
 
 		["unban"] =
