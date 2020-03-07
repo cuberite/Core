@@ -99,7 +99,7 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 		else
 			-- If destination player is not in the same world, move to the correct world
 			if a_SrcPlayer:GetWorld() ~= a_DstPlayerName:GetWorld() then
-				a_SrcPlayer:ScheduleMoveToWorld( a_DstPlayerName:GetWorld(), Vector3d( a_DstPlayerName:GetPosX() + 0.5, a_DstPlayerName:GetPosY(), a_DstPlayerName:GetPosZ() + 0.5 ), false, true )
+				a_SrcPlayer:MoveToWorld( a_DstPlayerName:GetWorld(), true, Vector3d( a_DstPlayerName:GetPosX() + 0.5, a_DstPlayerName:GetPosY(), a_DstPlayerName:GetPosZ() + 0.5 ) )
 			else
 				a_SrcPlayer:TeleportToEntity( a_DstPlayerName )
 			end
