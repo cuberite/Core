@@ -1,10 +1,12 @@
 function HandleSaveAllCommand(Split, Player)
+	local Response
+
+	cRoot:Get():SaveAllChunks()
+
 	if not Player then
-		SendMessage(nil, "Saving all worlds!")
+		Response = SendMessage(nil, "Saving all worlds!")
 	else
 		cRoot:Get():BroadcastChat(cChatColor.Rose .. "[WARNING] " .. cChatColor.White .. "Saving all worlds!")
 	end
-
-	cRoot:Get():SaveAllChunks()
-	return true
+	return true, Response
 end

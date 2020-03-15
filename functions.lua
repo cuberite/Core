@@ -1,28 +1,22 @@
 function SendMessage(Player, Message)
 	if Player then
 		Player:SendMessageInfo(Message)
-	else
-		-- Called by console, send response to it
-		LOG(Message)
 	end
+	return Message
 end
 
 function SendMessageSuccess(Player, Message)
 	if Player then
 		Player:SendMessageSuccess(Message)
-	else
-		-- Called by console, send response to it
-		LOG(Message)
 	end
+	return Message
 end
 
 function SendMessageFailure(Player, Message)
 	if Player then
 		Player:SendMessageFailure(Message)
-	else
-		-- Called by console, send response to it
-		LOG(Message)
 	end
+	return Message
 end
 
 --- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
