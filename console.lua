@@ -57,25 +57,6 @@ end
 
 
 
-
-function HandleConsoleList(Split)
-	local PlayerTable = {}
-
-	cRoot:Get():ForEachPlayer(
-		function(a_Player)
-			table.insert(PlayerTable, a_Player:GetName())
-		end
-	)
-	table.sort(PlayerTable)
-
-	local Out = "Players (" .. #PlayerTable .. "): " .. table.concat(PlayerTable, ", ")
-	return true, Out
-end
-
-
-
-
-
 function HandleConsoleListGroups(a_Split)
 	if (a_Split[3] ~= nil) then
 		-- Too many params:

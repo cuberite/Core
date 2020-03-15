@@ -756,7 +756,7 @@ g_PluginInfo =
 
 		["list"] =
 		{
-			Handler =  HandleConsoleList,
+			Handler =  HandleListCommand,
 			HelpString = "Shows a list of all connected players in a machine-readable format.",
 		},
 
