@@ -7,27 +7,6 @@
 
 
 
-function HandleConsoleKick(Split)
-	if (#Split < 2) then
-		return true, "Usage: " .. Split[1] .. " <player> [reason ...]"
-	end
-
-	local Reason = cChatColor.Red .. "You have been kicked."
-	if (#Split > 2) then
-		Reason = table.concat(Split, " ", 3)
-	end
-
-	if (KickPlayer(Split[2], Reason)) then
-		return true
-	end
-
-	return true, "Cannot find player " .. Split[2]
-end
-
-
-
-
-
 function HandleConsoleKill(Split)
 	-- Check the params:
 	if (#Split == 1) then

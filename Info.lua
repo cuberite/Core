@@ -744,7 +744,7 @@ g_PluginInfo =
 
 		["kick"] =
 		{
-			Handler =  HandleConsoleKick,
+			Handler =  HandleKickCommand,
 			HelpString = "Kicks a player by name.",
 		},
 
