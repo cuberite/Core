@@ -7,35 +7,6 @@
 
 
 
-function HandleConsoleKill(Split)
-	-- Check the params:
-	if (#Split == 1) then
-		return true, "Usage: " .. Split[1] .. " <player>"
-	end
-
-	-- Kill the player:
-	local HasKilled = false
-	cRoot:Get():FindAndDoWithPlayer(Split[2],
-		function(Player)
-			if (Player:GetName() == Split[2]) then
-				Player:TakeDamage(dtAdmin, nil, 1000, 1000, 0)
-				HasKilled = true
-			end
-		end
-	)
-
-	-- Report success or failure:
-	if (HasKilled) then
-		return true, "Player " .. Split[2] .. " is killed"
-	else
-		return true, "Player not found"
-	end
-end
-
-
-
-
-
 function HandleConsoleListGroups(a_Split)
 	if (a_Split[3] ~= nil) then
 		-- Too many params:

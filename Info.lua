@@ -750,7 +750,7 @@ g_PluginInfo =
 
 		["kill"] =
 		{
-			Handler =  HandleConsoleKill,
+			Handler =  HandleKillCommand,
 			HelpString = "Kills a player.",
 		},
 

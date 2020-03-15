@@ -9,7 +9,7 @@ local function GetAverageNum(Table)
 	return math.floor(Sum / #Table * 100) / 100
 end
 
-local function OnWorldTick(World, TimeDelta)
+function OnWorldTick(World, TimeDelta)
 	local WorldTps = TpsCache[World:GetName()]
 	if (WorldTps == nil) then
 		WorldTps = {}
@@ -23,7 +23,7 @@ local function OnWorldTick(World, TimeDelta)
 	table.insert(WorldTps, 1000 / TimeDelta)
 end
 
-local function OnTick(TimeDelta)
+function OnTick(TimeDelta)
 	if (#GlobalTps >= 10) then
 		table.remove(GlobalTps, 1)
 	end
