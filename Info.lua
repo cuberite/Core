@@ -846,6 +846,12 @@ g_PluginInfo =
 			HelpString = "Sends a chat message to all players.",
 		},
 
+		["spawn"] =
+		{
+			Handler = HandleSpawnCommand,
+			HelpString = "Returns a player to the spawn point.",
+		},
+
 		["time"] = 
 		{
 			HelpString = "Sets or displays the time.",
