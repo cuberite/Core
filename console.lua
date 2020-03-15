@@ -7,31 +7,6 @@
 
 
 
-function HandleConsoleClear(Split)
-	if (#Split == 1) then
-		return true, "Usage: " .. Split[1] .. " <player>"
-    end
-
-    local InventoryCleared = false
-    local ClearInventory = function(Player)
-        if (Player:GetName() == Split[2]) then
-            Player:GetInventory():Clear()
-            InventoryCleared = true
-        end
-    end
-
-    cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory)
-    if (InventoryCleared) then
-        return true, "You cleared the inventory of " .. Split[2]
-    else
-        return true, "Player not found"
-    end
-end
-
-
-
-
-
 function HandleConsoleKick(Split)
 	if (#Split < 2) then
 		return true, "Usage: " .. Split[1] .. " <player> [reason ...]"
@@ -340,25 +315,6 @@ function HandleConsoleDeOp(a_Split)
 
 	return HandleConsoleRank({"rank", PlayerName, DefaultRank})
 end
-
-
-
-
-
-function HandleConsoleSaveAll(Split)
-	cRoot:Get():SaveAllChunks()
-	return true
-end
-
-
-
-
-
-function HandleConsoleSay(a_Split)
-	cRoot:Get():BroadcastChat(cChatColor.Gold .. "[SERVER] " .. cChatColor.Yellow .. table.concat(a_Split, " ", 2))
-	return true
-end
-
 
 
 

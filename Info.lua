@@ -664,8 +664,14 @@ g_PluginInfo =
 
 		["clear"] =
 		{
-			Handler =  HandleConsoleClear ,
+			Handler =  HandleClearCommand,
 			HelpString = "Clears the inventory of a player.",
+		},
+		
+		["effect"] =
+		{
+			Handler =  HandleEffectCommand,
+			HelpString = "Adds an effect to a player.",
 		},
 
 		["enchant"] = 
@@ -824,19 +830,19 @@ g_PluginInfo =
 
 		["save-all"] =
 		{
-			Handler =  HandleConsoleSaveAll,
+			Handler =  HandleSaveAllCommand,
 			HelpString = "Saves all worlds.",
 		},
 
 		["seed"] =
 		{
-			Handler = HandleConsoleSeed,
+			Handler = HandleSeedCommand,
 			HelpString = "Shows the seed of the given world name or default world, if not given.",
 		},
 
 		["say"] =
 		{
-			Handler =  HandleConsoleSay,
+			Handler = HandleSayCommand,
 			HelpString = "Sends a chat message to all players.",
 		},
 
