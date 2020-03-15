@@ -977,8 +977,8 @@ g_PluginInfo =
 
 		["tps"] =
 		{
-			Handler =  HandleConsoleTps,
-			HelpString =  " - Returns the tps (ticks per second) from the server.",
+			Handler =  HandleTpsCommand,
+			HelpString =  "Returns the tps (ticks per second) from the server.",
 		},
 
 		["unban"] =
