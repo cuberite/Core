@@ -7,7 +7,7 @@ function HandleSeedCommand(Split, Player)
 	if not World then
 		Response = SendMessage(Player, "There is no world \"" .. WorldName .. "\"")
 	else
-		Response = SendMessage(Player, "Seed: " .. World:GetSeed())
+		Response = SendMessage(Player, "Seed of world \"" .. World:GetName() .. "\": " .. World:GetSeed())
 	end
 	return true, Response
 end
