@@ -24,3 +24,7 @@ function HandleClearCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleClear(Split)
+	return HandleClearCommand(Split)
+end

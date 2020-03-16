@@ -20,3 +20,7 @@ function HandleKillCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleKill(Split)
+	return HandleKillCommand(Split)
+end

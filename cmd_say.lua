@@ -10,3 +10,7 @@ function HandleSayCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleSay(Split)
+	return HandleSayCommand(Split)
+end

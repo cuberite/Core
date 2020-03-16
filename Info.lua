@@ -664,13 +664,13 @@ g_PluginInfo =
 
 		["clear"] =
 		{
-			Handler =  HandleClearCommand,
+			Handler =  HandleConsoleClear,
 			HelpString = "Clears the inventory of a player.",
 		},
 		
 		["effect"] =
 		{
-			Handler =  HandleEffectCommand,
+			Handler =  HandleConsoleEffect,
 			HelpString = "Adds an effect to a player.",
 		},
 
@@ -744,19 +744,19 @@ g_PluginInfo =
 
 		["kick"] =
 		{
-			Handler =  HandleKickCommand,
+			Handler =  HandleConsoleKick,
 			HelpString = "Kicks a player by name.",
 		},
 
 		["kill"] =
 		{
-			Handler =  HandleKillCommand,
+			Handler =  HandleConsoleKill,
 			HelpString = "Kills a player.",
 		},
 
 		["list"] =
 		{
-			Handler =  HandleListCommand,
+			Handler =  HandleConsoleList,
 			HelpString = "Shows a list of all connected players in a machine-readable format.",
 		},
 
@@ -830,25 +830,25 @@ g_PluginInfo =
 
 		["save-all"] =
 		{
-			Handler =  HandleSaveAllCommand,
+			Handler =  HandleConsoleSaveAll,
 			HelpString = "Saves all worlds.",
 		},
 
 		["seed"] =
 		{
-			Handler = HandleSeedCommand,
+			Handler = HandleConsoleSeed,
 			HelpString = "Shows the seed of the given world name or default world, if not given.",
 		},
 
 		["say"] =
 		{
-			Handler = HandleSayCommand,
+			Handler = HandleConsoleSay,
 			HelpString = "Sends a chat message to all players.",
 		},
 
 		["spawn"] =
 		{
-			Handler = HandleSpawnCommand,
+			Handler = HandleConsoleSpawn,
 			HelpString = "Returns a player to the spawn point.",
 		},
 
@@ -964,7 +964,7 @@ g_PluginInfo =
 
 		["toggledownfall"] =
 		{
-			Handler = HandleToggleDownfallCommand,
+			Handler = HandleConsoleToggleDownfall,
 			HelpString = "Toggles the weather between clear skies and rain.",
 			ParameterCombinations =
 			{
@@ -983,7 +983,7 @@ g_PluginInfo =
 
 		["tps"] =
 		{
-			Handler =  HandleTpsCommand,
+			Handler =  HandleConsoleTps,
 			HelpString =  "Returns the tps (ticks per second) from the server.",
 		},
 
@@ -1038,7 +1038,7 @@ g_PluginInfo =
 		
 		["weather"] =
 		{
-			Handler =  HandleWeatherCommand,
+			Handler =  HandleConsoleWeather,
 			HelpString = "Changes the world's weather.",
 			ParameterCombinations =
 			{

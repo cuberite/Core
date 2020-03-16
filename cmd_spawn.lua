@@ -29,3 +29,7 @@ function HandleSpawnCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleSpawn(Split)
+	return HandleSpawnCommand(Split)
+end

@@ -40,3 +40,7 @@ function HandleTpsCommand(Split, Player)
 	end
 	return true, table.concat(Response, "")
 end
+
+function HandleConsoleTps(Split)
+	return HandleTpsCommand(Split)
+end

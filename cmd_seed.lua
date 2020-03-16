@@ -11,3 +11,7 @@ function HandleSeedCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleSeed(Split)
+	return HandleSeedCommand(Split)
+end

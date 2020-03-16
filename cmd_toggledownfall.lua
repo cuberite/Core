@@ -14,3 +14,7 @@ function HandleToggleDownfallCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleToggleDownfall(Split)
+	return HandleToggleDownfallCommand(Split)
+end

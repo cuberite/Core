@@ -57,3 +57,7 @@ function HandleWeatherCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleWeather(Split)
+	return HandleWeatherCommand(Split)
+end

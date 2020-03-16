@@ -67,3 +67,7 @@ function HandleEffectCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleEffect(Split)
+	return HandleEffectCommand(Split)
+end

@@ -23,3 +23,7 @@ function HandleKickCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleKick(Split)
+	return HandleKickCommand(Split)
+end

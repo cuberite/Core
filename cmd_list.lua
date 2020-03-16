@@ -10,3 +10,7 @@ function HandleListCommand(Split, Player)
 	local Response = SendMessage(Player, "Players (" .. #PlayerTable .. "): " .. table.concat(PlayerTable, ", "))
 	return true, Response
 end
+
+function HandleConsoleList(Split)
+	return HandleListCommand(Split)
+end

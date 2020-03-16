@@ -10,3 +10,7 @@ function HandleSaveAllCommand(Split, Player)
 	end
 	return true, Response
 end
+
+function HandleConsoleSaveAll(Split)
+	return HandleSaveAllCommand(Split)
+end
