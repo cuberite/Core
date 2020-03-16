@@ -454,7 +454,7 @@ g_PluginInfo =
 		["/toggledownfall"] = 
 		{
 			Permission = "core.toggledownfall",
-			Handler = HandleDownfallCommand,
+			Handler = HandleToggleDownfallCommand,
 			HelpString = "Toggles the weather between clear skies and rain.",
 			ParameterCombinations =
 			{
@@ -964,7 +964,7 @@ g_PluginInfo =
 
 		["toggledownfall"] =
 		{
-			Handler = HandleConsoleDownfall,
+			Handler = HandleToggleDownfallCommand,
 			HelpString = "Toggles the weather between clear skies and rain.",
 			ParameterCombinations =
 			{
@@ -1038,7 +1038,7 @@ g_PluginInfo =
 		
 		["weather"] =
 		{
-			Handler =  HandleConsoleWeather,
+			Handler =  HandleWeatherCommand,
 			HelpString = "Changes the world's weather.",
 			ParameterCombinations =
 			{

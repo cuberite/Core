@@ -1,16 +1,11 @@
 function HandleSeedCommand(Split, Player)
 	local Response
 
-	local World = cRoot:Get():GetDefaultWorld()
-
-	if Split[2] then
-		World = cRoot:Get():GetWorld(Split[2])
-	elseif Player then
-		World = Player:GetWorld()
-	end
+	local WorldName = Split[2]
+	local World = GetWorld(WorldName, Player)
 	
 	if not World then
-		Response = SendMessage(Player, "There is no world \"" .. Split[2] .. "\"")
+		Response = SendMessage(Player, "There is no world \"" .. WorldName .. "\"")
 	else
 		Response = SendMessage(Player, "Seed: " .. World:GetSeed())
 	end

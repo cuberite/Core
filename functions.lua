@@ -1,3 +1,11 @@
+function GetWorld(WorldName, Player)
+	if not WorldName then
+		return Player and Player:GetWorld() or cRoot:Get():GetDefaultWorld()
+	else
+		return cRoot:Get():GetWorld(WorldName)
+	end
+end
+
 function SendMessage(Player, Message)
 	if Player then
 		Player:SendMessageInfo(Message)
@@ -157,39 +165,6 @@ function LoadWorldSettings(a_World)
 	WorldsWorldLimit[a_World:GetName()]      = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
 	WorldsWorldDifficulty[a_World:GetName()] = WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 1)
 	WorldIni:WriteFile(a_World:GetIniFileName())
-end
-
-
---- Returns the cWorld object represented by the given WorldName,
---  if no world of the given name is found, returns nil and informs the Player, if given, otherwise logs to console.
---  If no WorldName was given, returns the default world if called without a Player,
---  or the current world that the player is in if called with a Player.
---
---  @param WorldName String containing the name of the world to find
---  @param Player cPlayer object representing the player calling the command
---
---  @return cWorld object representing the requested world, or nil if not found
---
---  Called from: time.lua, weather.lua,
---
-function GetWorld( WorldName, Player )
-
-	if not WorldName then
-		return Player and Player:GetWorld() or cRoot:Get():GetDefaultWorld()
-	else
-		local World = cRoot:Get():GetWorld(WorldName)
-
-		if not World then
-			local Message = "There is no world \"" .. WorldName .. "\""
-			if Player then
-				SendMessage( Player, Message )
-			else
-				LOG( Message )
-			end
-		end
-
-		return World
-	end
 end
 
 
