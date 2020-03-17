@@ -1,3 +1,6 @@
+-- Returns the world object of the specified world name.
+-- If a name isn't provided, the function returns the world of the specified player.
+-- If a player isn't specified (e.g. console), the function returns the default world.
 function GetWorld(WorldName, Player)
 	if not WorldName then
 		return Player and Player:GetWorld() or cRoot:Get():GetDefaultWorld()
@@ -6,25 +9,31 @@ function GetWorld(WorldName, Player)
 	end
 end
 
+-- If the target is a player, the SendMessage function takes care of sending the message to the player.
+-- If the target is a command block or the console, the message is simply returned to the calling function,
+-- which delivers it appropriately
 function SendMessage(Player, Message)
 	if Player then
 		Player:SendMessageInfo(Message)
+	else
+		return Message
 	end
-	return Message
 end
 
 function SendMessageSuccess(Player, Message)
 	if Player then
 		Player:SendMessageSuccess(Message)
+	else
+		return Message
 	end
-	return Message
 end
 
 function SendMessageFailure(Player, Message)
 	if Player then
 		Player:SendMessageFailure(Message)
+	else
+		return Message
 	end
-	return Message
 end
 
 --- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
