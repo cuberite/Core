@@ -9,6 +9,27 @@ function GetWorld(WorldName, Player)
 	end
 end
 
+-- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
+function KickPlayer(PlayerName, Reason)
+	local RealName = ""
+
+	if not Reason then
+		Reason = "You have been kicked"
+	end
+
+	local KickPlayer = function(Player)
+		Player:GetClientHandle():Kick(Reason)
+	end
+
+	if not cRoot:Get():FindAndDoWithPlayer(PlayerName, KickPlayer) then
+		-- Could not find player
+		return false
+	else
+		-- Player has been kicked
+		return true
+	end
+end
+
 -- If the target is a player, the SendMessage function takes care of sending the message to the player.
 -- If the target is a command block or the console, the message is simply returned to the calling function,
 -- which delivers it appropriately
@@ -38,29 +59,6 @@ function SendMessageFailure(Player, Message)
 		return Message
 	end
 end
-
---- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
-function KickPlayer( PlayerName, Reason )
-
-	local RealName = ""
-	if (Reason == nil) then
-		Reason = "You have been kicked"
-	end
-
-	local FoundPlayerCallback = function( a_Player )
-		a_Player:GetClientHandle():Kick(Reason)
-		return true
-	end
-
-	if not cRoot:Get():FindAndDoWithPlayer( PlayerName, FoundPlayerCallback ) then
-		-- Could not find player
-		return false
-	end
-
-	return true -- Player has been kicked
-
-end
-
 
 function ReturnColorFromChar(char)
 
