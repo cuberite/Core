@@ -15,6 +15,7 @@ end
 function SendMessage(Player, Message)
 	if Player then
 		Player:SendMessageInfo(Message)
+		return nil
 	else
 		return Message
 	end
@@ -23,6 +24,7 @@ end
 function SendMessageSuccess(Player, Message)
 	if Player then
 		Player:SendMessageSuccess(Message)
+		return nil
 	else
 		return Message
 	end
@@ -31,6 +33,7 @@ end
 function SendMessageFailure(Player, Message)
 	if Player then
 		Player:SendMessageFailure(Message)
+		return nil
 	else
 		return Message
 	end
