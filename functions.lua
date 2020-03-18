@@ -9,10 +9,8 @@ function GetWorld(WorldName, Player)
 	end
 end
 
--- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
+-- Kicks a player by name, with the specified reason; returns bool whether found
 function KickPlayer(PlayerName, Reason)
-	local RealName = ""
-
 	if not Reason then
 		Reason = "You have been kicked"
 	end
