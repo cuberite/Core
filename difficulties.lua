@@ -97,12 +97,11 @@ function OnTakeDamage(Receiver, TDI)
 				elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 7
 				else TDI.FinalDamage = 9 end
 			end
-			return false
-		end
-
-		local Damages = MobDamages[Attacker:GetClass()]
-		if Damages then
-			TDI.FinalDamage = Damages[WorldDifficulty]
+		else
+			local Damages = MobDamages[Attacker:GetClass()]
+			if Damages then
+				TDI.FinalDamage = Damages[WorldDifficulty]
+			end
 		end
 	end
 
