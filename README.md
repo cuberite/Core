@@ -36,6 +36,7 @@ Implements some of the basic commands needed to run a simple server.
 |/seed | core.seed | Shows the seed of the given world name or current world, if not given.|
 |/setspawn | core.setspawn | Changes the world's spawn point.|
 |/spawn | core.spawn | Returns a player to the spawn point.|
+|/spawnpoint | core.spawnpoint | Sets the spawn point for a player.|
 |/stop | core.stop | Stops the server.|
 |/sudo | core.sudo | Runs a command as a player, ignoring permissions.|
 |/summon | core.summon | Summons an entity in the world.|
@@ -97,6 +98,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.seed |  | `/seed` |  |
 | core.setspawn |  | `/setspawn` |  |
 | core.spawn |  | `/spawn` |  |
+| core.spawnpoint |  | `/spawnpoint` |  |
 | core.stop |  | `/stop` |  |
 | core.sudo |  | `/sudo` |  |
 | core.summon |  | `/summon` |  |
