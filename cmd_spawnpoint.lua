@@ -24,19 +24,19 @@ function HandleSpawnPointCommand(Split, Player)
 			X = RelativeCommandCoord(Split[3], X)
 
 			if not X then
-				return true, SendMessageFailure(Player, "'" .. Split[3] .. "' is not a valid number")
+				Response = SendMessageFailure(Player, "'" .. Split[3] .. "' is not a valid number")
 			end
 
 			Y = RelativeCommandCoord(Split[4], Y)
 
 			if not Y then
-				return true, SendMessageFailure(Player, "'" .. Split[4] .. "' is not a valid number")
+				Response = SendMessageFailure(Player, "'" .. Split[4] .. "' is not a valid number")
 			end
 
 			Z = RelativeCommandCoord(Split[5], Z)
 
 			if not Z then
-				return true, SendMessageFailure(Player, "'" .. Split[5] .. "' is not a valid number")
+				Response = SendMessageFailure(Player, "'" .. Split[5] .. "' is not a valid number")
 			end
 		end
 		
@@ -44,13 +44,15 @@ function HandleSpawnPointCommand(Split, Player)
 			World = cRoot:Get():GetWorld(Split[6])
 
 			if not World then
-				return true, SendMessageFailure(Player, "Invalid world \"" .. Split[6] .. "\"")
+				Response = SendMessageFailure(Player, "Invalid world \"" .. Split[6] .. "\"")
 			end
 		end
 
-		OtherPlayer:SetBedPos(Vector3i(X, Y, Z), World)
+		if not Response then
+			OtherPlayer:SetBedPos(Vector3i(X, Y, Z), World)
 
-		Response = SendMessageSuccess(Player, "Set the spawn point of player \"" .. OtherPlayer:GetName() .. "\" to (" .. math.floor(X) .. ", " .. math.floor(Y) .. ", " .. math.floor(Z) .. ") in world \"" .. World:GetName() .. "\"")
+			Response = SendMessageSuccess(Player, "Set the spawn point of player \"" .. OtherPlayer:GetName() .. "\" to (" .. math.floor(X) .. ", " .. math.floor(Y) .. ", " .. math.floor(Z) .. ") in world \"" .. World:GetName() .. "\"")
+		end
 	end
 
 	if (not Player and not Split[5]) or (Split[3] and not Split[5]) then
