@@ -16,7 +16,6 @@ g_UsePrefixes = true
 
 
 -- Global variables
-Messages = {}
 WorldsSpawnProtect = {}
 WorldsWorldLimit = {}
 WorldsWorldDifficulty = {}
@@ -83,7 +82,7 @@ function Initialize(Plugin)
 	Plugin:AddWebTab("Ranks",           HandleRequest_Ranks)
 	Plugin:AddWebTab("Player Ranks",    HandleRequest_PlayerRanks)
 
-	LoadMotd()
+	LoadMOTD()
 
 	WEBLOGINFO("Core is initialized")
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
