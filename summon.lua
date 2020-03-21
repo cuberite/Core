@@ -47,6 +47,7 @@ local Mobs =
 	["wolf"] = mtWolf,
 	["zombie"] = mtZombie,
 	["zombie_pigman"] = mtZombiePigman,
+	["zombie_villager"] = mtZombieVillager,
 
 	-- 1.10 and below
 	["Bat"] = mtBat,
@@ -79,7 +80,8 @@ local Mobs =
 	["Wither"] = mtWither,
 	["Wolf"] = mtWolf,
 	["Zombie"] = mtZombie,
-	["PigZombie"] = mtZombiePigman
+	["PigZombie"] = mtZombiePigman,
+	["ZombieVillager"] = mtZombieVillager
 }
 
 local Projectiles =
