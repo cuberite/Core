@@ -20,27 +20,24 @@ function SendMessage(Player, Message)
 	if Player then
 		Player:SendMessageInfo(Message)
 		return nil
-	else
-		return Message
 	end
+	return Message
 end
 
 function SendMessageSuccess(Player, Message)
 	if Player then
 		Player:SendMessageSuccess(Message)
 		return nil
-	else
-		return Message
 	end
+	return Message
 end
 
 function SendMessageFailure(Player, Message)
 	if Player then
 		Player:SendMessageFailure(Message)
 		return nil
-	else
-		return Message
 	end
+	return Message
 end
 
 --- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
