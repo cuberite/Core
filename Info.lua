@@ -306,6 +306,13 @@ g_PluginInfo =
 			HelpString = "Returns a player to the spawn point.",
 		},
 
+		["/spawnpoint"] = 
+		{
+			Permission = "core.spawnpoint",
+			Handler = HandleSpawnPointCommand,
+			HelpString = "Sets the spawn point for a player.",
+		},
+
 		["/stop"] = 
 		{
 			Permission = "core.stop",
@@ -838,6 +845,12 @@ g_PluginInfo =
 		{
 			Handler =  HandleConsoleSay,
 			HelpString = "Sends a chat message to all players.",
+		},
+
+		["spawnpoint"] = 
+		{
+			Handler = HandleConsoleSpawnPoint,
+			HelpString = "Sets the spawn point for a player.",
 		},
 
 		["time"] = 

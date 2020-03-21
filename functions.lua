@@ -1,13 +1,46 @@
-function SendMessage(a_Player, a_Message)
-	a_Player:SendMessageInfo(a_Message)
+function RelativeCommandCoord(Split, Coord)
+	if string.sub(Split, 1, 1) == "~" then
+		local Relative = tonumber(string.sub(Split, 2, -1))
+
+		if Coord then
+			if Relative then
+				return Coord + Relative
+			end
+			return Coord
+		end
+		return Relative
+	end
+	return tonumber(Split)
 end
 
-function SendMessageSuccess(a_Player, a_Message)
-	a_Player:SendMessageSuccess(a_Message)
+-- If the target is a player, the SendMessage function takes care of sending the message to the player.
+-- If the target is a command block or the console, the message is simply returned to the calling function,
+-- which delivers it appropriately
+function SendMessage(Player, Message)
+	if Player then
+		Player:SendMessageInfo(Message)
+		return nil
+	else
+		return Message
+	end
 end
 
-function SendMessageFailure(a_Player, a_Message)
-	a_Player:SendMessageFailure(a_Message)
+function SendMessageSuccess(Player, Message)
+	if Player then
+		Player:SendMessageSuccess(Message)
+		return nil
+	else
+		return Message
+	end
+end
+
+function SendMessageFailure(Player, Message)
+	if Player then
+		Player:SendMessageFailure(Message)
+		return nil
+	else
+		return Message
+	end
 end
 
 --- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
