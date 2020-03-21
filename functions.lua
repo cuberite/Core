@@ -4,9 +4,8 @@
 function GetWorld(WorldName, Player)
 	if not WorldName then
 		return Player and Player:GetWorld() or cRoot:Get():GetDefaultWorld()
-	else
-		return cRoot:Get():GetWorld(WorldName)
 	end
+	return cRoot:Get():GetWorld(WorldName)
 end
 
 -- Kicks a player by name, with the specified reason; returns bool whether found
@@ -22,10 +21,10 @@ function KickPlayer(PlayerName, Reason)
 	if not cRoot:Get():FindAndDoWithPlayer(PlayerName, KickPlayer) then
 		-- Could not find player
 		return false
-	else
-		-- Player has been kicked
-		return true
 	end
+
+	-- Player has been kicked
+	return true
 end
 
 -- If the target is a player, the SendMessage function takes care of sending the message to the player.
@@ -35,27 +34,24 @@ function SendMessage(Player, Message)
 	if Player then
 		Player:SendMessageInfo(Message)
 		return nil
-	else
-		return Message
 	end
+	return Message
 end
 
 function SendMessageSuccess(Player, Message)
 	if Player then
 		Player:SendMessageSuccess(Message)
 		return nil
-	else
-		return Message
 	end
+	return Message
 end
 
 function SendMessageFailure(Player, Message)
 	if Player then
 		Player:SendMessageFailure(Message)
 		return nil
-	else
-		return Message
 	end
+	return Message
 end
 
 function ReturnColorFromChar(char)
