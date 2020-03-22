@@ -101,7 +101,7 @@ local function ShowAddGroupPage(a_Request)
 	end
 	
 	-- Add the group:
-	cRankManager:AddGroup(GroupName)
+	cRankManager:AddGroup(TrimString(GroupName))
 	
 	-- Redirect the user:
 	return "<p>Group created. <a href='/" .. a_Request.Path .. "'>Return to group list</a>.</p>"
@@ -122,7 +122,7 @@ local function ShowAddPermissionPage(a_Request)
 	end
 	
 	-- Add the permission:
-	cRankManager:AddPermissionToGroup(Permission, GroupName)
+	cRankManager:AddPermissionToGroup(TrimString(Permission), GroupName)
 	
 	-- Redirect the user:
 	return
@@ -148,7 +148,7 @@ local function ShowAddRestrictionPage(a_Request)
 	end
 	
 	-- Add the permission:
-	cRankManager:AddRestrictionToGroup(Restriction, GroupName)
+	cRankManager:AddRestrictionToGroup(TrimString(Restriction), GroupName)
 	
 	-- Redirect the user:
 	return
