@@ -1,92 +1,68 @@
--- Copyright (c) 2012-2014 Alexander Harkness
 
--- Permission is hereby granted, free of charge, to any person obtaining a
--- copy of this software and associated documentation files (the
--- "Software"), to deal in the Software without restriction, including
--- without limitation the rights to use, copy, modify, merge, publish,
--- distribute, sublicense, and/or sell copies of the Software, and to
--- permit persons to whom the Software is furnished to do so, subject to
--- the following conditions:
+-- Implements spawn protection for Cuberite
 
--- The above copyright notice and this permission notice shall be included
--- in all copies or substantial portions of the Software.
+local function IsInSpawn(X, Y, Z, WorldName)
+	local ProtectRadius = WorldsSpawnProtect[WorldName]
+	
+	if ProtectRadius > 0 then
+		local World = cRoot:Get():GetWorld(WorldName)
+		local SpawnArea = cBoundingBox(Vector3d(World:GetSpawnX() - ProtectRadius, -1000, World:GetSpawnZ() - ProtectRadius), Vector3d(World:GetSpawnX() + ProtectRadius, 1000, World:GetSpawnZ() + ProtectRadius))
+		local PlayerLocation = Vector3d(X, Y, Z)
 
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
--- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
--- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
--- IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
--- CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
--- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
--- SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-function OnPlayerPlacingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX, CursorY, CursorZ, BlockType)
-	-- Don't fail if the block is air.
-	if (BlockFace == -1) then
-		return false
+		if SpawnArea:IsInside(PlayerLocation) then
+			return true
+		end
 	end
+end
 
-	local PROTECTRADIUS = WorldsSpawnProtect[Player:GetWorld():GetName()]
-
-	if not (Player:HasPermission("core.build")) then
-		SendMessageFailure( Player, "You do not have the 'core.build' permission, thou cannot build" )
+local function CheckBlockModification(Player, BlockX, BlockY, BlockZ)
+	if not Player:HasPermission("core.build") then
+		SendMessageFailure(Player, "You do not have the \"core.build\" permission, thou cannot build")
 		return true
 	end
 
-	if not (Player:HasPermission("core.spawnprotect.bypass")) and (PROTECTRADIUS ~= 0) then
-		local World = Player:GetWorld()
-		local xcoord = World:GetSpawnX()
-		local ycoord = World:GetSpawnY()
-		local zcoord = World:GetSpawnZ()
-		if not ((BlockX <= (xcoord + PROTECTRADIUS)) and (BlockX >= (xcoord - PROTECTRADIUS))) then
-			return false -- Not in spawn area.
-		end
-		if not ((BlockY <= (ycoord + PROTECTRADIUS)) and (BlockY >= (ycoord - PROTECTRADIUS))) then
-			return false -- Not in spawn area.
-		end
-		if not ((BlockZ <= (zcoord + PROTECTRADIUS)) and (BlockZ >= (zcoord - PROTECTRADIUS))) then
-			return false -- Not in spawn area.
-		end
-			SendMessageFailure( Player, "Go further from spawn to build" )
-			return true
+	if not Player:HasPermission("core.spawnprotect.bypass") and IsInSpawn(BlockX, BlockY, BlockZ, Player:GetWorld():GetName()) then
+		SendMessageFailure(Player, "Go further from spawn to build")
+		return true
 	end
+end
 
-	return false
+function OnBlockSpread(World, BlockX, BlockY, BlockZ, Source)
+	if Source == ssFireSpread and IsInSpawn(BlockX, BlockY, BlockZ, World:GetName()) then
+		return true
+	end
+		
+end
+
+function OnExploding(World, ExplosionSize, CanCauseFire, X, Y, Z, Source, SourceData)
+	if IsInSpawn(X, Y, Z, World:GetName()) then
+		return true
+	end
 end
 
 function OnPlayerBreakingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, Status, OldBlockType, OldBlockMeta)
-	-- Don't fail if the block is air.
-	if BlockFace == -1 then
-		return false
-	end
+	return CheckBlockModification(Player, BlockX, BlockY, BlockZ)
+end
 
-	local PROTECTRADIUS = WorldsSpawnProtect[Player:GetWorld():GetName()]
+function OnPlayerPlacingBlock(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX, CursorY, CursorZ, BlockType)
+	return CheckBlockModification(Player, BlockX, BlockY, BlockZ)
+end
 
-	if not (Player:HasPermission("core.build")) then
-		SendMessageFailure( Player, "You do not have the 'core.build' permission, thou cannot build" )
+function OnPlayerRightClick(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX, CursorY, CursorZ)
+	if not Player:HasPermission("core.spawnprotect.bypass") and IsInSpawn(BlockX, BlockY, BlockZ, Player:GetWorld():GetName()) then
+		if Player:GetWorld():GetBlock(BlockX, BlockY, BlockZ) == E_BLOCK_GRASS or
+				Player:GetWorld():GetBlock(BlockX, BlockY, BlockZ) == E_BLOCK_DIRT then
+			if Player:GetEquippedItem():IsEmpty() then
+				return false
+			end
+		end
+
+		if Player:GetEquippedItem().m_ItemType ~= E_ITEM_FLINT_AND_STEEL and
+				Player:GetEquippedItem().m_ItemType ~= E_ITEM_FIRE_CHARGE then
+			return false
+		end
+
+		SendMessageFailure(Player, "Go further from spawn to build")
 		return true
 	end
-
-	if not (Player:HasPermission("core.spawnprotect.bypass")) and not (PROTECTRADIUS == 0) then
-		local World = Player:GetWorld()
-		local xcoord = World:GetSpawnX()
-		local ycoord = World:GetSpawnY()
-		local zcoord = World:GetSpawnZ()
-
-		if not ((BlockX <= (xcoord + PROTECTRADIUS)) and (BlockX >= (xcoord - PROTECTRADIUS))) then
-			return false -- Not in spawn area.
-		end
-		if not ((BlockY <= (ycoord + PROTECTRADIUS)) and (BlockY >= (ycoord - PROTECTRADIUS))) then
-			return false -- Not in spawn area.
-		end
-		if not ((BlockZ <= (zcoord + PROTECTRADIUS)) and (BlockZ >= (zcoord - PROTECTRADIUS))) then
-			return false -- Not in spawn area.
-		end
-
-		SendMessageFailure( Player, "Go further from spawn to build" )
-
-		return true
-	end
-
-	return false
 end
