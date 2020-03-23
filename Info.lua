@@ -454,7 +454,7 @@ g_PluginInfo =
 		["/toggledownfall"] = 
 		{
 			Permission = "core.toggledownfall",
-			Handler = HandleDownfallCommand,
+			Handler = HandleToggleDownfallCommand,
 			HelpString = "Toggles the weather between clear skies and rain.",
 			ParameterCombinations =
 			{
@@ -664,8 +664,14 @@ g_PluginInfo =
 
 		["clear"] =
 		{
-			Handler =  HandleConsoleClear ,
+			Handler =  HandleConsoleClear,
 			HelpString = "Clears the inventory of a player.",
+		},
+		
+		["effect"] =
+		{
+			Handler =  HandleConsoleEffect,
+			HelpString = "Adds an effect to a player.",
 		},
 
 		["enchant"] = 
@@ -836,8 +842,14 @@ g_PluginInfo =
 
 		["say"] =
 		{
-			Handler =  HandleConsoleSay,
+			Handler = HandleConsoleSay,
 			HelpString = "Sends a chat message to all players.",
+		},
+
+		["spawn"] =
+		{
+			Handler = HandleConsoleSpawn,
+			HelpString = "Returns a player to the spawn point.",
 		},
 
 		["time"] = 
@@ -952,7 +964,7 @@ g_PluginInfo =
 
 		["toggledownfall"] =
 		{
-			Handler = HandleConsoleDownfall,
+			Handler = HandleConsoleToggleDownfall,
 			HelpString = "Toggles the weather between clear skies and rain.",
 			ParameterCombinations =
 			{
@@ -972,7 +984,7 @@ g_PluginInfo =
 		["tps"] =
 		{
 			Handler =  HandleConsoleTps,
-			HelpString =  " - Returns the tps (ticks per second) from the server.",
+			HelpString =  "Returns the tps (ticks per second) from the server.",
 		},
 
 		["unban"] =
