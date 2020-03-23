@@ -45,10 +45,6 @@ function HandleEffectCommand(Split, Player)
 			Response = SendMessageFailure(Player, "Invalid amplification amount \"" .. Split[5] .. "\"")
 		elseif Amplifier < 0 then
 			Response = SendMessageFailure(Player, "The amplification amount must be at least 0")
-		elseif (Amplifier > 24 and EffectID == 19) or (Amplifier > 24 and EffectID == 20) then
-			Response = SendMessageFailure(Player, "The amplification amount must be at most 24")
-		elseif Amplifier > 49 and EffectID == 10 then
-			Response = SendMessageFailure(Player, "The amplification amount must be at most 49")
 		elseif Amplifier > 255 then
 			Response = SendMessageFailure(Player, "The amplification amount must be at most 255")
 		elseif Split[2] == "@a" then
