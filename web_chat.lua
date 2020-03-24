@@ -260,6 +260,14 @@ end
 
 
 
+function OnDisconnect(a_Player)
+	WEBLOGINFO(a_Player:GetName() .. " has left the game")
+end
+
+
+
+
+
 --- Removes html tags
 --- Creates a tag when http(s) links are send.
 --- It does this by selecting all the characters between "http(s)://" and a space, and puts an anker tag around it.
