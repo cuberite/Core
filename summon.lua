@@ -110,17 +110,6 @@ local Projectiles =
 	["WitherSkull"] = cProjectileEntity.pkWitherSkull
 }
 
-local function RelativeCommandCoord(a_Split, a_Relative)
-	if string.sub(a_Split, 1, 1) == "~" then
-		local rel = tonumber(string.sub(a_Split, 2, -1))
-		if rel then
-			return a_Relative + rel
-		end
-		return a_Relative
-	end
-	return tonumber(a_Split)
-end
-
 local function SpawnEntity(EntityName, World, X, Y, Z, Player)
 	if EntityName == "boat" or EntityName == "Boat" then
 		local Material = cBoat.bmOak

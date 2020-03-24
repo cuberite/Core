@@ -27,6 +27,21 @@ function KickPlayer(PlayerName, Reason)
 	return true
 end
 
+function RelativeCommandCoord(Split, Coord)
+	if string.sub(Split, 1, 1) == "~" then
+		local Relative = tonumber(string.sub(Split, 2, -1))
+
+		if Coord then
+			if Relative then
+				return Coord + Relative
+			end
+			return Coord
+		end
+		return Relative
+	end
+	return tonumber(Split)
+end
+
 -- If the target is a player, the SendMessage function takes care of sending the message to the player.
 -- If the target is a command block or the console, the message is simply returned to the calling function,
 -- which delivers it appropriately
