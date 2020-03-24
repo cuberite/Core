@@ -8,6 +8,7 @@ Implements some of the basic commands needed to run a simple server.
 |/ban | core.ban | Bans a player.|
 |/clear | core.clear | Clears the inventory of a player.|
 |/difficulty | core.difficulty | Changes the difficulty level of the world you're located in.|
+|/deop | core.unrank | Add a player to the default rank.|
 |/do | core.do | Runs a command as a player.|
 |/effect | core.effect | Adds an effect to a player.|
 |/enchant | core.enchant | Adds an enchantment to a specified player's held item.|
@@ -111,7 +112,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.toggledownfall | Allows players to toggle the weather between clear skies and rain. | `/toggledownfall` | admins |
 | core.tps |  | `/tps` |  |
 | core.unban |  | `/unban` |  |
-| core.unrank |  | `/unrank` |  |
+| core.unrank |  | `/deop`, `/unrank` |  |
 | core.viewdistance |  | `/viewdistance` |  |
 | core.weather | Allows players to change the weather. | `/weather` | admins |
 | core.whitelist | Allows players to manage the whitelist. | `/whitelist off`, `/whitelist list`, `/whitelist remove`, `/whitelist on`, `/whitelist add` | admins |
