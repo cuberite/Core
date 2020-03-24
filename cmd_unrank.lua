@@ -14,7 +14,7 @@ function HandleUnrankCommand(Split, Player)
 		OtherPlayer:LoadRank()
 	end
 
-	if not Split[2] then
+	if not PlayerName then
 		Response = SendMessage(Player, "Usage: " .. Split[1] .. " <player>")
 	else
 		-- Translate the PlayerName to a UUID:
