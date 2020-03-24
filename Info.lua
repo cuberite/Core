@@ -185,6 +185,14 @@ g_PluginInfo =
 			HelpString = "Shows a list of connected players.",
 		},
 
+		["/listgroups"] =
+		{
+			Permission = "core.listgroups",
+			Handler = HandleListGroupsCommand,
+			HelpString = "Shows a list of the available groups.",
+			Alias = "/groups",
+		},
+
 		["/listranks"] =
 		{
 			Permission = "core.listranks",
@@ -248,13 +256,6 @@ g_PluginInfo =
 			Permission = "core.rank",
 			Handler = HandleOpCommand,
 			HelpString = "Add a player to the administrator rank.",
-		},
-
-		["/deop"] =
-		{
-			Permission = "core.rank",
-			Handler = HandleDeOpCommand,
-			HelpString = "Add a player to the default rank.",
 		},
 
 		["/regen"] =
@@ -493,6 +494,14 @@ g_PluginInfo =
 			HelpString = "Unbans a player.",
 		},
 
+		["/unrank"] =
+		{
+			Permission = "core.unrank",
+			Handler = HandleUnrankCommand,
+			HelpString = "Add a player to the default rank.",
+			Alias = "/deop",
+		},
+
 		["/unsafegive"] = 
 		{
 			Permission = "core.give.unsafe",
@@ -674,6 +683,12 @@ g_PluginInfo =
 			Handler =  HandleConsoleClear,
 			HelpString = "Clears the inventory of a player.",
 		},
+
+		["deop"] =
+		{
+			Handler = HandleConsoleUnrank,
+			HelpString = "Resets a player's rank to default.",
+		},
 		
 		["effect"] =
 		{
@@ -749,6 +764,12 @@ g_PluginInfo =
 			},
 		},
 
+		["groups"] =
+		{
+			Handler =  HandleConsoleListGroups,
+			HelpString = "Shows a list of all the available groups.",
+		},
+
 		["kick"] =
 		{
 			Handler =  HandleConsoleKick,
@@ -805,16 +826,14 @@ g_PluginInfo =
 
 		["op"] =
 		{
-			Permission = "core.rank",
 			Handler = HandleConsoleOp,
 			HelpString = "Add a player to the Admin rank.",
 		},
 
-		["deop"] =
+		["ranks"] =
 		{
-			Permission = "core.rank",
-			Handler = HandleConsoleDeOp,
-			HelpString = "Add a player to the Default rank.",
+			Handler =  HandleConsoleListRanks,
+			HelpString = "Shows a list of all the available ranks.",
 		},
 		
 		["regen"] =

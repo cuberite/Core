@@ -1,3 +1,14 @@
+-- Returns the online mode UUID for a player name, if it exists
+-- Otherwise returns an offline UUID
+function GetPlayerUUID(PlayerName)
+	if cRoot:Get():GetServer():ShouldAuthenticate() then
+		-- The server is in online-mode, get the UUID from Mojang servers and check for validity:
+		return cMojangAPI:GetUUIDFromPlayerName(PlayerName)
+	end
+	-- The server is in offline mode, generate an offline-mode UUID, no validity check is possible:
+	return cClientHandle:GenerateOfflineUUID(PlayerName)
+end
+
 -- Returns the world object of the specified world name.
 -- If a name isn't provided, the function returns the world of the specified player.
 -- If a player isn't specified (e.g. console), the function returns the default world.
@@ -40,6 +51,19 @@ function RelativeCommandCoord(Split, Coord)
 		return Relative
 	end
 	return tonumber(Split)
+end
+
+-- Safer method to find players
+function SafeDoWithPlayer(PlayerName, Function)
+	local DoWithPlayer = function(World)
+		World:DoWithPlayer(PlayerName, Function)
+	end
+	
+	local QueueTask = function(World)
+		World:QueueTask(DoWithPlayer)
+	end
+
+	cRoot:Get():ForEachWorld(QueueTask);
 end
 
 -- If the target is a player, the SendMessage function takes care of sending the message to the player.
