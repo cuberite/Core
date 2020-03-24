@@ -7,100 +7,6 @@
 
 
 
-function HandleConsoleClear(Split)
-	if (#Split == 1) then
-		return true, "Usage: " .. Split[1] .. " <player>"
-    end
-
-    local InventoryCleared = false
-    local ClearInventory = function(Player)
-        if (Player:GetName() == Split[2]) then
-            Player:GetInventory():Clear()
-            InventoryCleared = true
-        end
-    end
-
-    cRoot:Get():FindAndDoWithPlayer(Split[2], ClearInventory)
-    if (InventoryCleared) then
-        return true, "You cleared the inventory of " .. Split[2]
-    else
-        return true, "Player not found"
-    end
-end
-
-
-
-
-
-function HandleConsoleKick(Split)
-	if (#Split < 2) then
-		return true, "Usage: " .. Split[1] .. " <player> [reason ...]"
-	end
-
-	local Reason = cChatColor.Red .. "You have been kicked."
-	if (#Split > 2) then
-		Reason = table.concat(Split, " ", 3)
-	end
-
-	if (KickPlayer(Split[2], Reason)) then
-		return true
-	end
-
-	return true, "Cannot find player " .. Split[2]
-end
-
-
-
-
-
-function HandleConsoleKill(Split)
-	-- Check the params:
-	if (#Split == 1) then
-		return true, "Usage: " .. Split[1] .. " <player>"
-	end
-
-	-- Kill the player:
-	local HasKilled = false
-	cRoot:Get():FindAndDoWithPlayer(Split[2],
-		function(Player)
-			if (Player:GetName() == Split[2]) then
-				Player:TakeDamage(dtAdmin, nil, 1000, 1000, 0)
-				HasKilled = true
-			end
-		end
-	)
-
-	-- Report success or failure:
-	if (HasKilled) then
-		return true, "Player " .. Split[2] .. " is killed"
-	else
-		return true, "Player not found"
-	end
-end
-
-
-
-
-
-
-function HandleConsoleList(Split)
-	local PlayerTable = {}
-
-	cRoot:Get():ForEachPlayer(
-		function(a_Player)
-			table.insert(PlayerTable, a_Player:GetName())
-		end
-	)
-	table.sort(PlayerTable)
-
-	local Out = "Players (" .. #PlayerTable .. "): " .. table.concat(PlayerTable, ", ")
-	return true, Out
-end
-
-
-
-
-
 function HandleConsoleListGroups(a_Split)
 	if (a_Split[3] ~= nil) then
 		-- Too many params:
@@ -340,25 +246,6 @@ function HandleConsoleDeOp(a_Split)
 
 	return HandleConsoleRank({"rank", PlayerName, DefaultRank})
 end
-
-
-
-
-
-function HandleConsoleSaveAll(Split)
-	cRoot:Get():SaveAllChunks()
-	return true
-end
-
-
-
-
-
-function HandleConsoleSay(a_Split)
-	cRoot:Get():BroadcastChat(cChatColor.Gold .. "[SERVER] " .. cChatColor.Yellow .. table.concat(a_Split, " ", 2))
-	return true
-end
-
 
 
 

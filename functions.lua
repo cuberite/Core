@@ -1,3 +1,32 @@
+-- Returns the world object of the specified world name.
+-- If a name isn't provided, the function returns the world of the specified player.
+-- If a player isn't specified (e.g. console), the function returns the default world.
+function GetWorld(WorldName, Player)
+	if not WorldName then
+		return Player and Player:GetWorld() or cRoot:Get():GetDefaultWorld()
+	end
+	return cRoot:Get():GetWorld(WorldName)
+end
+
+-- Kicks a player by name, with the specified reason; returns bool whether found
+function KickPlayer(PlayerName, Reason)
+	if not Reason then
+		Reason = "You have been kicked"
+	end
+
+	local KickPlayer = function(Player)
+		Player:GetClientHandle():Kick(Reason)
+	end
+
+	if not cRoot:Get():FindAndDoWithPlayer(PlayerName, KickPlayer) then
+		-- Could not find player
+		return false
+	end
+
+	-- Player has been kicked
+	return true
+end
+
 function RelativeCommandCoord(Split, Coord)
 	if string.sub(Split, 1, 1) == "~" then
 		local Relative = tonumber(string.sub(Split, 2, -1))
@@ -39,84 +68,6 @@ function SendMessageFailure(Player, Message)
 	end
 	return Message
 end
-
---- Kicks a player by name, with the specified reason; returns bool whether found and player's real name
-function KickPlayer( PlayerName, Reason )
-
-	local RealName = ""
-	if (Reason == nil) then
-		Reason = "You have been kicked"
-	end
-
-	local FoundPlayerCallback = function( a_Player )
-		a_Player:GetClientHandle():Kick(Reason)
-		return true
-	end
-
-	if not cRoot:Get():FindAndDoWithPlayer( PlayerName, FoundPlayerCallback ) then
-		-- Could not find player
-		return false
-	end
-
-	return true -- Player has been kicked
-
-end
-
-
-function ReturnColorFromChar(char)
-
-	-- Check if the char represents a color. Else return nil.
-	if char == "0" then
-		return cChatColor.Black
-	elseif char == "1" then
-		return cChatColor.Navy
-	elseif char == "2" then
-		return cChatColor.Green
-	elseif char == "3" then
-		return cChatColor.Blue
-	elseif char == "4" then
-		return cChatColor.Red
-	elseif char == "5" then
-		return cChatColor.Purple
-	elseif char == "6" then
-		return cChatColor.Gold
-	elseif char == "7" then
-		return cChatColor.LightGray
-	elseif char == "8" then
-		return cChatColor.Gray
-	elseif char == "9" then
-		return cChatColor.DarkPurple
-	elseif char == "a" then
-		return cChatColor.LightGreen
-	elseif char == "b" then
-		return cChatColor.LightBlue
-	elseif char == "c" then
-		return cChatColor.Rose
-	elseif char == "d" then
-		return cChatColor.LightPurple
-	elseif char == "e" then
-		return cChatColor.Yellow
-	elseif char == "f" then
-		return cChatColor.White
-	elseif char == "k" then
-		return cChatColor.Random
-	elseif char == "l" then
-		return cChatColor.Bold
-	elseif char == "m" then
-		return cChatColor.Strikethrough
-	elseif char == "n" then
-		return cChatColor.Underlined
-	elseif char == "o" then
-		return cChatColor.Italic
-	elseif char == "r" then
-		return cChatColor.Plain
-	end
-
-end
-
-
-
-
 
 -- Teleports a_SrcPlayer to a player named a_DstPlayerName; if a_TellDst is true, will send a notice to the destination player
 function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
@@ -178,39 +129,6 @@ function LoadWorldSettings(a_World)
 	WorldsWorldLimit[a_World:GetName()]      = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
 	WorldsWorldDifficulty[a_World:GetName()] = WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 1)
 	WorldIni:WriteFile(a_World:GetIniFileName())
-end
-
-
---- Returns the cWorld object represented by the given WorldName,
---  if no world of the given name is found, returns nil and informs the Player, if given, otherwise logs to console.
---  If no WorldName was given, returns the default world if called without a Player,
---  or the current world that the player is in if called with a Player.
---
---  @param WorldName String containing the name of the world to find
---  @param Player cPlayer object representing the player calling the command
---
---  @return cWorld object representing the requested world, or nil if not found
---
---  Called from: time.lua, weather.lua,
---
-function GetWorld( WorldName, Player )
-
-	if not WorldName then
-		return Player and Player:GetWorld() or cRoot:Get():GetDefaultWorld()
-	else
-		local World = cRoot:Get():GetWorld(WorldName)
-
-		if not World then
-			local Message = "There is no world \"" .. WorldName .. "\""
-			if Player then
-				SendMessage( Player, Message )
-			else
-				LOG( Message )
-			end
-		end
-
-		return World
-	end
 end
 
 

@@ -7,6 +7,10 @@ function HandleListCommand(Split, Player)
 	cRoot:Get():ForEachPlayer(ForEachPlayer)
 	table.sort(PlayerTable)
 
-	Player:SendMessageInfo("Players (" .. #PlayerTable .. "): " .. table.concat(PlayerTable, ", "))
-	return true
+	local Response = SendMessage(Player, "Players (" .. #PlayerTable .. "): " .. table.concat(PlayerTable, ", "))
+	return true, Response
+end
+
+function HandleConsoleList(Split)
+	return HandleListCommand(Split)
 end

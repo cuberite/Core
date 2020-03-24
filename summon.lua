@@ -110,7 +110,7 @@ local Projectiles =
 	["WitherSkull"] = cProjectileEntity.pkWitherSkull
 }
 
-local function SpawnEntity(EntityName, World, X, Y, Z)
+local function SpawnEntity(EntityName, World, X, Y, Z, Player)
 	if EntityName == "boat" or EntityName == "Boat" then
 		local Material = cBoat.bmOak
 
@@ -176,7 +176,7 @@ function HandleSummonCommand(Split, Player)
 			return true
 		end
 
-		if SpawnEntity(Split[2], World, X, Y, Z) then
+		if SpawnEntity(Split[2], World, X, Y, Z, Player) then
 			Player:SendMessageSuccess("Successfully summoned entity at [X:" .. math.floor(X) .. " Y:" .. math.floor(Y) .. " Z:" .. math.floor(Z) .. "]")
 		else
 			Player:SendMessageFailure("Unknown entity '" .. Split[2] .. "'")
