@@ -3,13 +3,12 @@ Implements some of the basic commands needed to run a simple server.
 # Commands
 
 ### General
-
 | Command | Permission | Description |
 | ------- | ---------- | ----------- |
 |/ban | core.ban | Bans a player.|
 |/clear | core.clear | Clears the inventory of a player.|
-|/deop | core.rank | Add a player to the default rank.|
 |/difficulty | core.difficulty | Changes the difficulty level of the world you're located in.|
+|/deop | core.unrank | Add a player to the default rank.|
 |/do | core.do | Runs a command as a player.|
 |/effect | core.effect | Adds an effect to a player.|
 |/enchant | core.enchant | Adds an enchantment to a specified player's held item.|
@@ -21,13 +20,14 @@ Implements some of the basic commands needed to run a simple server.
 |/kick | core.kick | Kicks a player.|
 |/kill | core.kill | Kills a player.|
 |/list | core.list | Shows a list of connected players.|
+|/listgroups | core.listgroups | Shows a list of the available groups.|
 |/listranks | core.listranks | Shows a list of the available ranks.|
 |/me | core.me | Broadcasts what you are doing.|
 |/motd | core.motd | Shows the message of the day.|
-|/op | core.rank | Add a player to the administrator rank. |
+|/op | core.rank | Add a player to the administrator rank.|
 |/plugins | core.plugins | Shows a list of the plugins.|
 |/portal | core.portal | Moves your player to a different world.|
-|/r | core.tell | Replies to the latest private message you recieved.|
+|/r | core.tell | Replies to the latest private message you received.|
 |/rank | core.rank | Shows or sets a player's rank.|
 |/regen | core.regen | Regenerates a chunk.|
 |/reload | core.reload | Reloads all plugins.|
@@ -52,6 +52,7 @@ Implements some of the basic commands needed to run a simple server.
 |/tp | core.teleport | Teleports your player to another player.|
 |/tps | core.tps | Returns the tps (ticks per second) from the server.|
 |/unban | core.unban | Unbans a player.|
+|/unrank | core.unrank | Add a player to the default rank.|
 |/unsafegive | core.give.unsafe | Gives an item to a player, even if the item is blacklisted.|
 |/unsafeitem | core.item.unsafe | Gives your player an item, even if the item is blacklisted.|
 |/viewdistance | core.viewdistance | Changes your view distance.|
@@ -67,7 +68,6 @@ Implements some of the basic commands needed to run a simple server.
 
 
 # Permissions
-
 | Permissions | Description | Commands | Recommended groups |
 | ----------- | ----------- | -------- | ------------------ |
 | core.ban |  | `/ban` |  |
@@ -75,6 +75,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.clear |  | `/clear` |  |
 | core.difficulty |  | `/difficulty` |  |
 | core.do |  | `/do` |  |
+| core.effect |  | `/effect` |  |
 | core.enchant | Allows players to add an enchantment to a player's held item. | `/enchant` | admins |
 | core.enchant.self | Allows players to add an enchantment to their own held item. | `/ienchant` | admins |
 | core.give | Allows players to give items to other players. | `/give` | admins |
@@ -85,12 +86,13 @@ Implements some of the basic commands needed to run a simple server.
 | core.kick |  | `/kick` |  |
 | core.kill |  | `/kill` |  |
 | core.list |  | `/list` |  |
+| core.listgroups |  | `/listgroups` |  |
 | core.listranks |  | `/listranks` |  |
 | core.me |  | `/me` |  |
 | core.motd |  | `/motd` |  |
 | core.plugins |  | `/plugins` |  |
 | core.portal |  | `/portal` |  |
-| core.rank |  | `/rank`, `/op`, `/deop` |  |
+| core.rank |  | `/rank`, `/op` |  |
 | core.regen |  | `/regen` |  |
 | core.reload |  | `/reload` |  |
 | core.save-all |  | `/save-all` |  |
@@ -110,6 +112,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.toggledownfall | Allows players to toggle the weather between clear skies and rain. | `/toggledownfall` | admins |
 | core.tps |  | `/tps` |  |
 | core.unban |  | `/unban` |  |
+| core.unrank |  | `/deop`, `/unrank` |  |
 | core.viewdistance |  | `/viewdistance` |  |
 | core.weather | Allows players to change the weather. | `/weather` | admins |
 | core.whitelist | Allows players to manage the whitelist. | `/whitelist off`, `/whitelist list`, `/whitelist remove`, `/whitelist on`, `/whitelist add` | admins |
