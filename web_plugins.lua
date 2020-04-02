@@ -34,8 +34,8 @@ local function LoadEnabledPlugins(SettingsIni)
 
 	-- Scan each value, remember each that is named "plugin"
 	for idx = 0, SettingsIni:GetNumValues(IniKeyPlugins) - 1 do
-		if (string.lower(SettingsIni:GetValueName(IniKeyPlugins, idx)) == "plugin") then
-			table.insert(res, SettingsIni:GetValue(IniKeyPlugins, idx))
+		if (string.lower(SettingsIni:GetValue(IniKeyPlugins, idx)) == "1") then
+			table.insert(res, SettingsIni:GetValueName(IniKeyPlugins, idx))
 		end
 	end
 	return res
@@ -52,15 +52,13 @@ local function SaveEnabledPlugins(SettingsIni, EnabledPlugins)
 	local IniKeyPlugins = SettingsIni:FindKey("Plugins")
 	if (IniKeyPlugins ~= cIniFile.noID) then
 		for idx = SettingsIni:GetNumValues(IniKeyPlugins) - 1, 0, -1 do
-			if (string.lower(SettingsIni:GetValueName(IniKeyPlugins, idx)) == "plugin") then
-				SettingsIni:DeleteValueByID(IniKeyPlugins, idx)
-			end
+			SettingsIni:DeleteValueByID(IniKeyPlugins, idx)
 		end
 	end
 
 	-- Now add back the entire list of enabled plugins, in our order:
 	for idx, name in ipairs(EnabledPlugins) do
-		SettingsIni:AddValue("Plugins", "Plugin", name)
+		SettingsIni:AddValue("Plugins", name, "1")
 	end
 
 	-- Save to file:
