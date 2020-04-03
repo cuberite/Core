@@ -73,7 +73,7 @@ local function ShowGeneralSettings(Request)
 	<td><input type="text" name="Server_Description" value="]] .. SettingsIni:GetValue("Server", "Description") .. [["></td></tr>
 	<tr><td>Max Players:</td>
 	<td><input type="text" name="Server_MaxPlayers" value="]] .. SettingsIni:GetValue("Server", "MaxPlayers") .. [["></td></tr>
-	<tr><td>IPv4 Ports:</td>
+	<tr><td>Ports:</td>
 	<td><input type="text" name="Server_Ports" value="]] .. SettingsIni:GetValue("Server", "Ports") .. [["></td></tr>
 	<tr><td>Default ViewDistance:</td>
 	<td><input type="text" name="Server_ViewDistance" value="]] .. SettingsIni:GetValueI("Server", "DefaultViewDistance") .. [["></td></tr>
