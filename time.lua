@@ -12,6 +12,8 @@ local SpecialTimesTable = {
 	["night"] = 1000 + 12000,
 }
 
+local TimeAnimationInProgress = false
+
 -- Used to animate the transition between previous and new times
 local function SetTime( World, TimeToSet )
 
@@ -21,34 +23,38 @@ local function SetTime( World, TimeToSet )
 	-- Handle the cases where TimeToSet < 0 or > 24000
 	TimeToSet = TimeToSet % MaxTime
 
-	local AnimationForward = true
 	local AnimationSpeed = 480
-
 	if CurrentTime > TimeToSet then
-		AnimationForward = false
 		AnimationSpeed = -AnimationSpeed
 	end
 
 	local function DoAnimation()
+		if not TimeAnimationInProgress then
+			return
+		end
 		local TimeOfDay = World:GetTimeOfDay()
-		if AnimationForward then
-			if TimeOfDay < TimeToSet and (MaxTime - TimeToSet) > AnimationSpeed then -- Without the second check the animation can get stuck in a infinite loop
-				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
-				World:ScheduleTask(1, DoAnimation)
-			else
-				World:SetTimeOfDay(TimeToSet) -- Make sure we actually get the time that was asked for.
-			end
+		local AnimatedTime = TimeOfDay + AnimationSpeed
+		local Animate = (
+			((AnimationSpeed > 0) and (AnimatedTime < TimeToSet))
+			or ((AnimationSpeed < 0) and (AnimatedTime > TimeToSet))
+		)
+		if Animate then
+			World:SetTimeOfDay(AnimatedTime)
+			World:ScheduleTask(1, DoAnimation)
 		else
-			if TimeOfDay > TimeToSet then
-				World:SetTimeOfDay(TimeOfDay + AnimationSpeed)
-				World:ScheduleTask(1, DoAnimation)
-			else
-				World:SetTimeOfDay(TimeToSet) -- Make sure we actually get the time that was asked for.
-			end
+			World:SetTimeOfDay(TimeToSet)
+			TimeAnimationInProgress = false
 		end
 	end
 
-	World:ScheduleTask(1, DoAnimation)
+
+	if TimeAnimationInProgress then
+		TimeAnimationInProgress = false
+		World:SetTimeOfDay(TimeToSet)
+	else
+		TimeAnimationInProgress = true
+		World:ScheduleTask(1, DoAnimation)
+	end
 	World:BroadcastChatSuccess("Time was set to " .. TimeToSet)
 	LOG("Time in world \"" .. World:GetName() .. "\" was set to " .. TimeToSet) -- Let the console know about time changes
 
