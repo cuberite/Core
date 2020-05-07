@@ -1,35 +1,3 @@
-local MobDamages =
-{
-	["cSpider"]       = { 2, 2, 3  },
-	["cEnderman"]     = { 4, 7, 10 },
-	["cZombie"]       = {          },  -- Handled in OnTakeDamage()
-	["cSlime"]        = { 4, 4, 4  },
-	["cCaveSpider"]   = { 2, 2, 3  },
-	["cZombiePigman"] = { 5, 9, 13 },
-	["cSkeleton"]     = { 2, 2, 3  },
-	["cBlaze"]        = { 4, 6, 9  }
-}
-
-local IsEntityBlockedInPeaceful =
-{
-	["cZombie"]       = true,
-	["cZombiePigman"] = true,
-	["cSpider"]       = true,
-	["cCaveSpider"]   = true,
-	["cEnderman"]     = true,
-	["cEnderDragon"]  = true,
-	["cSkeleton"]     = true,
-	["cGhast"]        = true,
-	["cCreeper"]      = true,
-	["cSilverfish"]   = true,
-	["cBlaze"]        = true,
-	["cSlime"]        = true,
-	["cWitch"]        = true,
-	["cWither"]       = true,
-	["cSilverfish"]   = true,
-	["cGuardian"]     = true,
-}
-
 function HandleDifficultyCommand ( Split, Player )
 	if (Split[2] == nil) then
 		if (#Split == 1) then
@@ -70,50 +38,4 @@ function HandleDifficultyCommand ( Split, Player )
 	end
 
 	return true
-end
-
-function OnTakeDamage(Receiver, TDI)
-	local Attacker
-
-	if TDI.Attacker then
-		Attacker = TDI.Attacker
-		local WorldDifficulty = GetWorldDifficulty(Attacker:GetWorld())
-
-		if Attacker:IsA("cZombie") then
-			-- The damage value from the zombie is computed from the zombie health. See http://minecraft.gamepedia.com/Zombie
-			if (WorldDifficulty == 1) then
-				if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 2
-				elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 3
-				elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 3
-				else TDI.FinalDamage = 4 end
-			elseif (WorldDifficulty == 2) then
-				if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 3
-				elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 4
-				elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 5
-				else TDI.FinalDamage = 6 end
-			elseif (WorldDifficulty == 3) then
-				if (Attacker:GetHealth() >= 16)     then TDI.FinalDamage = 4
-				elseif (Attacker:GetHealth() >= 11) then TDI.FinalDamage = 6
-				elseif (Attacker:GetHealth() >= 6)  then TDI.FinalDamage = 7
-				else TDI.FinalDamage = 9 end
-			end
-		else
-			local Damages = MobDamages[Attacker:GetClass()]
-			if Damages then
-				TDI.FinalDamage = Damages[WorldDifficulty]
-			end
-		end
-	end
-
-	-- Apply armor protection
-	local ArmorCover = Receiver:GetArmorCoverAgainst(Attacker, TDI.DamageType, TDI.FinalDamage)
-	local EnchantmentCover = Receiver:GetEnchantmentCoverAgainst(Attacker, TDI.DamageType, TDI.FinalDamage)
-	TDI.FinalDamage = TDI.FinalDamage - ArmorCover - EnchantmentCover
-end
-
-function OnSpawningEntity(World, Entity)
-	if GetWorldDifficulty(World) == 0 then
-		return IsEntityBlockedInPeaceful[Entity:GetClass()]
-	end
-	return false
 end

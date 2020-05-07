@@ -44,6 +44,7 @@ local Mobs =
 	["villager"] = mtVillager,
 	["witch"] = mtWitch,
 	["wither"] = mtWither,
+	["wither_skeleton"] = mtWitherSkeleton,
 	["wolf"] = mtWolf,
 	["zombie"] = mtZombie,
 	["zombie_pigman"] = mtZombiePigman,
@@ -78,6 +79,7 @@ local Mobs =
 	["VillagerGolem"] = mtIronGolem,
 	["Witch"] = mtWitch,
 	["Wither"] = mtWither,
+	["WitherSkeleton"] = mtWitherSkeleton,
 	["Wolf"] = mtWolf,
 	["Zombie"] = mtZombie,
 	["PigZombie"] = mtZombiePigman,
@@ -141,46 +143,46 @@ local function SpawnEntity(EntityName, World, X, Y, Z, Player)
 end
 
 function HandleSummonCommand(Split, Player)
-	if not Split[2] then
-		Player:SendMessageInfo("Usage: " .. Split[1] .. " <entityname> [x] [y] [z]")
+	local Response
+
+	if not Split[2] or (not Player and not Split[5]) then
+		Response = SendMessage(Player, "Usage: " .. Split[1] .. " <entityname> [x] [y] [z]")
 	else
-		local X = Player:GetPosX()
-		local Y = Player:GetPosY()
-		local Z = Player:GetPosZ()
-		local World = Player:GetWorld()
-
-		if Split[3] then
-			X = RelativeCommandCoord(Split[3], X)
-		end
-
-		if Split[4] then
-			Y = RelativeCommandCoord(Split[4], Y)
+		local X
+		local Y
+		local Z
+		local World = cRoot:Get():GetDefaultWorld()
+		
+		if Player then
+			X = Player:GetPosX()
+			Y = Player:GetPosY()
+			Z = Player:GetPosZ()
+			World = Player:GetWorld()
 		end
 
 		if Split[5] then
+			X = RelativeCommandCoord(Split[3], X)
+			Y = RelativeCommandCoord(Split[4], Y)
 			Z = RelativeCommandCoord(Split[5], Z)
-		end
 
-		if not X then
-			Player:SendMessageFailure("'" .. Split[3] .. "' is not a valid number")
-			return true
-		end
-
-		if not Y then
-			Player:SendMessageFailure("'" .. Split[4] .. "' is not a valid number")
-			return true
-		end
-
-		if not Z then
-			Player:SendMessageFailure("'" .. Split[5] .. "' is not a valid number")
-			return true
+			if not X then
+				return true, SendMessageFailure(Player, "'" .. Split[3] .. "' is not a valid number")
+			elseif not Y then
+				return true, SendMessageFailure(Player, "'" .. Split[4] .. "' is not a valid number")
+			elseif not Z then
+				return true, SendMessageFailure(Player, "'" .. Split[5] .. "' is not a valid number")
+			end
 		end
 
 		if SpawnEntity(Split[2], World, X, Y, Z, Player) then
-			Player:SendMessageSuccess("Successfully summoned entity at [X:" .. math.floor(X) .. " Y:" .. math.floor(Y) .. " Z:" .. math.floor(Z) .. "]")
+			Response = SendMessageSuccess(Player, "Successfully summoned entity at [X:" .. math.floor(X) .. " Y:" .. math.floor(Y) .. " Z:" .. math.floor(Z) .. "]")
 		else
-			Player:SendMessageFailure("Unknown entity '" .. Split[2] .. "'")
+			Response = SendMessageFailure(Player, "Unknown entity '" .. Split[2] .. "'")
 		end
 	end
-	return true
+	return true, Response
+end
+
+function HandleConsoleSummon(Split)
+	return HandleSummonCommand(Split)
 end

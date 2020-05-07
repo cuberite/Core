@@ -38,7 +38,7 @@ function HandleTpsCommand(Split, Player)
 	for WorldName, WorldTps in pairs(TpsCache) do
 		table.insert(Response, SendMessage(Player, "World \"" .. WorldName .. "\": " .. GetAverageNum(WorldTps) .. " TPS"))
 	end
-	return true, table.concat(Response, "")
+	return true, table.concat(Response, "\n")
 end
 
 function HandleConsoleTps(Split)
