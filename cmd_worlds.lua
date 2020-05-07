@@ -5,7 +5,7 @@ function HandleWorldsCommand(Split, Player)
 	
 	local ListWorld = function(World)
 		NumWorlds = NumWorlds + 1
-		table.insert(Worlds, World:GetName())
+		Worlds[NumWorlds] = World:GetName()
 	end
 
 	cRoot:Get():ForEachWorld(ListWorld)
