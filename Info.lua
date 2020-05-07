@@ -6,8 +6,6 @@
 g_PluginInfo = 
 {
 	Name = "Core",
-	Version = "16",
-	Date = "2019-12-04",
 	SourceLocation = "https://github.com/cuberite/Core",
 	Description = [[Implements some of the basic commands needed to run a simple server.]],
 	
