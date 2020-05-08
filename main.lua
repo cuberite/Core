@@ -27,7 +27,6 @@ lastsender = {}
 -- Called by Cuberite on plugin start to initialize the plugin
 function Initialize(Plugin)
 	Plugin:SetName("Core")
-	Plugin:SetVersion(tonumber(g_PluginInfo["Version"]))
 
 	-- Register for all hooks needed
 	cPluginManager:AddHook(cPluginManager.HOOK_BLOCK_SPREAD,          OnBlockSpread)
@@ -88,7 +87,7 @@ function Initialize(Plugin)
 	LoadMOTD()
 
 	WEBLOGINFO("Core is initialized")
-	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
+	LOG("Initialised " .. Plugin:GetName())
 
 	return true
 end
