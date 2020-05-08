@@ -1,0 +1,37 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # Sets up lua
+    - name: lua
+      run: |
+        sudo apt install lua5.1 luarocks libsqlite3-dev
+        sudo luarocks install luafilesystem
+        sudo luarocks install lsqlite3
+        sudo luarocks install luasocket
+        mkdir Plugin
+
+    # Sets up the environment
+    - name: setup
+      run: |
+        mkdir ../Checker
+        git clone https://github.com/mathiascode/CuberitePluginChecker ../Checker
+        wget -O ../InfoReg.lua https://raw.githubusercontent.com/cuberite/cuberite/master/Server/Plugins/InfoReg.lua
+        mkdir ../AutoAPI
+        wget -O ../AutoAPI.zip 'https://ci.appveyor.com/api/projects/cuberite/cuberite/artifacts/AutoAPI.zip?job=Windows-x64&pr=false&branch=master'
+        unzip ../AutoAPI.zip -d ../AutoAPI
+        wget -O ../ManualAPI.zip 'https://ci.appveyor.com/api/projects/cuberite/cuberite/artifacts/ManualAPI.zip?job=Windows-x64&pr=false&branch=master'
+        unzip ../ManualAPI.zip -d ..
+
+    # Runs the test
+    - name: test
+      run: |
+        cd ../Checker
+        lua CuberitePluginChecker.lua -p $GITHUB_WORKSPACE -a ../AutoAPI -e ../ManualAPI.lua -i APIImpl/All.lua -s $GITHUB_WORKSPACE/tests/FuzzCommands.lua -g
