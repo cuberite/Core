@@ -4,17 +4,19 @@ function HandleNumChunksCommand(Split, Player)
 	local Total = 0
 
 	local GetWorldChunks = function(World)
-		table.insert(Response, SendMessage(Player, World:GetName() .. ": " .. World:GetNumChunks() .. " chunks"))
-		Total = Total + World:GetNumChunks()
+		local numchunks = World:GetNumChunks()
+		table.insert(Response, World:GetName() .. ": " .. numchunks .. " chunks")
+		Total = Total + numchunks
 	end
 
+	table.insert(Response, "Number of loaded chunks:")
 	cRoot:Get():ForEachWorld(GetWorldChunks)
 	table.sort(Response)
 
-	table.insert(Response, SendMessage(Player, "Total: " .. Total .. " chunks"))
+	table.insert(Response, "Total: " .. Total .. " chunks")
 
 	-- Return the complete report:
-	return true, table.concat(Response, "\n")
+	return true, SendMessage(Player, table.concat(Response, "\n"))
 end
 
 function HandleConsoleNumChunks(Split)

@@ -34,11 +34,11 @@ end
 function HandleTpsCommand(Split, Player)
 	local Response = {}
 
-	table.insert(Response, SendMessage(Player, "Global TPS: " .. GetAverageNum(GlobalTps)))
+	table.insert(Response, "Global TPS: " .. GetAverageNum(GlobalTps))
 	for WorldName, WorldTps in pairs(TpsCache) do
-		table.insert(Response, SendMessage(Player, "World \"" .. WorldName .. "\": " .. GetAverageNum(WorldTps) .. " TPS"))
+		table.insert(Response, "World \"" .. WorldName .. "\": " .. GetAverageNum(WorldTps) .. " TPS")
 	end
-	return true, table.concat(Response, "\n")
+	return true, SendMessage(Player, table.concat(Response, "\n"))
 end
 
 function HandleConsoleTps(Split)
