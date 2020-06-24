@@ -53,7 +53,6 @@ function OnPlayerRightClick(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX, 
 	if BlockID == E_BLOCK_BED or BlockID == E_BLOCK_BED_BED_HEAD then
 		Player:SetBedPos(Vector3i(BlockX, BlockY, BlockZ), Player:GetWorld())
 		Player:SendMessageInfo("You have set your spawn!")
-		return true
 	end
 	
 	if not Player:HasPermission("core.spawnprotect.bypass") and IsInSpawn(BlockX, BlockY, BlockZ, Player:GetWorld():GetName()) then
