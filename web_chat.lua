@@ -260,6 +260,14 @@ end
 
 
 
+function OnPlayerJoined(Player)
+	WEBLOGINFO(Player:GetName() .. " has joined the game")
+end
+
+
+
+
+
 function OnDisconnect(a_Player)
 	WEBLOGINFO(a_Player:GetName() .. " has left the game")
 end

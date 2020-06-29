@@ -19,6 +19,11 @@ function ShowMOTD(Player)
 	end
 end
 
+function OnPlayerJoined(Player)
+	-- Send the MOTD to the player:
+	ShowMOTD(Player)
+end
+
 function HandleMOTDCommand(Split, Player)
 	ShowMOTD(Player)
 	return true

@@ -39,18 +39,21 @@ function KickPlayer(PlayerName, Reason)
 end
 
 function RelativeCommandCoord(Split, Coord)
-	if string.sub(Split, 1, 1) == "~" then
-		local Relative = tonumber(string.sub(Split, 2, -1))
+	if Split then
+		if string.sub(Split, 1, 1) == "~" then
+			local Relative = tonumber(string.sub(Split, 2, -1))
 
-		if Coord then
-			if Relative then
-				return Coord + Relative
+			if Coord then
+				if Relative then
+					return Coord + Relative
+				end
+				return Coord
 			end
-			return Coord
+			return Relative
 		end
-		return Relative
+		return tonumber(Split)
 	end
-	return tonumber(Split)
+	return Split
 end
 
 -- Safer method to find players
@@ -94,6 +97,7 @@ function SendMessageFailure(Player, Message)
 end
 
 -- Teleports a_SrcPlayer to a player named a_DstPlayerName; if a_TellDst is true, will send a notice to the destination player
+-- TODO: cleanup
 function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 
 	local teleport = function(a_DstPlayerName)
@@ -120,51 +124,4 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 		SendMessageFailure( a_SrcPlayer, "Player " .. a_DstPlayerName .. " not found" )
 	end
 
-end
-
-function getSpawnProtectRadius(WorldName)
-	return WorldsSpawnProtect[WorldName]
-end
-
-function GetWorldDifficulty(a_World)
-	local Difficulty = WorldsWorldDifficulty[a_World:GetName()]
-	if (Difficulty == nil) then
-		Difficulty = 1
-	end
-
-	return Clamp(Difficulty, 0, 3)
-end
-
-function SetWorldDifficulty(a_World, a_Difficulty)
-	local Difficulty = Clamp(a_Difficulty, 0, 3)
-	WorldsWorldDifficulty[a_World:GetName()] = Difficulty
-
-	-- Update world.ini
-	local WorldIni = cIniFile()
-	WorldIni:ReadFile(a_World:GetIniFileName())
-	WorldIni:SetValueI("Difficulty", "WorldDifficulty", Difficulty)
-	WorldIni:WriteFile(a_World:GetIniFileName())
-end
-
-function LoadWorldSettings(a_World)
-	local WorldIni = cIniFile()
-	WorldIni:ReadFile(a_World:GetIniFileName())
-	WorldsSpawnProtect[a_World:GetName()]    = WorldIni:GetValueSetI("SpawnProtect", "ProtectRadius", 10)
-	WorldsWorldLimit[a_World:GetName()]      = WorldIni:GetValueSetI("WorldLimit",   "LimitRadius",   0)
-	WorldsWorldDifficulty[a_World:GetName()] = WorldIni:GetValueSetI("Difficulty", "WorldDifficulty", 1)
-	WorldIni:WriteFile(a_World:GetIniFileName())
-end
-
-
-function GetAdminRank()
-	local AdminRank
-	local Ranks = cRankManager:GetAllRanks()
-	for _, Rank in ipairs(Ranks) do
-		local Permissions = cRankManager:GetRankPermissions(Rank)
-		for _, Permission in ipairs(Permissions) do
-			if Permission == "*" then
-				return Rank
-			end
-		end
-	end
 end

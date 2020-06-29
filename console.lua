@@ -2,53 +2,7 @@
 -- console.lua
 
 -- Implements things related to console commands
-
-
-
-
-
-function HandleConsoleNumChunks(Split)
-	-- List each world's chunk count into a table, sum the total chunk count:
-	local Output = {}
-	local Total = 0
-	cRoot:Get():ForEachWorld(
-		function(a_World)
-			table.insert(Output, a_World:GetName() .. ": " .. a_World:GetNumChunks() .. " chunks")
-			Total = Total + a_World:GetNumChunks()
-		end
-	)
-	table.sort(Output)
-
-	-- Return the complete report:
-	return true, table.concat(Output, "\n") .. "\nTotal: " .. Total .. " chunks\n"
-end
-
-
-
-
-
-function HandleConsolePlayers(Split)
-	local PlayersInWorlds = {}    -- "WorldName" => [players array]
-	local AddToTable = function(Player)
-		local WorldName = Player:GetWorld():GetName()
-		if (PlayersInWorlds[WorldName] == nil) then
-			PlayersInWorlds[WorldName] = {}
-		end
-		table.insert(PlayersInWorlds[WorldName], Player:GetName() .. " @ " ..  Player:GetIP())
-	end
-
-	cRoot:Get():ForEachPlayer(AddToTable)
-
-	local Out = ""
-	for WorldName, Players in pairs(PlayersInWorlds) do
-		Out = Out .. "World " .. WorldName .. ":\n"
-		for i, PlayerName in ipairs(Players) do
-			Out = Out .. "  " .. PlayerName .. "\n"
-		end
-	end
-
-	return true, Out
-end
+-- TODO: remove this file, migrate commands below to unified cmd_*.lua format
 
 
 
@@ -161,18 +115,4 @@ function HandleConsoleTeleport(Split)
 	else
 		return true, "Usage: '" .. Split[1] .. " <target player> <destination player>' or 'tp <target player> <x> <y> <z>'"
 	end
-end
-
-
-
-
-function HandleConsoleUnload(Split)
-	local UnloadChunks = function(World)
-		World:QueueUnloadUnusedChunks()
-	end
-
-	local Out = "Num loaded chunks before: " .. cRoot:Get():GetTotalChunkCount() .. "\n"
-	cRoot:Get():ForEachWorld(UnloadChunks)
-	Out = Out .. "Num loaded chunks after: " .. cRoot:Get():GetTotalChunkCount()
-	return true, Out
 end
