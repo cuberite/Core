@@ -22,7 +22,7 @@ jobs:
     - name: setup
       run: |
         mkdir ../Checker
-        git clone https://github.com/mathiascode/CuberitePluginChecker ../Checker
+        git clone https://github.com/cuberite/CuberitePluginChecker ../Checker
         wget -O ../InfoReg.lua https://raw.githubusercontent.com/cuberite/cuberite/master/Server/Plugins/InfoReg.lua
         mkdir ../AutoAPI
         wget -O ../AutoAPI.zip 'https://ci.appveyor.com/api/projects/cuberite/cuberite/artifacts/AutoAPI.zip?job=Windows-x64&pr=false&branch=master'
