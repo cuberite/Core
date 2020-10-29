@@ -136,6 +136,8 @@ local function SpawnEntity(EntityName, World, X, Y, Z, Player)
 		local Reward = 1
 
 		World:SpawnExperienceOrb(Vector3d(X, Y, Z), Reward)
+	elseif EntityName == "ender_crystal" or EntityName == "EnderCrystal" then
+		World:SpawnEnderCrystal(Vector3d(X, Y, Z), false)
 	else
 		return false
 	end
