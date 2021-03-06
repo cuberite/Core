@@ -260,7 +260,7 @@ end
 
 
 
-function OnPlayerJoined(Player)
+function OnPlayerJoined_WebChat(Player)
 	WEBLOGINFO(Player:GetName() .. " has joined the game")
 end
 
