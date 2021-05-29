@@ -31,6 +31,11 @@ function InitializeTPA(Plugin)
 	-- Creates/Loads Database
 	Database = NewSQLiteDB(PluginFolder .. DatabasePath)
 
+	if Database == nil then
+		LOGERROR("Database for the tpa function could not be created")
+		return false
+	end
+
 	-- Creates the table if does not exist
 	Database:CreateDBTable(CooldownTableName,
 		{"PlayerUUID TEXT PRIMARY KEY",
