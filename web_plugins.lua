@@ -265,7 +265,7 @@ local function MovePlugin(SettingsIni, PluginName, IndexDelta, EnabledPlugins)
 		if (name == PluginName) then
 			local DstIdx = idx + IndexDelta
 			if ((DstIdx < 1) or (DstIdx > #EnabledPlugins)) then
-				LOGWARNING("Core WebAdmin: Requesting moving the plugin " .. PluginName .. " to invalid index " .. DstIdx .. " (max idx " .. #EnabledPlugins .. "); ignoring.")
+				LOGWARNING("WebAdmin: Requesting moving the plugin " .. PluginName .. " to invalid index " .. DstIdx .. " (max idx " .. #EnabledPlugins .. "); ignoring.")
 				return false
 			end
 			EnabledPlugins[idx], EnabledPlugins[DstIdx] = EnabledPlugins[DstIdx], EnabledPlugins[idx]  -- swap the two - we're expecting ony +1 / -1 moves
