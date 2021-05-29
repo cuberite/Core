@@ -32,7 +32,9 @@ function InitializeTPA(Plugin)
 	Database = nil
 	Database = NewSQLiteDB(PluginFolder .. DatabasePath)
 
-	if Database == nil then
+	LOG(type(Database))
+
+	if Database == nil or type(Database) == "table"then
 		LOGERROR("Database for the tpa function could not be created!")
 		return false
 	end
@@ -57,7 +59,7 @@ function InitializeTPA(Plugin)
 end
 
 function OnDisable_TPA()
-	TPA_Database.DB:close()
+	Database.DB:close()
 	os.remove(cPluginManager:GetPluginsPath() .. cFile:GetPathSeparator() .. cPluginManager:GetCurrentPlugin():GetFolderName() .. cFile:GetPathSeparator() .. DatabasePath)
 end
 
