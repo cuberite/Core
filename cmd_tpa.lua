@@ -342,7 +342,7 @@ end
 
 function CreateTransaction(From, To)
 	-- create UUID
-	local ID = cUUID:GenerateVersion3(From:GetName() .. To:GetName() .. math.random(100000)):ToShortString()
+	local ID = cUUID:GenerateVersion3(From:GetName() .. To:GetName() .. os.os.time() .. math.random(100000)):ToShortString()
 	-- store to database
 	Database.DB:exec("INSERT OR REPLACE INTO " .. TransactionTableName .. " (TransactionId, Source, Destination, Timestamp) VALUES('" .. ID .. "', '".. From:GetName() .."', '" .. To:GetName() .."', " .. os.time() ..")")
 
