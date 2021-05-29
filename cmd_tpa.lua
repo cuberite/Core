@@ -6,7 +6,7 @@
 local ToggleState = {}
 local Settings = {}
 local Cooldowns = {}
-TPA_Database = nil
+local Database = nil
 
 local DatabasePath = "TPA.sqlite3"
 local CooldownTableName = "CooldownLog"
@@ -29,15 +29,16 @@ function InitializeTPA(Plugin)
 	LoadSettings_TPA(g_IniFile)
 
 	-- Creates/Loads Database
-	TPA_Database = NewSQLiteDB(PluginFolder .. DatabasePath)
+	Database = nil
+	Database = NewSQLiteDB(PluginFolder .. DatabasePath)
 
-	if TPA_Database == nil then
+	if Database == nil then
 		LOGERROR("Database for the tpa function could not be created!")
 		return false
 	end
 
 	-- Creates the table if does not exist
-	if not TPA_Database:CreateDBTable(CooldownTableName,
+	if not Database:CreateDBTable(CooldownTableName,
 		{"PlayerUUID TEXT PRIMARY KEY",
 		"LastRequest INT DEFAULT 0",
 		"LastSuccess INT DEFAULT 0"}
@@ -46,7 +47,7 @@ function InitializeTPA(Plugin)
 		return false
 	end
 	
-	TPA_Database:CreateDBTable(TransactionTableName,
+	Database:CreateDBTable(TransactionTableName,
 		{"TransactionId TEXT PRIMARY KEY",
 		"Source TEXT",
 		"Destination TEXT",
@@ -56,7 +57,7 @@ function InitializeTPA(Plugin)
 end
 
 function OnDisable_TPA()
-	TPA_TPA_Database.DB:close()
+	TPA_Database.DB:close()
 	os.remove(cPluginManager:GetPluginsPath() .. cFile:GetPathSeparator() .. cPluginManager:GetCurrentPlugin():GetFolderName() .. cFile:GetPathSeparator() .. DatabasePath)
 end
 
@@ -213,24 +214,24 @@ function AcceptRequest(Split, Player)
 
 	if not ID:FromString(Split[2]) then
 		-- Got Player
-		for row in TPA_Database.DB:nrows("SELECT * FROM " .. TransactionTableName .. " WHERE Source = '" .. Split[2] .. "' ORDER BY TimeStamp DESC") do
+		for row in Database.DB:nrows("SELECT * FROM " .. TransactionTableName .. " WHERE Source = '" .. Split[2] .. "' ORDER BY TimeStamp DESC") do
 			RowCount = RowCount + 1
 			Destination = row["Destination"]
 			Source = row["Source"]
 			Timestamp = tonumber(row["Timestamp"])
 			Transaction =  row["TransactionId"]
 			-- Remove the TransactionId
-			TPA_Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Transaction .. "'")
+			Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Transaction .. "'")
 		end
 	else
 		-- Got UUID
-		for row in TPA_Database.DB:nrows("SELECT * FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Split[2] .. "'") do
+		for row in Database.DB:nrows("SELECT * FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Split[2] .. "'") do
 			RowCount = RowCount + 1
 			Destination = row["Destination"]
 			Source = row["Source"]
 			Timestamp = tonumber(row["Timestamp"])
 			-- Remove the TransactionId
-			TPA_Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Split[2] .. "'")
+			Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Split[2] .. "'")
 		end
 	end
 
@@ -280,24 +281,24 @@ function DenyRequest(Split, Player)
 
 	if not ID:FromString(Split[2]) then
 		-- Got Player
-		for row in TPA_Database.DB:nrows("SELECT * FROM " .. TransactionTableName .. " WHERE Source = '" .. Split[2] .. "' ORDER BY TimeStamp DESC") do
+		for row in Database.DB:nrows("SELECT * FROM " .. TransactionTableName .. " WHERE Source = '" .. Split[2] .. "' ORDER BY TimeStamp DESC") do
 			RowCount = RowCount + 1
 			Destination = row["Destination"]
 			Source = row["Source"]
 			Timestamp = tonumber(row["Timestamp"])
 			Transaction =  row["TransactionId"]
 			-- Remove the TransactionId
-			TPA_Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Transaction .. "'")
+			Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Transaction .. "'")
 		end
 	else
 		-- Got UUID
-		for row in TPA_Database.DB:nrows("SELECT * FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Split[2] .. "'") do
+		for row in Database.DB:nrows("SELECT * FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Split[2] .. "'") do
 			RowCount = RowCount + 1
 			Destination = row["Destination"]
 			Source = row["Source"]
 			Timestamp = tonumber(row["Timestamp"])
 			-- Remove the TransactionId
-			TPA_Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Split[2] .. "'")
+			Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE TransactionId = '" .. Split[2] .. "'")
 		end
 	end
 
@@ -329,15 +330,15 @@ end
 -- handles writing to database
 function StoreCooldown(PlayerUUID, CooldownType, Cooldown)
 	if CooldownType == RequestCooldown then
-		TPA_Database.DB:exec("INSERT OR REPLACE INTO " .. CooldownTableName .. " (PlayerUUID, LastRequest) VALUES('" .. PlayerUUID .."', " .. Cooldown .. ")")
+		Database.DB:exec("INSERT OR REPLACE INTO " .. CooldownTableName .. " (PlayerUUID, LastRequest) VALUES('" .. PlayerUUID .."', " .. Cooldown .. ")")
 	elseif CooldownType == SuccessCooldown then
-		TPA_Database.DB:exec("INSERT OR REPLACE INTO " .. CooldownTableName .. " (PlayerUUID, LastSuccess) VALUES('" .. PlayerUUID .."', " .. Cooldown .. ")")
+		Database.DB:exec("INSERT OR REPLACE INTO " .. CooldownTableName .. " (PlayerUUID, LastSuccess) VALUES('" .. PlayerUUID .."', " .. Cooldown .. ")")
 	end
 end
 
 -- gets last action from database
 function GetCooldown(PlayerUUID, CooldownType)
-	for rows in TPA_Database.DB:nrows("SELECT * FROM ".. CooldownTableName .. " WHERE PlayerUUID = '".. PlayerUUID .. "'") do
+	for rows in Database.DB:nrows("SELECT * FROM ".. CooldownTableName .. " WHERE PlayerUUID = '".. PlayerUUID .. "'") do
 		for k, v in pairs(rows) do
 			if CooldownType == RequestCooldown and k == "LastRequest" then
 				return v
@@ -353,11 +354,11 @@ function CreateTransaction(From, To)
 	-- create UUID
 	local ID = cUUID:GenerateVersion3(From:GetName() .. To:GetName() .. os.os.time() .. math.random(100000)):ToShortString()
 	-- store to database
-	TPA_Database.DB:exec("INSERT OR REPLACE INTO " .. TransactionTableName .. " (TransactionId, Source, Destination, Timestamp) VALUES('" .. ID .. "', '".. From:GetName() .."', '" .. To:GetName() .."', " .. os.time() ..")")
+	Database.DB:exec("INSERT OR REPLACE INTO " .. TransactionTableName .. " (TransactionId, Source, Destination, Timestamp) VALUES('" .. ID .. "', '".. From:GetName() .."', '" .. To:GetName() .."', " .. os.time() ..")")
 
 	return ID
 end
 
 function CleanupTransaction()
-	TPA_Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE Timestamp < " .. os.time() - CleanupCooldown)
+	Database.DB:exec("DELETE FROM " .. TransactionTableName .. " WHERE Timestamp < " .. os.time() - CleanupCooldown)
 end
