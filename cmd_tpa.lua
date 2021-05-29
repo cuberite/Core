@@ -20,6 +20,7 @@ local SuccessCooldown = 3
 
 function OnPlayerJoined_TPA(Player)
 	StoreCooldown(Player:GetUUID(), RequestCooldown, 1)
+	StoreCooldown(Player:GetUUID(), SuccessCooldown, 1)
 end
 
 function InitializeTPA(Plugin)
@@ -31,9 +32,7 @@ function InitializeTPA(Plugin)
 	-- Creates/Loads Database
 	Database = NewSQLiteDB(PluginFolder .. DatabasePath)
 
-	LOG(type(Database))
-
-	if Database == nil or type(Database) == "table" then
+	if Database == nil or type(Database) =~ "table" then
 		LOGERROR("Database for the tpa function could not be created!")
 		return false
 	end
