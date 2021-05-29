@@ -50,6 +50,9 @@ Implements some of the basic commands needed to run a simple server.
 |/time set | core.time.set | Sets the time to a given value.|
 |/toggledownfall | core.toggledownfall | Toggles the weather between clear skies and rain.|
 |/tp | core.teleport | Teleports your player to another player.|
+|/tpa | core.tpa | Sends a teleport request to another player.|
+|/tpaccept | core.tpaccept | Accepts a teleport request from another player.|
+|/tpdeny | core.tpdeny | Denies a teleport request from another player.|
 |/tps | core.tps | Returns the tps (ticks per second) from the server.|
 |/unban | core.unban | Unbans a player.|
 |/unrank | core.unrank | Add a player to the default rank.|
@@ -110,6 +113,12 @@ Implements some of the basic commands needed to run a simple server.
 | core.time.query.gametime | Allows players to display how long the world has existed. | `/time query gametime` |  |
 | core.time.set | Allows players to set the time of day. | `/time night`, `/time day`, `/time set`, `/time add` | admins |
 | core.toggledownfall | Allows players to toggle the weather between clear skies and rain. | `/toggledownfall` | admins |
+| core.tpa.request | Sends a request to another player. |`/tpa`| players |
+| core.tpa.accept | Accepts a request from another player. | `/tpaccept`| players |
+| core.tpa.deny | Denies a request from another player. | `/tpdeny` | players |
+| core.tpa.hide | Any player with this permission can't be targeted by a teleport request. | | admins|
+| core.tpa.override | Any player with this permission doesn't need a confirmation by their destination. | | admins |
+| core.tpa.overrideCooldown | Any player with this permission ignores the teleport cooldown. | admins|
 | core.tps |  | `/tps` |  |
 | core.unban |  | `/unban` |  |
 | core.unrank |  | `/deop`, `/unrank` |  |

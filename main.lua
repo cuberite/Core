@@ -14,18 +14,23 @@ function Initialize(Plugin)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_BREAKING_BLOCK, OnPlayerBreakingBlock)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_JOINED,         OnPlayerJoined)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_JOINED,         OnPlayerJoined_WebChat)
+	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_JOINED,         OnPlayerJoined_TPA)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_MOVING,         OnPlayerMoving)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_PLACING_BLOCK,  OnPlayerPlacingBlock)
 	cPluginManager:AddHook(cPluginManager.HOOK_PLAYER_RIGHT_CLICK,    OnPlayerRightClick)
 	cPluginManager:AddHook(cPluginManager.HOOK_SPAWNING_MONSTER,      OnSpawningMonster)
 	cPluginManager:AddHook(cPluginManager.HOOK_TAKE_DAMAGE,           OnTakeDamage)
 	cPluginManager:AddHook(cPluginManager.HOOK_TICK,                  OnTick)
+	cPluginManager:AddHook(cPluginManager.HOOK_TICK,                  OnTick_TPA)
 	cPluginManager:AddHook(cPluginManager.HOOK_WORLD_TICK,            OnWorldTick)
 
 	-- Bind ingame commands:
 	dofile(cPluginManager:GetPluginsPath() .. "/InfoReg.lua")
 	RegisterPluginInfoCommands()
 	RegisterPluginInfoConsoleCommands()
+
+	-- Loads or Creates a settings file
+	LoadSettings(cPluginManager:GetPluginsPath() .. cFile:GetPathSeparator() .. Plugin:GetFolderName() .. cFile:GetPathSeparator() .. "Settings.ini")
 
 	-- Load SpawnProtection and WorldLimit settings for individual worlds:
 	cRoot:Get():ForEachWorld(
@@ -42,6 +47,9 @@ function Initialize(Plugin)
 
 	-- Initialize the Item Blacklist (the list of items that cannot be obtained using the give command):
 	IntializeItemBlacklist(Plugin)
+
+	-- Initialize the TPA part
+	InitializeTPA(Plugin)
 
 	-- Add webadmin tabs:
 	Plugin:AddWebTab("Manage Server",   HandleRequest_ManageServer)
@@ -65,5 +73,7 @@ function Initialize(Plugin)
 end
 
 function OnDisable()
+	OnDisable_TPA()
+	SaveSettings(cPluginManager:GetPluginsPath() .. cFile:GetPathSeparator() .. cPluginManager:GetCurrentPlugin():GetFolderName() .. cFile:GetPathSeparator() .. "Settings.ini")
 	LOG("Disabled " .. cPluginManager:GetCurrentPlugin():GetName() .. "!")
 end

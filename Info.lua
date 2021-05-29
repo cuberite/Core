@@ -493,6 +493,38 @@ g_PluginInfo =
 			HelpString = "Teleports your player to another player.",
 		},
 
+		["/tpa"] =
+		{
+			HelpString = "Sends a teleport request",
+			Permission = "core.tpa.request",
+			Handler = SendRequest,
+			ParameterCombinations =
+			{
+				{
+					Params = "x",
+					Help = "Internal use. Accepts/Denies a specific teleport request.",
+				},
+				{
+					Params = "-p",
+					Help = "Accepts the the last request sent from this player.",
+				}
+			},
+		},
+		["/tpaccept"] =
+		{
+			HelpString = "Accepts a pending teleport request",
+			Permission = "core.tpa.accept",
+			Handler = AcceptRequest,
+			Params = "-p",
+		},
+		["/tpdeny"] =
+		{
+			HelpString = "Denys any teleport requests",
+			Permission = "core.tpa.deny",
+			Handler = DenyRequest,
+			Params = "-p",
+		},
+
 		["/tps"] = 
 		{
 			Permission = "core.tps",
@@ -1255,6 +1287,42 @@ g_PluginInfo =
 		{
 			Description = "Allows players to toggle the weather between clear skies and rain.",
 			RecommendedGroups = "admins",
+		},
+
+		["core.tpa.request"] =
+		{
+			Description = "",
+			RecommendedGroups = "players",
+		},
+
+		["core.tpa.Accept"] =
+		{
+			Description = "",
+			RecommendedGroups = "players",
+		},
+
+		["core.tpa.Deny"] =
+		{
+			Description = "",
+			RecommendedGroups = "players",
+		},
+
+		["core.tpa.Hide"] =
+		{
+			Description = "Any player with this permission can't be targeted by a teleport request.",
+			RecommendedGroups = "admin",
+		},
+
+		["core.tpa.Override"] =
+		{
+			Description = "Any player with this permission doesn't need a confirmation by their destination.",
+			RecommendedGroups = "admin",
+		},
+
+		["core.tpa.OverrideCoolDown"] =
+		{
+			Description = "Any player with this permission ignores the teleport cooldown.",
+			RecommendedGroups = "admin",
 		},
 		
 		["core.weather"] =
