@@ -66,12 +66,10 @@ function LoadSettings_TPA(IniFile)
 		-- File didn't exist
 		IniFile:AddKeyName("TPA")
 
-		IniFile:AddKeyComment("TPA", "Sets the cooldown the players have to wait after sending a request or successfully teleporting")
+		IniFile:AddKeyComment("TPA", "Setting for the tpa command")
 		IniFile:AddKeyComment("TPA", "Times maybe be set in the format of %h%m%s.")
 		IniFile:AddValue("TPA", "CooldownRequest", "10s")
 		IniFile:AddValue("TPA", "CooldownSucess", "60s")
-
-		IniFile:AddKeyComment("TPA", "Sets if the plugin should log it's activity to the console")
 		IniFile:AddValueB("TPA", "VerboseLogging", false)
 	end
 
@@ -248,6 +246,9 @@ function AcceptRequest(Split, Player)
 		local Message = cCompositeChat()
 		Message:AddTextPart("Teleporting...", "@b")
 		Player:SendMessageRaw(Message:CreateJsonString(), Message:GetMessageType())
+		if Settings["VerboseLogging"] then
+			LOG("Teleporting " .. Player:GetName() .. " to " .. OtherPlayer:GetName())
+		end
 	end
 
 	return true
