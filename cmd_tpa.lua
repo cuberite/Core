@@ -29,18 +29,17 @@ function InitializeTPA(Plugin)
 	LoadSettings_TPA(g_IniFile)
 
 	-- Creates/Loads Database
-	Database = nil
 	Database = NewSQLiteDB(PluginFolder .. DatabasePath)
 
 	LOG(type(Database))
 
-	if Database == nil or type(Database) == "table"then
+	if Database == nil or type(Database) == "table" then
 		LOGERROR("Database for the tpa function could not be created!")
 		return false
 	end
 
 	-- Creates the table if does not exist
-	if not Database:CreateDBTable(CooldownTableName,
+	if not Database.CreateDBTable(CooldownTableName,
 		{"PlayerUUID TEXT PRIMARY KEY",
 		"LastRequest INT DEFAULT 0",
 		"LastSuccess INT DEFAULT 0"}
@@ -49,7 +48,7 @@ function InitializeTPA(Plugin)
 		return false
 	end
 	
-	Database:CreateDBTable(TransactionTableName,
+	Database.CreateDBTable(TransactionTableName,
 		{"TransactionId TEXT PRIMARY KEY",
 		"Source TEXT",
 		"Destination TEXT",
