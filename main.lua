@@ -58,7 +58,7 @@ function Initialize(Plugin)
 	LoadMOTD()
 
 	WEBLOGINFO("Core is initialised")
-	LOG("Initialised !")
+	LOG("Initialised!")
 
 	return true
 end
