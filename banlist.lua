@@ -222,9 +222,9 @@ local function ResolveUUIDs()
 	end
 
 	-- Resolve the names:
-	LOGINFO("Core: Resolving player UUIDs in the banlist from Mojang servers. This may take a while...")
+	LOGINFO("Resolving player UUIDs in the banlist from Mojang servers. This may take a while...")
 	local ResolvedNames = cMojangAPI:GetUUIDsFromPlayerNames(NamesToResolve)
-	LOGINFO("Core: Resolving finished.")
+	LOGINFO("Resolving finished.")
 
 	-- Update the names in the DB:
 	for name, uuid in pairs(ResolvedNames) do

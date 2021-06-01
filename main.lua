@@ -59,11 +59,11 @@ function Initialize(Plugin)
 	LoadMOTD()
 
 	WEBLOGINFO("Core is initialised")
-	LOG("Initialised " .. Plugin:GetName())
+	LOG("Initialised!")
 
 	return true
 end
 
 function OnDisable()
-	LOG("Disabled " .. cPluginManager:GetCurrentPlugin():GetName() .. "!")
+	LOG("Disabling...")
 end
