@@ -140,8 +140,9 @@ end
 
 function OnPlayerRightClick(Player, BlockX, BlockY, BlockZ, BlockFace, CursorX, CursorY, CursorZ)
 	if not Player:HasPermission("core.spawnprotect.bypass") and IsInSpawn(BlockX, BlockY, BlockZ, Player:GetWorld():GetName()) then
-		if Player:GetWorld():GetBlock(BlockX, BlockY, BlockZ) == E_BLOCK_GRASS or
-				Player:GetWorld():GetBlock(BlockX, BlockY, BlockZ) == E_BLOCK_DIRT then
+		local Block = Player:GetWorld():GetBlock(Vector3i(BlockX, BlockY, BlockZ))
+
+		if Block == E_BLOCK_GRASS or Block == E_BLOCK_DIRT then
 			if Player:GetEquippedItem():IsEmpty() then
 				return false
 			end
