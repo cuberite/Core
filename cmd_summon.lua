@@ -112,7 +112,7 @@ local Projectiles =
 	["WitherSkull"] = cProjectileEntity.pkWitherSkull
 }
 
-local function SpawnEntity(EntityName, World, X, Y, Z, Player)
+local function SpawnEntity(EntityName, World, X, Y, Z, Player, Count)
 	if EntityName == "boat" or EntityName == "Boat" then
 		local Material = cBoat.bmOak
 
@@ -141,14 +141,33 @@ local function SpawnEntity(EntityName, World, X, Y, Z, Player)
 	else
 		return false
 	end
+
+	if (Count > 1) then
+		Count = Count - 1
+		return SpawnEntity(EntityName, World, X, Y, Z, Player, Count)
+	end
+
 	return true
 end
 
 function HandleSummonCommand(Split, Player)
 	local Response
 
-	if not Split[2] or (not Player and not Split[5]) then
-		Response = SendMessage(Player, "Usage: " .. Split[1] .. " <entityname> [x] [y] [z]")
+	if not (
+		Player and
+		(
+			(Split[2] and not Split[3]) or
+			(Split[2] and Split[3] and not Split[4]) or
+			Split[5] or
+			Split[6]
+		)
+		or not Player and
+		(
+			Split[5] or
+			Split[6]
+		)
+	) then
+		Response = SendMessage(Player, "Usage: " .. Split[1] .. " <entityname> [x] [y] [z] [count]")
 	else
 		local X
 		local Y
@@ -176,7 +195,20 @@ function HandleSummonCommand(Split, Player)
 			end
 		end
 
-		if SpawnEntity(Split[2], World, X, Y, Z, Player) then
+		local Count = 1
+		if Split[3] and not Split[4] then
+			Count = tonumber(Split[3])
+			if Count == nil or Count <= 0 then
+				return true, SendMessageFailure(Player, "'" .. Split[3] .. "' is not a valid number")
+			end
+		elseif Split[6] then
+			Count = tonumber(Split[6])
+			if Count == nil or Count <= 0 then
+				return true, SendMessageFailure(Player, "'" .. Split[6] .. "' is not a valid number")
+			end
+		end
+
+		if SpawnEntity(Split[2], World, X, Y, Z, Player, Count) then
 			Response = SendMessageSuccess(Player, "Successfully summoned entity at [X:" .. math.floor(X) .. " Y:" .. math.floor(Y) .. " Z:" .. math.floor(Z) .. "]")
 		else
 			Response = SendMessageFailure(Player, "Unknown entity '" .. Split[2] .. "'")
