@@ -1,6 +1,13 @@
 function HandleListRanksCommand(Split, Player)
 	local Ranks = cRankManager:GetAllRanks()
-	return true, SendMessage(Player, "Available ranks: " .. table.concat(Ranks, cChatColor.Plain .. ", ") .. " (total: " .. #Ranks .. ")")
+	local ResetColor = cChatColor.Plain
+
+	if not Player then
+		-- Color codes are not used in the console
+		ResetColor = ""
+	end
+
+	return true, SendMessage(Player, "Available ranks: " .. table.concat(Ranks, ResetColor .. ", ") .. " (total: " .. #Ranks .. ")")
 end
 
 function HandleConsoleListRanks(Split)
