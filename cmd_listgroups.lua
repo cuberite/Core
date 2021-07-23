@@ -12,12 +12,12 @@ function HandleListGroupsCommand(Split, Player)
 		-- Get all the groups:
 		local Groups = cRankManager:GetAllGroups()
 
-		Response = SendMessage(Player, "Available groups: " .. table.concat(Groups, cChatColor.Plain .. ", ") .. " (total: " .. #Groups .. ")")
+		Response = SendMessage(Player, "Available groups: " .. table.concat(Groups, ", ") .. " (total: " .. #Groups .. ")")
 	else
 		-- A rank name is given, list the groups in that rank:
 		local Groups = cRankManager:GetRankGroups(RankName)
 
-		Response = SendMessage(Player, "Groups in rank " .. RankName .. ": " .. table.concat(Groups, cChatColor.Plain .. ", ") .. " (total: " .. #Groups .. ")")
+		Response = SendMessage(Player, "Groups in rank " .. RankName .. ": " .. table.concat(Groups, ", ") .. " (total: " .. #Groups .. ")")
 	end
 	return true, Response
 end
