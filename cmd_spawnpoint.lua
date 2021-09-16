@@ -49,7 +49,7 @@ function HandleSpawnPointCommand(Split, Player)
 		end
 
 		if not Response then
-			OtherPlayer:SetBedPos(Vector3i(X, Y, Z), World)
+			OtherPlayer:SetBedPos(Vector3i(X, Y, Z), World, false)
 
 			Response = SendMessageSuccess(Player, "Set the spawn point of player \"" .. OtherPlayer:GetName() .. "\" to (" .. math.floor(X) .. ", " .. math.floor(Y) .. ", " .. math.floor(Z) .. ") in world \"" .. World:GetName() .. "\"")
 		end
