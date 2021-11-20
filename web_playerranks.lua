@@ -159,7 +159,7 @@ local function ShowAddPlayerPage(a_Request)
 				<th>Player UUID (short):</th>
 				<td>
 					<input type="text" name="PlayerUUID" maxlength="32" />
-					If you leave this empty, the server generates the uuid automaticly.
+					If you leave this empty, the server will generate the UUID automatically.
 				</td>
 			</tr>
 			<tr>
