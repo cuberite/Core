@@ -345,10 +345,11 @@ g_PluginInfo =
 					Handler = HandleScoreboardPlayersCommand,
 					ParameterCombinations =
 					{
-						{
-							Params = "list",
-							Help = "Lists all score holders which are tracked in some way by the scoreboard system.",
-						},
+						-- Not Implemented yet
+						-- {
+						-- 	Params = "list",
+						-- 	Help = "Lists all score holders which are tracked in some way by the scoreboard system.",
+						-- },
 						{
 							Params = "list player",
 							Help = "Lists all score holders which are tracked in some way by the scoreboard system for a player.",
