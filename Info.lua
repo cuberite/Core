@@ -331,10 +331,11 @@ g_PluginInfo =
 							Params = "modify objective displayname name",
 							Help = "Change the display name of the scoreboard in display slots.",
 						},
-						{
-							Params = "modify objective rendertype (hearts|integer)",
-							Help = "Change the display format for scores in the tab player list.",
-						},
+						-- Not implemented yet
+						-- {
+						-- 	Params = "modify objective rendertype (hearts|integer)",
+						-- 	Help = "Change the display format for scores in the tab player list.",
+						-- },
 					},
 				},
 				players =
