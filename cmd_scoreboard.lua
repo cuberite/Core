@@ -26,59 +26,65 @@ local gPlayer = nil
 local tPlayer = nil
 
 function HandleScoreboardObjectivesCommand(Split, Player)
-	local Response = Player:SendMessageFailure("add, remove, list, setdisplay, modify")
-	local Scoreboard = Player:GetWorld():GetScoreBoard()
+	local Response = SendMessageFailure(Player, "add, remove, list, setdisplay, modify")
+	local Scoreboard
+	if Player then
+		Scoreboard = Player:GetWorld():GetScoreBoard()
+	else
+		Scoreboard = cRoot:Get():GetDefaultWorld():GetScoreBoard()
+	end
+
 	gPlayer = Player
 
 	if Split[3] == "list" then
-		Response = Player:SendMessage(cCompositeChat():AddTextPart("DisplayName -> Name : Type", "u @2"))
+		Response = SendMessage(Player, cCompositeChat():AddTextPart("DisplayName -> Name : Type", "u @2"))
 		Scoreboard:ForEachObjective(sendListObjectives)
 	end
 
 	if Split[3] == "remove" then
 		if not Split[4] then
-			Response = Player:SendMessageInfo("/scoreboard objectives remove <objective>")
+			Response = SendMessageInfo(Player, "/scoreboard objectives remove <objective>")
 		elseif Scoreboard:RemoveObjective(Split[4]) then
-			Response = Player:SendMessageSuccess(Split[4] .. " has been removed")
+			Response = SendMessageSuccess(Player, Split[4] .. " has been removed")
 		else
-			Response = Player:SendMessageFailure(Split[4] .. " does not exist")
+			Response = SendMessageFailure(Player, Split[4] .. " does not exist")
 		end
 	end
 
 	if Split[3] == "add" then
 		if not Split[4] or not criterias[Split[5]] or not Split[6] then
-			Response = Player:SendMessageInfo("/scoreboard objectives add <name> <criteria> <displayName>")
+			Response = SendMessageInfo(Player, "/scoreboard objectives add <name> <criteria> <displayName>")
 		else
 			local Name = Split[4]
 			local criteria = criterias[Split[5]]
 			local DisplayName = Split[6]
 
 			Scoreboard:RegisterObjective(Name, DisplayName, criteria)
-			Response = Player:SendMessageSuccess("Objective " .. DisplayName .. " has been created")
+			Response = SendMessageSuccess(Player, "Objective " .. DisplayName .. " has been created")
 		end
 	end
 
 	if Split[3] == "setdisplay" then
 		if not slots[Split[4]] or not Split[5] then
-			Response = Player:SendMessageInfo("/scoreboard objectives setdisplay <slot> <objective>")	
+			Response = SendMessageInfo(Player, "/scoreboard objectives setdisplay <slot> <objective>")	
 		else
 			local slot = slots[Split[4]]
 			local Objective = Scoreboard:GetObjective(Split[5]):GetName()
 
 			Scoreboard:SetDisplay(Objective, slot)
-			Response = Player:SendMessageSuccess("Objective " .. Objective .. " has been placed on " .. get_key_for_value(slots, slot))
+			Response = SendMessageSuccess(Player, "Objective " .. Objective .. " has been placed on " .. get_key_for_value(slots, slot))
 		end
 	end
 
 	if Split[3] == "modify" then
 		if not Split[4] or Split[5] ~= "displayName" or Split[6] then
-			Response = Player:SendMessageInfo("/scoreboard objectives modify <objective> displayname <newName>")
+			Response = SendMessageInfo(Player, "/scoreboard objectives modify <objective> displayname <newName>")
 		else
 			local Objective = Scoreboard:GetObjective(Split[4])
 			local newName = Split[6]
 
 			Objective:SetDisplayName(newName)
-			Response = Player:SendMessageSuccess("Objective " .. Objective:getName() .. " has been renamed to " .. newName)
+			Response = SendMessageSuccess(Player, "Objective " .. Objective:getName() .. " has been renamed to " .. newName)
 		end
 	end
 
@@ -202,3 +208,13 @@ function sendListObjectives(Objective)
 	gPlayer:SendMessage(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))
 end
 
+
+-- Handle commands for console
+
+function HandleConsoleScoreboardObjectives(Split)
+	return HandleScoreboardObjectivesCommand(Split)
+end
+
+function HandleConsoleScoreboardPlayers(Split)
+	return HandleScoreboardPlayersCommand(Split)
+end

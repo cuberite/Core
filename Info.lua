@@ -998,6 +998,94 @@ g_PluginInfo =
 			HelpString = "Sends a chat message to all players.",
 		},
 
+		["scoreboard"] =
+		{
+			HelpString = "Manages and displays scores for various scoreboard objectives. ",
+			Subcommands =
+			{
+				objectives =
+				{
+					HelpString = "Manage Objectives",
+					Permission = "core.scoreboard.objectives",
+					Handler = HandleConsoleScoreboardObjectives,
+					ParameterCombinations =
+					{
+						{
+							Params = "list",
+							Help = "List all existing objectives with their display names and criteria.",
+						},
+						{
+							Params = "add objective criteria displayName",
+							Help = "Create a new objective with the given internal objective name, specified criterion, and the optional display name.",
+						},
+						{
+							Params = "remove objective",
+							Help = "Delete the named objective from the scoreboard system.",
+						},
+						{
+							Params = "setdisplay slot objective",
+							Help = "Display score info for the objective in the given slot.",
+						},
+						{
+							Params = "modify objective displayname name",
+							Help = "Change the display name of the scoreboard in display slots.",
+						},
+						-- Not implemented yet
+						-- {
+						-- 	Params = "modify objective rendertype (hearts|integer)",
+						-- 	Help = "Change the display format for scores in the tab player list.",
+						-- },
+					},
+				},
+				players =
+				{
+					HelpString = "Manage Players",
+					Permission = "core.scoreboard.players",
+					Handler = HandleConsoleScoreboardPlayers,
+					ParameterCombinations =
+					{
+						-- Not Implemented yet
+						-- {
+						-- 	Params = "list",
+						-- 	Help = "Lists all score holders which are tracked in some way by the scoreboard system.",
+						-- },
+						{
+							Params = "list player",
+							Help = "Lists all score holders which are tracked in some way by the scoreboard system for a player.",
+						},
+						{
+							Params = "get player objective",
+							Help = "Return the scoreboard value.",
+						},
+						{
+							Params = "set player objective score",
+							Help = "Set the target's scores in the given objective, overwriting any previous score.",
+						},
+						{
+							Params = "add player objective score",
+							Help = "Increments the target's scores in the given objective.",
+						},
+						{
+							Params = "remove player objective score",
+							Help = "Decrements the target's scores in the given objective.",
+						},
+						{
+							Params = "reset player",
+							Help = "Deletes all scores for the targets",
+						},
+						{
+							Params = "reset player objective",
+							Help = "Delete score for the targets in the specified objective",
+						},
+						{
+							Params = "operation targetPlayer targetObjective operation sourcePlayer sourceObjective",
+							Help = "Applies an arithmetic operation altering the target's scores in the target objective, using source's scores in the source objective as input",
+						},
+					},
+				},
+			},
+		},
+
 		["spawnpoint"] = 
 		{
 			Handler = HandleConsoleSpawnPoint,
