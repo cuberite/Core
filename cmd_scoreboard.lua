@@ -30,11 +30,11 @@ function HandleScoreboardObjectivesCommand(Split, Player)
 	local Scoreboard
 	if Player then
 		Scoreboard = Player:GetWorld():GetScoreBoard()
+		gPlayer = Player
 	else
 		Scoreboard = cRoot:Get():GetDefaultWorld():GetScoreBoard()
 	end
 
-	gPlayer = Player
 
 	if Split[3] == "list" then
 		Response = SendMessage(Player, cCompositeChat():AddTextPart("DisplayName -> Name : Type", "u @2"))
@@ -92,9 +92,15 @@ function HandleScoreboardObjectivesCommand(Split, Player)
 end
 
 function HandleScoreboardPlayersCommand(Split, Player)
-	local Scoreboard = Player:GetWorld():GetScoreBoard()
-	gPlayer = Player
+	local Scoreboard
+	local Response
 
+	if Player then
+		Scoreboard = Player:GetWorld():GetScoreBoard()
+		gPlayer = Player
+	else
+		Scoreboard = cRoot:Get():GetDefaultWorld():GetScoreBoard()
+	end
 
 	if not Split[4] then return false end
 	tplayer = Split[4]
@@ -196,7 +202,11 @@ end
 function listObjectiveofPlayer(Objective)
 	local score = Objective:GetScore(tplayer)
 	if score then
-		gPlayer:SendMessageInfo(Objective:GetDisplayName() .. " -> " .. score)
+		if gPlayer then
+			gPlayer:SendMessageInfo(Objective:GetDisplayName() .. " -> " .. score)
+		else
+			LOG(Objective:GetDisplayName() .. " -> " .. score)  -- TODO
+		end
 	end
 end
 
@@ -205,7 +215,11 @@ function resetAllObjectives(Objective)
 end
 
 function sendListObjectives(Objective)
-	gPlayer:SendMessage(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))
+	if gPlayer then
+		gPlayer:SendMessage(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))
+	else
+		LOG(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))  -- TODO
+	end
 end
 
 
