@@ -125,3 +125,14 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 	end
 
 end
+
+-- Return the key from a value in an array list.
+-- @param list The list to get the value from.
+-- @parma value The value to look for.
+-- @return the key from the value found or nil if nothing is found
+function get_key_for_value( list, value )
+	for k, v in pairs(list) do
+		if v == value then return k end
+	end
+	return nil
+end

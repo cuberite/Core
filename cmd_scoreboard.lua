@@ -1,81 +1,88 @@
 local criterias =
 {
-	["achievement"] = otAchievement,
-	["deathCount"] = otDeathCount,
+	["achievement"] = cObjective.otAchievement,
+	["deathCount"] = cObjective.otDeathCount,
 	["dummy"] = cObjective.otDummy,
-	["health"] = otHealth,
-	["playerKillCount"] = otPlayerKillCount,
-	["stat"] = otStat,
-	["statBlockMine"] = otStatBlockMine,
-	["statEntityKill"] = otStatEntityKill,
-	["statEntityKilledBy"] = otStatEntityKilledBy,
-	["statItemBreak"] = otStatItemCraft,
-	["statItemUse"] = otStatItemUse,
-	["totalKillCount"] = otTotalKillCount,
+	["health"] = cObjective.otHealth,
+	["playerKillCount"] = cObjective.otPlayerKillCount,
+	["stat"] = cObjective.otStat,
+	["statBlockMine"] = cObjective.otStatBlockMine,
+	["statEntityKill"] = cObjective.otStatEntityKill,
+	["statEntityKilledBy"] = cObjective.otStatEntityKilledBy,
+	["statItemBreak"] = cObjective.otStatItemCraft,
+	["statItemUse"] = cObjective.otStatItemUse,
+	["totalKillCount"] = cObjective.otTotalKillCount,
 }
 
 local slots =
 {
-	["list"] = dsList,
-	["belowname"] = dsName,
+	["list"] = cScoreboard.dsList,
+	["belowname"] = cScoreboard.dsName,
 	["sidebar"] = cScoreboard.dsSidebar,
-	["count"] = dsCount,
+	["count"] = cScoreboard.dsCount,
 }
 
 local gPlayer = nil
 local tPlayer = nil
 
 function HandleScoreboardObjectivesCommand(Split, Player)
+	local Response = Player:SendMessageFailure("add, remove, list, setdisplay, modify")
 	local Scoreboard = Player:GetWorld():GetScoreBoard()
 	gPlayer = Player
 
 	if Split[3] == "list" then
-		Player:SendMessageInfo("DisplayName" .. " -> " .. "Name" .. ": " .. "Type")
+		Response = Player:SendMessage(cCompositeChat():AddTextPart("DisplayName -> Name : Type", "u @2"))
 		Scoreboard:ForEachObjective(sendListObjectives)
-		return true
 	end
 
 	if Split[3] == "remove" then
-		if not Split[4] then return false end
-
-		local Objective = Scoreboard:GetObjective(Split[4])
-		Objective:Reset()
-		return true
+		if not Split[4] then
+			Response = Player:SendMessageInfo("/scoreboard objectives remove <objective>")
+		elseif Scoreboard:RemoveObjective(Split[4]) then
+			Response = Player:SendMessageSuccess(Split[4] .. " has been removed")
+		else
+			Response = Player:SendMessageFailure(Split[4] .. " does not exist")
+		end
 	end
 
 	if Split[3] == "add" then
-		if not Split[4] or not criterias[Split[5]] or not Split[6] then return false end
+		if not Split[4] or not criterias[Split[5]] or not Split[6] then
+			Response = Player:SendMessageInfo("/scoreboard objectives add <name> <criteria> <displayName>")
+		else
+			local Name = Split[4]
+			local criteria = criterias[Split[5]]
+			local DisplayName = Split[6]
 
-		local Name = Split[4]
-		local criteria = criterias[Split[5]]
-		local DisplayName = Split[6]
-
-		Scoreboard:RegisterObjective(Name, DisplayName, criteria)
-		return true
+			Scoreboard:RegisterObjective(Name, DisplayName, criteria)
+			Response = Player:SendMessageSuccess("Objective " .. DisplayName .. " has been created")
+		end
 	end
 
 	if Split[3] == "setdisplay" then
-		if not slots[Split[4]] or not Split[5] then return false end
+		if not slots[Split[4]] or not Split[5] then
+			Response = Player:SendMessageInfo("/scoreboard objectives setdisplay <slot> <objective>")	
+		else
+			local slot = slots[Split[4]]
+			local Objective = Scoreboard:GetObjective(Split[5]):GetName()
 
-		local slot = slots[Split[4]]
- 		local Objective = Scoreboard:GetObjective(Split[5]):GetName()
-
- 		Scoreboard:SetDisplay(Objective, slot)
-		return true
+			Scoreboard:SetDisplay(Objective, slot)
+			Response = Player:SendMessageSuccess("Objective " .. Objective .. " has been placed on " .. get_key_for_value(slots, slot))
+		end
 	end
 
 	if Split[3] == "modify" then
-		if not Split[4] or Split[5] ~= "displayName" or Split[6] then return false end
+		if not Split[4] or Split[5] ~= "displayName" or Split[6] then
+			Response = Player:SendMessageInfo("/scoreboard objectives modify <objective> displayname <newName>")
+		else
+			local Objective = Scoreboard:GetObjective(Split[4])
+			local newName = Split[6]
 
-		local Objective = Scoreboard:GetObjective(Split[4])
-		local newName = Split[6]
-
-		Objective:SetDisplayName(newName)
-
-		return true
+			Objective:SetDisplayName(newName)
+			Response = Player:SendMessageSuccess("Objective " .. Objective:getName() .. " has been renamed to " .. newName)
+		end
 	end
 
-	return false
+	return true, Response
 end
 
 function HandleScoreboardPlayersCommand(Split, Player)
@@ -192,5 +199,6 @@ function resetAllObjectives(Objective)
 end
 
 function sendListObjectives(Objective)
-	gPlayer:SendMessageInfo(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. Objective:GetType())
+	gPlayer:SendMessage(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))
 end
+
