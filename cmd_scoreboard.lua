@@ -93,7 +93,7 @@ end
 
 function HandleScoreboardPlayersCommand(Split, Player)
 	local Scoreboard
-	local Response
+	local Response = SendMessageInfo(Player, "list, reset, get, set, add, remove, operation")
 
 	if Player then
 		Scoreboard = Player:GetWorld():GetScoreBoard()
@@ -102,108 +102,125 @@ function HandleScoreboardPlayersCommand(Split, Player)
 		Scoreboard = cRoot:Get():GetDefaultWorld():GetScoreBoard()
 	end
 
-	if not Split[4] then return false end
 	tplayer = Split[4]
 
 	if Split[3] == "list" then
-		Player:SendMessageInfo("List of Score for " .. tplayer .. ": ")
-		Scoreboard:ForEachObjective(listObjectiveofPlayer)
-		return true
+		if not Split[4] then
+			Response = SendMessageInfo(Player, "/scoreboard players list <player>")
+		else
+			Response = Player:SendMessageInfo(Player, "List of Score for " .. tplayer .. ": ")
+			Scoreboard:ForEachObjective(listObjectiveofPlayer)
+		end
 	end
 
 	if Split[3] == "reset" then
-		if Split[5] then
-			local Objective = Scoreboard:GetObjective(Split[5])
-			Objective:ResetScore(tplayer)
-			return true
+		if not Split[4] then
+			Response = SendMessageInfo(Player, "/scoreboard players reset (<player>)")
+		else
+			if  Split[5] then
+				local Objective = Scoreboard:GetObjective(Split[5])
+				Objective:ResetScore(tplayer)
+			else
+				Scoreboard:ForEachObjective(resetAllObjectives)
+			end
+			Response = SendMessageSuccess(Player, "Player's Score(s) has successfully been reseted")
 		end
-		Scoreboard:ForEachObjective(resetAllObjectives)
-		return true
 	end
 
-	if not Split[5] then return false end
-	local tObjective = Scoreboard:GetObjective(Split[5])
-
 	if Split[3] == "get" then
-		tObjective:GetScore(tplayer)
-		return true
+		if not Split[4] or not Split[5] then
+			Response = SendMessageInfo(Player, "/scoreboard players get <player> <objective>")
+		else
+			local tObjective = Scoreboard:GetObjective(Split[5])
+			Response = SendMessageInfo(Player, tObjective:GetScore(tplayer))
+		end
 	end
 
 	if Split[3] == "set" then
-		if not Split[6] then return false end
-		tObjective:SetScore(tplayer, Split[6])
-		return true
+		if not Split[4] or not Split[5] or not Split[6] then
+			Response = SendMessageInfo(Player, "/scoreboard players set <player> <objective> <ammount>")
+		else	
+			local tObjective = Scoreboard:GetObjective(Split[5])
+			tObjective:SetScore(tplayer, Split[6])
+			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully assigned to " .. tplayer:getName())
+		end
 	end
 
 	if Split[3] == "add" then
-		if not Split[6] then return false end
-		tObjective:AddScore(tplayer, Split[6])
-		return true
+		if not Split[4] or not Split[5] or not Split[6] then
+			Response = SendMessageInfo(Player, "/scoreboard players set <player> <objective> <ammount>")
+		else	
+			local tObjective = Scoreboard:GetObjective(Split[5])
+			tObjective:AddScore(tplayer, Split[6])
+			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully increased to " .. tplayer:getName())
+		end
 	end
 
 	if Split[3] == "remove" then
-		if not Split[6] then return false end
-		tObjective:SubScore(tplayer, Split[6])
-		return true
+		if not Split[4] or not Split[5] or not Split[6] then
+			Response = SendMessageInfo(Player, "/scoreboard players set <player> <objective> <ammount>")
+		else	
+			local tObjective = Scoreboard:GetObjective(Split[5])
+			tObjective:SubScore(tplayer, Split[6])
+			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully decreased to " .. tplayer:getName())
+		end
 	end
 
 	if Split[3] == "operation" then
-		if not Split[8] then return false end
-		local operation = Split[6]
-		local sourcePlayer = Split[7]
-		local sourceObjective = Scoreboard:getObjective(Split[8])
+		if not Split[4] or not Split[5] or not Split[6] or not Split[7] or not Split[8] then
+			Response = SendMessageInfo(Player, "/scoreboard players operation <targetPlayer> <targetObjective> <operation> <sourcePlayer> <sourceObjective>")
+		else
+			local tObjective = Scoreboard:GetObjective(Split[5])
+			local operation = Split[6]
+			local sourcePlayer = Split[7]
+			local sourceObjective = Scoreboard:getObjective(Split[8])
 
-		if operator == "+=" then
-			tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) + sourceObjective:GetScore(sourcePlayer))
-			return true
-		end
-		if operator == "-=" then
-			tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) - sourceObjective:GetScore(sourcePlayer))
-			return true
-		end
-		if operator == "*=" then
-			tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) * sourceObjective:GetScore(sourcePlayer))
-			return true
-		end
-		if operator == "/=" then
-			tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) / sourceObjective:GetScore(sourcePlayer))
-			return true
-		end
-		if operator == "%=" then
-			tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) % sourceObjective:GetScore(sourcePlayer))
-			return true
-		end
-		if operator == "=" then
-			tObjective:SetScore(tPlayer, sourceObjective:GetScore(sourcePlayer))
-			return true
-		end
-		if operator == "<" then
-			if sourceObjective:GetScore(sourcePlayer) < tObjective:GetScore(tPlayer) then
+			if operator == "+=" then
+				tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) + sourceObjective:GetScore(sourcePlayer))
+				Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " increased by " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName())
+			elseif operator == "-=" then
+				tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) - sourceObjective:GetScore(sourcePlayer))
+				Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " decreased by " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName())
+			elseif operator == "*=" then
+				Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " multiplied by " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName())
+				tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) * sourceObjective:GetScore(sourcePlayer))
+			elseif operator == "/=" then
+				Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " divided by " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName())
+				tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) / sourceObjective:GetScore(sourcePlayer))
+			elseif operator == "%=" then
+				Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " moduled by " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName())
+				tObjective:SetScore(tPlayer, tObjective:GetScore(tPlayer) % sourceObjective:GetScore(sourcePlayer))
+			elseif operator == "=" then
+				Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " set to " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName())
 				tObjective:SetScore(tPlayer, sourceObjective:GetScore(sourcePlayer))
-			end
-			return true
-		end
-		if operator == ">" then
-			if sourceObjective:GetScore(sourcePlayer) > tObjective:GetScore(tPlayer) then
+			elseif operator == "<" then
+				if sourceObjective:GetScore(sourcePlayer) < tObjective:GetScore(tPlayer) then
+					tObjective:SetScore(tPlayer, sourceObjective:GetScore(sourcePlayer))
+					Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " set to " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName())
+				end
+			elseif operator == ">" then
+				if sourceObjective:GetScore(sourcePlayer) > tObjective:GetScore(tPlayer) then
+					tObjective:SetScore(tPlayer, sourceObjective:GetScore(sourcePlayer))
+					Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " set to " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName())
+				end
+			elseif operator == "><" then
+				local temp = sourceObjective:GetScore(sourcePlayer)
+				sourceObjective:SetScore(tObjective:GetScore(tPlayer))
 				tObjective:SetScore(tPlayer, sourceObjective:GetScore(sourcePlayer))
+				Response = SendMessageInfo(Player, tObjective:GetDisplayName() .. ":" .. tPlayer:GetName() .. " and " .. sourceObjective:GetDisplayName() .. ":" .. sourcePlayer:GetName() .. " have been switched")
+			else
+				Response = SendMessageInfo(Player, "operators: +=, -=, *=, /=, %=, =, <, >, ><")
 			end
-			return true
-		end
-		if operator == "><" then
-			local temp = sourceObjective:GetScore(sourcePlayer)
-			sourceObjective:SetScore(tObjective:GetScore(tPlayer))
-			tObjective:SetScore(tPlayer, sourceObjective:GetScore(sourcePlayer))
-			return true
 		end
 	end
-	return false
+	return true, Response 
 end
 
 function listObjectiveofPlayer(Objective)
 	local score = Objective:GetScore(tplayer)
 	if score then
 		if gPlayer then
-			gPlayer:SendMessageInfo(Objective:GetDisplayName() .. " -> " .. score)
+			gPlayer:SendMessageInfo(gPlayer, Objective:GetDisplayName() .. " -> " .. score)
 		else
 			LOG(Objective:GetDisplayName() .. " -> " .. score)  -- TODO
 		end
@@ -216,7 +233,7 @@ end
 
 function sendListObjectives(Objective)
 	if gPlayer then
-		gPlayer:SendMessage(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))
+		gPlayer:SendMessage(gPlayer, Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))
 	else
 		LOG(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))  -- TODO
 	end
