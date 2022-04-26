@@ -74,7 +74,11 @@ end
 -- which delivers it appropriately
 function SendMessage(Player, Message)
 	if Player then
-		Player:SendMessageInfo(Message)
+		if type(Message) == "string" then
+			Player:SendMessageInfo(Message)
+		else
+			Player:SendMessage(Message) -- for cCompositeChat
+		end
 		return nil
 	end
 	return Message
