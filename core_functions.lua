@@ -81,7 +81,10 @@ function SendMessage(Player, Message)
 		end
 		return nil
 	end
-	return Message
+	if type(Message) == "string" then
+		return Message
+	end 
+	return Message:ExtractText()
 end
 
 function SendMessageSuccess(Player, Message)

@@ -24,15 +24,18 @@ local slots =
 
 local gPlayer = nil
 local tPlayer = nil
+local MultiLineResponse = {}
 
 function HandleScoreboardObjectivesCommand(Split, Player)
 	local Response
 	local Scoreboard
+	MultiLineResponse = {}
 	if Player then
 		Scoreboard = Player:GetWorld():GetScoreBoard()
 		gPlayer = Player
 	else
 		Scoreboard = cRoot:Get():GetDefaultWorld():GetScoreBoard()
+		gPlayer = nil
 	end
 
 	if not Split[3] then
@@ -91,27 +94,34 @@ function HandleScoreboardObjectivesCommand(Split, Player)
 		end
 	end
 
-	return true, Response
+	table.insert(MultiLineResponse, 1, Response) -- Add the response of the command as first line
+	return true, table.concat(MultiLineResponse, "\n")
 end
 
 function HandleScoreboardPlayersCommand(Split, Player)
 	local Scoreboard
-	local Response = SendMessageFailure(Player, "list, reset, get, set, add, remove, operation")
+	local Response
+	MultiLineResponse = {}
 
 	if Player then
 		Scoreboard = Player:GetWorld():GetScoreBoard()
 		gPlayer = Player
 	else
 		Scoreboard = cRoot:Get():GetDefaultWorld():GetScoreBoard()
+		gPlayer = nil
 	end
 
-	tplayer = Split[4]
+	tPlayer = Split[4]
+
+	if not Split[3] then
+		Response = SendMessageFailure(Player, "list, reset, get, set, add, remove, operation")
+	end
 
 	if Split[3] == "list" then
 		if not Split[4] then
 			Response = SendMessage(Player, "/scoreboard players list <player>")
 		else
-			Response = SendMessage(Player, "List of scores for " .. tplayer .. ": ")
+			Response = SendMessage(Player, "List of scores for " .. tPlayer .. ": ")
 			Scoreboard:ForEachObjective(listObjectiveofPlayer)
 		end
 	end
@@ -122,7 +132,7 @@ function HandleScoreboardPlayersCommand(Split, Player)
 		else
 			if  Split[5] then
 				local Objective = Scoreboard:GetObjective(Split[5])
-				Objective:ResetScore(tplayer)
+				Objective:ResetScore(tPlayer)
 			else
 				Scoreboard:ForEachObjective(resetAllObjectives)
 			end
@@ -135,7 +145,7 @@ function HandleScoreboardPlayersCommand(Split, Player)
 			Response = SendMessage(Player, "/scoreboard players get <player> <objective>")
 		else
 			local tObjective = Scoreboard:GetObjective(Split[5])
-			Response = SendMessage(Player, tObjective:GetScore(tplayer))
+			Response = SendMessage(Player, tObjective:GetScore(tPlayer))
 		end
 	end
 
@@ -144,8 +154,8 @@ function HandleScoreboardPlayersCommand(Split, Player)
 			Response = SendMessage(Player, "/scoreboard players set <player> <objective> <ammount>")
 		else	
 			local tObjective = Scoreboard:GetObjective(Split[5])
-			tObjective:SetScore(tplayer, Split[6])
-			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully assigned to " .. tplayer)
+			tObjective:SetScore(tPlayer, Split[6])
+			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully assigned to " .. tPlayer)
 		end
 	end
 
@@ -154,8 +164,8 @@ function HandleScoreboardPlayersCommand(Split, Player)
 			Response = SendMessage(Player, "/scoreboard players set <player> <objective> <ammount>")
 		else	
 			local tObjective = Scoreboard:GetObjective(Split[5])
-			tObjective:AddScore(tplayer, Split[6])
-			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully increased to " .. tplayer)
+			tObjective:AddScore(tPlayer, Split[6])
+			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully increased to " .. tPlayer)
 		end
 	end
 
@@ -164,8 +174,8 @@ function HandleScoreboardPlayersCommand(Split, Player)
 			Response = SendMessage(Player, "/scoreboard players set <player> <objective> <ammount>")
 		else	
 			local tObjective = Scoreboard:GetObjective(Split[5])
-			tObjective:SubScore(tplayer, Split[6])
-			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully decreased to " .. tplayer)
+			tObjective:SubScore(tPlayer, Split[6])
+			Response = SendMessageSuccess(Player, "Score " .. Split[6] .. " successfully decreased to " .. tPlayer)
 		end
 	end
 
@@ -216,30 +226,24 @@ function HandleScoreboardPlayersCommand(Split, Player)
 			end
 		end
 	end
-	return true, Response 
+
+	table.insert(MultiLineResponse, 1, Response) -- Add the response of the command as first line
+	return true, table.concat(MultiLineResponse, "\n")
 end
 
 function listObjectiveofPlayer(Objective)
-	local score = Objective:GetScore(tplayer)
+	local score = Objective:GetScore(tPlayer)
 	if score then
-		if gPlayer then
-			gPlayer:SendMessage(Objective:GetDisplayName() .. " -> " .. score)
-		else
-			LOG(Objective:GetDisplayName() .. " -> " .. score)
-		end
+		table.insert(MultiLineResponse,SendMessage(gPlayer, Objective:GetDisplayName() .. " -> " .. score))
 	end
 end
 
 function resetAllObjectives(Objective)
-	Objetive:ResetScore(tplayer)
+	Objetive:ResetScore(tPlayer)
 end
 
 function sendListObjectives(Objective)
-	if gPlayer then
-		gPlayer:SendMessage(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))
-	else
-		LOG(Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType()))
-	end
+	table.insert(MultiLineResponse, SendMessage(gPlayer, Objective:GetDisplayName() .. " -> " .. Objective:GetName() .. ": " .. get_key_for_value(criterias, Objective:GetType())))
 end
 
 
