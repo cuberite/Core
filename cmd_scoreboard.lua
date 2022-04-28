@@ -55,11 +55,11 @@ function HandleScoreboardObjectivesCommand(Split, Player)
 	end
 
 	if Split[3] == "add" then
-		if not Split[4] or not criterias[Split[5]] or not Split[6] then
+		if not Split[4] or not criterias[Split[5]:lower()] or not Split[6] then
 			Response = SendMessage(Player, "/scoreboard objectives add <name> <criteria> <displayName>")
 		else
 			local Name = Split[4]
-			local criteria = criterias[Split[5]]
+			local criteria = criterias[Split[5]:lower()]
 			local DisplayName = Split[6]
 
 			Scoreboard:RegisterObjective(Name, DisplayName, criteria)
@@ -68,10 +68,10 @@ function HandleScoreboardObjectivesCommand(Split, Player)
 	end
 
 	if Split[3] == "setdisplay" then
-		if not slots[Split[4]] or not Split[5] then
+		if not slots[Split[4]:lower()] or not Split[5] then
 			Response = SendMessage(Player, "/scoreboard objectives setdisplay <slot> <objective>")
 		else
-			local slot = slots[Split[4]]
+			local slot = slots[Split[4]:lower()]
 			local Objective = Scoreboard:GetObjective(Split[5]):GetName()
 
 			Scoreboard:SetDisplay(Objective, slot)
