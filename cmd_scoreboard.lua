@@ -43,7 +43,7 @@ function HandleScoreboardObjectivesCommand(Split, Player)
 	end
 
 	if Split[3] == "list" then
-		Response = SendMessage(Player, cCompositeChat():AddTextPart("DisplayName -> Name : Type", "u @2"))
+		Response = SendMessage(Player, cCompositeChat():AddTextPart("DisplayName -> Name : Type", "2n"))
 		Scoreboard:ForEachObjective(SendListObjectives)
 	end
 
