@@ -74,10 +74,17 @@ end
 -- which delivers it appropriately
 function SendMessage(Player, Message)
 	if Player then
-		Player:SendMessageInfo(Message)
+		if type(Message) == "string" then
+			Player:SendMessageInfo(Message)
+		else
+			Player:SendMessage(Message) -- for cCompositeChat
+		end
 		return nil
 	end
-	return Message
+	if type(Message) == "string" then
+		return Message
+	end 
+	return Message:ExtractText()
 end
 
 function SendMessageSuccess(Player, Message)
@@ -124,4 +131,15 @@ function TeleportToPlayer( a_SrcPlayer, a_DstPlayerName, a_TellDst )
 		SendMessageFailure( a_SrcPlayer, "Player " .. a_DstPlayerName .. " not found" )
 	end
 
+end
+
+-- Return the key from a value in an array list.
+-- @param a_List The list to get the value from.
+-- @parma a_Value The value to look for.
+-- @return the key from the value found or nil if nothing is found
+function get_key_for_value( a_List, a_Value )
+	for k, v in pairs(a_List) do
+		if v == a_Value then return k end
+	end
+	return nil
 end
