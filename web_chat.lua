@@ -75,7 +75,7 @@ local JavaScript = [[
 			if( MessageContainer.value == "" ) return;
 
 			var postParams = "ChatMessage=" + MessageContainer.value;
-			OpenPage( "/~webadmin/Core/Chat/", postParams, function( xhr )
+			OpenPage( "/~webadmin/Core/chat/", postParams, function( xhr )
 			{
 				RefreshChat();
 			} );
@@ -85,7 +85,7 @@ local JavaScript = [[
 		function RefreshChat()
 		{
 			var postParams = "JustChat=true&LastMessageID=" + LastMessageID;
-			LoadPageInto("/~webadmin/Core/Chat/", postParams, document.getElementById('ChatDiv'));
+			LoadPageInto("/~webadmin/Core/chat/", postParams, document.getElementById('ChatDiv'));
 		}
 
 		setInterval(RefreshChat, 1000);
