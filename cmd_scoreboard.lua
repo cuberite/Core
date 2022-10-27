@@ -22,6 +22,7 @@ local Slots =
 	["count"] = cScoreboard.dsCount,
 }
 
+
 function HandleScoreboardObjectivesCommand(Split, Player)
 	local Response
 	local Scoreboard
@@ -41,7 +42,7 @@ function HandleScoreboardObjectivesCommand(Split, Player)
 		Response = SendMessageFailure(Player, "add, remove, list, setdisplay, modify")
 
 	elseif Split[3] == "list" then
-		Response = SendMessage(Player, cCompositeChat():AddTextPart("DisplayName -> Name : Type", "u @2"))
+		Response = SendMessage(Player, cCompositeChat():AddTextPart("DisplayName -> Name : Type", "2n"))
 		Scoreboard:ForEachObjective(SendListObjectives)
 
 	elseif Split[3] == "remove" then
@@ -225,7 +226,6 @@ function HandleScoreboardPlayersCommand(Split, Player)
 	table.insert(MultiLineResponse, 1, Response) -- Add the response of the command as first line
 	return true, table.concat(MultiLineResponse, "\n")
 end
-
 
 -- Handle commands for console
 
