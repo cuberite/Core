@@ -11,7 +11,3 @@ function HandleVersionCommand(Split, Player)
 	))
 	return true
 end
---This server is running Paper version git-Paper-"e591764" (MC: 1.12.2) (Implementing API version 1.12.2-R0.1-SNAPSHOT)
-Previous version: git-Paper-1618 (MC: 1.12.2)
-Checking version, please wait...
-Unknown version
