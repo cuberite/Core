@@ -26,6 +26,8 @@ Implements some of the basic commands needed to run a simple server.
 |/motd | core.motd | Shows the message of the day.|
 |/op | core.rank | Add a player to the administrator rank.|
 |/plugins | core.plugins | Shows a list of the plugins.|
+|/version | core.version | Shows the server version.|
+|/about | core.version | Shows the server version.|
 |/portal | core.portal | Moves your player to a different world.|
 |/r | core.tell | Replies to the latest private message you received.|
 |/rank | core.rank | Shows or sets a player's rank.|
@@ -91,6 +93,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.me |  | `/me` |  |
 | core.motd |  | `/motd` |  |
 | core.plugins |  | `/plugins` |  |
+| core.version |  | `/version`, `/about` |  |
 | core.portal |  | `/portal` |  |
 | core.rank |  | `/rank`, `/op` |  |
 | core.regen |  | `/regen` |  |
