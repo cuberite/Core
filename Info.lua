@@ -943,6 +943,18 @@ g_PluginInfo =
 			HelpString = "Shows a list of the plugins.",
 		},
 
+		["version"] = 
+		{
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server.",
+		},
+
+		["about"] = 
+		{
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server.",
+		},
+
 		["rank"] =
 		{
 			Handler =  HandleConsoleRank,
