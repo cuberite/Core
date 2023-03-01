@@ -235,6 +235,23 @@ g_PluginInfo =
 			},
 		},
 
+		["/version"] = 
+		{
+			Alias = "/ver",
+			Permission = "core.version",
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server.",
+		},
+
+		["/about"] = 
+		{
+			Alias = "/a",
+			Permission = "core.about",
+			Handler = HandleAboutCommand,
+			HelpString = "Shows the version of the server.",
+		},
+
+
 		["/portal"] =
 		{
 			Alias = "/world",
