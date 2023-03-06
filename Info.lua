@@ -245,7 +245,7 @@ g_PluginInfo =
 
 		["/about"] = 
 		{
-			Alias = "/a",
+			Alias = "/abt",
 			Permission = "core.version",
 			Handler = HandleVersionCommand,
 			HelpString = "Shows the version of the server software.",
