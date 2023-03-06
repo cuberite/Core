@@ -240,7 +240,7 @@ g_PluginInfo =
 			Alias = "/ver",
 			Permission = "core.version",
 			Handler = HandleVersionCommand,
-			HelpString = "Shows the version of the server.",
+			HelpString = "Shows the version of the server software.",
 		},
 
 		["/about"] = 
@@ -248,7 +248,7 @@ g_PluginInfo =
 			Alias = "/a",
 			Permission = "core.version",
 			Handler = HandleVersionCommand,
-			HelpString = "Shows the version of the server.",
+			HelpString = "Shows the version of the server software.",
 		},
 
 
@@ -946,13 +946,13 @@ g_PluginInfo =
 		["version"] = 
 		{
 			Handler = HandleVersionCommand,
-			HelpString = "Shows the version of the server.",
+			HelpString = "Shows the version of the server software.",
 		},
 
 		["about"] = 
 		{
 			Handler = HandleVersionCommand,
-			HelpString = "Shows the version of the server.",
+			HelpString = "Shows the version of the server software.",
 		},
 
 		["rank"] =
