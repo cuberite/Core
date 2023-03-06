@@ -1474,6 +1474,11 @@ g_PluginInfo =
 			Description = "Allows players to manage the whitelist.",
 			RecommendedGroups = "admins",
 		},
+
+		["core.version"] =
+		{
+			Description = "Shows the version of the server software.",
+		},
 	},  -- Permissions
 }  -- g_PluginInfo
 
