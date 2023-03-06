@@ -1,7 +1,7 @@
 function HandleVersionCommand(Split, Player)
 	-- Send output to player:
 	SendMessage(Player, string.format(
-		"This server is running CuberiteMC %s - %s (%s - %s) with Lua version %s and SQL version %s.",
+		"This server is running Cuberite %s - %s (%s - %s) with Lua version %s and SQL version %s.",
 		cRoot:GetBuildSeriesName(),
 		cRoot:GetBuildID(),
 		cRoot:GetBuildCommitID(),
