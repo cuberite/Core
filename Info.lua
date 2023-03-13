@@ -11,6 +11,14 @@ g_PluginInfo =
 	
 	Commands =
 	{
+		["/about"] = 
+		{
+			Alias = "/abt",
+			Permission = "core.version",
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server software.",
+		},
+
 		["/ban"] = 
 		{
 			Permission = "core.ban",
@@ -234,23 +242,6 @@ g_PluginInfo =
 				},
 			},
 		},
-
-		["/version"] = 
-		{
-			Alias = "/ver",
-			Permission = "core.version",
-			Handler = HandleVersionCommand,
-			HelpString = "Shows the version of the server software.",
-		},
-
-		["/about"] = 
-		{
-			Alias = "/abt",
-			Permission = "core.version",
-			Handler = HandleVersionCommand,
-			HelpString = "Shows the version of the server software.",
-		},
-
 
 		["/portal"] =
 		{
@@ -678,7 +669,15 @@ g_PluginInfo =
 				},
 			},
 		},
-		
+
+		["/version"] = 
+		{
+			Alias = "/ver",
+			Permission = "core.version",
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server software.",
+		},
+
 		["/viewdistance"] = 
 		{
 			Permission = "core.viewdistance",
@@ -776,6 +775,12 @@ g_PluginInfo =
 	
 	ConsoleCommands =
 	{
+		["about"] = 
+		{
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server software.",
+		},
+
 		["ban"] =
 		{
 			Handler =  HandleConsoleBan,
@@ -941,18 +946,6 @@ g_PluginInfo =
 		{
 			Handler = HandleConsolePlugins,
 			HelpString = "Shows a list of the plugins.",
-		},
-
-		["version"] = 
-		{
-			Handler = HandleVersionCommand,
-			HelpString = "Shows the version of the server software.",
-		},
-
-		["about"] = 
-		{
-			Handler = HandleVersionCommand,
-			HelpString = "Shows the version of the server software.",
 		},
 
 		["rank"] =
@@ -1316,7 +1309,13 @@ g_PluginInfo =
 				},
 			},
 		},
-		
+
+		["version"] = 
+		{
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server software.",
+		},
+
 		["weather"] =
 		{
 			Handler = HandleConsoleWeather,
