@@ -5,6 +5,7 @@ Implements some of the basic commands needed to run a simple server.
 ### General
 | Command | Permission | Description |
 | ------- | ---------- | ----------- |
+|/about | core.version | Shows the server software version.|
 |/ban | core.ban | Bans a player.|
 |/clear | core.clear | Clears the inventory of a player.|
 |/difficulty | core.difficulty | Changes the difficulty level of the world you're located in.|
@@ -26,8 +27,6 @@ Implements some of the basic commands needed to run a simple server.
 |/motd | core.motd | Shows the message of the day.|
 |/op | core.rank | Add a player to the administrator rank.|
 |/plugins | core.plugins | Shows a list of the plugins.|
-|/version | core.version | Shows the server software version.|
-|/about | core.version | Shows the server software version.|
 |/portal | core.portal | Moves your player to a different world.|
 |/r | core.tell | Replies to the latest private message you received.|
 |/rank | core.rank | Shows or sets a player's rank.|
@@ -57,6 +56,7 @@ Implements some of the basic commands needed to run a simple server.
 |/unrank | core.unrank | Add a player to the default rank.|
 |/unsafegive | core.give.unsafe | Gives an item to a player, even if the item is blacklisted.|
 |/unsafeitem | core.item.unsafe | Gives your player an item, even if the item is blacklisted.|
+|/version | core.version | Shows the server software version.|
 |/viewdistance | core.viewdistance | Changes your view distance.|
 |/weather | core.weather | Changes the world's weather.|
 |/whitelist |  | Manages the whitelist.|
@@ -93,7 +93,6 @@ Implements some of the basic commands needed to run a simple server.
 | core.me |  | `/me` |  |
 | core.motd |  | `/motd` |  |
 | core.plugins |  | `/plugins` |  |
-| core.version |  | `/version`, `/about` |  |
 | core.portal |  | `/portal` |  |
 | core.rank |  | `/rank`, `/op` |  |
 | core.regen |  | `/regen` |  |
@@ -116,6 +115,7 @@ Implements some of the basic commands needed to run a simple server.
 | core.tps |  | `/tps` |  |
 | core.unban |  | `/unban` |  |
 | core.unrank |  | `/deop`, `/unrank` |  |
+| core.version |  | `/version`, `/about` |  |
 | core.viewdistance |  | `/viewdistance` |  |
 | core.weather | Allows players to change the weather. | `/weather` | admins |
 | core.whitelist | Allows players to manage the whitelist. | `/whitelist off`, `/whitelist list`, `/whitelist remove`, `/whitelist on`, `/whitelist add` | admins |
