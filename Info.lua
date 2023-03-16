@@ -11,6 +11,14 @@ g_PluginInfo =
 	
 	Commands =
 	{
+		["/about"] = 
+		{
+			Alias = "/abt",
+			Permission = "core.version",
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server software.",
+		},
+
 		["/ban"] = 
 		{
 			Permission = "core.ban",
@@ -661,7 +669,15 @@ g_PluginInfo =
 				},
 			},
 		},
-		
+
+		["/version"] = 
+		{
+			Alias = "/ver",
+			Permission = "core.version",
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server software.",
+		},
+
 		["/viewdistance"] = 
 		{
 			Permission = "core.viewdistance",
@@ -759,6 +775,12 @@ g_PluginInfo =
 	
 	ConsoleCommands =
 	{
+		["about"] = 
+		{
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server software.",
+		},
+
 		["ban"] =
 		{
 			Handler =  HandleConsoleBan,
@@ -1287,7 +1309,13 @@ g_PluginInfo =
 				},
 			},
 		},
-		
+
+		["version"] = 
+		{
+			Handler = HandleVersionCommand,
+			HelpString = "Shows the version of the server software.",
+		},
+
 		["weather"] =
 		{
 			Handler = HandleConsoleWeather,
@@ -1444,6 +1472,11 @@ g_PluginInfo =
 		{
 			Description = "Allows players to manage the whitelist.",
 			RecommendedGroups = "admins",
+		},
+
+		["core.version"] =
+		{
+			Description = "Shows the version of the server software.",
 		},
 	},  -- Permissions
 }  -- g_PluginInfo
