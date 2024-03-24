@@ -11,11 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      # Sets up lua
       - name: Install Lua
         run: |
           sudo apt install lua5.1 luarocks libsqlite3-dev
@@ -24,7 +21,6 @@ jobs:
           sudo luarocks install luasocket
           sudo luarocks install luasec OPENSSL_LIBDIR=/usr/lib/x86_64-linux-gnu
 
-      # Sets up the environment
       - name: Set up environment
         run: |
           wget -O ../InfoReg.lua https://raw.githubusercontent.com/cuberite/cuberite/master/Server/Plugins/InfoReg.lua
@@ -35,7 +31,6 @@ jobs:
           unzip ~/ManualAPI.zip -d ~
           git clone https://github.com/cuberite/CuberitePluginChecker ~/Checker
 
-      # Runs the test
       - name: Run tests
         run: |
           cd ~/Checker && lua CuberitePluginChecker.lua -p $GITHUB_WORKSPACE -a ~/AutoAPI -e ~/ManualAPI.lua -i APIImpl/All.lua -s $GITHUB_WORKSPACE/tests/FuzzCommands.lua -g
