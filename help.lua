@@ -51,7 +51,7 @@ local function handleHelpPage(a_Player, a_PageNumber, a_Beginning)
 	local firstLine = (a_PageNumber - 1) * g_CommandsPerPage + 1
 	local lastLine = firstLine + g_CommandsPerPage
 	local maxPages = math.ceil(numCommands / g_CommandsPerPage)
-	if (firstLine > numCommands) then
+	if (firstLine > numCommands or firstLine < 0) then
 		a_Player:SendMessageFailure("The requested page is not available. Only pages 1 - " .. maxPages .. " are available.")
 		return true
 	end
